@@ -52,7 +52,10 @@ end
 
 function ui:top_menu()
   self.graphics:rect(0, 0, 128, 7)
-  for i = 1,5 do
+end
+
+function ui:top_menu_tabs()
+  for i = 1,3 do
     self.graphics:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, self.graphics.levels["l"])
   end
 end

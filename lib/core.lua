@@ -43,12 +43,12 @@ function core.init()
   core.dictionary = dictionary
   core.dictionary.init()
 
-
   core.page = page
   core.page.parameters = parameters
   core.page.init()
   core.page.ui = core.ui
   core.pages = core.dictionary.pages
+  core.page.dictionary = core.dictionary
 
   core.redraw()
 end
@@ -80,6 +80,7 @@ function core.enc(n,d)
   if n == 1 then
     core.page.active_page = util.clamp(core.page.active_page + d, 1, #core.pages)
     core.page.items = page_items[page.active_page]
+    core.page.selected_item = 1
   elseif n == 2 then
     core.page.selected_item = util.clamp(core.page.selected_item + d, 1, core.page.items)
   else
@@ -92,6 +93,8 @@ function core.redraw()
   core.graphics.setup()
 
   core.ui:top_menu()
+  core.graphics:top_menu_static()
+  core.ui:top_menu_tabs()
   core.ui:select_tab(core.page.active_page)
   core.ui:top_message(core.pages[core.page.active_page])
 

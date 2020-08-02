@@ -6,9 +6,10 @@
 --    k2: play      k3: delete
 --
 --
--- ...........................
+-- ........................................
+-- l.llllllll.co/arcologies
+-- <3 @tyleretters
 -- v0.0.1
--- @tyleretters
 
 local core = include("lib/core")
 

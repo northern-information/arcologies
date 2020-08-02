@@ -17,12 +17,37 @@ params:add{
   action = function(x) parameters.bpm_listener(x) end
 }
 
-params:add{ type = "number", id = "Arbitrary1", min = 0, max = 1000, default = 500 }
-params:add{ type = "number", id = "Arbitrary2", min = 0, max = 1000, default = 500 }
-params:add{ type = "number", id = "Arbitrary3", min = 0, max = 1000, default = 500 }
-params:add{ type = "number", id = "Arbitrary4", min = 0, max = 1000, default = 500 }
-params:add{ type = "number", id = "Arbitrary5", min = 0, max = 1000, default = 500 }
-params:add{ type = "number", id = "Arbitrary6", min = 0, max = 1000, default = 500 }
+params:add{
+  type = "number",
+  id = "Static",
+  min = 0,
+  max = 1,
+  default = 1
+}
+
+params:add{
+  type = "number",
+  id = "TempStructure",
+  min = 1,
+  max = 3,
+  default = 1
+}
+
+params:add{
+  type = "number",
+  id = "TempMetabolism",
+  min = 1,
+  max = 16,
+  default = 4
+}
+
+params:add{
+  type = "number",
+  id = "TempSound",
+  min = 1,
+  max = 144,
+  default = 73
+}
 
 function parameters.init()
   params:bang()
