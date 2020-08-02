@@ -5,7 +5,10 @@
 --
 --    k2: play      k3: delete
 --
---  v0.0.1
+--
+-- ...........................
+-- v0.0.1
+-- @tyleretters
 
 local core = include("lib/core")
 

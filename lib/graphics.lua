@@ -11,6 +11,10 @@ end
 function graphics.setup()
   screen.clear()
   screen.aa(0)
+  graphics.reset_font()
+end
+
+function graphics.reset_font()
   screen.font_face(0)
   screen.font_size(8)
 end
@@ -51,6 +55,21 @@ function graphics:text(x, y, string, level)
   screen.text(string)
 end
 
+function graphics:bpm(x, y, string, level)
+  screen.level(level or graphics.levels["h"])
+  screen.move(x, y)
+  screen.font_size(30)
+  screen.text(string)
+  graphics.reset_font()
+end
+
+function graphics:status(x, y, string, level)
+  screen.level(level or graphics.levels["h"])
+  screen.move(x, y)
+  screen.text(string)
+  graphics.reset_font()
+end
+
 function graphics:text_right(x, y, string, level)
   screen.level(level or graphics.levels["h"])  
   screen.move(x, y)
@@ -61,12 +80,26 @@ function graphics:text_left(x, y, string, level)
   self:text(x, y, string, level)
 end
 
-function graphics:walls(x, y)
+function graphics:a(x, y)
+  self:kasagi(x, y)
+  self:right_wall(x, y)
+  self:roof(x, y)
+  self:second_floor(x,y)
+  self:floor(x, y)
+  self:mls(x, y+11, x, y+19)
+  self:mls(x+1, y+11, x+1, y+19)
+end
+
+function graphics:left_wall(x, y)
   self:mls(x, y-1, x, y+25)
   self:mls(x+1, y-1, x, y+25)
+end
+
+function graphics:right_wall(x, y)
   self:mls(x+20, y-1, x+20, y+25)
   self:mls(x+21, y-1, x+20, y+25)
 end
+
 
 function graphics:kasagi(x, y)
   self:mls(x-5, y-6, x+25, y-6)
@@ -99,7 +132,8 @@ function graphics:foundation(x, y)
 end
 
 function graphics:cell(x, y)
-  self:walls(x, y)
+  self:left_wall(x, y)
+  self:right_wall(x, y)
   self:roof(x, y)
   self:floor(x, y)
 end
@@ -111,14 +145,16 @@ function graphics:hive(x, y)
 end
 
 function graphics:gate(x, y)
-  self:walls(x, y)
+  self:left_wall(x, y)
+  self:right_wall(x, y)
   self:kasagi(x, y)
   self:roof(x, y)
   self:third_floor(x, y)
 end
 
 function graphics:shrine(x, y)
-  self:walls(x, y)
+  self:left_wall(x, y)
+  self:right_wall(x, y)
   self:roof(x, y)
   self:third_floor(x, y)
   self:mls(x+10, y+11, x+10, y+19)

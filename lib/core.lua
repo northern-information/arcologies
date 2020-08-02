@@ -10,7 +10,7 @@ local dictionary = include("arcologies/lib/dictionary")
 
 function core.init()
   audio:pitch_off()
-  params:bang();
+  parameters.init()
   
   -- ui & graphics counter
   core.ui_counter = metro.init()

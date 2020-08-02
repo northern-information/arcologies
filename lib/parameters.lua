@@ -24,6 +24,10 @@ params:add{ type = "number", id = "Arbitrary4", min = 0, max = 1000, default = 5
 params:add{ type = "number", id = "Arbitrary5", min = 0, max = 1000, default = 500 }
 params:add{ type = "number", id = "Arbitrary6", min = 0, max = 1000, default = 500 }
 
+function parameters.init()
+  params:bang()
+  params:set("BPM", math.random(20, 240))
+end
 
 function parameters.bpm_listener(x)
   parameters.bpm_to_seconds = 60 / x

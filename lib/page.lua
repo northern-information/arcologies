@@ -3,7 +3,7 @@ local page = {}
 function page.init()
   page.active_page = 1
   page_items = {}
-  page_items[1] = 4
+  page_items[1] = 2
   page_items[2] = 4
   page_items[3] = 4
   page_items[4] = 6
@@ -12,8 +12,8 @@ function page.init()
   page.items = page_items[page.active_page]
   page.ui_frame = 0
   page.music_location = 0
-  page.left_edge = 6
-  page.right_edge = 122
+  page.left_edge = 2
+  page.right_edge = 126
   page.rows_start = 20
 end
 
@@ -83,40 +83,39 @@ function page:render(i, s, f, l)
   end
 end
 
-function page:one()
-  local y = ((self.selected_item - 1) * 8) + 14
-  local status, metro
-
-  -- selected
-  self.ui.graphics:rect(3, y, self.right_edge, 7, 2)
-
-  -- status
-  self.ui.graphics:text(self.left_edge, page.rows_start, "STATUS")
-  if params:get("Status") == 0 then 
-    status = self.ui.ready_animation(self.ui_frame) .. " READY"
-  else
-    status = self.ui.playing_animation(self.ui_frame) .. " PLAYING"
-  end
-  self.ui.graphics:text_right(self.right_edge, page.rows_start, status)
-
-  -- BPM  
-  self.ui.graphics:text(self.left_edge, 28, "BPM")
-  if math.fmod(self.music_location, 2) == 0 then
-    metro = 0  
-  else
-    metro = 1
-  end
-  self.ui:metro_animation(self.right_edge - 18, 25, metro)
-  self.ui.graphics:text_right(self.right_edge, 28, params:get("BPM"))
-
-
-  self.ui.graphics:text(self.left_edge, 36, "GRID")
-  self.ui.graphics:text(self.left_edge, 44, "ARC")
-  self.ui.graphics:text_right(self.right_edge, 36, "OK!")
-  self.ui.graphics:text_right(self.right_edge, 44, "OK!")
-end
+-- swiss
+-- self.ui.graphics:rect(0, 11, 40, 55)
+-- self.ui.graphics:rect(44, 11, 40, 55)
+-- self.ui.graphics:rect(88, 11, 40, 55)  
 
 function page:two()
+  -- item menu
+  local y = ((self.selected_item - 1) * 8) + 13
+  self.ui.graphics:rect(88, 11, 40, 55)
+  self.ui.graphics:rect(88, y, 39, 9, 0)
+  self.ui.graphics:rect(84, y + 4, 6, 1, 15)
+  menu_status = params:get("Status") == 0 and "READY" or "PLAYING"
+  if self.selected_item == 1 then 
+    self.ui.graphics:text_right(self.right_edge, 20, menu_status, 15)  
+    self.ui.graphics:text_right(self.right_edge, 28, "BPM", 0)
+  else
+    self.ui.graphics:text_right(self.right_edge, 20, menu_status, 0)  
+    self.ui.graphics:text_right(self.right_edge, 28, "BPM", 15)
+  end
+
+  -- values
+  local status
+  if params:get("Status") == 0 then 
+    status = self.ui.ready_animation(math.fmod(self.music_location, 10))
+  else
+    status = self.ui.playing_animation(math.fmod(self.music_location, 10))
+  end
+  self.ui.graphics:bpm(self.left_edge, 56, params:get("BPM"))
+  self.ui.graphics:text(self.left_edge, 32, math.fmod(self.music_location, 4) + 1, 15)
+  self.ui.graphics:text(self.left_edge + 8, 32, status)  
+end
+
+function page:one()
   self.ui.graphics:cell(5, 20)
 end
 
