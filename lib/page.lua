@@ -158,7 +158,13 @@ function page:two()
   self.ui.graphics:text(54 + 2, 25, params:get("TempMetabolism"), 0)
   self.ui.graphics:text(54 + 2, 33, page.dictionary.sounds[params:get("TempSound")], 0)
   self.ui.graphics:text(54 + 2, 55, "NESW", 0)
-  self.ui.graphics:text(54 + 2, 63, "X16Y8", 0)
+  local id
+  if self.cell.is_selected() then
+    id = "X" .. self.cell.selected[1] .. "Y" .. self.cell.selected[2] 
+  else
+    id = "NONE"
+  end
+  self.ui.graphics:text(54 + 2, 63, id, 0)
 
 
 end

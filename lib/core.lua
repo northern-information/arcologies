@@ -1,12 +1,15 @@
-local core = {}
+core = {}
 
-local g = include("arcologies/lib/g")
-local parameters = include("arcologies/lib/parameters")
-local graphics = include("arcologies/lib/graphics")
-local ui = include("arcologies/lib/ui")
-local page = include("arcologies/lib/page")
-local dictionary = include("arcologies/lib/dictionary")
+-- hardware & ui
+g = include("arcologies/lib/g")
+parameters = include("arcologies/lib/parameters")
+graphics = include("arcologies/lib/graphics")
+ui = include("arcologies/lib/ui")
+page = include("arcologies/lib/page")
+dictionary = include("arcologies/lib/dictionary")
 
+-- logic & dreams
+cell = include("arcologies/lib/cell")
 
 function core.init()
   audio:pitch_off()
@@ -43,14 +46,37 @@ function core.init()
   core.dictionary = dictionary
   core.dictionary.init()
 
+  core.cell = cell
+  core.cell.init()
+
   core.page = page
   core.page.parameters = parameters
   core.page.init()
   core.page.ui = core.ui
   core.pages = core.dictionary.pages
   core.page.dictionary = core.dictionary
+  core.page.cell = core.cell
+  select_page(1)
+
 
   core.redraw()
+end
+
+function select_page(x)
+  core.page.active_page = x
+end
+
+function select_cell(x, y)
+  core.cell.selected = {x, y}
+  core.g:all(0)
+  core.g:led(x, y, 15)
+  core.g:refresh()
+end
+
+function deselect_cell()
+  core.cell.selected = {}  
+  core.g:all(0)
+  core.g:refresh()
 end
 
 function core.conductor()
@@ -79,8 +105,12 @@ end
 function core.enc(n,d)
   if n == 1 then
     core.page.active_page = util.clamp(core.page.active_page + d, 1, #core.pages)
+    print(core.page.active_page)
     core.page.items = page_items[page.active_page]
     core.page.selected_item = 1
+    if core.page.active_page ~= 2 then
+      deselect_cell()
+    end
   elseif n == 2 then
     core.page.selected_item = util.clamp(core.page.selected_item + d, 1, core.page.items)
   else
@@ -102,7 +132,6 @@ function core.redraw()
 
   core.graphics.teardown()
 
-  -- core.g:led(1, 8, 15)
   core.g:refresh()
 end
 
