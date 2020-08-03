@@ -250,41 +250,41 @@ function graphics:west_port(x, y)
 end
 
 function graphics:panel_static()
-  local pixel_density = 15
-  local line_density = 10
-  if (params:get("static_animation_on") == 1) then 
-    for x = 54, 128 do
-      for y = 12, 64 do
-        if (math.random(0, 100) <= line_density) then
-          self:mls(54, y, 128, y, math.random(8,10))
-        end
-        if (math.random(0, 100) <= pixel_density) then
-          screen.level(math.random(13,15))
-          screen.pixel(x, y)
-          screen.fill()
-        end
-      end
-    end
-  end
+  -- local pixel_density = 15
+  -- local line_density = 10
+  -- if params:get("static_animation_on") == 1 then 
+  --   for x = 54, 128 do
+  --     for y = 12, 64 do
+  --       if (math.random(0, 100) <= line_density) then
+  --         self:mls(54, y, 128, y, math.random(8,10))
+  --       end
+  --       if (math.random(0, 100) <= pixel_density) then
+  --         screen.level(math.random(13,15))
+  --         screen.pixel(x, y)
+  --         screen.fill()
+  --       end
+  --     end
+  --   end
+  -- end
 end
 
 function graphics:top_menu_static()
-  local pixel_density = 15
-  local line_density = 10
-  if (params:get("static_animation_on") == 1) then
-    for x = 1, 128 do
-      for y = 1, 6 do
-        if (math.random(0, 100) <= line_density) then
-          self:mls(1, y, 128, y, math.random(8,10))
-        end
-        if (math.random(0, 100) <= pixel_density) then
-          screen.level(math.random(13,15))
-          screen.pixel(x, y)
-          screen.fill()
-        end
-      end
-    end
-  end
+  -- local pixel_density = 15
+  -- local line_density = 10
+  -- if params:get("static_animation_on") == 1 then
+  --   for x = 1, 128 do
+  --     for y = 1, 6 do
+  --       if (math.random(0, 100) <= line_density) then
+  --         self:mls(1, y, 128, y, math.random(8,10))
+  --       end
+  --       if (math.random(0, 100) <= pixel_density) then
+  --         screen.level(math.random(13,15))
+  --         screen.pixel(x, y)
+  --         screen.fill()
+  --       end
+  --     end
+  --   end
+  -- end
 end
 
 

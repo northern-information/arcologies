@@ -82,9 +82,7 @@ end
 
 function core.enc(n,d)
   if n == 1 then
-    core.page.active_page = util.clamp(core.page.active_page + d, 1, #core.pages)
-    core.page.items = page_items[page.active_page]
-    core.page.selected_item = 1
+    select_page(util.clamp(core.page.active_page + d, 1, #core.pages))
     if core.page.active_page ~= 2 then
       deselect_cell()
     end
@@ -139,7 +137,7 @@ function core.gridmeister()
 end
 
 function core.cleanup()
-  core.g.cleanup()
+  -- core.g.cleanup()
   poll:clear_all() 
 end
 
@@ -147,6 +145,8 @@ end
 --------------------------------------------------------------------------------
 function select_page(x)
   core.page.active_page = x
+  core.page.items = page_items[page.active_page]
+  core.page.selected_item = 1
 end
 
 function create_cell(x, y)
