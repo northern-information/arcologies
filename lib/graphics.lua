@@ -6,15 +6,73 @@ function graphics.init()
   graphics.levels["l"] = 5
   graphics.levels["m"] = 10
   graphics.levels["h"] = 15
+  graphics.tab_width = 5
+  graphics.tab_height = 5
+  graphics.tab_indicator_width = 1
+  graphics.tab_indicator_height = 6
+  graphics.tab_padding = 1
+end
+
+function graphics:get_tab_x(i)
+  return (((self.tab_width + self.tab_padding) * i) - self.tab_width)
+end
+
+function graphics:top_menu()
+  self:rect(0, 0, 128, 7)
+end
+
+function graphics:top_menu_tabs()
+  for i = 1,3 do
+    self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, self.levels["l"])
+  end
+end
+
+function graphics:select_tab(i)
+  self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height + 1, self.levels["o"])
+  self:mlrs(self:get_tab_x(i) + 2, 3, 1, 6)
+end
+
+function graphics:top_message(string)
+  self:text_right(127, 6, string, 0)
+end
+
+function graphics.ready_animation(i)
+  local f = {}
+  f[0] = "....|...."
+  f[1] = "...|'|..."
+  f[2] = "..|...|.."
+  f[3] = ".|.....|."
+  f[4] = "|.......|"
+  f[5] = "'|.....|'"
+  f[6] = "..|...|.."
+  f[7] = "...|.|..."
+  f[8] = "....|...."
+  f[9] = "....'...."
+  return f[i % 10]
+end
+
+function graphics.playing_animation(i)
+  local f = {}
+  f[0] = ">........"
+  f[1] = "+>......."
+  f[2] = ".->......"
+  f[3] = "..+>....."
+  f[4] = "...->...."
+  f[5] = "....+>..."
+  f[6] = ".....->.."
+  f[7] = "......+>."
+  f[8] = ".......->"
+  f[9] = "........+"
+  return f[i % 10]
 end
 
 function graphics.setup()
   screen.clear()
   screen.aa(0)
-  graphics.reset_font()
+  graphics:reset_font()
 end
 
-function graphics.reset_font()
+function graphics:reset_font()
   screen.font_face(0)
   screen.font_size(8)
 end
@@ -60,14 +118,14 @@ function graphics:bpm(x, y, string, level)
   screen.move(x, y)
   screen.font_size(30)
   screen.text(string)
-  graphics.reset_font()
+  self:reset_font()
 end
 
 function graphics:status(x, y, string, level)
   screen.level(level or graphics.levels["h"])
   screen.move(x, y)
   screen.text(string)
-  graphics.reset_font()
+  self:reset_font()
 end
 
 function graphics:text_right(x, y, string, level)
@@ -80,15 +138,25 @@ function graphics:text_left(x, y, string, level)
   self:text(x, y, string, level)
 end
 
-function graphics:a(x, y)
-  self:kasagi(x, y)
-  self:right_wall(x, y)
-  self:roof(x, y)
-  self:second_floor(x,y)
-  self:floor(x, y)
-  self:mls(x, y+11, x, y+19)
-  self:mls(x+1, y+11, x+1, y+19)
+function graphics:icon(x, y, string, invert)
+  if invert == 0 then
+    self:rect(x, y, 18, 18, graphics.levels["o"])
+    screen.level(graphics.levels["h"])
+  else
+    self:rect(x, y, 18, 18, graphics.levels["o"])
+    self:rect(x+1, y+1, 16, 16, graphics.levels["h"])
+    screen.level(graphics.levels["o"])
+  end
+  screen.move(x+2, y+15)
+  screen.font_size(16)
+  screen.text(string)
+  self:reset_font()
 end
+
+function graphics:seed_selected(x, y)
+  self:rect(x, y, 18, 18, 0)
+end
+
 
 function graphics:left_wall(x, y)
   self:mls(x, y-1, x, y+25, 0)
@@ -184,7 +252,7 @@ end
 function graphics:panel_static()
   local pixel_density = 15
   local line_density = 10
-  if (params:get("Static") == 1) then 
+  if (params:get("static_animation_on") == 1) then 
     for x = 54, 128 do
       for y = 12, 64 do
         if (math.random(0, 100) <= line_density) then
@@ -203,7 +271,7 @@ end
 function graphics:top_menu_static()
   local pixel_density = 15
   local line_density = 10
-  if (params:get("Static") == 1) then 
+  if (params:get("static_animation_on") == 1) then
     for x = 1, 128 do
       for y = 1, 6 do
         if (math.random(0, 100) <= line_density) then

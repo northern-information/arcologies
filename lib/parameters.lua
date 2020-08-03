@@ -2,56 +2,45 @@ local parameters = {}
 
 params:add{
   type = "number",
-  id = "Status",
+  id = "playback",
   min = 0,
   max = 1,
   default = 0
 }
+params:hide("playback")
 
 params:add{
   type = "number",
-  id = "BPM",
+  id = "bpm",
   min = 20,
   max = 240,
   default = 120,
   action = function(x) parameters.bpm_listener(x) end
 }
+params:hide("bpm")
 
 params:add{
   type = "number",
-  id = "Static",
+  id = "static_animation_on",
   min = 0,
   max = 1,
   default = 1
 }
+params:hide("static_animation_on")
 
-params:add{
-  type = "number",
-  id = "TempStructure",
-  min = 1,
-  max = 3,
-  default = 1
-}
+-- temp until cells are up and running
+params:add{ type = "number", id = "TempStructure", min = 1, max = 3, default = 1 }
+params:hide("TempStructure")
+params:add{ type = "number", id = "TempMetabolism", min = 1, max = 16, default = 4 }
+params:hide("TempMetabolism")
+params:add{ type = "number", id = "TempSound", min = 1, max = 144, default = 73 }
+params:hide("TempSound")
 
-params:add{
-  type = "number",
-  id = "TempMetabolism",
-  min = 1,
-  max = 16,
-  default = 4
-}
-
-params:add{
-  type = "number",
-  id = "TempSound",
-  min = 1,
-  max = 144,
-  default = 73
-}
 
 function parameters.init()
+  -- params:read(norns.state.data .. "arcologies.pset")
   params:bang()
-  params:set("BPM", math.random(20, 240))
+  params:set("bpm", math.random(20, 240))
 end
 
 function parameters.bpm_listener(x)
@@ -59,10 +48,10 @@ function parameters.bpm_listener(x)
 end
 
 function parameters.toggle_status()
-  if params:get("Status") == 0 then
-    params:set("Status", 1)
+  if params:get("playback") == 0 then
+    params:set("playback", 1)
   else
-   params:set("Status", 0)
+   params:set("playback", 0)
   end
 end
 

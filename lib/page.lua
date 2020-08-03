@@ -15,6 +15,12 @@ function page.init()
   page.rows_start = 20
 end
 
+
+
+
+
+
+
 -- this is probably a really dumb way to do this?
 function page:change_selected_item_value(d)
 
@@ -24,15 +30,15 @@ function page:change_selected_item_value(d)
   -- home
   if p == 1 then
     if s == 1 then
-      params:set("Status", util.clamp(d, 0, 1))
+      params:set("playback", util.clamp(d, 0, 1))
     elseif s == 2 then
-      params:set("BPM", util.clamp(params:get("BPM") + d, 20, 240))
+      params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
     elseif s == 3 then
-      print('not yet implemented')
+      print('seed')
     elseif s == 4 then
-      print('not yet implemented')
+      print('raze')
     elseif s == 5 then
-      params:set("Static", util.clamp(d, 0, 1))
+      params:set("static_animation_on", util.clamp(d, 0, 1))
     end
 
   -- structures
@@ -53,10 +59,17 @@ function page:change_selected_item_value(d)
   end
 end
 
-function page:render(i, s, f, l)
+
+
+
+
+
+
+function page:render(i, s, f, l, c)
   self.selected_item = s
   self.ui_frame = f
   self.music_location = l
+  self.selected_cell = c
   if i == 1 then
     self:one()
   elseif i == 2 then
@@ -66,37 +79,54 @@ function page:render(i, s, f, l)
   end
 end
 
+
+
+
+
+
+
+
+
+
+
 -- home
 function page:one()
   -- menu
   local y = ((self.selected_item - 1) * 8) + 11
-  self.ui.graphics:rect(0, y, 51, 7, 2)
-  menu_status = params:get("Status") == 0 and "READY" or "PLAYING"
-  static_status = params:get("Static") == 0 and "CLEAN" or "STATIC"
-  self.ui.graphics:text(self.left_edge, 17, menu_status, 15)  
-  self.ui.graphics:text(self.left_edge, 25, "BPM", 15)
-  self.ui.graphics:text(self.left_edge, 33, "SEED", 15)
-  self.ui.graphics:text(self.left_edge, 41, "RAZE", 15)
-  self.ui.graphics:text(self.left_edge, 49,  static_status, 15)
+  self.graphics:rect(0, y, 51, 7, 2)
+  menu_status = params:get("playback") == 0 and "READY" or "PLAYING"
+  static_status = params:get("static_animation_on") == 0 and "CLEAN" or "STATIC"
+  self.graphics:text(self.left_edge, 17, menu_status, 15)  
+  self.graphics:text(self.left_edge, 25, "BPM", 15)
+  self.graphics:text(self.left_edge, 33, "SEED", 15)
+  self.graphics:text(self.left_edge, 41, "RAZE", 15)
+  self.graphics:text(self.left_edge, 49,  static_status, 15)
 
   -- panel
-  self.ui.graphics:rect(54, 11, 84, 55)
-  self.ui.graphics:panel_static()
+  self.graphics:rect(54, 11, 84, 55)
+  self.graphics:panel_static() -- todo: throttle
 
 
   -- values
-  local hud_x = 64
-  local hud_y = 25
   local status
-  if params:get("Status") == 0 then
-    status = self.ui.ready_animation(math.fmod(self.music_location, 10))
+  local invert_seed = 0
+  local invert_raze = 0
+  if params:get("playback") == 0 then
+    status = self.graphics.ready_animation(math.fmod(self.music_location, 10))
   else
-    status = self.ui.playing_animation(math.fmod(self.music_location, 10))
-    self.ui.graphics:text(hud_x, hud_y, math.fmod(self.music_location, 4) + 1, 0)
+    status = self.graphics.playing_animation(math.fmod(self.music_location, 10))
+    status = math.fmod(self.music_location, 4) + 1 .. " " .. status
   end
   
-  self.ui.graphics:text(hud_x + 8, hud_y, status, 0)
-  self.ui.graphics:bpm(hud_x-1, hud_y+25, params:get("BPM"), 0)
+  self.graphics:text(54 + 2, 17, status, 0)
+  self.graphics:bpm(54 + 1, 40, params:get("bpm"), 0)
+
+  invert_seed = (self.selected_item == 3) and 1 or 0
+  self.graphics:icon(54 + 2, 44, "S", invert_seed)
+
+  invert_raze = (self.selected_item == 4) and 1 or 0
+  self.graphics:icon(54 + 2 + 16 + 4, 44, "R", invert_raze)
+
 end
 
 
@@ -111,12 +141,12 @@ end
 function page:two()
   -- menu
   local y = ((self.selected_item - 1) * 8) + 11
-  self.ui.graphics:rect(0, y, 51, 7, 2)
-  self.ui.graphics:text(self.left_edge, 17, "STRUCTURE", 15)  
+  self.graphics:rect(0, y, 51, 7, 2)
+  self.graphics:text(self.left_edge, 17, "STRUCTURE", 15)  
 
   -- panels
-  self.ui.graphics:rect(54, 11, 88, 55)
-  self.ui.graphics:panel_static()
+  self.graphics:rect(54, 11, 88, 55)
+  self.graphics:panel_static() -- todo: throttle
 
   -- structure & port values  
   local temp_structure = params:get("TempStructure")
@@ -124,58 +154,63 @@ function page:two()
   local structure_y = 26
   local adjust = 0
   if temp_structure == 1 then
-    self.ui.graphics:hive(structure_x, structure_y)
-    self.ui.graphics:text(54 + 2, 17, "HIVE", 0)
-    self.ui.graphics:text(self.left_edge, 25, "METABOLISM", self.ui.graphics.levels["h"])
+    self.graphics:hive(structure_x, structure_y)
+    self.graphics:text(54 + 2, 17, "HIVE", 0)
+    self.graphics:text(self.left_edge, 25, "METABOLISM", self.graphics.levels["h"])
     -- unused attributes by this structure
-    self.ui.graphics:text(self.left_edge, 33, "SOUND", self.ui.graphics.levels["l"])
-    self.ui.graphics:mls(0, 31, 51, 31, self.ui.graphics.levels["m"])
+    self.graphics:text(self.left_edge, 33, "SOUND", self.graphics.levels["l"])
+    self.graphics:mls(0, 31, 51, 31, self.graphics.levels["m"])
   elseif temp_structure == 2 then
-    self.ui.graphics:gate(structure_x, structure_y)
-    self.ui.graphics:text(54 + 2, 17, "GATE", 0)
+    self.graphics:gate(structure_x, structure_y)
+    self.graphics:text(54 + 2, 17, "GATE", 0)
     -- unused attributes by this structure
-    self.ui.graphics:text(self.left_edge, 25, "METABOLISM", self.ui.graphics.levels["l"])
-    self.ui.graphics:mls(0, 23, 51, 23, self.ui.graphics.levels["m"])
-    self.ui.graphics:text(self.left_edge, 33, "SOUND", self.ui.graphics.levels["l"])
-    self.ui.graphics:mls(0, 31, 51, 31, self.ui.graphics.levels["m"])
+    self.graphics:text(self.left_edge, 25, "METABOLISM", self.graphics.levels["l"])
+    self.graphics:mls(0, 23, 51, 23, self.graphics.levels["m"])
+    self.graphics:text(self.left_edge, 33, "SOUND", self.graphics.levels["l"])
+    self.graphics:mls(0, 31, 51, 31, self.graphics.levels["m"])
     adjust = -5
   elseif temp_structure == 3 then
-    self.ui.graphics:shrine(structure_x, structure_y)
-    self.ui.graphics:mls(0, 23, 51, 23, 2)
-    self.ui.graphics:text(54 + 2, 17, "SHRINE", 0)
-    self.ui.graphics:text(self.left_edge, 33, "SOUND", self.ui.graphics.levels["h"])
+    self.graphics:shrine(structure_x, structure_y)
+    self.graphics:mls(0, 23, 51, 23, 2)
+    self.graphics:text(54 + 2, 17, "SHRINE", 0)
+    self.graphics:text(self.left_edge, 33, "SOUND", self.graphics.levels["h"])
     -- unused attributes by this structure
-    self.ui.graphics:text(self.left_edge, 25, "METABOLISM", self.ui.graphics.levels["l"])
-    self.ui.graphics:mls(0, 23, 51, 23, self.ui.graphics.levels["m"])
+    self.graphics:text(self.left_edge, 25, "METABOLISM", self.graphics.levels["l"])
+    self.graphics:mls(0, 23, 51, 23, self.graphics.levels["m"])
   end
 
-  self.ui.graphics:north_port(structure_x, structure_y, adjust)
-  self.ui.graphics:east_port(structure_x, structure_y)
-  self.ui.graphics:south_port(structure_x, structure_y)
-  self.ui.graphics:west_port(structure_x, structure_y)
+  -- ports
+  self.graphics:north_port(structure_x, structure_y, adjust)
+  self.graphics:east_port(structure_x, structure_y)
+  self.graphics:south_port(structure_x, structure_y)
+  self.graphics:west_port(structure_x, structure_y)
 
   -- remaining values
-  self.ui.graphics:text(54 + 2, 25, params:get("TempMetabolism"), 0)
-  self.ui.graphics:text(54 + 2, 33, page.dictionary.sounds[params:get("TempSound")], 0)
-  self.ui.graphics:text(54 + 2, 55, "NESW", 0)
-  local id
-  if self.cell.is_selected() then
-    id = "X" .. self.cell.selected[1] .. "Y" .. self.cell.selected[2] 
-  else
-    id = "NONE"
+  self.graphics:text(54 + 2, 25, params:get("TempMetabolism"), 0)
+  self.graphics:text(54 + 2, 33, page.dictionary.sounds[params:get("TempSound")], 0)
+  self.graphics:text(54 + 2, 55, "NESW", 0)
+  local id = "NONE"
+  if #self.selected_cell == 2 then
+    id = "X" .. self.selected_cell[1] .. "Y" .. self.selected_cell[2] 
   end
-  self.ui.graphics:text(54 + 2, 63, id, 0)
-
-
+  self.graphics:text(54 + 2, 63, id, 0)
 end
+
+
+
+
 
 
 
 
 function page:three()
-  self.ui.graphics:circle(64, 32, 16, 15)
-  self.ui.graphics:circle(100, 24, 8, 15)
+  self.graphics:circle(64, 32, 16, 15)
+  self.graphics:circle(100, 24, 8, 15)
 end
+
+
+
+
 
 
 
