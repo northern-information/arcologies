@@ -1,7 +1,8 @@
 core = {}
 
--- includes
+-- includes & requires
 --------------------------------------------------------------------------------
+tu = require("tabutil")
 g = include("arcologies/lib/g")
 parameters = include("arcologies/lib/parameters")
 graphics = include("arcologies/lib/graphics")
@@ -42,13 +43,13 @@ function core.init()
   core.music_counter:start()
 
   -- grid counter
-  core.grid_counter = metro.init()
-  core.grid_counter.time = 0.02
-  core.grid_count = -1
-  core.grid_counter.play = 1
-  core.grid_counter.frame = 0
-  core.grid_counter.event = core.gridmeister
-  core.grid_counter:start()
+  -- core.grid_counter = metro.init()
+  -- core.grid_counter.time = 0.02
+  -- core.grid_count = -1
+  -- core.grid_counter.play = 1
+  -- core.grid_counter.frame = 0
+  -- core.grid_counter.event = core.gridmeister
+  -- core.grid_counter:start()
 
   -- grid
   core.g = g
@@ -68,7 +69,7 @@ function core.init()
   core.page.dictionary = core.dictionary
   select_page(1)
 
-  core.redraw()
+  redraw()
 end
 
 function core.key(k,z)
@@ -91,7 +92,7 @@ function core.enc(n,d)
   else
     core.page:change_selected_item_value(d)
   end
-  core.redraw()
+  redraw()
 end
 
 function core.redraw()
@@ -111,16 +112,16 @@ function core.redraw()
   core.graphics.teardown()
 end
 
-function core.grid_redraw()
-  core.g:all(0)
-  led_blink_selected_cell()
-  core.g:refresh()
-end
+-- function core.grid_redraw()
+--   core.g:all(0)
+--   led_blink_selected_cell()
+--   core.g:refresh()
+-- end
 
 function core.conductor()
   core.music_counter.time = parameters.bpm_to_seconds
   core.music_counter.location = core.music_counter.location + 1 
-  core.redraw()
+  redraw()
 end
 
 function core.tick()
@@ -128,13 +129,13 @@ function core.tick()
   if core.ui_counter.microframe % 4 == 0 then
     core.ui_counter.frame = core.ui_counter.frame + 1
   end
-  core.redraw()
+  redraw()
 end
 
-function core.gridmeister()
-  core.grid_counter.frame = core.grid_counter.frame + 1
-  core.grid_redraw()
-end
+-- function core.gridmeister()
+--   core.grid_counter.frame = core.grid_counter.frame + 1
+--   core.grid_redraw()
+-- end
 
 function core.cleanup()
   -- core.g.cleanup()
@@ -168,20 +169,24 @@ function cell_is_selected()
 end
 
 function led_blink_selected_cell()
-  if not cell_is_selected() then return end
+  -- if not cell_is_selected() then return end
 
-  if core.grid_counter.frame % 15 == 0 then
-    core.selected_cell_on = not core.selected_cell_on
-  end
+  -- if core.grid_counter.frame % 15 == 0 then
+  --   core.selected_cell_on = not core.selected_cell_on
+  -- end
 
-  local level = (core.selected_cell_on == false) and core.graphics.levels["h"] or core.graphics.levels["l"]
-  core.g:led(core.selected_cell[1], core.selected_cell[2], level)
+  -- local level = (core.selected_cell_on == false) and core.graphics.levels["h"] or core.graphics.levels["l"]
+  -- core.g:led(core.selected_cell[1], core.selected_cell[2], level)
 end
 
 function deselect_cell()
   core.selected_cell = {}
   core.selected_cell_on = false
   core.g:refresh()
+end
+
+function get_microframe()
+  return core.ui_counter.microframe
 end
 
 -- return core

@@ -28,6 +28,16 @@ params:add{
 }
 params:hide("static_animation_on")
 
+params:add{
+  type = "number",
+  id = "enc_confirm_index",
+  min = 1,
+  max = 53,
+  default = 53,
+  action = function(x) print(x) end
+}
+params:hide("enc_confirm_index")
+
 -- temp until cells are up and running
 params:add{ type = "number", id = "TempStructure", min = 1, max = 3, default = 1 }
 params:hide("TempStructure")

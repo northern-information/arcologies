@@ -39,5 +39,5 @@ function Cell:close_port(p)
 end
 
 function Cell:check_port(p)
-  return tabutil.contains(self.ports, p)
+  return tu.contains(self.ports, p)
 end

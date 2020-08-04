@@ -66,6 +66,55 @@ function graphics.playing_animation(i)
   return f[i % 10]
 end
 
+function graphics.enc_confirm(i)
+  local f = {
+" ",
+">",
+">>",
+"9>>",
+" 9>>",
+"> 9>>",
+">> 9>",
+"8>> 9",
+" 8>> ",
+"> 8>>",
+">> 8>",
+"7>> 8",
+" 7>> ",
+"> 7>>",
+">> 7>",
+"6>> 7",
+" 6>> ",
+"> 6>>",
+">> 6>",
+"5>> 6",
+" 5>> ",
+"! 5>>",
+">! 5>",
+"4>! 5",
+" 4>! ",
+"! 4>!",
+">! 4>",
+"3>! 4",
+" 3>! ",
+"! 3>!",
+">! 3>",
+"2>! 3",
+" 2>! ",
+"! 2>!",
+">! 2>",
+"1>! 2",
+" 1>! ",
+"! 1>!",
+"!! 1>",
+"!!! 1",
+"!!!! ",
+"!!!!!",
+"DONE!"
+}
+  return f[i]
+end
+
 function graphics.setup()
   screen.clear()
   screen.aa(0)
@@ -108,6 +157,7 @@ function graphics:circle(x, y, r, level)
 end
 
 function graphics:text(x, y, string, level)
+  if string == nil then return end
   screen.level(level or graphics.levels["h"])  
   screen.move(x, y)
   screen.text(string)
@@ -250,41 +300,41 @@ function graphics:west_port(x, y)
 end
 
 function graphics:panel_static()
-  -- local pixel_density = 15
-  -- local line_density = 10
-  -- if params:get("static_animation_on") == 1 then 
-  --   for x = 54, 128 do
-  --     for y = 12, 64 do
-  --       if (math.random(0, 100) <= line_density) then
-  --         self:mls(54, y, 128, y, math.random(8,10))
-  --       end
-  --       if (math.random(0, 100) <= pixel_density) then
-  --         screen.level(math.random(13,15))
-  --         screen.pixel(x, y)
-  --         screen.fill()
-  --       end
-  --     end
-  --   end
-  -- end
+  local pixel_density = 15
+  local line_density = 10
+  if params:get("static_animation_on") == 1 then 
+    for x = 54, 128 do
+      for y = 12, 64 do
+        if (math.random(0, 100) <= line_density) then
+          self:mls(54, y, 128, y, math.random(8,10))
+        end
+        if (math.random(0, 100) <= pixel_density) then
+          screen.level(math.random(13,15))
+          screen.pixel(x, y)
+          screen.fill()
+        end
+      end
+    end
+  end
 end
 
 function graphics:top_menu_static()
-  -- local pixel_density = 15
-  -- local line_density = 10
-  -- if params:get("static_animation_on") == 1 then
-  --   for x = 1, 128 do
-  --     for y = 1, 6 do
-  --       if (math.random(0, 100) <= line_density) then
-  --         self:mls(1, y, 128, y, math.random(8,10))
-  --       end
-  --       if (math.random(0, 100) <= pixel_density) then
-  --         screen.level(math.random(13,15))
-  --         screen.pixel(x, y)
-  --         screen.fill()
-  --       end
-  --     end
-  --   end
-  -- end
+  local pixel_density = 15
+  local line_density = 10
+  if params:get("static_animation_on") == 1 then
+    for x = 1, 128 do
+      for y = 1, 6 do
+        if (math.random(0, 100) <= line_density) then
+          self:mls(1, y, 128, y, math.random(8,10))
+        end
+        if (math.random(0, 100) <= pixel_density) then
+          screen.level(math.random(13,15))
+          screen.pixel(x, y)
+          screen.fill()
+        end
+      end
+    end
+  end
 end
 
 

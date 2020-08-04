@@ -17,12 +17,12 @@ function init()
   core.init()
 end
 
-function key(n,z)
-  core.key(n,z)
+function key(n, z)
+  core.key(n, z)
 end
 
-function enc(n,d)
-  core.enc(n,d)
+function enc(n, d)
+  core.enc(n, d)
 end
 
 function redraw()

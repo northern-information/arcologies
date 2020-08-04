@@ -3,7 +3,7 @@ local page = {}
 function page.init()
   page.active_page = 1
   page_items = {}
-  page_items[1] = 5
+  page_items[1] = 4
   page_items[2] = 3
   page_items[3] = 0
   page.selected_item = 1
@@ -34,10 +34,8 @@ function page:change_selected_item_value(d)
     elseif s == 2 then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
     elseif s == 3 then
-      print('seed')
+      params:set("enc_confirm_index", util.clamp(params:get("enc_confirm_index") + d, 1, 53))
     elseif s == 4 then
-      print('raze')
-    elseif s == 5 then
       params:set("static_animation_on", util.clamp(d, 0, 1))
     end
 
@@ -95,12 +93,15 @@ function page:one()
   local y = ((self.selected_item - 1) * 8) + 11
   self.graphics:rect(0, y, 51, 7, 2)
   menu_status = params:get("playback") == 0 and "READY" or "PLAYING"
+  -- seed_status = "SEED" .. " " .. graphics.enc_confirm(params:get("enc_confirm_index"))
+  -- seed_status = "SEED"
+  raze_status = "RAZE"
   static_status = params:get("static_animation_on") == 0 and "CLEAN" or "STATIC"
   self.graphics:text(self.left_edge, 17, menu_status, 15)  
   self.graphics:text(self.left_edge, 25, "BPM", 15)
-  self.graphics:text(self.left_edge, 33, "SEED", 15)
-  self.graphics:text(self.left_edge, 41, "RAZE", 15)
-  self.graphics:text(self.left_edge, 49,  static_status, 15)
+  -- self.graphics:text(self.left_edge, 33, seed_status, 15)
+  self.graphics:text(self.left_edge, 33, raze_status, 15)
+  self.graphics:text(self.left_edge, 41,  static_status, 15)
 
   -- panel
   self.graphics:rect(54, 11, 84, 55)
@@ -121,11 +122,11 @@ function page:one()
   self.graphics:text(54 + 2, 17, status, 0)
   self.graphics:bpm(54 + 1, 40, params:get("bpm"), 0)
 
-  invert_seed = (self.selected_item == 3) and 1 or 0
-  self.graphics:icon(54 + 2, 44, "S", invert_seed)
+  invert_static = (self.selected_item == 4) and 1 or 0
+  self.graphics:icon(54 + 2 + 16 + 4, 44, "S", invert_static)
 
-  invert_raze = (self.selected_item == 4) and 1 or 0
-  self.graphics:icon(54 + 2 + 16 + 4, 44, "R", invert_raze)
+  invert_raze = (self.selected_item == 3) and 1 or 0
+  self.graphics:icon(54 + 2, 44, "R", invert_raze)
 
 end
 
