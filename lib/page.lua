@@ -22,35 +22,46 @@ end
 
 
 
-
-
-
--- this is probably a really dumb way to do this?
 function page:change_selected_item_value(d)
 
+  local cache
   local p = page.active_page  
   local s = page.selected_item
 
   -- home
   if p == 1 then
     if s == 1 then
+      cache = params:get("playback")
       params:set("playback", util.clamp(d, 0, 1))
+      cache_check(cache, params:get("playback"))
     elseif s == 2 then
+      cache = params:get("bpm")
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
+      cache_check(cache, params:get("bpm"))
     elseif s == 3 then
+      cache = params:get("enc_confirm_index")
       params:set("enc_confirm_index", util.clamp(params:get("enc_confirm_index") + d, 1, 53))
+      cache_check(cache, params:get("enc_confirm_index"))
     elseif s == 4 then
+      cache = params:get("static_animation_on")
       params:set("static_animation_on", util.clamp(d, 0, 1))
+      cache_check(cache, params:get("static_animation_on"))
     end
 
   -- structures
   elseif p == 2 then
     if s == 1 then
-      params:set("TempStructure", util.clamp(params:get("TempStructure") + d, 1, 3))
+      cache = params:get("page_structure")
+      params:set("page_structure", util.clamp(params:get("page_structure") + d, 1, 3))
+      cache_check(cache, params:get("page_structure"))
     elseif s == 2 then
-      params:set("TempMetabolism", util.clamp(params:get("TempMetabolism") + d, 1, 16))
+      cache = params:get("page_metabolism")
+      params:set("page_metabolism", util.clamp(params:get("page_metabolism") + d, 1, 16))
+      cache_check(cache, params:get("page_structure"))
     elseif s == 3 then
-      params:set("TempSound", util.clamp(params:get("TempSound") + d, 1, 144))
+      cache = params:get("page_sound")
+      params:set("page_sound", util.clamp(params:get("page_ound") + d, 1, 144))
+      cache_check(cache, params:get("page_structure"))
     else
       print('not yet implemented')
     end
@@ -59,6 +70,8 @@ function page:change_selected_item_value(d)
   elseif p == 3 then
     print('not yet implemented')
   end
+
+
 end
 
 
@@ -68,6 +81,8 @@ end
 
 
 function page:render(core)
+  local cache_active_page = self.active_page
+  local cache_selected_item = self.selected_item
   self.active_page = core.page.active_page
   self.selected_item = core.page.selected_item
   self.ui_frame = core.counters.ui.frame
@@ -82,6 +97,8 @@ function page:render(core)
   elseif self.active_page == 3 then
     self:three()
   end
+  cache_check(cache_active_page, self.active_page)
+  cache_check(cache_selected_item, self.selected_item)
 end
 
 
@@ -101,8 +118,6 @@ function page:one()
   self.graphics:text(self.left_edge, 26, "BPM")
   self.graphics:text(self.left_edge, 34, "RAZE " .. self.graphics:enc_confirm_animation(self.enc_confirm_index))
   self.graphics:text(self.left_edge, 42,  params:get("static_animation_on") == 0 and "CLEAN" or "STATIC")
-  self.graphics:panel()
-  self.graphics:panel_static()
   self.graphics:text(56, 18, 
     (params:get("playback") == 0) and 
       self.graphics:ready_animation(self.music_location_fmod) or 
@@ -124,8 +139,6 @@ end
 -- structures
 function page:two()
   self.graphics:menu_highlight(self.selected_item)
-  self.graphics:panel()
-  self.graphics:panel_static()
   self.graphics:text(56, 25, params:get("page_metabolism"), 0)
   self.graphics:text(56, 33, page.dictionary.sounds[params:get("page_sound")], 0)
   self:cell_id()

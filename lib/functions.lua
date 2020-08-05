@@ -1,3 +1,21 @@
+function dirty_grid(bool)
+  if bool == nil then return grid_dirty end
+  grid_dirty = bool
+  return grid_dirty
+end
+
+function dirty_screen(bool)
+  if bool == nil then return screen_dirty end
+  screen_dirty = bool
+  return screen_dirty
+end
+
+function cache_check(cache, check)
+  if cache ~= check then
+    dirty_screen(true)
+  end
+end
+
 function select_page(x)
   core.page.active_page = x
   core.page.items = page_items[page.active_page]
@@ -15,30 +33,20 @@ function select_cell(x, y)
   if not cell_exists then
     create_cell(x, y)
   end
-  core.g:refresh()
+  dirty_grid(true)
 end
 
 function cell_is_selected()
   return (#core.selected_cell == 2) and true or false
 end
 
-function led_blink_selected_cell()
-  -- if not cell_is_selected() then return end
-
-  -- if core.grid_counter.frame % 15 == 0 then
-  --   core.selected_cell_on = not core.selected_cell_on
-  -- end
-
-  -- local level = (core.selected_cell_on == false) and core.graphics.levels["h"] or core.graphics.levels["l"]
-  -- core.g:led(core.selected_cell[1], core.selected_cell[2], level)
-end
-
 function deselect_cell()
   core.selected_cell = {}
   core.selected_cell_on = false
-  core.g:refresh()
+  dirty_grid(true)
 end
 
-function get_microframe()
-  return core.ui_counter.microframe
+function microframe()
+  return core.counters.ui.microframe
 end
+

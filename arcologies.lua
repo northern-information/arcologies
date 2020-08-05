@@ -12,6 +12,8 @@
 -- v0.0.1
 
 core = {}
+grid_dirty = true
+screen_dirty = true
 
 include("arcologies/lib/Cell")
 include("arcologies/lib/Field")
@@ -26,8 +28,9 @@ tu = require("tabutil")
 
 function init()
   audio:pitch_off()
-  core.g = g  
-  core.Field = Field:new()
+  core.Field = Field:new()  
+  core.g = g
+  core.g.init()
   core.parameters = parameters
   core.parameters.init()
   core.graphics = graphics
@@ -49,19 +52,24 @@ function init()
 end
 
 function redraw()
+  if not dirty_screen() then return end
   core.graphics:setup()
   core.graphics:top_menu()
   core.graphics:top_menu_static()
   core.graphics:top_menu_tabs()
+  core.graphics:panel()
+  core.graphics:panel_static()
   core.graphics:select_tab(core.page.active_page)
   core.graphics:top_message(core.pages[core.page.active_page])
   core.page:render(core)
   core.graphics:teardown()
+  dirty_screen(false)
 end
 
 function key(k, z)
   if k == 2 and z == 1 then
     core.parameters.toggle_status()
+    dirty_screen(true)
   end
   if k == 3 and z == 1 then
     print('k3')
@@ -83,6 +91,6 @@ function enc(n, d)
 end
 
 function cleanup()
-    -- core.g.cleanup()
-  poll:clear_all() 
+  -- core.g.all(0)
+  poll:clear_all()
 end
