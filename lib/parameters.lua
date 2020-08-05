@@ -38,14 +38,12 @@ params:add{
 }
 params:hide("enc_confirm_index")
 
--- temp until cells are up and running
-params:add{ type = "number", id = "TempStructure", min = 1, max = 3, default = 1 }
-params:hide("TempStructure")
-params:add{ type = "number", id = "TempMetabolism", min = 1, max = 16, default = 4 }
-params:hide("TempMetabolism")
-params:add{ type = "number", id = "TempSound", min = 1, max = 144, default = 73 }
-params:hide("TempSound")
-
+params:add{ type = "number", id = "page_structure", min = 1, max = 3, default = 1 }
+params:hide("page_structure")
+params:add{ type = "number", id = "page_metabolism", min = 1, max = 16, default = 4 }
+params:hide("page_metabolism")
+params:add{ type = "number", id = "page_sound", min = 1, max = 144, default = 73 }
+params:hide("page_sound")
 
 function parameters.init()
   -- params:read(norns.state.data .. "arcologies.pset")

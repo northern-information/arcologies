@@ -5,7 +5,7 @@ function select_page(x)
 end
 
 function create_cell(x, y)
-  c = Cell:new(x, y, core.music_counter.location)
+  c = Cell:new(x, y, core.counters.music.location)
   core.Field:add_cell(c)
 end
 

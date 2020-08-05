@@ -10,10 +10,13 @@ function page.init()
   page.items = page_items[page.active_page]
   page.ui_frame = 1
   page.music_location = 1
+  page.music_location_fmod = 1
   page.enc_confirm_index = 1
   page.left_edge = 2
   page.right_edge = 126
   page.rows_start = 20
+  page.structure_x = 94
+  page.structure_y = 26
 end
 
 
@@ -69,6 +72,7 @@ function page:render(core)
   self.selected_item = core.page.selected_item
   self.ui_frame = core.counters.ui.frame
   self.music_location = core.counters.music.location
+  self.music_location_fmod = math.fmod(core.counters.music.location, 10) + 1
   self.enc_confirm_index = core.parameters.enc_confirm_index
   self.selected_cell = core.selected_cell
   if self.active_page == 1 then
@@ -90,44 +94,23 @@ end
 
 
 
--- home
+-- arcologies
 function page:one()
-  -- menu
-  local y = ((self.selected_item - 1) * 8) + 11
-  self.graphics:rect(0, y, 51, 7, 2)
-  menu_status = params:get("playback") == 0 and "READY" or "PLAYING"
-  raze_status = "RAZE " .. self.graphics:enc_confirm_animation(self.enc_confirm_index)
-  static_status = params:get("static_animation_on") == 0 and "CLEAN" or "STATIC"
-  self.graphics:text(self.left_edge, 17, menu_status, 15)  
-  self.graphics:text(self.left_edge, 25, "BPM", 15)
-  self.graphics:text(self.left_edge, 33, raze_status, 15)
-  self.graphics:text(self.left_edge, 41,  static_status, 15)
-
-  -- panel
-  self.graphics:rect(54, 11, 84, 55)
+  self.graphics:menu_highlight(self.selected_item)
+  self.graphics:text(self.left_edge, 18, params:get("playback") == 0 and "READY" or "PLAYING")  
+  self.graphics:text(self.left_edge, 26, "BPM")
+  self.graphics:text(self.left_edge, 34, "RAZE " .. self.graphics:enc_confirm_animation(self.enc_confirm_index))
+  self.graphics:text(self.left_edge, 42,  params:get("static_animation_on") == 0 and "CLEAN" or "STATIC")
+  self.graphics:panel()
   self.graphics:panel_static()
-
-  -- values
-  local status = ""
-  local invert_seed = 0
-  local invert_raze = 0
-  if params:get("playback") == 0 then
-    status = self.graphics:ready_animation(math.fmod(self.music_location, 10) + 1)
-  else
-    status = math.fmod(self.music_location, 4) + 1
-            .. " " 
-            .. self.graphics:playing_animation(math.fmod(self.music_location, 10) + 1)
-  end
-  
-  self.graphics:text(54 + 2, 17, status, 0)
-  self.graphics:bpm(54 + 1, 40, params:get("bpm"), 0)
-
-  invert_static = (self.selected_item == 4) and 1 or 0
-  self.graphics:icon(54 + 2 + 16 + 4, 44, "S", invert_static)
-
-  invert_raze = (self.selected_item == 3) and 1 or 0
-  self.graphics:icon(54 + 2, 44, "R", invert_raze)
-
+  self.graphics:text(56, 18, 
+    (params:get("playback") == 0) and 
+      self.graphics:ready_animation(self.music_location_fmod) or 
+      math.fmod(self.music_location, 4) + 1 .. " " .. self.graphics:playing_animation(self.music_location_fmod)
+  , 0)
+  self.graphics:bpm(55, 40, params:get("bpm"), 0)
+  self.graphics:icon(76, 44, "S", (self.selected_item == 4) and 1 or 0)
+  self.graphics:icon(56, 44, "R", (self.selected_item == 3) and 1 or 0)
 end
 
 
@@ -138,63 +121,36 @@ end
 
 
 
--- cell
+-- structures
 function page:two()
-  -- menu
-  local y = ((self.selected_item - 1) * 8) + 11
-  self.graphics:rect(0, y, 51, 7, 2)
-  self.graphics:text(self.left_edge, 17, "STRUCTURE", 15)  
-
-  -- panels
-  self.graphics:rect(54, 11, 88, 55)
+  self.graphics:menu_highlight(self.selected_item)
+  self.graphics:panel()
   self.graphics:panel_static()
-
-  -- structure & port values  
-  local temp_structure = params:get("TempStructure")
-  local structure_x = 94
-  local structure_y = 26
-  local adjust = 0
-  if temp_structure == 1 then
-    self.graphics:hive(structure_x, structure_y)
-    self.graphics:text(54 + 2, 17, "HIVE", 0)
-    self.graphics:text(self.left_edge, 25, "METABOLISM", self.graphics.levels["h"])
-    -- unused attributes by this structure
-    self.graphics:text(self.left_edge, 33, "SOUND", self.graphics.levels["l"])
-    self.graphics:mls(0, 31, 51, 31, self.graphics.levels["m"])
-  elseif temp_structure == 2 then
-    self.graphics:gate(structure_x, structure_y)
-    self.graphics:text(54 + 2, 17, "GATE", 0)
-    -- unused attributes by this structure
-    self.graphics:text(self.left_edge, 25, "METABOLISM", self.graphics.levels["l"])
-    self.graphics:mls(0, 23, 51, 23, self.graphics.levels["m"])
-    self.graphics:text(self.left_edge, 33, "SOUND", self.graphics.levels["l"])
-    self.graphics:mls(0, 31, 51, 31, self.graphics.levels["m"])
-    adjust = -5
-  elseif temp_structure == 3 then
-    self.graphics:shrine(structure_x, structure_y)
-    self.graphics:mls(0, 23, 51, 23, 2)
-    self.graphics:text(54 + 2, 17, "SHRINE", 0)
-    self.graphics:text(self.left_edge, 33, "SOUND", self.graphics.levels["h"])
-    -- unused attributes by this structure
-    self.graphics:text(self.left_edge, 25, "METABOLISM", self.graphics.levels["l"])
-    self.graphics:mls(0, 23, 51, 23, self.graphics.levels["m"])
+  self.graphics:text(56, 25, params:get("page_metabolism"), 0)
+  self.graphics:text(56, 33, page.dictionary.sounds[params:get("page_sound")], 0)
+  self:cell_id()
+  if params:get("page_structure") == 1 then
+    self.graphics:hive(self.structure_x, self.structure_y)
+    self:draw_ports()
+    self:structure_type(self.dictionary.structures[1])
+    self:structure_enable()
+    self:metabolism_enable()
+    self:sound_disable()
+  elseif params:get("page_structure") == 2 then
+    self.graphics:gate(self.structure_x, self.structure_y)
+    self:structure_type(self.dictionary.structures[2])
+    self:structure_enable()
+    self:metabolism_disable()
+    self:sound_disable()
+    self:draw_ports(-5)
+  elseif params:get("page_structure") == 3 then
+    self.graphics:shrine(self.structure_x, self.structure_y)
+    self:draw_ports()    
+    self:structure_type(self.dictionary.structures[3])
+    self:structure_enable()
+    self:metabolism_disable()
+    self:sound_enable()
   end
-
-  -- ports
-  self.graphics:north_port(structure_x, structure_y, adjust)
-  self.graphics:east_port(structure_x, structure_y)
-  self.graphics:south_port(structure_x, structure_y)
-  self.graphics:west_port(structure_x, structure_y)
-
-  -- remaining values
-  self.graphics:text(54 + 2, 25, params:get("TempMetabolism"), 0)
-  self.graphics:text(54 + 2, 33, page.dictionary.sounds[params:get("TempSound")], 0)
-  self.graphics:text(54 + 2, 55, "NESW", 0)
-  local id = "NONE"
-  if #self.selected_cell == 2 then
-    id = "X" .. self.selected_cell[1] .. "Y" .. self.selected_cell[2] 
-  end
-  self.graphics:text(54 + 2, 63, id, 0)
 end
 
 
@@ -214,5 +170,49 @@ end
 
 
 
+
+
+
+function page:cell_id()
+  local id = "NONE"
+  if #self.selected_cell == 2 then
+    id = "X" .. self.selected_cell[1] .. "Y" .. self.selected_cell[2] 
+  end
+  self.graphics:text(56, 63, id, 0)
+end
+
+function page:draw_ports(adjust)
+  self.graphics:text(56, 55, "NESW", 0)
+  self.graphics:north_port(self.structure_x, self.structure_y, (adjust or 0))
+  self.graphics:east_port(self.structure_x, self.structure_y)
+  self.graphics:south_port(self.structure_x, self.structure_y)
+  self.graphics:west_port(self.structure_x, self.structure_y)
+end
+
+function page:structure_type(s)
+    self.graphics:text(56, 18, s, 0)
+end
+
+function page:structure_enable()
+  self.graphics:text(self.left_edge, 18, "STRUCTURE", 15)  
+end
+
+function page:metabolism_enable()
+    self.graphics:text(self.left_edge, 26, "METABOLISM", self.graphics.levels["h"])
+end
+
+function page:metabolism_disable()
+  self.graphics:text(self.left_edge, 26, "METABOLISM", self.graphics.levels["l"])
+  self.graphics:mls(0, 24, 51, 23, self.graphics.levels["m"])
+end
+
+function page:sound_enable()
+  self.graphics:text(self.left_edge, 34, "SOUND", self.graphics.levels["h"])
+end
+
+function page:sound_disable()
+  self.graphics:text(self.left_edge, 34, "SOUND", self.graphics.levels["l"])
+  self.graphics:mls(0, 32, 51, 31, self.graphics.levels["m"])
+end
 
 return page

@@ -25,6 +25,10 @@ function graphics:top_menu_tabs()
   end
 end
 
+function graphics:panel()
+  self:rect(54, 11, 88, 55)
+end
+
 function graphics:select_tab(i)
   self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height + 1, self.levels["o"])
   self:mlrs(self:get_tab_x(i) + 2, 3, 1, 6)
@@ -107,6 +111,10 @@ function graphics:text_left(x, y, string, level)
   self:text(x, y, string, level)
 end
 
+function graphics:menu_highlight(i)
+  self:rect(0, ((i - 1) * 8) + 12, 51, 7, 2)
+end
+
 function graphics:icon(x, y, string, invert)
   if invert == 0 then
     self:rect(x, y, 18, 18, graphics.levels["o"])
@@ -125,7 +133,6 @@ end
 function graphics:seed_selected(x, y)
   self:rect(x, y, 18, 18, 0)
 end
-
 
 function graphics:left_wall(x, y)
   self:mls(x, y-1, x, y+25, 0)
