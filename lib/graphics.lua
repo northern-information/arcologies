@@ -8,8 +8,6 @@ function graphics.init()
   graphics.levels["h"] = 15
   graphics.tab_width = 5
   graphics.tab_height = 5
-  graphics.tab_indicator_width = 1
-  graphics.tab_indicator_height = 6
   graphics.tab_padding = 1
 end
 
@@ -36,86 +34,7 @@ function graphics:top_message(string)
   self:text_right(127, 6, string, 0)
 end
 
-function graphics.ready_animation(i)
-  local f = {}
-  f[0] = "....|...."
-  f[1] = "...|'|..."
-  f[2] = "..|...|.."
-  f[3] = ".|.....|."
-  f[4] = "|.......|"
-  f[5] = "'|.....|'"
-  f[6] = "..|...|.."
-  f[7] = "...|.|..."
-  f[8] = "....|...."
-  f[9] = "....'...."
-  return f[i % 10]
-end
-
-function graphics.playing_animation(i)
-  local f = {}
-  f[0] = ">........"
-  f[1] = "+>......."
-  f[2] = ".->......"
-  f[3] = "..+>....."
-  f[4] = "...->...."
-  f[5] = "....+>..."
-  f[6] = ".....->.."
-  f[7] = "......+>."
-  f[8] = ".......->"
-  f[9] = "........+"
-  return f[i % 10]
-end
-
-function graphics.enc_confirm(i)
-  local f = {
-" ",
-">",
-">>",
-"9>>",
-" 9>>",
-"> 9>>",
-">> 9>",
-"8>> 9",
-" 8>> ",
-"> 8>>",
-">> 8>",
-"7>> 8",
-" 7>> ",
-"> 7>>",
-">> 7>",
-"6>> 7",
-" 6>> ",
-"> 6>>",
-">> 6>",
-"5>> 6",
-" 5>> ",
-"! 5>>",
-">! 5>",
-"4>! 5",
-" 4>! ",
-"! 4>!",
-">! 4>",
-"3>! 4",
-" 3>! ",
-"! 3>!",
-">! 3>",
-"2>! 3",
-" 2>! ",
-"! 2>!",
-">! 2>",
-"1>! 2",
-" 1>! ",
-"! 1>!",
-"!! 1>",
-"!!! 1",
-"!!!! ",
-"!!!!!",
-"DONE!"
-}
-  return f[i]
-end
-
-function graphics.setup()
+function graphics:setup()
   screen.clear()
   screen.aa(0)
   graphics:reset_font()
@@ -126,7 +45,7 @@ function graphics:reset_font()
   screen.font_size(8)
 end
 
-function graphics.teardown()
+function graphics:teardown()
   screen.update()
 end
 
@@ -337,5 +256,85 @@ function graphics:top_menu_static()
   end
 end
 
+function graphics:ready_animation(i)
+  local f = {
+    "....|....",
+    "...|'|...",
+    "..|...|..",
+    ".|.....|.",
+    "|.......|",
+    "'|.....|'",
+    "..|...|..",
+    "...|.|...",
+    "....|....",
+    "....'...."
+  }
+  return f[i]
+end
+
+function graphics:playing_animation(i)
+  local f = {
+    ">........",
+    "+>.......",
+    ".->......",
+    "..+>.....",
+    "...->....",
+    "....+>...",
+    ".....->..",
+    "......+>.",
+    ".......->",
+    "........+"
+  }
+  return f[i]
+end
+
+function graphics:enc_confirm_animation(i)
+  local f = {
+    " ",
+    ">",
+    ">>",
+    "9>>",
+    " 9>>",
+    "> 9>>",
+    ">> 9>",
+    "8>> 9",
+    " 8>> ",
+    "> 8>>",
+    ">> 8>",
+    "7>> 8",
+    " 7>> ",
+    "> 7>>",
+    ">> 7>",
+    "6>> 7",
+    " 6>> ",
+    "> 6>>",
+    ">> 6>",
+    "5>> 6",
+    " 5>> ",
+    "> 5>>",
+    "4> 5>",
+    "!4> 5",
+    " !4> ",
+    "> !4>",
+    "3> !4",
+    "!3> !",
+    "> !3>",
+    "2> !3",
+    "!2> !",
+    " !2> ",
+    "> !2>",
+    "1> !2>",
+    "!1> !2",
+    " !1> !",
+    "  !1> ",
+    "! !1>",
+    "!! !1",
+    "!!! !",
+    "!!!! ",
+    "!!!!!",
+    "DONE!"
+  }
+  return f[i]
+end
 
 return graphics

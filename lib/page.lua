@@ -8,8 +8,9 @@ function page.init()
   page_items[3] = 0
   page.selected_item = 1
   page.items = page_items[page.active_page]
-  page.ui_frame = 0
-  page.music_location = 0
+  page.ui_frame = 1
+  page.music_location = 1
+  page.enc_confirm_index = 1
   page.left_edge = 2
   page.right_edge = 126
   page.rows_start = 20
@@ -63,16 +64,18 @@ end
 
 
 
-function page:render(i, s, f, l, c)
-  self.selected_item = s
-  self.ui_frame = f
-  self.music_location = l
-  self.selected_cell = c
-  if i == 1 then
+function page:render(core)
+  self.active_page = core.page.active_page
+  self.selected_item = core.page.selected_item
+  self.ui_frame = core.counters.ui.frame
+  self.music_location = core.counters.music.location
+  self.enc_confirm_index = core.parameters.enc_confirm_index
+  self.selected_cell = core.selected_cell
+  if self.active_page == 1 then
     self:one()
-  elseif i == 2 then
+  elseif self.active_page == 2 then
     self:two()
-  elseif i == 3 then
+  elseif self.active_page == 3 then
     self:three()
   end
 end
@@ -93,30 +96,27 @@ function page:one()
   local y = ((self.selected_item - 1) * 8) + 11
   self.graphics:rect(0, y, 51, 7, 2)
   menu_status = params:get("playback") == 0 and "READY" or "PLAYING"
-  -- seed_status = "SEED" .. " " .. graphics.enc_confirm(params:get("enc_confirm_index"))
-  -- seed_status = "SEED"
-  raze_status = "RAZE"
+  raze_status = "RAZE " .. self.graphics:enc_confirm_animation(self.enc_confirm_index)
   static_status = params:get("static_animation_on") == 0 and "CLEAN" or "STATIC"
   self.graphics:text(self.left_edge, 17, menu_status, 15)  
   self.graphics:text(self.left_edge, 25, "BPM", 15)
-  -- self.graphics:text(self.left_edge, 33, seed_status, 15)
   self.graphics:text(self.left_edge, 33, raze_status, 15)
   self.graphics:text(self.left_edge, 41,  static_status, 15)
 
   -- panel
   self.graphics:rect(54, 11, 84, 55)
-  self.graphics:panel_static() -- todo: throttle
-
+  self.graphics:panel_static()
 
   -- values
-  local status
+  local status = ""
   local invert_seed = 0
   local invert_raze = 0
   if params:get("playback") == 0 then
-    status = self.graphics.ready_animation(math.fmod(self.music_location, 10))
+    status = self.graphics:ready_animation(math.fmod(self.music_location, 10) + 1)
   else
-    status = self.graphics.playing_animation(math.fmod(self.music_location, 10))
-    status = math.fmod(self.music_location, 4) + 1 .. " " .. status
+    status = math.fmod(self.music_location, 4) + 1
+            .. " " 
+            .. self.graphics:playing_animation(math.fmod(self.music_location, 10) + 1)
   end
   
   self.graphics:text(54 + 2, 17, status, 0)
@@ -147,7 +147,7 @@ function page:two()
 
   -- panels
   self.graphics:rect(54, 11, 88, 55)
-  self.graphics:panel_static() -- todo: throttle
+  self.graphics:panel_static()
 
   -- structure & port values  
   local temp_structure = params:get("TempStructure")

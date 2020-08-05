@@ -32,9 +32,9 @@ params:add{
   type = "number",
   id = "enc_confirm_index",
   min = 1,
-  max = 53,
-  default = 53,
-  action = function(x) print(x) end
+  max = 43,
+  default = 1,
+  action = function(x) parameters.enc_confirm_index_listener(x) end
 }
 params:hide("enc_confirm_index")
 
@@ -55,6 +55,10 @@ end
 
 function parameters.bpm_listener(x)
   parameters.bpm_to_seconds = 60 / x
+end
+
+function parameters.enc_confirm_index_listener(x)
+  parameters.enc_confirm_index = x
 end
 
 function parameters.toggle_status()
