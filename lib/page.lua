@@ -11,12 +11,6 @@ function page.init()
   page.ui_frame = 1
   page.music_location = 1
   page.music_location_fmod = 1
-  page.enc_confirm_index = 1
-  page.left_edge = 2
-  page.right_edge = 126
-  page.rows_start = 20
-  page.structure_x = 94
-  page.structure_y = 26
 end
 
 
@@ -43,9 +37,10 @@ function page:change_selected_item_value(d)
       params:set("enc_confirm_index", util.clamp(params:get("enc_confirm_index") + d, 1, 53))
       cache_check(cache, params:get("enc_confirm_index"))
     elseif s == 4 then
-      cache = params:get("static_animation_on")
-      params:set("static_animation_on", util.clamp(d, 0, 1))
-      cache_check(cache, params:get("static_animation_on"))
+      cache = params:get("static_animation")
+      params:set("static_animation", util.clamp(d, 0, 1))
+      cache_check(cache, params:get("static_animation"))
+      if cache ~= params:get("static_animation") then clear_static() end
     end
 
   -- structures
@@ -60,7 +55,7 @@ function page:change_selected_item_value(d)
       cache_check(cache, params:get("page_structure"))
     elseif s == 3 then
       cache = params:get("page_sound")
-      params:set("page_sound", util.clamp(params:get("page_ound") + d, 1, 144))
+      params:set("page_sound", util.clamp(params:get("page_sound") + d, 1, 144))
       cache_check(cache, params:get("page_structure"))
     else
       print('not yet implemented')
@@ -88,8 +83,10 @@ function page:render(core)
   self.ui_frame = core.counters.ui.frame
   self.music_location = core.counters.music.location
   self.music_location_fmod = math.fmod(core.counters.music.location, 10) + 1
-  self.enc_confirm_index = core.parameters.enc_confirm_index
+  self.parameters = core.parameters
   self.selected_cell = core.selected_cell
+  self.graphics = core.graphics
+  self.dictionary = core.dictionary
   if self.active_page == 1 then
     self:one()
   elseif self.active_page == 2 then
@@ -114,18 +111,18 @@ end
 -- arcologies
 function page:one()
   self.graphics:menu_highlight(self.selected_item)
-  self.graphics:text(self.left_edge, 18, params:get("playback") == 0 and "READY" or "PLAYING")  
-  self.graphics:text(self.left_edge, 26, "BPM")
-  self.graphics:text(self.left_edge, 34, "RAZE " .. self.graphics:enc_confirm_animation(self.enc_confirm_index))
-  self.graphics:text(self.left_edge, 42,  params:get("static_animation_on") == 0 and "CLEAN" or "STATIC")
+  self.graphics:text(2, 18, params:get("playback") == 0 and "READY" or "PLAYING")  
+  self.graphics:text(2, 26, "BPM")
+  self.graphics:text(2, 34, "RAZE " .. self.graphics:enc_confirm_animation(self.parameters.enc_confirm_index))
+  self.graphics:text(2, 42,  params:get("static_animation") == 0 and "CLEAN" or "STATIC")
   self.graphics:text(56, 18, 
     (params:get("playback") == 0) and 
       self.graphics:ready_animation(self.music_location_fmod) or 
       math.fmod(self.music_location, 4) + 1 .. " " .. self.graphics:playing_animation(self.music_location_fmod)
   , 0)
   self.graphics:bpm(55, 40, params:get("bpm"), 0)
-  self.graphics:icon(76, 44, "S", (self.selected_item == 4) and 1 or 0)
   self.graphics:icon(56, 44, "R", (self.selected_item == 3) and 1 or 0)
+  self.graphics:icon(76, 44, self.parameters.static_animation_value, (self.selected_item == 4) and 1 or 0)
 end
 
 
@@ -141,28 +138,28 @@ function page:two()
   self.graphics:menu_highlight(self.selected_item)
   self.graphics:text(56, 25, params:get("page_metabolism"), 0)
   self.graphics:text(56, 33, page.dictionary.sounds[params:get("page_sound")], 0)
-  self:cell_id()
+  self.graphics:cell_id(self.selected_cell)
   if params:get("page_structure") == 1 then
-    self.graphics:hive(self.structure_x, self.structure_y)
-    self:draw_ports()
-    self:structure_type(self.dictionary.structures[1])
-    self:structure_enable()
-    self:metabolism_enable()
-    self:sound_disable()
+    self.graphics:hive()
+    self.graphics:draw_ports()
+    self.graphics:structure_type(self.dictionary.structures[1])
+    self.graphics:structure_enable()
+    self.graphics:metabolism_enable()
+    self.graphics:sound_disable()
   elseif params:get("page_structure") == 2 then
-    self.graphics:gate(self.structure_x, self.structure_y)
-    self:structure_type(self.dictionary.structures[2])
-    self:structure_enable()
-    self:metabolism_disable()
-    self:sound_disable()
-    self:draw_ports(-5)
+    self.graphics:gate()
+    self.graphics:structure_type(self.dictionary.structures[2])
+    self.graphics:structure_enable()
+    self.graphics:metabolism_disable()
+    self.graphics:sound_disable()
+    self.graphics:draw_ports(-5)
   elseif params:get("page_structure") == 3 then
-    self.graphics:shrine(self.structure_x, self.structure_y)
-    self:draw_ports()    
-    self:structure_type(self.dictionary.structures[3])
-    self:structure_enable()
-    self:metabolism_disable()
-    self:sound_enable()
+    self.graphics:shrine()
+    self.graphics:draw_ports()    
+    self.graphics:structure_type(self.dictionary.structures[3])
+    self.graphics:structure_enable()
+    self.graphics:metabolism_disable()
+    self.graphics:sound_enable()
   end
 end
 
@@ -170,62 +167,12 @@ end
 
 
 
-
-
-
+-- analysis
 function page:three()
-  self.graphics:circle(64, 32, 16, 15)
-  self.graphics:circle(100, 24, 8, 15)
+  self.graphics:circle(64, 32, 16, 0)
+  self.graphics:circle(100, 24, 8, 0)
 end
 
 
-
-
-
-
-
-
-
-function page:cell_id()
-  local id = "NONE"
-  if #self.selected_cell == 2 then
-    id = "X" .. self.selected_cell[1] .. "Y" .. self.selected_cell[2] 
-  end
-  self.graphics:text(56, 63, id, 0)
-end
-
-function page:draw_ports(adjust)
-  self.graphics:text(56, 55, "NESW", 0)
-  self.graphics:north_port(self.structure_x, self.structure_y, (adjust or 0))
-  self.graphics:east_port(self.structure_x, self.structure_y)
-  self.graphics:south_port(self.structure_x, self.structure_y)
-  self.graphics:west_port(self.structure_x, self.structure_y)
-end
-
-function page:structure_type(s)
-    self.graphics:text(56, 18, s, 0)
-end
-
-function page:structure_enable()
-  self.graphics:text(self.left_edge, 18, "STRUCTURE", 15)  
-end
-
-function page:metabolism_enable()
-    self.graphics:text(self.left_edge, 26, "METABOLISM", self.graphics.levels["h"])
-end
-
-function page:metabolism_disable()
-  self.graphics:text(self.left_edge, 26, "METABOLISM", self.graphics.levels["l"])
-  self.graphics:mls(0, 24, 51, 23, self.graphics.levels["m"])
-end
-
-function page:sound_enable()
-  self.graphics:text(self.left_edge, 34, "SOUND", self.graphics.levels["h"])
-end
-
-function page:sound_disable()
-  self.graphics:text(self.left_edge, 34, "SOUND", self.graphics.levels["l"])
-  self.graphics:mls(0, 32, 51, 31, self.graphics.levels["m"])
-end
 
 return page

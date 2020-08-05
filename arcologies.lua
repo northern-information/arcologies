@@ -28,7 +28,6 @@ tu = require("tabutil")
 
 function init()
   audio:pitch_off()
-  core.Field = Field:new()  
   core.g = g
   core.g.init()
   core.parameters = parameters
@@ -41,10 +40,7 @@ function init()
   core.counters.init()
   core.page = page
   core.page.init()
-  core.page.parameters = parameters
-  core.page.graphics = core.graphics
-  core.pages = core.dictionary.pages
-  core.page.dictionary = core.dictionary
+  core.Field = Field:new()  
   core.selected_cell = {}
   core.selected_cell_on = false
   select_page(1)
@@ -54,13 +50,9 @@ end
 function redraw()
   if not dirty_screen() then return end
   core.graphics:setup()
-  core.graphics:top_menu()
-  core.graphics:top_menu_static()
-  core.graphics:top_menu_tabs()
-  core.graphics:panel()
-  core.graphics:panel_static()
+  core.graphics:ui()
   core.graphics:select_tab(core.page.active_page)
-  core.graphics:top_message(core.pages[core.page.active_page])
+  core.graphics:top_message(core.dictionary.pages[core.page.active_page])
   core.page:render(core)
   core.graphics:teardown()
   dirty_screen(false)
@@ -78,7 +70,7 @@ end
 
 function enc(n, d)
   if n == 1 then
-    select_page(util.clamp(core.page.active_page + d, 1, #core.pages))
+    select_page(util.clamp(core.page.active_page + d, 1, #core.dictionary.pages))
     if core.page.active_page ~= 2 then
       deselect_cell()
     end
@@ -91,6 +83,6 @@ function enc(n, d)
 end
 
 function cleanup()
-  -- core.g.all(0)
+  core.g.all(0)
   poll:clear_all()
 end

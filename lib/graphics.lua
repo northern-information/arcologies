@@ -10,14 +10,28 @@ function graphics.init()
   graphics.tab_height = 5
   graphics.tab_padding = 1
   graphics.pixel_density = 15
-  graphics.line_density = 10
+  graphics.line_density = 5
+  graphics.rows_start = 20
+  graphics.structure_x = 94
+  graphics.structure_y = 26
+  graphics:reset_frames()
+end
+
+function graphics:reset_frames()
   graphics.top_menu_frame = {}
   graphics.top_menu_frame["lines"] = {}
   graphics.top_menu_frame["noise"] = {}
   graphics.panel_frame = {}
   graphics.panel_frame["lines"] = {}
   graphics.panel_frame["noise"] = {}
+end
 
+function graphics:ui()
+  self:top_menu()
+  self:top_menu_static()
+  self:top_menu_tabs()
+  self:panel()
+  self:panel_static()
 end
 
 function graphics:get_tab_x(i)
@@ -63,40 +77,40 @@ function graphics:teardown()
 end
 
 function graphics:mlrs(x1, y1, x2, y2, level)
-  screen.level(level or graphics.levels["h"])  
+  screen.level(level or self.levels["h"])  
   screen.move(x1, y1)
   screen.line_rel(x2, y2)
   screen.stroke()
 end
 
 function graphics:mls(x1, y1, x2, y2, level)
-  screen.level(level or graphics.levels["h"])  
+  screen.level(level or self.levels["h"])  
   screen.move(x1, y1)
   screen.line(x2, y2)
   screen.stroke()
 end
 
 function graphics:rect(x, y, w, h, level)
-  screen.level(level or graphics.levels["h"])  
+  screen.level(level or self.levels["h"])  
   screen.rect(x, y, w, h)
   screen.fill()
 end
 
 function graphics:circle(x, y, r, level)
-  screen.level(level or graphics.levels["h"])  
+  screen.level(level or self.levels["h"])  
   screen.circle(x, y, r)
   screen.fill()
 end
 
 function graphics:text(x, y, string, level)
   if string == nil then return end
-  screen.level(level or graphics.levels["h"])  
+  screen.level(level or self.levels["h"])  
   screen.move(x, y)
   screen.text(string)
 end
 
 function graphics:bpm(x, y, string, level)
-  screen.level(level or graphics.levels["h"])
+  screen.level(level or self.levels["h"])
   screen.move(x, y)
   screen.font_size(30)
   screen.text(string)
@@ -104,14 +118,14 @@ function graphics:bpm(x, y, string, level)
 end
 
 function graphics:status(x, y, string, level)
-  screen.level(level or graphics.levels["h"])
+  screen.level(level or self.levels["h"])
   screen.move(x, y)
   screen.text(string)
   self:reset_font()
 end
 
 function graphics:text_right(x, y, string, level)
-  screen.level(level or graphics.levels["h"])  
+  screen.level(level or self.levels["h"])  
   screen.move(x, y)
   screen.text_right(string)
 end
@@ -126,12 +140,12 @@ end
 
 function graphics:icon(x, y, string, invert)
   if invert == 0 then
-    self:rect(x, y, 18, 18, graphics.levels["o"])
-    screen.level(graphics.levels["h"])
+    self:rect(x, y, 18, 18, self.levels["o"])
+    screen.level(self.levels["h"])
   else
-    self:rect(x, y, 18, 18, graphics.levels["o"])
-    self:rect(x+1, y+1, 16, 16, graphics.levels["h"])
-    screen.level(graphics.levels["o"])
+    self:rect(x, y, 18, 18, self.levels["o"])
+    self:rect(x+1, y+1, 16, 16, self.levels["h"])
+    screen.level(self.levels["o"])
   end
   screen.move(x+2, y+15)
   screen.font_size(16)
@@ -141,6 +155,40 @@ end
 
 function graphics:seed_selected(x, y)
   self:rect(x, y, 18, 18, 0)
+end
+
+function graphics:cell_id(selected_cell)
+  local id = "NONE"
+  if #selected_cell == 2 then
+    id = "X" .. selected_cell[1] .. "Y" .. selected_cell[2] 
+  end
+  self:text(56, 63, id, 0)
+end
+
+function graphics:structure_type(s)
+    self:text(56, 18, s, 0)
+end
+
+function graphics:structure_enable()
+  self:text(2, 18, "STRUCTURE", 15)  
+end
+
+function graphics:metabolism_enable()
+    self:text(2, 26, "METABOLISM", self.levels["h"])
+end
+
+function graphics:metabolism_disable()
+  self:text(2, 26, "METABOLISM", self.levels["l"])
+  self:mls(0, 24, 51, 23, self.levels["m"])
+end
+
+function graphics:sound_enable()
+  self:text(2, 34, "SOUND", self.levels["h"])
+end
+
+function graphics:sound_disable()
+  self:text(2, 34, "SOUND", self.levels["l"])
+  self:mls(0, 32, 51, 31, self.levels["m"])
 end
 
 function graphics:left_wall(x, y)
@@ -184,20 +232,26 @@ function graphics:foundation(x, y)
   self:mls(x-5, y+25, x+25, y+25, 0)
 end
 
-function graphics:cell(x, y)
+function graphics:cell()
+  local x = self.structure_x
+  local y = self.structure_y
   self:left_wall(x, y)
   self:right_wall(x, y)
   self:roof(x, y)
   self:floor(x, y)
 end
 
-function graphics:hive(x, y)
+function graphics:hive()
+  local x = self.structure_x
+  local y = self.structure_y
   self:cell(x, y)
   self:third_floor(x, y)
   self:second_floor(x, y)
 end
 
-function graphics:gate(x, y)
+function graphics:gate()
+  local x = self.structure_x
+  local y = self.structure_y
   self:left_wall(x, y)
   self:right_wall(x, y)
   self:kasagi(x, y)
@@ -205,13 +259,25 @@ function graphics:gate(x, y)
   self:third_floor(x, y)
 end
 
-function graphics:shrine(x, y)
+function graphics:shrine()
+  local x = self.structure_x
+  local y = self.structure_y
   self:left_wall(x, y)
   self:right_wall(x, y)
   self:roof(x, y)
   self:third_floor(x, y)
   self:mls(x+10, y+11, x+10, y+19, 0)
   self:mls(x+11, y+11, x+11, y+19, 0)
+end
+
+function graphics:draw_ports(adjust)
+  local x = self.structure_x
+  local y = self.structure_y
+  self:text(56, 55, "NESW", 0)
+  self:north_port(x, y, (adjust or 0))
+  self:east_port(x, y)
+  self:south_port(x, y)
+  self:west_port(x, y)
 end
 
 function graphics:north_port(x, y, adjust)
@@ -235,19 +301,19 @@ function graphics:west_port(x, y)
 end
 
 function graphics:panel_static()
-  if params:get("static_animation_on") == 1 and core.counters.ui.microframe % 4 == 0 then
+  if params:get("static_animation") == 1 and core.counters.ui.microframe % 4 == 0 then
     self.panel_frame = {}
     self.panel_frame["lines"] = {}
     self.panel_frame["noise"] = {}
     for x = 54, 128 do
       for y = 12, 64 do
-        if (math.random(0, 100) <= self.line_density) then
+        if (math.random(0, 100) >= self.line_density) then
           local line = {}
           line["y"] = y          
           line["level"] = math.random(8, 10)
           table.insert(self.panel_frame["lines"], #self.panel_frame["lines"] + 1, line)
         end
-        if (math.random(0, 100) <= self.pixel_density) then
+        if (math.random(0, 100) >= self.pixel_density) then
           local noise = {}
           noise["level"] = math.random(13, 15)
           noise["x"] = x
@@ -269,19 +335,19 @@ function graphics:panel_static()
 end
 
 function graphics:top_menu_static()
-  if params:get("static_animation_on") == 1 and core.counters.ui.microframe % 4 == 0 then
+  if params:get("static_animation") == 1 and core.counters.ui.microframe % 4 == 0 then
     self.top_menu_frame = {}
     self.top_menu_frame["lines"] = {}
     self.top_menu_frame["noise"] = {}
     for x = 1, 128 do
       for y = 1, 6 do
-        if (math.random(0, 100) <= self.line_density) then
+        if (math.random(0, 100) >= self.line_density) then
           local line = {}
           line["y"] = y          
           line["level"] = math.random(8, 10)
           table.insert(self.top_menu_frame["lines"], #self.top_menu_frame["lines"] + 1, line)
         end
-        if (math.random(0, 100) <= self.pixel_density) then
+        if (math.random(0, 100) >= self.pixel_density) then
           local noise = {}
           noise["level"] = math.random(13, 15)
           noise["x"] = x

@@ -37,7 +37,7 @@ function select_cell(x, y)
 end
 
 function cell_is_selected()
-  return (#core.selected_cell == 2) and true or false
+  -- return (#core.selected_cell == 2) and true or false
 end
 
 function deselect_cell()
@@ -50,3 +50,6 @@ function microframe()
   return core.counters.ui.microframe
 end
 
+function clear_static()
+  core.graphics:reset_frames()
+end
