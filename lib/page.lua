@@ -137,31 +137,30 @@ function page:two()
   self.graphics:menu_highlight(self.selected_item)
   if not keeper.is_cell_selected then
     self.graphics:cell()
-    self.graphics:structure_type(self.dictionary.structures[1])
     self.graphics:structure_disable()
     self.graphics:metabolism_disable()
     self.graphics:sound_disable()
-  elseif keeper.selected_cell.structure == 2 then
+  elseif keeper.selected_cell.structure == 1 then
     self.graphics:hive()
     self.graphics:draw_ports()
-    self.graphics:structure_type(self.dictionary.structures[2])
+    self.graphics:structure_type(self.dictionary.structures[1])
     self.graphics:structure_enable()
     self.graphics:metabolism_enable()
     self.graphics:text(56, 25, params:get("page_metabolism"), 0)
     self.graphics:sound_disable()
     self.graphics:cell_id(cell)
-  elseif keeper.selected_cell.structure == 3 then
+  elseif keeper.selected_cell.structure == 2 then
     self.graphics:gate()
-    self.graphics:structure_type(self.dictionary.structures[3])
+    self.graphics:structure_type(self.dictionary.structures[2])
     self.graphics:structure_enable()
     self.graphics:metabolism_disable()
     self.graphics:sound_disable()
     self.graphics:draw_ports(-5)
     self.graphics:cell_id(cell)    
-  elseif keeper.selected_cell.structure == 4 then
+  elseif keeper.selected_cell.structure == 3 then
     self.graphics:shrine()
     self.graphics:draw_ports()    
-    self.graphics:structure_type(self.dictionary.structures[4])
+    self.graphics:structure_type(self.dictionary.structures[3])
     self.graphics:structure_enable()
     self.graphics:metabolism_disable()
     self.graphics:sound_enable()

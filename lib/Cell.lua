@@ -10,7 +10,7 @@ function Cell:new(x, y, g)
   c.generation = g
 
   -- mutable
-  c.structure = 2
+  c.structure = 1
   c.metabolism = 4
   c.sound = 72
   c.ports = {}
