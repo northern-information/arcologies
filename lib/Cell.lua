@@ -10,8 +10,7 @@ function Cell:new(x, y, g)
   c.generation = g
 
   -- mutable
-  c.selected = false
-  c.structure = "HIVE"
+  c.structure = 2
   c.metabolism = 4
   c.sound = 72
   c.ports = {}
@@ -19,24 +18,11 @@ function Cell:new(x, y, g)
   return c
 end
 
--- tired, left off here. can't get the last cell to be cleared from grid
-function Cell:select()
-  self.selected = true
-end
-
-function Cell:deselect()
-  self.selected = false
-end
-
-function Cell:structure(s)
-  self.structure = s
-end
-
-function Cell:metabolism(m)
+function Cell:set_metabolism(m)
   self.structure = m
 end
 
-function Cell:sound(s)
+function Cell:set_sound(s)
   self.structure = s
 end
 

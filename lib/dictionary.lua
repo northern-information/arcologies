@@ -2,7 +2,7 @@ local dictionary = {}
 
 function dictionary.init()
   dictionary.pages = { "ARCOLOGIES", "STRUCTURES" , "ANALYSIS" }
-  dictionary.structures = { "HIVE", "GATE", "SHRINE" }
+  dictionary.structures = { "", "HIVE", "GATE", "SHRINE" }
   dictionary.sounds = {
     "C-2", "C#-2", "D-2", "D#-2", "E-2", "F-2", "F#-2", "G-2", "G#-2", "A-2", "A#-2", "B-2",
     "C-1", "C#-1", "D-1", "D#-1", "E-1", "F-1", "F#-1", "G-1", "G#-1", "A-1", "A#-1", "B-1",

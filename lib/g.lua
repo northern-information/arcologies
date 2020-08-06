@@ -24,21 +24,21 @@ end
 function g.key(x, y, z)
   if z == 1 then
     print('g.key: ' .. id(x, y))
-    select_cell(x, y)
+    keeper:select_cell(x, y)
     select_page(2)
   end
   dirty_grid(true)
 end
 
 function g:led_cells()
-  for key,value in pairs(core.field.cells) do
-    g:led(value["x"], value["y"], 5) 
+  for key,value in pairs(keeper.cells) do
+    g:led(value.x, value.y, 5) 
   end
 end
 
 function g:led_selected_cell()
-  if cell_selected then
-    g:led(selected_cell_id[1], selected_cell_id[2], 15)
+  if keeper.is_cell_selected then
+    g:led(keeper.selected_cell_x, keeper.selected_cell_y, 15)
   end
 end
 

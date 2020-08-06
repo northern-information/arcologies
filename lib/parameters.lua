@@ -18,7 +18,7 @@ params:add{ type = "number", id = "enc_confirm_index", min = 1, max = 43, defaul
 }
 params:hide("enc_confirm_index")
 
-params:add{ type = "number", id = "page_structure", min = 1, max = 3, default = 1 }
+params:add{ type = "number", id = "page_structure", min = 1, max = 4, default = 1 }
 params:hide("page_structure")
 
 params:add{ type = "number", id = "page_metabolism", min = 1, max = 16, default = 4 }

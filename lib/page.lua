@@ -47,7 +47,7 @@ function page:change_selected_item_value(d)
   elseif p == 2 then
     if s == 1 then
       cache = params:get("page_structure")
-      params:set("page_structure", util.clamp(params:get("page_structure") + d, 1, 3))
+      params:set("page_structure", util.clamp(params:get("page_structure") + d, 1, 4))
       cache_check(cache, params:get("page_structure"))
     elseif s == 2 then
       cache = params:get("page_metabolism")
@@ -84,7 +84,6 @@ function page:render()
   self.music_location = core.counters.music.location
   self.music_location_fmod = math.fmod(core.counters.music.location, 10) + 1
   self.parameters = core.parameters
-  self.selected_cell = core.selected_cell
   self.graphics = core.graphics
   self.dictionary = core.dictionary
   if self.active_page == 1 then
@@ -136,30 +135,38 @@ end
 -- structures
 function page:two()
   self.graphics:menu_highlight(self.selected_item)
-  self.graphics:text(56, 25, params:get("page_metabolism"), 0)
-  self.graphics:text(56, 33, page.dictionary.sounds[params:get("page_sound")], 0)
-  self.graphics:cell_id(self.selected_cell)
-  if params:get("page_structure") == 1 then
+  if not keeper.is_cell_selected then
+    self.graphics:cell()
+    self.graphics:structure_type(self.dictionary.structures[1])
+    self.graphics:structure_disable()
+    self.graphics:metabolism_disable()
+    self.graphics:sound_disable()
+  elseif keeper.selected_cell.structure == 2 then
     self.graphics:hive()
     self.graphics:draw_ports()
-    self.graphics:structure_type(self.dictionary.structures[1])
+    self.graphics:structure_type(self.dictionary.structures[2])
     self.graphics:structure_enable()
     self.graphics:metabolism_enable()
+    self.graphics:text(56, 25, params:get("page_metabolism"), 0)
     self.graphics:sound_disable()
-  elseif params:get("page_structure") == 2 then
+    self.graphics:cell_id(cell)
+  elseif keeper.selected_cell.structure == 3 then
     self.graphics:gate()
-    self.graphics:structure_type(self.dictionary.structures[2])
+    self.graphics:structure_type(self.dictionary.structures[3])
     self.graphics:structure_enable()
     self.graphics:metabolism_disable()
     self.graphics:sound_disable()
     self.graphics:draw_ports(-5)
-  elseif params:get("page_structure") == 3 then
+    self.graphics:cell_id(cell)    
+  elseif keeper.selected_cell.structure == 4 then
     self.graphics:shrine()
     self.graphics:draw_ports()    
-    self.graphics:structure_type(self.dictionary.structures[3])
+    self.graphics:structure_type(self.dictionary.structures[4])
     self.graphics:structure_enable()
     self.graphics:metabolism_disable()
     self.graphics:sound_enable()
+    self.graphics:text(56, 33, page.dictionary.sounds[params:get("page_sound")], 0)
+    self.graphics:cell_id(cell)
   end
 end
 

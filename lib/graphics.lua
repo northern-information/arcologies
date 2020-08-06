@@ -28,10 +28,8 @@ end
 
 function graphics:ui()
   self:top_menu()
-  self:top_menu_static()
   self:top_menu_tabs()
   self:panel()
-  self:panel_static()
 end
 
 function graphics:get_tab_x(i)
@@ -159,8 +157,8 @@ end
 
 function graphics:cell_id(selected_cell)
   local id = "NONE"
-  if #selected_cell_id == 2 then
-    id = "X" .. selected_cell_id[1] .. "Y" .. selected_cell_id[2] 
+  if keeper.is_cell_selected then
+    id = keeper.selected_cell_id
   end
   self:text(56, 63, id, 0)
 end
@@ -171,6 +169,11 @@ end
 
 function graphics:structure_enable()
   self:text(2, 18, "STRUCTURE", 15)  
+end
+
+function graphics:structure_disable()
+  self:text(2, 18, "STRUCTURE", self.levels["l"])
+  self:mls(0, 16, 51, 15, self.levels["m"])
 end
 
 function graphics:metabolism_enable()
@@ -300,73 +303,7 @@ function graphics:west_port(x, y)
   self:rect(x-6, y+10, 2, 4, 0)
 end
 
-function graphics:panel_static()
-  if params:get("static_animation") == 1 and core.counters.ui.microframe % 4 == 0 then
-    self.panel_frame = {}
-    self.panel_frame["lines"] = {}
-    self.panel_frame["noise"] = {}
-    for x = 54, 128 do
-      for y = 12, 64 do
-        if (math.random(0, 100) >= self.line_density) then
-          local line = {}
-          line["y"] = y          
-          line["level"] = math.random(8, 10)
-          table.insert(self.panel_frame["lines"], #self.panel_frame["lines"] + 1, line)
-        end
-        if (math.random(0, 100) >= self.pixel_density) then
-          local noise = {}
-          noise["level"] = math.random(13, 15)
-          noise["x"] = x
-          noise["y"] = y
-          table.insert(self.panel_frame["noise"], #self.panel_frame["noise"] + 1, noise)
-        end
-      end
-    end
-  end
-  for key,value in pairs(self.panel_frame["lines"]) do
-    self:mls(54, value["y"], 128, value["y"], value["level"]) 
-  end
-  for key,value in pairs(self.panel_frame["noise"]) do
-    screen.level(value["level"])
-    screen.pixel(value["x"], value["y"])
-    screen.fill()
-  end
-  dirty_screen(true)
-end
 
-function graphics:top_menu_static()
-  if params:get("static_animation") == 1 and core.counters.ui.microframe % 4 == 0 then
-    self.top_menu_frame = {}
-    self.top_menu_frame["lines"] = {}
-    self.top_menu_frame["noise"] = {}
-    for x = 1, 128 do
-      for y = 1, 6 do
-        if (math.random(0, 100) >= self.line_density) then
-          local line = {}
-          line["y"] = y          
-          line["level"] = math.random(8, 10)
-          table.insert(self.top_menu_frame["lines"], #self.top_menu_frame["lines"] + 1, line)
-        end
-        if (math.random(0, 100) >= self.pixel_density) then
-          local noise = {}
-          noise["level"] = math.random(13, 15)
-          noise["x"] = x
-          noise["y"] = y
-          table.insert(self.top_menu_frame["noise"], #self.top_menu_frame["noise"] + 1, noise)
-        end
-      end
-    end
-  end
-  for key,value in pairs(self.top_menu_frame["lines"]) do
-    self:mls(1, value["y"], 128, value["y"], value["level"]) 
-  end
-  for key,value in pairs(self.top_menu_frame["noise"]) do
-    screen.level(value["level"])
-    screen.pixel(value["x"], value["y"])
-    screen.fill()
-  end
-  dirty_screen(true)
-end
 
 function graphics:ready_animation(i)
   local f = {
