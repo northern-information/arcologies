@@ -4,18 +4,28 @@ function Cell:new(x, y, g)
   local c = setmetatable({}, { __index = Cell })
 
   -- constants
-  c.x = (x or 0)
-  c.y = (y or 0)
-  c.id = "X" .. c.x .. "Y" .. c.y
-  c.generation = (g or 0)
+  c.x = x
+  c.y = y
+  c.id = id(c.x, c.y)
+  c.generation = g
 
   -- mutable
+  c.selected = false
   c.structure = "HIVE"
   c.metabolism = 4
   c.sound = 72
   c.ports = {}
 
   return c
+end
+
+-- tired, left off here. can't get the last cell to be cleared from grid
+function Cell:select()
+  self.selected = true
+end
+
+function Cell:deselect()
+  self.selected = false
 end
 
 function Cell:structure(s)

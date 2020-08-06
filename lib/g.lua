@@ -14,27 +14,32 @@ function grid_redraw_clock()
   end
 end
 
-
 function grid_redraw()
   g:all(0)
-  led_blink_selected_cell()
+  g:led_cells()
+  g:led_selected_cell()
   g:refresh()
 end
 
-function g.key(x,y,z)
+function g.key(x, y, z)
   if z == 1 then
+    print('g.key: ' .. id(x, y))
     select_cell(x, y)
     select_page(2)
-    print(x,y)
   end
   dirty_grid(true)
 end
 
-function led_blink_selected_cell()
-  if not cell_is_selected() then return end
+function g:led_cells()
+  for key,value in pairs(core.field.cells) do
+    g:led(value["x"], value["y"], 5) 
+  end
+end
 
-  local level = (core.selected_cell_on == false) and core.graphics.levels["h"] or core.graphics.levels["l"]
-  g:led(core.selected_cell[1], core.selected_cell[2], level)
+function g:led_selected_cell()
+  if cell_selected then
+    g:led(selected_cell_id[1], selected_cell_id[2], 15)
+  end
 end
 
 return g

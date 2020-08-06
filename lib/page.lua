@@ -75,7 +75,7 @@ end
 
 
 
-function page:render(core)
+function page:render()
   local cache_active_page = self.active_page
   local cache_selected_item = self.selected_item
   self.active_page = core.page.active_page

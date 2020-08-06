@@ -14,17 +14,22 @@
 core = {}
 grid_dirty = true
 screen_dirty = true
+cell_selected = false
+selected_cell_id = {}
 
 include("arcologies/lib/Cell")
-include("arcologies/lib/Field")
+
 include("arcologies/lib/functions")
 g = include("arcologies/lib/g")
+tu = require("tabutil")
+field = include("arcologies/lib/field")
 parameters = include("arcologies/lib/parameters")
 graphics = include("arcologies/lib/graphics")
 page = include("arcologies/lib/page")
 dictionary = include("arcologies/lib/dictionary")
 counters = include("arcologies/lib/counters")
-tu = require("tabutil")
+
+
 
 function init()
   audio:pitch_off()
@@ -40,9 +45,8 @@ function init()
   core.counters.init()
   core.page = page
   core.page.init()
-  core.Field = Field:new()  
-  core.selected_cell = {}
-  core.selected_cell_on = false
+  core.field = field
+  core.field.init()
   select_page(1)
   redraw()
 end
@@ -53,7 +57,7 @@ function redraw()
   core.graphics:ui()
   core.graphics:select_tab(core.page.active_page)
   core.graphics:top_message(core.dictionary.pages[core.page.active_page])
-  core.page:render(core)
+  core.page:render()
   core.graphics:teardown()
   dirty_screen(false)
 end
@@ -61,10 +65,11 @@ end
 function key(k, z)
   if k == 2 and z == 1 then
     core.parameters.toggle_status()
-    dirty_screen(true)
   end
   if k == 3 and z == 1 then
-    print('k3')
+    if cell_selected then
+      delete_cell(selected_cell_id[1], selected_cell_id[2])
+    end
   end
 end
 
@@ -79,7 +84,6 @@ function enc(n, d)
   else
     core.page:change_selected_item_value(d)
   end
-  redraw()
 end
 
 function cleanup()

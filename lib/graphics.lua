@@ -159,8 +159,8 @@ end
 
 function graphics:cell_id(selected_cell)
   local id = "NONE"
-  if #selected_cell == 2 then
-    id = "X" .. selected_cell[1] .. "Y" .. selected_cell[2] 
+  if #selected_cell_id == 2 then
+    id = "X" .. selected_cell_id[1] .. "Y" .. selected_cell_id[2] 
   end
   self:text(56, 63, id, 0)
 end

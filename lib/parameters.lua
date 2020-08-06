@@ -50,6 +50,7 @@ function parameters.toggle_status()
   else
    params:set("playback", 0)
   end
+  dirty_screen(true)
 end
 
 return parameters
