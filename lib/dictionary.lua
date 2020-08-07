@@ -16,6 +16,7 @@ function dictionary.init()
     "D8", "D#8", "E8", "F8", "F#8", "G8", "G#8", "A8", "A#8", "B8", "C9", "C#9", "D9", "D#9",
     "E9", "F9", "F#9", "G9", "G#9", "A9", "A#9", "B9"
   }
+  dictionary.cell_attributes = { "STRUCTURE", "METABOLISM", "SOUND" }
 end
 
 return dictionary

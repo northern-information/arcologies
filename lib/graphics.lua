@@ -1,29 +1,11 @@
 local graphics = {}
 
 function graphics.init()
-  graphics.levels = {}
-  graphics.levels["o"] = 0
-  graphics.levels["l"] = 5
-  graphics.levels["m"] = 10
-  graphics.levels["h"] = 15
   graphics.tab_width = 5
   graphics.tab_height = 5
   graphics.tab_padding = 1
-  graphics.pixel_density = 15
-  graphics.line_density = 5
-  graphics.rows_start = 20
   graphics.structure_x = 94
   graphics.structure_y = 26
-  graphics:reset_frames()
-end
-
-function graphics:reset_frames()
-  graphics.top_menu_frame = {}
-  graphics.top_menu_frame["lines"] = {}
-  graphics.top_menu_frame["noise"] = {}
-  graphics.panel_frame = {}
-  graphics.panel_frame["lines"] = {}
-  graphics.panel_frame["noise"] = {}
 end
 
 function graphics:ui()
@@ -42,7 +24,7 @@ end
 
 function graphics:top_menu_tabs()
   for i = 1,3 do
-    self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, self.levels["l"])
+    self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
   end
 end
 
@@ -51,7 +33,7 @@ function graphics:panel()
 end
 
 function graphics:select_tab(i)
-  self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height + 1, self.levels["o"])
+  self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height + 1, 0)
   self:mlrs(self:get_tab_x(i) + 2, 3, 1, 6)
 end
 
@@ -62,7 +44,7 @@ end
 function graphics:setup()
   screen.clear()
   screen.aa(0)
-  graphics:reset_font()
+  self:reset_font()
 end
 
 function graphics:reset_font()
@@ -75,55 +57,63 @@ function graphics:teardown()
 end
 
 function graphics:mlrs(x1, y1, x2, y2, level)
-  screen.level(level or self.levels["h"])  
+  screen.level(level or 15)  
   screen.move(x1, y1)
   screen.line_rel(x2, y2)
   screen.stroke()
 end
 
 function graphics:mls(x1, y1, x2, y2, level)
-  screen.level(level or self.levels["h"])  
+  screen.level(level or 15)  
   screen.move(x1, y1)
   screen.line(x2, y2)
   screen.stroke()
 end
 
 function graphics:rect(x, y, w, h, level)
-  screen.level(level or self.levels["h"])  
+  screen.level(level or 15)  
   screen.rect(x, y, w, h)
   screen.fill()
 end
 
 function graphics:circle(x, y, r, level)
-  screen.level(level or self.levels["h"])  
+  screen.level(level or 15)  
   screen.circle(x, y, r)
   screen.fill()
 end
 
 function graphics:text(x, y, string, level)
   if string == nil then return end
-  screen.level(level or self.levels["h"])  
+  screen.level(level or 15)  
   screen.move(x, y)
   screen.text(string)
 end
 
 function graphics:bpm(x, y, string, level)
-  screen.level(level or self.levels["h"])
+  screen.level(level or 15)
   screen.move(x, y)
   screen.font_size(30)
   screen.text(string)
   self:reset_font()
 end
 
+function graphics:playback(music_location_fmod)
+  self:text(20, 6, 
+    (params:get("playback") == 0) and 
+      self:ready_animation(music_location_fmod) or 
+      self:playing_animation(music_location_fmod)
+  , 0)
+end
+
 function graphics:status(x, y, string, level)
-  screen.level(level or self.levels["h"])
+  screen.level(level or 15)
   screen.move(x, y)
   screen.text(string)
   self:reset_font()
 end
 
 function graphics:text_right(x, y, string, level)
-  screen.level(level or self.levels["h"])  
+  screen.level(level or 15)  
   screen.move(x, y)
   screen.text_right(string)
 end
@@ -138,12 +128,12 @@ end
 
 function graphics:icon(x, y, string, invert)
   if invert == 0 then
-    self:rect(x, y, 18, 18, self.levels["o"])
-    screen.level(self.levels["h"])
+    self:rect(x, y, 18, 18, 0)
+    screen.level(15)
   else
-    self:rect(x, y, 18, 18, self.levels["o"])
-    self:rect(x+1, y+1, 16, 16, self.levels["h"])
-    screen.level(self.levels["o"])
+    self:rect(x, y, 18, 18, 0)
+    self:rect(x+1, y+1, 16, 16, 15)
+    screen.level(0)
   end
   screen.move(x+2, y+15)
   screen.font_size(16)
@@ -168,30 +158,30 @@ function graphics:structure_type(s)
 end
 
 function graphics:structure_enable()
-  self:text(2, 18, "STRUCTURE", 15)  
+  self:text(2, 18, dictionary.cell_attributes[1], 15)  
 end
 
 function graphics:structure_disable()
-  self:text(2, 18, "STRUCTURE", self.levels["l"])
-  self:mls(0, 16, 51, 15, self.levels["m"])
+  self:text(2, 18, dictionary.cell_attributes[1], 5)
+  self:mls(0, 16, 51, 15, 10)
 end
 
 function graphics:metabolism_enable()
-    self:text(2, 26, "METABOLISM", self.levels["h"])
+    self:text(2, 26, dictionary.cell_attributes[2], 15)
 end
 
 function graphics:metabolism_disable()
-  self:text(2, 26, "METABOLISM", self.levels["l"])
-  self:mls(0, 24, 51, 23, self.levels["m"])
+  self:text(2, 26, dictionary.cell_attributes[2], 5)
+  self:mls(0, 24, 51, 23, 10)
 end
 
 function graphics:sound_enable()
-  self:text(2, 34, "SOUND", self.levels["h"])
+  self:text(2, 34, dictionary.cell_attributes[3], 15)
 end
 
 function graphics:sound_disable()
-  self:text(2, 34, "SOUND", self.levels["l"])
-  self:mls(0, 32, 51, 31, self.levels["m"])
+  self:text(2, 34, dictionary.cell_attributes[3], 5)
+  self:mls(0, 32, 51, 31, 10)
 end
 
 function graphics:left_wall(x, y)

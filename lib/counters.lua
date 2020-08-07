@@ -13,7 +13,7 @@ function counters.init()
   counters.music.time = 60 / params:get("bpm")
   counters.music.count = -1
   counters.music.play = 1
-  counters.music.location = 1
+  counters.music.generation = 1
   counters.music.event = counters.conductor
   counters.music:start()
   counters.grid = metro.init()
@@ -36,16 +36,12 @@ end
 
 function counters.conductor()
   counters.music.time = parameters.bpm_to_seconds
-  counters.music.location = counters.music.location + 1 
+  counters.music.generation = counters.music.generation + 1 
   redraw()
 end
 
 function counters.gridmeister()
   counters.grid.frame = counters.grid.frame + 1 
-end
-
-function grid_frame()
-  return counters.grid.frame
 end
 
 return counters

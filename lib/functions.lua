@@ -17,14 +17,26 @@ function cache_check(cache, check)
 end
 
 function select_page(x)
-  core.page.active_page = x
-  core.page.items = page_items[page.active_page]
-  core.page.selected_item = 1
+  page.active_page = x
+  page.items = page_items[page.active_page]
+  page.selected_item = 1
   dirty_screen(true)
 end
 
+function grid_frame()
+  return counters.grid.frame
+end
+
 function microframe()
-  return core.counters.ui.microframe
+  return counters.ui.microframe
+end
+
+function generation()
+  return counters.music.generation
+end
+
+function generation_fmod(i)
+  return math.fmod(generation(), i) + 1
 end
 
 function id(x, y)
