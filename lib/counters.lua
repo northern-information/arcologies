@@ -9,6 +9,7 @@ function counters.init()
   counters.ui.frame = 1
   counters.ui.event = counters.optician
   counters.ui:start()
+
   counters.music = metro.init()
   counters.music.time = 60 / params:get("bpm")
   counters.music.count = -1
@@ -16,6 +17,7 @@ function counters.init()
   counters.music.generation = 1
   counters.music.event = counters.conductor
   counters.music:start()
+
   counters.grid = metro.init()
   counters.grid.time = 1 / 30
   counters.grid.count = -1
