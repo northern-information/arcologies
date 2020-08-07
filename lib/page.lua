@@ -148,7 +148,7 @@ function page:two()
     graphics:structure_enable()
     graphics:metabolism_disable()
     graphics:sound_enable()
-    graphics:text(56, 33, page.dictionary.sounds[params:get("page_sound")], 0)
+    graphics:text(56, 33, dictionary.sounds[params:get("page_sound")], 0)
     graphics:cell_id(cell)
   end
 end

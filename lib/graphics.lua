@@ -146,11 +146,12 @@ function graphics:seed_selected(x, y)
 end
 
 function graphics:cell_id(selected_cell)
+  self:text(2, 61, "CELL ID", 5)
   local id = "NONE"
   if keeper.is_cell_selected then
     id = keeper.selected_cell_id
   end
-  self:text(56, 63, id, 0)
+  self:text(56, 61, id, 0)
 end
 
 function graphics:structure_type(s)
@@ -266,7 +267,8 @@ end
 function graphics:draw_ports(adjust)
   local x = self.structure_x
   local y = self.structure_y
-  self:text(56, 55, "NESW", 0)
+  self:text(2, 52, "OPEN PORTS", 5)
+  self:text(56, 52, "NESW", 0)
   self:north_port(x, y, (adjust or 0))
   self:east_port(x, y)
   self:south_port(x, y)
