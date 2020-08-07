@@ -70,4 +70,8 @@ function keeper:deselect_cell()
   dirty_screen(true)
 end
 
+<<<<<<< HEAD
 return keeper
+=======
+return keeper
+>>>>>>> 3ce2d2b842dcaeff41f0c5083a56409dbe0ebab9
