@@ -33,7 +33,7 @@ function init()
   keeper.init()
   page.init()  
   parameters.init()
-  select_page(1)
+  select_page(3)
   redraw()
 end
 

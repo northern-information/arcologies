@@ -8,12 +8,6 @@ function graphics.init()
   graphics.structure_y = 26
 end
 
-function graphics:ui()
-  self:top_menu()
-  self:top_menu_tabs()
-  self:panel()
-end
-
 function graphics:get_tab_x(i)
   return (((self.tab_width + self.tab_padding) * i) - self.tab_width)
 end
@@ -97,11 +91,11 @@ function graphics:bpm(x, y, string, level)
   self:reset_font()
 end
 
-function graphics:playback(music_location_fmod)
+function graphics:playback()
   self:text(20, 6, 
     (params:get("playback") == 0) and 
-      self:ready_animation(music_location_fmod) or 
-      self:playing_animation(music_location_fmod)
+      self:ready_animation(generation_fmod(10)) or 
+      self:playing_animation(generation_fmod(4))
   , 0)
 end
 
@@ -145,7 +139,7 @@ function graphics:seed_selected(x, y)
   self:rect(x, y, 18, 18, 0)
 end
 
-function graphics:cell_id(selected_cell)
+function graphics:cell_id()
   self:text(2, 61, "CELL ID", 5)
   local id = "NONE"
   if keeper.is_cell_selected then
@@ -169,6 +163,7 @@ end
 
 function graphics:metabolism_enable()
     self:text(2, 26, dictionary.cell_attributes[2], 15)
+    self:text(56, 25, params:get("page_metabolism"), 0)
 end
 
 function graphics:metabolism_disable()
@@ -178,6 +173,7 @@ end
 
 function graphics:sound_enable()
   self:text(2, 34, dictionary.cell_attributes[3], 15)
+  graphics:text(56, 33, dictionary.sounds[params:get("page_sound")], 0)
 end
 
 function graphics:sound_disable()
@@ -268,11 +264,15 @@ function graphics:draw_ports(adjust)
   local x = self.structure_x
   local y = self.structure_y
   self:text(2, 52, "OPEN PORTS", 5)
-  self:text(56, 52, "NESW", 0)
-  self:north_port(x, y, (adjust or 0))
-  self:east_port(x, y)
-  self:south_port(x, y)
-  self:west_port(x, y)
+  if keeper.is_cell_selected then
+    self:text(56, 52, "NESW", 0)
+    self:north_port(x, y, (adjust or 0))
+    self:east_port(x, y)
+    self:south_port(x, y)
+    self:west_port(x, y)
+  else
+    self:text(56, 52, "NONE", 0)
+  end
 end
 
 function graphics:north_port(x, y, adjust)
@@ -295,7 +295,24 @@ function graphics:west_port(x, y)
   self:rect(x-6, y+10, 2, 4, 0)
 end
 
-
+function graphics:analysis()
+  local hives = 5
+  local gates = 10
+  local shrines = 3
+  local signals = 20
+  local generation = generation()
+  self:text_right(60, 18, dictionary.structures[1] .. "S", 5)
+  self:text_right(60, 26, dictionary.structures[2] .. "S", 5)
+  self:text_right(60, 34, dictionary.structures[3] .. "S", 5)
+  self:text_right(60, 42, "SIGNALS", 5)
+  self:text_right(60, 50, "GENERATION", 5)
+  self:text(66, 18, hives, 15)
+  self:text(66, 26, gates, 15)
+  self:text(66, 34, shrines, 15)
+  self:text(66, 42, signals, 15)
+  self:text(66, 50, generation, 15)
+  
+end
 
 function graphics:ready_animation(i)
   local f = {
@@ -315,16 +332,10 @@ end
 
 function graphics:playing_animation(i)
   local f = {
-    ">........",
-    "+>.......",
-    ".->......",
-    "..+>.....",
-    "...->....",
-    "....+>...",
-    ".....->..",
-    "......+>.",
-    ".......->",
-    "........+"
+    ">",
+    " >",
+    "  >",
+    "   >"
   }
   return f[i]
 end

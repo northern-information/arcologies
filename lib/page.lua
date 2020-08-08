@@ -69,7 +69,8 @@ function page:render()
   local cache_selected_item = self.selected_item
   self.active_page = page.active_page
   self.selected_item = page.selected_item
-  graphics:ui()
+  graphics:top_menu()
+  graphics:top_menu_tabs()
   graphics:select_tab(self.active_page)
   graphics:top_message(dictionary.pages[self.active_page])
   if self.active_page == 1 then
@@ -95,16 +96,18 @@ end
 
 -- home
 function page:one()
+  graphics:panel()
   graphics:menu_highlight(self.selected_item)
   graphics:text(2, 18, params:get("playback") == 0 and "READY" or "PLAYING")  
   graphics:text(2, 26, "BPM")
   graphics:text(2, 34, "CLEAR " .. graphics:enc_confirm_animation(parameters.enc_confirm_index))
-  graphics:playback(generation_fmod(10))
   graphics:bpm(55, 39, params:get("bpm"), 0)
   if params:get("playback") == 0 then
+    graphics:playback(generation_fmod(10))
     graphics:icon(56, 44, "||", 1)
   else
     local ml = generation_fmod(4)
+    graphics:playback(generation_fmod(4))
     graphics:icon(56, 44, ml, (ml == 1) and 1 or 0)
   end
   graphics:icon(76, 44, "X", (self.selected_item == 3) and 1 or 0)
@@ -120,10 +123,12 @@ end
 
 -- structures
 function page:two()
+  graphics:panel()
   graphics:menu_highlight(self.selected_item)
-  graphics:playback(generation_fmod(10))
+  graphics:cell_id()
   if not keeper.is_cell_selected then
     graphics:cell()
+    graphics:draw_ports()
     graphics:structure_disable()
     graphics:metabolism_disable()
     graphics:sound_disable()
@@ -133,17 +138,14 @@ function page:two()
     graphics:structure_type(dictionary.structures[1])
     graphics:structure_enable()
     graphics:metabolism_enable()
-    graphics:text(56, 25, params:get("page_metabolism"), 0)
     graphics:sound_disable()
-    graphics:cell_id(cell)
   elseif keeper.selected_cell.structure == 2 then
     graphics:gate()
+    graphics:draw_ports(-5)
     graphics:structure_type(dictionary.structures[2])
     graphics:structure_enable()
     graphics:metabolism_disable()
     graphics:sound_disable()
-    graphics:draw_ports(-5)
-    graphics:cell_id(cell)    
   elseif keeper.selected_cell.structure == 3 then
     graphics:shrine()
     graphics:draw_ports()    
@@ -151,8 +153,6 @@ function page:two()
     graphics:structure_enable()
     graphics:metabolism_disable()
     graphics:sound_enable()
-    graphics:text(56, 33, dictionary.sounds[params:get("page_sound")], 0)
-    graphics:cell_id(cell)
   end
 end
 
@@ -162,9 +162,7 @@ end
 
 -- analysis
 function page:three()
-  graphics:playback(generation_fmod(10))
-  graphics:circle(64, 32, 16, 0)
-  graphics:circle(100, 24, 8, 0)
+  graphics:analysis()
 end
 
 
