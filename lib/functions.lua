@@ -76,3 +76,11 @@ end
 function id(x, y)
   return "x" .. x .. "y" .. y
 end
+
+function table_find(t, element)
+  for i,v in pairs(t) do
+    if v == element then
+      return i
+    end
+  end
+end

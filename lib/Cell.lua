@@ -7,6 +7,12 @@ function Cell:new(x, y, g)
   c.x = x
   c.y = y
   c.id = id(c.x, c.y)
+  c.available_ports = {
+    { c.x, c.y - 1, 'n' },
+    { c.x + 1, c.y, 'e' },
+    { c.x, c.y + 1, 's' },
+    { c.x - 1, c.y, 'w' }
+  }
   c.generation = g
 
   -- mutable
@@ -35,18 +41,33 @@ function Cell:set_velocity(v)
   self.velocity = v
 end
 
-function Cell:open_port(p)
-  if not self:check_port(p) then
-    table.insert(self.ports, p)
+function Cell:toggle_port(x, y)
+  local port = self:find_port(x, y)
+  if self:is_port_open(port[3]) then
+    self:close_port(port[3])
+  else
+    self:open_port(port[3])
   end
+  print(self.ports[1])
+end
+
+function Cell:open_port(p)
+  table.insert(self.ports, p)
 end
 
 function Cell:close_port(p)
-  if self:check_port(p) then
-    table.remove(self.ports, p)
-  end
+  table.remove(self.ports, table_find(self.ports, p))
 end
 
 function Cell:is_port_open(p)
   return tu.contains(self.ports, p)
+end
+
+function Cell:find_port(x, y)
+  for k,v in pairs(self.available_ports) do
+    if v[1] == x and v[2] == y then
+      return v
+    end
+  end
+  return false
 end
