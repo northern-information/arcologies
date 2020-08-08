@@ -28,6 +28,7 @@ function long_press(k)
   if k == 3 then
     keeper:delete_all_cells()
     is_deleting(false)
+    graphics:set_message("DELETED ALL.", 10)
   end
   dirty_screen(true)
 end
@@ -40,7 +41,7 @@ function select_page(x)
 end
 
 function in_bounds(x, y)  
-  if 0 > y then
+  if 1 > y then
     return false -- north
   
   elseif params:get("grid_width") < x then
@@ -49,7 +50,7 @@ function in_bounds(x, y)
   elseif params:get("grid_height") < y then 
     return false -- south
 
-  elseif 0 > x then
+  elseif 1 > x then
     return false -- west
 
   else

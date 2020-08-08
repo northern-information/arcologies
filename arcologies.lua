@@ -12,6 +12,7 @@
 -- v0.0.1
 
                include("arcologies/lib/Cell")               
+               include("arcologies/lib/Signal")               
                include("arcologies/lib/functions")               
     counters = include("arcologies/lib/counters")
   dictionary = include("arcologies/lib/dictionary")
@@ -20,6 +21,7 @@
       keeper = include("arcologies/lib/keeper")
         page = include("arcologies/lib/page")  
   parameters = include("arcologies/lib/parameters")
+       sound = include("arcologies/lib/sound")
           tu = require("tabutil")
 
 function init()
@@ -31,6 +33,7 @@ function init()
   keeper.init()
   page.init()  
   parameters.init()
+  sound.init()
   deleting = false
   grid_dirty, screen_dirty = true, true
   key_counter = {{},{},{}}
@@ -41,10 +44,17 @@ function init()
 end
 
 function dev()
-  keeper:select_cell(3, 3)
+  keeper:select_cell(2, 2)
   keeper.selected_cell:open_port('e')
-  keeper:select_cell(14, 3)
+  keeper:select_cell(7, 2)
   keeper.selected_cell:set_structure(3)
+  keeper.selected_cell:open_port('w')
+  keeper.selected_cell:open_port('s')
+  keeper:select_cell(7, 6)
+  keeper.selected_cell:set_structure(2)
+  keeper.selected_cell:open_port('n')
+  keeper.selected_cell:open_port('e')  
+  keeper.selected_cell:open_port('s')
   keeper.selected_cell:open_port('w')
   keeper:deselect_cell()
   parameters.toggle_playback()

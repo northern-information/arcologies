@@ -50,7 +50,11 @@ end
 
 function counters.conductor()
   counters.music.time = parameters.bpm_to_seconds
-  counters.music.generation = counters.music.generation + 1 
+  counters.music.generation = counters.music.generation + 1
+  keeper:spawn_signals()
+  keeper:propagate_signals()
+  keeper:collide_signals()
+  keeper:collide_signals_and_cells()
   redraw()
 end
 

@@ -2,6 +2,8 @@ local g = grid.connect()
 
 function g.init()
   clock.run(grid_redraw_clock)
+  g.signal_deaths = {}
+  g.signal_and_cell_collisions = {}
 end
 
 function grid_redraw_clock()
@@ -11,15 +13,18 @@ function grid_redraw_clock()
       grid_redraw()
       dirty_grid(false)
     end
-    if keeper.is_cell_selected then
-      dirty_grid(true)
-    end
+    if keeper.is_cell_selected then dirty_grid(true) end
+    if #g.signal_deaths > 0 then dirty_grid(true) end
+    if #g.signal_and_cell_collisions > 0 then dirty_grid(true) end
   end
 end
 
 function grid_redraw()
   g:all(0)
   g:led_cells()
+  g:led_signals()
+  g:led_signal_deaths()
+  g:led_signal_and_cell_collision()
   g:led_selected_cell()
   g:led_cell_ports()
   g:refresh()
@@ -43,9 +48,56 @@ function g.key(x, y, z)
   dirty_screen(true)
 end
 
+function g:led_signals()
+  for k,v in pairs(keeper.signals) do
+    if v.generation <= generation() then
+      self:led(v.x, v.y, 10) 
+    end
+  end
+end
+function g:register_signal_death_at(x, y)
+  local signal = {}
+  signal.x = x
+  signal.y = y
+  signal.generation = generation()
+  signal.level = 15
+  table.insert(self.signal_deaths, signal)
+end
+
+function g:led_signal_deaths()
+  for k,v in pairs(self.signal_deaths) do
+    if v.level == 0 or v.generation + 2 < generation() then
+      table.remove(self.signal_deaths, k)
+    else
+      self:led(v.x, v.y, v.level)
+      v.level = v.level - 1
+    end
+  end
+end
+
+function g:register_signal_and_cell_collision_at(x, y)
+  local collision = {}
+  collision.x = x
+  collision.y = y
+  collision.generation = generation()
+  collision.level = 15
+  table.insert(self.signal_and_cell_collisions, collision)
+end
+
+function g:led_signal_and_cell_collision()
+  for k,v in pairs(self.signal_and_cell_collisions) do
+    if v.level == 0 or v.generation + 2 < generation() then
+      table.remove(self.signal_and_cell_collisions, k)
+    else
+      self:led(v.x, v.y, v.level)
+      v.level = v.level - 1
+    end
+  end
+end
+
 function g:led_cells()
-  for key,value in pairs(keeper.cells) do
-    self:led(value.x, value.y, 5) 
+  for k,v in pairs(keeper.cells) do
+    self:led(v.x, v.y, 5) 
   end
 end
 

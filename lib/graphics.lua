@@ -332,10 +332,10 @@ function graphics:west_port(x, y)
 end
 
 function graphics:analysis()
-  local hives = 5
-  local gates = 10
-  local shrines = 3
-  local signals = 20
+  local hives = keeper:count_cells(1)
+  local gates = keeper:count_cells(2)
+  local shrines = keeper:count_cells(3)
+  local signals = #keeper.signals
   local generation = generation()
   self:text_right(60, 18, dictionary.structures[1] .. "S", 5)
   self:text_right(60, 26, dictionary.structures[2] .. "S", 5)
