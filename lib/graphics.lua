@@ -289,13 +289,25 @@ end
 function graphics:draw_ports(adjust)
   local x = self.structure_x
   local y = self.structure_y
-  -- self:text(2, 52, "OPEN PORTS", 5)
+  local ports = ""
   if keeper.is_cell_selected then
-    self:text(56, 52, "NESW", 0)
-    self:north_port(x, y, (adjust or 0))
-    self:east_port(x, y)
-    self:south_port(x, y)
-    self:west_port(x, y)
+    if keeper.selected_cell:is_port_open("n") then
+      self:north_port(x, y, (adjust or 0))
+      ports = ports .. "N"
+    end
+    if keeper.selected_cell:is_port_open("e") then
+      self:east_port(x, y)
+      ports = ports .. "E"
+    end
+    if keeper.selected_cell:is_port_open("s") then
+      self:south_port(x, y)
+      ports = ports .. "S"
+    end
+    if keeper.selected_cell:is_port_open("w") then
+      self:west_port(x, y)
+      ports = ports .. "W"
+    end
+    self:text(56, 52, ports, 0)
   end
 end
 
