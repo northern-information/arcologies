@@ -11,6 +11,9 @@ function grid_redraw_clock()
       grid_redraw()
       dirty_grid(false)
     end
+    if keeper.is_cell_selected then
+      dirty_grid(true)
+    end
   end
 end
 
@@ -18,7 +21,7 @@ function grid_redraw()
   g:all(0)
   g:led_cells()
   g:led_selected_cell()
-  g:led_selected_cell_ports()
+  g:led_cell_ports()
   g:refresh()
 end
 
@@ -38,33 +41,52 @@ function g:led_cells()
 end
 
 function g:led_selected_cell()
+  local l = 0
   if keeper.is_cell_selected then
-    self:led(keeper.selected_cell_x, keeper.selected_cell_y, 15)
+    l = util.clamp(grid_frame() % 15, 5, 15)
+    self:led(keeper.selected_cell_x, keeper.selected_cell_y, l)
   end
 end
 
-function g:led_selected_cell_ports()
+function g:led_cell_ports()
   if not keeper.is_cell_selected then return end
   local x = keeper.selected_cell_x
   local y = keeper.selected_cell_y
-  if keeper.selected_cell:is_port_open('n') then
-    if in_bounds(x, y - 1) then
-      self:led(x, y - 1, 5)
+  local l = 0
+  if in_bounds(x, y - 1) then
+    if keeper.selected_cell:is_port_open('n') then
+      l = util.clamp(grid_frame() % 15, 10, 15)
+      self:led(x, y - 1, l)
+    else
+      l = util.clamp(grid_frame() % 15, 3, 5)
+      self:led(x, y - 1, l)
     end
   end
-  if keeper.selected_cell:is_port_open('e') then
-    if in_bounds(x + 1, y) then
-      self:led(x + 1, y, 5)
+  if in_bounds(x + 1, y) then
+    if keeper.selected_cell:is_port_open('e') then
+      l = util.clamp((grid_frame() % 15) + 3, 10, 15)
+      self:led(x + 1, y, l)
+    else
+      l = util.clamp(grid_frame() % 15, 3, 5)
+      self:led(x + 1, y, l)
     end
   end
-  if keeper.selected_cell:is_port_open('s') then
-    if in_bounds(x, y + 1) then
-      self:led(x, y + 1, 5)
+  if in_bounds(x, y + 1) then
+    if keeper.selected_cell:is_port_open('s') then
+      l = util.clamp((grid_frame() % 15) + 6, 10, 15)
+      self:led(x, y + 1, l)
+    else
+      l = util.clamp(grid_frame() % 15, 3, 5)
+      self:led(x, y + 1, l)
     end
   end
-  if keeper.selected_cell:is_port_open('w') then
-    if in_bounds(x- 1 , y) then
-      self:led(x - 1, y, 5)
+  if in_bounds(x- 1 , y) then  
+    if keeper.selected_cell:is_port_open('w') then
+      l = util.clamp((grid_frame() % 15) + 9, 10, 15)
+      self:led(x - 1, y, l)
+    else
+      l = util.clamp(grid_frame() % 15, 3, 5)
+      self:led(x - 1, y, l)
     end
   end
 end

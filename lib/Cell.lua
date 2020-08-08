@@ -13,17 +13,26 @@ function Cell:new(x, y, g)
   c.structure = 1
   c.metabolism = 4
   c.sound = 72
-  c.ports = {"n", "e", "s", "w"}
+  c.velocity = 127
+  c.ports = {}
 
   return c
 end
 
+function Cell:set_structure(s)
+  self.structure = s
+end
+
 function Cell:set_metabolism(m)
-  self.structure = m
+  self.metabolism = m
 end
 
 function Cell:set_sound(s)
   self.structure = s
+end
+
+function Cell:set_velocity(v)
+  self.velocity = v
 end
 
 function Cell:open_port(p)

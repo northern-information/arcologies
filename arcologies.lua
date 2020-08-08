@@ -80,16 +80,6 @@ function key(k,z)
   end
 end
 
-function long_press(k)
-  clock.sleep(1)
-  key_counter[k] = nil
-  if k == 3 then
-    keeper:delete_all_cells()
-    is_deleting(false)
-  end
-  dirty_screen(true)
-end
-
 function cleanup()
   g.all(0)
   poll:clear_all()

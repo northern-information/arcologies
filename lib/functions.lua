@@ -22,6 +22,16 @@ function cache_check(cache, check)
   end
 end
 
+function long_press(k)
+  clock.sleep(1)
+  key_counter[k] = nil
+  if k == 3 then
+    keeper:delete_all_cells()
+    is_deleting(false)
+  end
+  dirty_screen(true)
+end
+
 function select_page(x)
   page.active_page = x
   page.items = page_items[page.active_page]

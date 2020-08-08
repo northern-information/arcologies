@@ -103,7 +103,11 @@ function page:one()
     local ml = generation_fmod(4)
     graphics:icon(56, 44, ml, (ml == 1) and 1 or 0)
   end
-  graphics:icon(76, 44, "X", (self.selected_item == 3) and 1 or 0)
+  if is_deleting() then
+    graphics:icon(76, 44, "!!", 1)
+  else
+    graphics:icon(76, 44, "X", 0)
+  end
 end
 
 
