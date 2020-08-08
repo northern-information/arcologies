@@ -31,20 +31,25 @@ function page:change_selected_item_value(d)
       cache_check(cache, params:get("bpm"))
     end
 
-  -- structures
+  -- cell designer
   elseif p == 2 then
+    if not keeper.is_cell_selected then return end
     if s == 1 then
-      cache = params:get("page_structure")
-      params:set("page_structure", util.clamp(params:get("page_structure") + d, 1, 4))
-      cache_check(cache, params:get("page_structure"))
+      cache = keeper.selected_cell.structure
+      keeper.selected_cell:set_structure(util.clamp(keeper.selected_cell.structure + d, 1, 3))
+      cache_check(cache, keeper.selected_cell.structure)
     elseif s == 2 then
-      cache = params:get("page_metabolism")
-      params:set("page_metabolism", util.clamp(params:get("page_metabolism") + d, 1, 16))
-      cache_check(cache, params:get("page_structure"))
+      cache = keeper.selected_cell.metabolism
+      keeper.selected_cell:set_metabolism(util.clamp(keeper.selected_cell.metabolism + d, 1, 16))
+      cache_check(cache, keeper.selected_cell.metabolism)
     elseif s == 3 then
-      cache = params:get("page_sound")
-      params:set("page_sound", util.clamp(params:get("page_sound") + d, 1, 144))
-      cache_check(cache, params:get("page_structure"))
+      cache = keeper.selected_cell.sound
+      keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
+      cache_check(cache, keeper.selected_cell.sound)
+    elseif s == 4 then
+      cache = keeper.selected_cell.velocity
+      keeper.selected_cell:set_velocity(util.clamp(keeper.selected_cell.velocity + d, 1, 127))
+      cache_check(cache, keeper.selected_cell.velocity)
     end
 
   -- analysis

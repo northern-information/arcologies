@@ -179,7 +179,7 @@ end
 
 function graphics:metabolism_enable()
     self:text(2, 26, dictionary.cell_attributes[2], 15)
-    self:text(56, 25, params:get("page_metabolism"), 0)
+    self:text(56, 25, keeper.selected_cell.metabolism, 0)
 end
 
 function graphics:metabolism_disable()
@@ -189,7 +189,7 @@ end
 
 function graphics:sound_enable()
   self:text(2, 34, dictionary.cell_attributes[3], 15)
-  graphics:text(56, 33, dictionary.sounds[params:get("page_sound")], 0)
+  graphics:text(56, 33, dictionary.sounds[keeper.selected_cell.sound], 0)
 end
 
 function graphics:sound_disable()
@@ -199,7 +199,7 @@ end
 
 function graphics:velocity_enable()
   self:text(2, 42, dictionary.cell_attributes[4], 15)
-  graphics:text(56, 41, dictionary.sounds[params:get("page_velocity")], 0)
+  graphics:text(56, 41, keeper.selected_cell.velocity, 0)
 end
 
 function graphics:velocity_disable()

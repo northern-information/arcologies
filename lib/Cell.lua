@@ -34,7 +34,7 @@ function Cell:set_metabolism(m)
 end
 
 function Cell:set_sound(s)
-  self.structure = s
+  self.sound = s
 end
 
 function Cell:set_velocity(v)
