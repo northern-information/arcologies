@@ -32,13 +32,17 @@ end
 
 function keeper:propagate_signals()
   if #self.signals < 1 then return end
+  local delete = {}
   for k,v in pairs(self.signals) do
     if v.generation < generation() then
       v:propagate()
       if not in_bounds(v.x, v.y) then
-        self:delete_signal(v.id)
+        table.insert(delete, v.id)
       end
     end
+  end
+  for k,v in pairs(delete) do
+    self:delete_signal(v)
   end
   dirty_grid(true)
   dirty_screen(true)
@@ -123,6 +127,7 @@ function keeper:delete_signal(id)
       table.remove(self.signals, k)
     end
   end
+  dirty_grid(true)
 end
 
 function keeper:delete_all_signals()

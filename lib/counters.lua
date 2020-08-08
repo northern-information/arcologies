@@ -35,6 +35,9 @@ function counters.redraw_clock()
       redraw()
       dirty_screen(false)
     end
+    if dirty_grid() then
+      grid_redraw()
+    end
     clock.sleep(1 / 30)
   end
 end
@@ -59,7 +62,7 @@ function counters.conductor()
 end
 
 function counters.gridmeister()
-  counters.grid.frame = counters.grid.frame + 1 
+  counters.grid.frame = counters.grid.frame + 1
 end
 
 return counters

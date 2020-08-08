@@ -9,7 +9,7 @@
 -- ........................................
 -- l.llllllll.co/arcologies
 -- <3 @tyleretters
--- v0.0.1
+-- v0.5.0-beta
 
                include("arcologies/lib/Cell")               
                include("arcologies/lib/Signal")               

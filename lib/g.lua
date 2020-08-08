@@ -55,6 +55,7 @@ function g:led_signals()
     end
   end
 end
+
 function g:register_signal_death_at(x, y)
   local signal = {}
   signal.x = x
