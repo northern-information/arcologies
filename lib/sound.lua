@@ -1,11 +1,9 @@
 local sound = {}
 
-function sound.init()
-
-end
+function sound.init() end
 
 function sound:play(note, velocity)
-  print('note: ' .. note .. ' velocity: ' .. velocity)
+  engine.hz(mu.note_num_to_freq(note))
 end
 
 return sound

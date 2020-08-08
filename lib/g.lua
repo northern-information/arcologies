@@ -117,16 +117,16 @@ function g:led_cell_ports()
   local high = util.clamp(grid_frame() % 15, 10, 15)
   local low = util.clamp(grid_frame() % 15, 3, 5)
   if in_bounds(x, y - 1) then
-    self:led(x, y - 1, keeper.selected_cell:is_port_open('n') and high or low)
+    self:led(x, y - 1, keeper.selected_cell:is_port_open("n") and high or low)
   end
   if in_bounds(x + 1, y) then
-    self:led(x + 1, y, keeper.selected_cell:is_port_open('e') and high or low)
+    self:led(x + 1, y, keeper.selected_cell:is_port_open("e") and high or low)
   end
   if in_bounds(x, y + 1) then
-    self:led(x, y + 1, keeper.selected_cell:is_port_open('s') and high or low)
+    self:led(x, y + 1, keeper.selected_cell:is_port_open("s") and high or low)
   end
   if in_bounds(x - 1 , y) then  
-    self:led(x - 1, y, keeper.selected_cell:is_port_open('w') and high or low)
+    self:led(x - 1, y, keeper.selected_cell:is_port_open("w") and high or low)
   end
 end
 

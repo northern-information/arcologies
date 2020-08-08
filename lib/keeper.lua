@@ -52,7 +52,7 @@ function keeper:collide_signals()
   for k,v in pairs(self.signals) do
     for kk,vv in pairs(self.signals) do
       if k ~= kk then 
-        if v.id == vv.id and v.generation == vv.generation then
+        if v.id == vv.id then
           g:register_signal_death_at(v.x, v.y)
           self:delete_signal(v.id)
           self:delete_signal(vv.id)

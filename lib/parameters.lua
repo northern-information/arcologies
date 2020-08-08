@@ -18,7 +18,7 @@ params:add{ type = "number", id = "bpm", min = 20, max = 240, default = 120,
 
 function parameters.init()
   params:bang()
-  params:set("bpm", math.random(20, 240))
+  -- params:set("bpm", math.random(20, 240))
 end
 
 function parameters.bpm_listener(x)

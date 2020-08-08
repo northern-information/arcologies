@@ -8,10 +8,10 @@ function Cell:new(x, y, g)
   c.y = y
   c.id = id(c.x, c.y)
   c.available_ports = {
-    { c.x, c.y - 1, 'n' },
-    { c.x + 1, c.y, 'e' },
-    { c.x, c.y + 1, 's' },
-    { c.x - 1, c.y, 'w' }
+    { c.x, c.y - 1, "n" },
+    { c.x + 1, c.y, "e" },
+    { c.x, c.y + 1, "s" },
+    { c.x - 1, c.y, "w" }
   }
   c.generation = g
 

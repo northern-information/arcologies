@@ -20,13 +20,13 @@ function Signal:set_heading(h)
 end
 
 function Signal:propagate()
-  if self.heading == 'n' then
+  if self.heading == "n" then
     self.y = self.y - 1
-  elseif self.heading == 'e' then
+  elseif self.heading == "e" then
     self.x = self.x + 1
-  elseif self.heading == 's' then
+  elseif self.heading == "s" then
     self.y = self.y + 1
-  elseif self.heading == 'w' then
+  elseif self.heading == "w" then
     self.x = self.x - 1
   end
   self.id = id(self.x, self.y)
