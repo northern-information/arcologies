@@ -10,6 +10,12 @@ function dirty_screen(bool)
   return screen_dirty
 end
 
+function is_deleting(bool)
+  if bool == nil then return deleting end
+  deleting = bool
+  return deleting
+end
+
 function cache_check(cache, check)
   if cache ~= check then
     dirty_screen(true)
@@ -21,6 +27,24 @@ function select_page(x)
   page.items = page_items[page.active_page]
   page.selected_item = 1
   dirty_screen(true)
+end
+
+function in_bounds(x, y)  
+  if 0 > y then
+    return false -- north
+  
+  elseif params:get("grid_width") < x then
+    return false -- east
+  
+  elseif params:get("grid_height") < y then 
+    return false -- south
+
+  elseif 0 > x then
+    return false -- west
+
+  else
+    return true -- ok
+  end
 end
 
 function grid_frame()

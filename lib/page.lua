@@ -4,8 +4,8 @@ function page.init()
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
-  page_items[1] = 3
-  page_items[2] = 3
+  page_items[1] = 2
+  page_items[2] = 4
   page_items[3] = 0
   page.items = page_items[page.active_page]
 end
@@ -29,10 +29,6 @@ function page:change_selected_item_value(d)
       cache = params:get("bpm")
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
       cache_check(cache, params:get("bpm"))
-    elseif s == 3 then
-      cache = params:get("enc_confirm_index")
-      params:set("enc_confirm_index", util.clamp(params:get("enc_confirm_index") + d, 1, 53))
-      cache_check(cache, params:get("enc_confirm_index"))
     end
 
   -- structures
@@ -70,9 +66,9 @@ function page:render()
   self.active_page = page.active_page
   self.selected_item = page.selected_item
   graphics:top_menu()
-  graphics:top_menu_tabs()
   graphics:select_tab(self.active_page)
-  graphics:top_message(dictionary.pages[self.active_page])
+  graphics:top_message()
+  graphics:page_name(dictionary.pages[self.active_page])
   if self.active_page == 1 then
     self:one()
   elseif self.active_page == 2 then
@@ -100,14 +96,11 @@ function page:one()
   graphics:menu_highlight(self.selected_item)
   graphics:text(2, 18, params:get("playback") == 0 and "READY" or "PLAYING")  
   graphics:text(2, 26, "BPM")
-  graphics:text(2, 34, "CLEAR " .. graphics:enc_confirm_animation(parameters.enc_confirm_index))
   graphics:bpm(55, 39, params:get("bpm"), 0)
   if params:get("playback") == 0 then
-    graphics:playback(generation_fmod(10))
     graphics:icon(56, 44, "||", 1)
   else
     local ml = generation_fmod(4)
-    graphics:playback(generation_fmod(4))
     graphics:icon(56, 44, ml, (ml == 1) and 1 or 0)
   end
   graphics:icon(76, 44, "X", (self.selected_item == 3) and 1 or 0)
@@ -132,6 +125,7 @@ function page:two()
     graphics:structure_disable()
     graphics:metabolism_disable()
     graphics:sound_disable()
+    graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 1 then
     graphics:hive()
     graphics:draw_ports()
@@ -139,6 +133,7 @@ function page:two()
     graphics:structure_enable()
     graphics:metabolism_enable()
     graphics:sound_disable()
+    graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 2 then
     graphics:gate()
     graphics:draw_ports(-5)
@@ -146,6 +141,7 @@ function page:two()
     graphics:structure_enable()
     graphics:metabolism_disable()
     graphics:sound_disable()
+    graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 3 then
     graphics:shrine()
     graphics:draw_ports()    
@@ -153,6 +149,7 @@ function page:two()
     graphics:structure_enable()
     graphics:metabolism_disable()
     graphics:sound_enable()
+    graphics:velocity_enable()
   end
 end
 

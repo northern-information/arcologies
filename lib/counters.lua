@@ -1,6 +1,8 @@
 local counters = {}
 
 function counters.init()
+  counters.message = 0
+
   counters.ui = metro.init()
   counters.ui.time = 1 / 30
   counters.ui.count = -1
@@ -25,6 +27,16 @@ function counters.init()
   counters.grid.frame = 1
   counters.grid.event = counters.gridmeister
   counters.grid:start()
+end
+
+function counters.redraw_clock()
+  while true do
+    if dirty_screen() then
+      redraw()
+      dirty_screen(false)
+    end
+    clock.sleep(1 / 30)
+  end
 end
 
 function counters.optician()

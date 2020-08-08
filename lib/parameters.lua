@@ -33,6 +33,9 @@ params:hide("page_metabolism")
 params:add{ type = "number", id = "page_sound", min = 1, max = 144, default = 73 }
 params:hide("page_sound")
 
+params:add{ type = "number", id = "page_velocity", min = 0, max = 127, default = 127 }
+params:hide("page_velocity")
+
 function parameters.init()
   params:bang()
   params:set("bpm", math.random(20, 240))

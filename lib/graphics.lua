@@ -1,6 +1,7 @@
 local graphics = {}
 
 function graphics.init()
+  graphics.temporary_message = ""
   graphics.tab_width = 5
   graphics.tab_height = 5
   graphics.tab_padding = 1
@@ -14,11 +15,26 @@ end
 
 function graphics:top_menu()
   self:rect(0, 0, 128, 7)
-end
-
-function graphics:top_menu_tabs()
   for i = 1,3 do
     self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
+  end
+  self:top_message(graphics:playback(generation_fmod(4)))
+end
+
+function graphics:set_message(string, time)
+  self.temporary_message = string
+  counters.message = counters.ui.frame + time
+end
+
+function graphics:top_message(string)
+  if is_deleting() then
+    self.temporary_message = "DELETING..."
+    counters.message = counters.ui.frame + 1
+  end
+  if counters.message > counters.ui.frame then
+    self:text(20, 6, self.temporary_message, 0)
+  else
+    self:text(20, 6, string, 0)
   end
 end
 
@@ -31,7 +47,7 @@ function graphics:select_tab(i)
   self:mlrs(self:get_tab_x(i) + 2, 3, 1, 6)
 end
 
-function graphics:top_message(string)
+function graphics:page_name(string)
   self:text_right(127, 6, string, 0)
 end
 
@@ -92,11 +108,11 @@ function graphics:bpm(x, y, string, level)
 end
 
 function graphics:playback()
-  self:text(20, 6, 
+  self:top_message( 
     (params:get("playback") == 0) and 
       self:ready_animation(generation_fmod(10)) or 
       self:playing_animation(generation_fmod(4))
-  , 0)
+  )
 end
 
 function graphics:status(x, y, string, level)
@@ -140,7 +156,7 @@ function graphics:seed_selected(x, y)
 end
 
 function graphics:cell_id()
-  self:text(2, 61, "CELL ID", 5)
+  -- self:text(2, 61, "CELL ID", 5)
   local id = "NONE"
   if keeper.is_cell_selected then
     id = keeper.selected_cell_id
@@ -179,6 +195,16 @@ end
 function graphics:sound_disable()
   self:text(2, 34, dictionary.cell_attributes[3], 5)
   self:mls(0, 32, 51, 31, 10)
+end
+
+function graphics:velocity_enable()
+  self:text(2, 42, dictionary.cell_attributes[4], 15)
+  graphics:text(56, 41, dictionary.sounds[params:get("page_velocity")], 0)
+end
+
+function graphics:velocity_disable()
+  self:text(2, 42, dictionary.cell_attributes[4], 5)
+  self:mls(0, 40, 51, 39, 10)
 end
 
 function graphics:left_wall(x, y)
@@ -263,15 +289,13 @@ end
 function graphics:draw_ports(adjust)
   local x = self.structure_x
   local y = self.structure_y
-  self:text(2, 52, "OPEN PORTS", 5)
+  -- self:text(2, 52, "OPEN PORTS", 5)
   if keeper.is_cell_selected then
     self:text(56, 52, "NESW", 0)
     self:north_port(x, y, (adjust or 0))
     self:east_port(x, y)
     self:south_port(x, y)
     self:west_port(x, y)
-  else
-    self:text(56, 52, "NONE", 0)
   end
 end
 
@@ -336,55 +360,6 @@ function graphics:playing_animation(i)
     " >",
     "  >",
     "   >"
-  }
-  return f[i]
-end
-
-function graphics:enc_confirm_animation(i)
-  local f = {
-    " ",
-    ">",
-    ">>",
-    "9>>",
-    " 9>>",
-    "> 9>>",
-    ">> 9>",
-    "8>> 9",
-    " 8>> ",
-    "> 8>>",
-    ">> 8>",
-    "7>> 8",
-    " 7>> ",
-    "> 7>>",
-    ">> 7>",
-    "6>> 7",
-    " 6>> ",
-    "> 6>>",
-    ">> 6>",
-    "5>> 6",
-    " 5>> ",
-    "> 5>>",
-    "4> 5>",
-    "!4> 5",
-    " !4> ",
-    "> !4>",
-    "3> !4",
-    "!3> !",
-    "> !3>",
-    "2> !3",
-    "!2> !",
-    " !2> ",
-    "> !2>",
-    "1> !2>",
-    "!1> !2",
-    " !1> !",
-    "  !1> ",
-    "! !1>",
-    "!! !1",
-    "!!! !",
-    "!!!! ",
-    "!!!!!",
-    "DONE!"
   }
   return f[i]
 end

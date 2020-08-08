@@ -21,8 +21,6 @@
         page = include("arcologies/lib/page")  
   parameters = include("arcologies/lib/parameters")
           tu = require("tabutil")
-  grid_dirty = true
-screen_dirty = true
 
 function init()
   audio:pitch_off()
@@ -33,7 +31,11 @@ function init()
   keeper.init()
   page.init()  
   parameters.init()
-  select_page(3)
+  deleting = false
+  grid_dirty, screen_dirty = true, true
+  key_counter = {{},{},{}}
+  clock.run(counters.redraw_clock)
+  select_page(1)
   redraw()
 end
 
@@ -43,18 +45,6 @@ function redraw()
   page:render()
   graphics:teardown()
   dirty_screen(false)
-end
-
-function key(k, z)
-  if k == 2 and z == 1 then
-    parameters.toggle_playback()
-    keeper:deselect_cell()
-  end
-  if k == 3 and z == 1 then
-    if keeper.is_cell_selected then
-      keeper:delete_cell(keeper.selected_cell_id)
-    end
-  end
 end
 
 function enc(n, d)
@@ -68,6 +58,36 @@ function enc(n, d)
   else
     page:change_selected_item_value(d)
   end
+end
+
+function key(k,z)
+  is_deleting(k == 3 and z == 1 and true or false)
+  if z == 1 then
+    key_counter[k] = clock.run(long_press, k)
+  elseif z == 0 then
+    if key_counter[k] then
+      clock.cancel(key_counter[k])
+      if k == 2 then
+        parameters.toggle_playback()
+        keeper:deselect_cell()
+      elseif k == 3 then
+        if keeper.is_cell_selected then
+          keeper:delete_cell(keeper.selected_cell_id)
+        end
+      end
+      dirty_screen(true)
+    end
+  end
+end
+
+function long_press(k)
+  clock.sleep(1)
+  key_counter[k] = nil
+  if k == 3 then
+    keeper:delete_all_cells()
+    is_deleting(false)
+  end
+  dirty_screen(true)
 end
 
 function cleanup()

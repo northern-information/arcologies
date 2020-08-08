@@ -42,8 +42,9 @@ function keeper:delete_cell(id)
 end
 
 function keeper:delete_all_cells()
-  self.deselect_cell()
+  self:deselect_cell()
   self.cells = {}
+  graphics:set_message("DELETED ALL.", 10)
 end
 
 function keeper:select_cell(x, y)

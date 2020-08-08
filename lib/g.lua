@@ -48,22 +48,22 @@ function g:led_selected_cell_ports()
   local x = keeper.selected_cell_x
   local y = keeper.selected_cell_y
   if keeper.selected_cell:is_port_open('n') then
-    if 0 < y - 1 then
+    if in_bounds(x, y - 1) then
       self:led(x, y - 1, 5)
     end
   end
   if keeper.selected_cell:is_port_open('e') then
-    if params:get("grid_width") > x + 1 then
+    if in_bounds(x + 1, y) then
       self:led(x + 1, y, 5)
     end
   end
   if keeper.selected_cell:is_port_open('s') then
-    if params:get("grid_height") > y + 1 then
+    if in_bounds(x, y + 1) then
       self:led(x, y + 1, 5)
     end
   end
   if keeper.selected_cell:is_port_open('w') then
-    if 0 < x - 1 then
+    if in_bounds(x- 1 , y) then
       self:led(x - 1, y, 5)
     end
   end
