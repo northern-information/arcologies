@@ -36,7 +36,18 @@ function init()
   key_counter = {{},{},{}}
   clock.run(counters.redraw_clock)
   select_page(1)
+  dev()
   redraw()
+end
+
+function dev()
+  keeper:select_cell(3, 3)
+  keeper.selected_cell:open_port('e')
+  keeper:select_cell(14, 3)
+  keeper.selected_cell:set_structure(3)
+  keeper.selected_cell:open_port('w')
+  keeper:deselect_cell()
+  parameters.toggle_playback()
 end
 
 function redraw()
