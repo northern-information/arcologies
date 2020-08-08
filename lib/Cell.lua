@@ -13,7 +13,7 @@ function Cell:new(x, y, g)
   c.structure = 1
   c.metabolism = 4
   c.sound = 72
-  c.ports = {}
+  c.ports = {"n", "e", "s", "w"}
 
   return c
 end
@@ -27,13 +27,17 @@ function Cell:set_sound(s)
 end
 
 function Cell:open_port(p)
-  table.insert(self.ports, p)
+  if not self:check_port(p) then
+    table.insert(self.ports, p)
+  end
 end
 
 function Cell:close_port(p)
-  table.remove(self.ports, p)
+  if self:check_port(p) then
+    table.remove(self.ports, p)
+  end
 end
 
-function Cell:check_port(p)
+function Cell:is_port_open(p)
   return tu.contains(self.ports, p)
 end

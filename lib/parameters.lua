@@ -1,5 +1,11 @@
 local parameters = {}
 
+params:add{ type = "number", id = "grid_width", default = 16 }
+params:hide("grid_width")
+
+params:add{ type = "number", id = "grid_height", default = 8 }
+params:hide("grid_height")
+
 params:add{ type = "number", id = "playback", min = 0, max = 1, default = 0 }
 params:hide("playback")
 
@@ -44,7 +50,7 @@ function parameters.static_animation_listener(x)
   parameters.static_animation_value = (x == 0) and "C" or "S"
 end
 
-function parameters.toggle_status()
+function parameters.toggle_playback()
   if params:get("playback") == 0 then
     params:set("playback", 1)
   else

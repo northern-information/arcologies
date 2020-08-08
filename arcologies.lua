@@ -40,9 +40,6 @@ end
 function redraw()
   if not dirty_screen() then return end
   graphics:setup()
-  graphics:ui()
-  graphics:select_tab(page.active_page)
-  graphics:top_message(dictionary.pages[page.active_page])
   page:render()
   graphics:teardown()
   dirty_screen(false)
@@ -50,7 +47,8 @@ end
 
 function key(k, z)
   if k == 2 and z == 1 then
-    parameters.toggle_status()
+    parameters.toggle_playback()
+    keeper:deselect_cell()
   end
   if k == 3 and z == 1 then
     if keeper.is_cell_selected then

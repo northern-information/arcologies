@@ -18,6 +18,7 @@ function grid_redraw()
   g:all(0)
   g:led_cells()
   g:led_selected_cell()
+  g:led_selected_cell_ports()
   g:refresh()
 end
 
@@ -32,13 +33,39 @@ end
 
 function g:led_cells()
   for key,value in pairs(keeper.cells) do
-    g:led(value.x, value.y, 5) 
+    self:led(value.x, value.y, 5) 
   end
 end
 
 function g:led_selected_cell()
   if keeper.is_cell_selected then
-    g:led(keeper.selected_cell_x, keeper.selected_cell_y, 15)
+    self:led(keeper.selected_cell_x, keeper.selected_cell_y, 15)
+  end
+end
+
+function g:led_selected_cell_ports()
+  if not keeper.is_cell_selected then return end
+  local x = keeper.selected_cell_x
+  local y = keeper.selected_cell_y
+  if keeper.selected_cell:is_port_open('n') then
+    if 0 < y - 1 then
+      self:led(x, y - 1, 5)
+    end
+  end
+  if keeper.selected_cell:is_port_open('e') then
+    if params:get("grid_width") > x + 1 then
+      self:led(x + 1, y, 5)
+    end
+  end
+  if keeper.selected_cell:is_port_open('s') then
+    if params:get("grid_height") > y + 1 then
+      self:led(x, y + 1, 5)
+    end
+  end
+  if keeper.selected_cell:is_port_open('w') then
+    if 0 < x - 1 then
+      self:led(x - 1, y, 5)
+    end
   end
 end
 

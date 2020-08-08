@@ -69,6 +69,9 @@ function page:render()
   local cache_selected_item = self.selected_item
   self.active_page = page.active_page
   self.selected_item = page.selected_item
+  graphics:ui()
+  graphics:select_tab(self.active_page)
+  graphics:top_message(dictionary.pages[self.active_page])
   if self.active_page == 1 then
     self:one()
   elseif self.active_page == 2 then
