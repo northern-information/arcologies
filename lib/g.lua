@@ -26,15 +26,17 @@ function grid_redraw()
 end
 
 function g.key(x, y, z)
-  if z == 0 then return end
-  if keeper.is_cell_selected then                -- is a cell selected? [...]
-    if keeper.selected_cell:find_port(x, y) then   -- is this a port?
-      keeper.selected_cell:toggle_port(x, y)         -- then toggle it
-    elseif keeper:cell_exists(id(x, y)) then       -- is this another cell?
-      keeper:select_cell(x, y)                      -- then select it
-    else keeper:deselect_cell() end               -- deselect it
-  else
-    keeper:select_cell(x, y)                   -- [...] then select it
+  if z == 0 then return end                       -- keyups aren't a thing
+  if not keeper.is_cell_selected then             -- no cell is selected
+    keeper:select_cell(x, y)                      --   so select this one
+  else                                            -- else!
+    if keeper.selected_cell:find_port(x, y) then  -- is this a port?
+      keeper.selected_cell:toggle_port(x, y)      --   then toggle it
+    elseif keeper:cell_exists(id(x, y)) then      -- elseif is this another cell?
+      keeper:select_cell(x, y)                    --   then select it
+    else                                          -- else!
+      keeper:deselect_cell()                      --   deselect it
+    end
   end
   select_page(2)
   dirty_grid(true)
