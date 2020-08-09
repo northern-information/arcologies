@@ -67,6 +67,7 @@ function enc(n, d)
   else
     page:change_selected_item_value(d)
   end
+  dirty_screen(true) -- todo make sure i'm not over doing it with these
 end
 
 function key(k,z)

@@ -123,6 +123,12 @@ function graphics:status(x, y, string, level)
   self:reset_font()
 end
 
+function graphics:text_center(x, y, string, level)
+  screen.level(level or 15)  
+  screen.move(x, y)
+  screen.text_center(string)
+end
+
 function graphics:text_right(x, y, string, level)
   screen.level(level or 15)  
   screen.move(x, y)
@@ -334,9 +340,6 @@ end
 
 function graphics:analysis()
   local chart = {}
-  chart.x = 64
-  chart.y = 30
-  chart.r = 20
   chart.values = {}
   chart.values[1] = keeper:count_cells(1)
   chart.values[2] = keeper:count_cells(2)
@@ -346,14 +349,51 @@ function graphics:analysis()
   for i = 1, #chart.values do chart.values_total = chart.values_total + chart.values[i] end
   chart.percentages = {}
   for i = 1, #chart.values do chart.percentages[i] = chart.values[i] / chart.values_total end
-  self:mls(0, 58, chart.percentages[1] * 128, 58, 15)
-  self:mls(0, 60, chart.percentages[2] * 128, 60, 15)
-  self:mls(0, 62, chart.percentages[3] * 128, 62, 15)
-  self:mls(0, 64, chart.percentages[4] * 128, 64, 15)
+  chart.degrees = {}
+  for i = 1, #chart.percentages do chart.degrees[i] = chart.percentages[i] * 360 end
 
-  self:circle(chart.x, chart.y, chart.r, 15)
-  self:circle(chart.x, chart.y, chart.r - 1, 0)
-  self:mls(chart.x, chart.y, chart.x, chart.y - chart.r, 15)
+
+  local pie_chart_x = 22
+  local pie_chart_y = 30
+  local pie_chart_r = 20
+  local total_degrees = 0
+  local text_degrees = 0
+  local percent = 0
+  local start_readout = 18
+  local spacing = 10
+  local readout_x = 60
+  local readout_y = 0
+  self:circle(pie_chart_x, pie_chart_y, pie_chart_r, 15)
+  self:circle(pie_chart_x, pie_chart_y, pie_chart_r - 1, 0)
+  for i = 1, #chart.percentages do
+    total_degrees = total_degrees + chart.degrees[i]
+    text_degrees = text_degrees + chart.degrees[i] -- / 2
+    sector_x = math.cos(math.rad(total_degrees)) * pie_chart_r
+    sector_y = math.sin(math.rad(total_degrees)) * pie_chart_r
+    self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
+    text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
+    text_y = math.sin(math.rad(text_degrees)) * pie_chart_r    
+    percent = round(chart.percentages[i] * 100)
+    self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(percent) + 2, 7, 15)
+    self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, percent, 0)
+    readout_y = start_readout + ((i - 1) * spacing)
+    if i ~= 4 then
+      self:text_left(readout_x, readout_y , dictionary.structures[i] .. "S", 5)
+    else
+      self:text_left(readout_x, readout_y , "SIGNALS", 5)
+    end    
+  end
+  
+
+  -- line graph
+  local line_graph_start_x = 54  
+  local line_graph_start_y = 50
+  local line_graph_spacing = 2
+  local line_graph_y = 0
+  for i = 1, 4 do
+    line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
+    self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, 15)
+  end
 
   -- local generation = generation()
   -- self:text_right(60, 18, dictionary.structures[1] .. "S", 5)
