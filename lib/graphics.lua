@@ -7,6 +7,7 @@ function graphics.init()
   graphics.tab_padding = 1
   graphics.structure_x = 94
   graphics.structure_y = 26
+  graphics.total_cells = grid_height() * grid_width()
 end
 
 function graphics:get_tab_x(i)
@@ -109,7 +110,7 @@ end
 
 function graphics:playback()
   self:top_message( 
-    (params:get("playback") == 0) and 
+    (sound.playback == 0) and 
       self:ready_animation(generation_fmod(10)) or 
       self:playing_animation(generation_fmod(4))
   )
@@ -332,21 +333,52 @@ function graphics:west_port(x, y)
 end
 
 function graphics:analysis()
-  local hives = keeper:count_cells(1)
-  local gates = keeper:count_cells(2)
-  local shrines = keeper:count_cells(3)
-  local signals = #keeper.signals
-  local generation = generation()
-  self:text_right(60, 18, dictionary.structures[1] .. "S", 5)
-  self:text_right(60, 26, dictionary.structures[2] .. "S", 5)
-  self:text_right(60, 34, dictionary.structures[3] .. "S", 5)
-  self:text_right(60, 42, "SIGNALS", 5)
-  self:text_right(60, 50, "GENERATION", 5)
-  self:text(66, 18, hives, 15)
-  self:text(66, 26, gates, 15)
-  self:text(66, 34, shrines, 15)
-  self:text(66, 42, signals, 15)
-  self:text(66, 50, generation, 15)
+  local chart = {}
+  chart.x = 64
+  chart.y = 30
+  chart.r = 20
+  chart.values = {}
+  chart.values[1] = keeper:count_cells(1)
+  chart.values[2] = keeper:count_cells(2)
+  chart.values[3] = keeper:count_cells(3)
+  chart.values[4] = #keeper.signals
+  chart.values_total = 0
+  for i = 1, #chart.values do chart.values_total = chart.values_total + chart.values[i] end
+  chart.percentages = {}
+  for i = 1, #chart.values do chart.percentages[i] = chart.values[i] / chart.values_total end
+  self:mls(0, 58, chart.percentages[1] * 128, 58, 15)
+  self:mls(0, 60, chart.percentages[2] * 128, 60, 15)
+  self:mls(0, 62, chart.percentages[3] * 128, 62, 15)
+  self:mls(0, 64, chart.percentages[4] * 128, 64, 15)
+
+  self:circle(chart.x, chart.y, chart.r, 15)
+  self:circle(chart.x, chart.y, chart.r - 1, 0)
+  self:mls(chart.x, chart.y, chart.x, chart.y - chart.r, 15)
+
+  -- local generation = generation()
+  -- self:text_right(60, 18, dictionary.structures[1] .. "S", 5)
+  -- self:text_right(60, 26, dictionary.structures[2] .. "S", 5)
+  -- self:text_right(60, 34, dictionary.structures[3] .. "S", 5)
+  -- self:text_right(60, 42, "SIGNALS", 5)
+  -- self:text_right(60, 50, "GENERATION", 5)
+  -- self:text(66, 18, values[1], 15)
+  -- self:text(66, 26, values[2], 15)
+  -- self:text(66, 34, values[3], 15)
+  -- self:text(66, 42, values[4], 15)
+  -- self:text(66, 50, generation, 15)
+  -- local graph = graph.new()
+  -- graph:set_style("bar")
+  -- table.sort(values)
+  -- graph:set_x_max(values[#values])
+  -- print(values[#values])
+  -- graph:set_position_and_size(1, 10, 40, 20)
+  -- graph:set_show_y_axis(true)
+  -- graph:set_show_x_axis(true)
+  -- graph:add_point(1, (values[1] / self.total_cells) * values[#values], "lin", true)
+  -- graph:add_point(2, (values[2] / self.total_cells) * values[#values], "lin", true)
+  -- graph:add_point(3, (values[3] / self.total_cells) * values[#values], "lin", true)
+  -- graph:add_point(4, (values[4] / self.total_cells) * values[#values], "lin", true)
+  -- graph:redraw()
   
 end
 

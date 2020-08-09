@@ -43,7 +43,7 @@ function g.key(x, y, z)
       keeper:deselect_cell()
     end
   end
-  select_page(2)
+  -- select_page(2)
   dirty_grid(true)
   dirty_screen(true)
 end

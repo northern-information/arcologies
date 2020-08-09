@@ -25,6 +25,7 @@
        sound = include("arcologies/lib/sound")
           mu = require("musicutil")
           tu = require("tabutil")
+       graph = require("graph")
  engine.name = "PolyPerc"
 
 function init()
@@ -42,8 +43,8 @@ function init()
   grid_dirty, screen_dirty = true, true
   key_counter = {{},{},{}}
   clock.run(counters.redraw_clock)
-  select_page(1)
-  dev:setup_demo()
+  select_page(3)
+  dev:seed_random()
   redraw()
 end
 

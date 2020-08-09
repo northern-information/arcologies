@@ -7,7 +7,6 @@ function counters.init()
   counters.ui.time = 1 / 30
   counters.ui.count = -1
   counters.ui.play = 1
-  counters.ui.microframe = 1
   counters.ui.frame = 1
   counters.ui.event = counters.optician
   counters.ui:start()
@@ -43,18 +42,14 @@ function counters.redraw_clock()
 end
 
 function counters.optician()
-  counters.ui.microframe = counters.ui.microframe + 1
-  if counters.ui.microframe % 4 == 0 then
-    counters.ui.frame = counters.ui.frame + 1
-  end
-  dirty_screen(true)
+  counters.ui.frame = counters.ui.frame + 1
   redraw()
 end
 
 function counters.conductor()
   counters.music.time = parameters.bpm_to_seconds
   counters.music.generation = counters.music.generation + 1    
-  if params:get("playback") == 1 then 
+  if sound.playback == 1 then 
     keeper:spawn_signals()
     keeper:propagate_signals()
     keeper:collide_signals()

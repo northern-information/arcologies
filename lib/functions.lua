@@ -28,7 +28,7 @@ function long_press(k)
   if k == 3 then
     keeper:delete_all_cells()
     is_deleting(false)
-    graphics:set_message("DELETED ALL.", 10)
+    graphics:set_message("DELETED ALL.", 40)
   end
   dirty_screen(true)
 end
@@ -43,27 +43,27 @@ end
 function in_bounds(x, y)  
   if 1 > y then
     return false -- north
-  
-  elseif params:get("grid_width") < x then
+  elseif grid_width() < x then
     return false -- east
-  
-  elseif params:get("grid_height") < y then 
+  elseif grid_height() < y then 
     return false -- south
-
   elseif 1 > x then
     return false -- west
-
   else
     return true -- ok
   end
 end
 
-function grid_frame()
-  return counters.grid.frame
+function grid_width()
+  return g.cols
 end
 
-function microframe()
-  return counters.ui.microframe
+function grid_height()
+  return g.rows
+end
+
+function grid_frame()
+  return counters.grid.frame
 end
 
 function generation()

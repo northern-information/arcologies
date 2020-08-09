@@ -4,7 +4,7 @@ function page.init()
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
-  page_items[1] = 2
+  page_items[1] = 3
   page_items[2] = 4
   page_items[3] = 0
   page.items = page_items[page.active_page]
@@ -22,13 +22,21 @@ function page:change_selected_item_value(d)
   -- home
   if p == 1 then
     if s == 1 then
-      cache = params:get("playback")
-      params:set("playback", util.clamp(d, 0, 1))
-      cache_check(cache, params:get("playback"))
+      cache = sound.playback
+      sound.set_playback(util.clamp(d, 0, 1))
+      cache_check(cache, sound.playback)
     elseif s == 2 then
       cache = params:get("bpm")
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
       cache_check(cache, params:get("bpm"))
+    elseif s == 3 then
+      cache = sound.current_scale
+      sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
+      cache_check(cache, sound.current_scale)
+    -- elseif s == 4 then
+    --   cache = sound.default_out
+    --   sound:set_default_out(util.clamp(sound.default_out + d, 1, #sound.default_out_names))
+    --   cache_check(cache, sound.default_out)
     end
 
   -- cell designer
@@ -99,20 +107,31 @@ end
 function page:one()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
-  graphics:text(2, 18, params:get("playback") == 0 and "READY" or "PLAYING")  
+  graphics:text(2, 18, sound.playback == 0 and "READY" or "PLAYING")  
   graphics:text(2, 26, "BPM")
-  graphics:bpm(55, 39, params:get("bpm"), 0)
-  if params:get("playback") == 0 then
-    graphics:icon(56, 44, "||", 1)
+  graphics:bpm(55, 32, params:get("bpm"), 0)
+  graphics:text(2, 34, "SCALE")
+  -- graphics:text(2, 42, "DEFAULT OUT")
+
+  if sound.playback == 0 then
+    graphics:icon(56, 35, "||", 1)
   else
     local ml = generation_fmod(4)
-    graphics:icon(56, 44, ml, (ml == 1) and 1 or 0)
+    graphics:icon(56, 35, ml, (ml == 1) and 1 or 0)
   end
+
+
   if is_deleting() then
-    graphics:icon(76, 44, "!!", 1)
+    graphics:icon(76, 35, "!!", 1)
   else
-    graphics:icon(76, 44, "X", 0)
+    graphics:icon(76, 35, "X", 0)
   end
+  
+
+  -- graphics:text(98, 52, sound.default_out_name, 0)
+
+  graphics:text(56, 61, string.upper(sound.current_scale_name), 0)
+  graphics:rect(126, 55, 2, 7, 15)
 end
 
 
