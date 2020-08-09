@@ -78,7 +78,7 @@ function key(k,z)
     if key_counter[k] then
       clock.cancel(key_counter[k])
       if k == 2 then
-        parameters.toggle_playback()
+        sound:toggle_playback()
         keeper:deselect_cell()
       elseif k == 3 then
         if keeper.is_cell_selected then

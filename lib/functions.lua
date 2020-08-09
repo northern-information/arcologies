@@ -16,12 +16,6 @@ function is_deleting(bool)
   return deleting
 end
 
-function cache_check(cache, check)
-  if cache ~= check then
-    dirty_screen(true)
-  end
-end
-
 function long_press(k)
   clock.sleep(1)
   key_counter[k] = nil
@@ -70,6 +64,9 @@ function generation()
   return counters.music.generation
 end
 
+function ui_quarter_frame_fmod(i)
+  return math.fmod(counters.ui.quarter_frame, i) + 1
+end
 function generation_fmod(i)
   return math.fmod(generation(), i) + 1
 end

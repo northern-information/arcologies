@@ -8,6 +8,7 @@ function graphics.init()
   graphics.structure_x = 94
   graphics.structure_y = 26
   graphics.total_cells = grid_height() * grid_width()
+  graphics.analysis_pixels = {}
 end
 
 function graphics:get_tab_x(i)
@@ -111,9 +112,17 @@ end
 function graphics:playback()
   self:top_message( 
     (sound.playback == 0) and 
-      self:ready_animation(generation_fmod(10)) or 
+      self:ready_animation(ui_quarter_frame_fmod(10)) or 
       self:playing_animation(generation_fmod(4))
   )
+end
+
+function graphics:playback_icon(x, y)
+  if sound.playback == 0 then
+    self:icon(x, y, "||", 1)
+  else
+    self:icon(x, y, generation_fmod(4), (generation_fmod(4) == 1) and 1 or 0)
+  end
 end
 
 function graphics:status(x, y, string, level)
@@ -338,7 +347,7 @@ function graphics:west_port(x, y)
   self:rect(x-6, y+10, 2, 4, 0)
 end
 
-function graphics:analysis()
+function graphics:analysis(selected_item)
   local chart = {}
   chart.values = {}
   chart.values[1] = keeper:count_cells(1)
@@ -359,10 +368,8 @@ function graphics:analysis()
   local total_degrees = 0
   local text_degrees = 0
   local percent = 0
-  local start_readout = 18
   local spacing = 10
-  local readout_x = 60
-  local readout_y = 0
+  local pie_highlight = 0
   self:circle(pie_chart_x, pie_chart_y, pie_chart_r, 15)
   self:circle(pie_chart_x, pie_chart_y, pie_chart_r - 1, 0)
   for i = 1, #chart.percentages do
@@ -373,53 +380,86 @@ function graphics:analysis()
     self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
     text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
     text_y = math.sin(math.rad(text_degrees)) * pie_chart_r    
-    percent = round(chart.percentages[i] * 100)
-    self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(percent) + 2, 7, 15)
-    self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, percent, 0)
-    readout_y = start_readout + ((i - 1) * spacing)
-    if i ~= 4 then
-      self:text_left(readout_x, readout_y , dictionary.structures[i] .. "S", 5)
-    else
-      self:text_left(readout_x, readout_y , "SIGNALS", 5)
-    end    
+    pie_highlight = (i == selected_item) and 15 or 3
+    self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
+    self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
   end
-  
 
   -- line graph
-  local line_graph_start_x = 54  
-  local line_graph_start_y = 50
+  local line_graph_start_x = 56  
+  local line_graph_start_y = 43
   local line_graph_spacing = 2
   local line_graph_y = 0
+  local line_highlight = 0
   for i = 1, 4 do
-    line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
-    self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, 15)
+    if chart.values[i] ~= 0 then
+      line_highlight = (i == selected_item) and 15 or 3
+      line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
+      self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, line_highlight)
+    end
   end
-
-  -- local generation = generation()
-  -- self:text_right(60, 18, dictionary.structures[1] .. "S", 5)
-  -- self:text_right(60, 26, dictionary.structures[2] .. "S", 5)
-  -- self:text_right(60, 34, dictionary.structures[3] .. "S", 5)
-  -- self:text_right(60, 42, "SIGNALS", 5)
-  -- self:text_right(60, 50, "GENERATION", 5)
-  -- self:text(66, 18, values[1], 15)
-  -- self:text(66, 26, values[2], 15)
-  -- self:text(66, 34, values[3], 15)
-  -- self:text(66, 42, values[4], 15)
-  -- self:text(66, 50, generation, 15)
-  -- local graph = graph.new()
-  -- graph:set_style("bar")
-  -- table.sort(values)
-  -- graph:set_x_max(values[#values])
-  -- print(values[#values])
-  -- graph:set_position_and_size(1, 10, 40, 20)
-  -- graph:set_show_y_axis(true)
-  -- graph:set_show_x_axis(true)
-  -- graph:add_point(1, (values[1] / self.total_cells) * values[#values], "lin", true)
-  -- graph:add_point(2, (values[2] / self.total_cells) * values[#values], "lin", true)
-  -- graph:add_point(3, (values[3] / self.total_cells) * values[#values], "lin", true)
-  -- graph:add_point(4, (values[4] / self.total_cells) * values[#values], "lin", true)
-  -- graph:redraw()
   
+  -- menu
+  local menu_item_start = 0
+  local menu_item_x = 0
+  local menu_item_y = 64
+  local menu_item = ""
+  local menu_item_width = 0
+  local menu_item_spacing =  6
+  local menu_highlight = 0
+  for i = 1, 4 do
+    menu_highlight = (i == selected_item) and 15 or 5
+    menu_item = i ~= 4 and dictionary.structures[i] .. "S" or "SIGNALS"
+    menu_item_width = screen.text_extents(menu_item)
+    menu_item_x = menu_item_start + ((i - 1) * menu_item_spacing)
+    graphics:text(menu_item_x, menu_item_y, menu_item, menu_highlight)
+    menu_item_start = menu_item_start + menu_item_width
+  end
+  
+  -- grid (thank you @okyeron)
+  for i = 1, grid_width() * grid_height() do
+    self.analysis_pixels[i] = 0    
+    if selected_item ~= 4 then
+      for k,v in pairs(keeper.cells) do
+        if v.structure == selected_item and v.index == i then
+          self.analysis_pixels[i] = 15
+        end
+      end
+    elseif selected_item == 4 then
+      for k,v in pairs(keeper.signals) do
+        if v.index == i then
+          self.analysis_pixels[i] = 15
+        end
+      end
+    end
+  end
+  screen.level(1)
+  for x = 1, grid_width(), 1 do 
+    for y = 1, grid_height(), 1 do 
+      pidx = x + ((y - 1) * grid_width())
+      self:draw_pixel(x, y, self.analysis_pixels[pidx])
+    end
+  end
+  screen.stroke()
+
+  -- more data
+  self:text(106, 18, counters.music.generation, 1)
+  self:playback_icon(105, 19)
+
+end
+
+function graphics:draw_pixel(x, y, b)
+  local offset = { x = 54, y = 11, spacing = 3 }
+  pidx = x + ((y - 1) * grid_width())
+  if self.analysis_pixels[pidx] > 0 then
+    screen.stroke()
+    screen.level(b)
+  end
+  screen.pixel((x * offset.spacing) + offset.x, (y * offset.spacing) + offset.y)
+  if self.analysis_pixels[pidx] > 0 then
+    screen.stroke()
+    screen.level(1)
+  end
 end
 
 function graphics:ready_animation(i)

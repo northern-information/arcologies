@@ -11,6 +11,7 @@ function Signal:new(x, y, h, g)
   s.y = y
   s.id = id(s.x, s.y)
   s.heading = h
+  s.index = x + ((y - 1) * grid_width())
 
   return s
 end
@@ -30,4 +31,5 @@ function Signal:propagate()
     self.x = self.x - 1
   end
   self.id = id(self.x, self.y)
+  self.index = self.x + ((self.y - 1) * grid_width())
 end

@@ -14,6 +14,7 @@ function Cell:new(x, y, g)
     { c.x - 1, c.y, "w" }
   }
   c.generation = g
+  c.index = x + ((y - 1) * grid_width())
 
   -- mutable
   c.structure = 1
@@ -48,7 +49,6 @@ function Cell:toggle_port(x, y)
   else
     self:open_port(port[3])
   end
-  print(self.ports[1])
 end
 
 function Cell:open_port(p)

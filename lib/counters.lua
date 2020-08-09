@@ -8,6 +8,7 @@ function counters.init()
   counters.ui.count = -1
   counters.ui.play = 1
   counters.ui.frame = 1
+  counters.ui.quarter_frame = 1
   counters.ui.event = counters.optician
   counters.ui:start()
 
@@ -43,6 +44,10 @@ end
 
 function counters.optician()
   counters.ui.frame = counters.ui.frame + 1
+  if counters.ui.frame % 4 == 0 then
+    counters.ui.quarter_frame = counters.ui.quarter_frame +1
+  end
+  dirty_screen(true)
   redraw()
 end
 

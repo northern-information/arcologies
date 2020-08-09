@@ -6,7 +6,7 @@ function page.init()
   page_items = {}
   page_items[1] = 3
   page_items[2] = 4
-  page_items[3] = 0
+  page_items[3] = 4
   page.items = page_items[page.active_page]
 end
 
@@ -22,49 +22,33 @@ function page:change_selected_item_value(d)
   -- home
   if p == 1 then
     if s == 1 then
-      cache = sound.playback
       sound.set_playback(util.clamp(d, 0, 1))
-      cache_check(cache, sound.playback)
     elseif s == 2 then
-      cache = params:get("bpm")
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-      cache_check(cache, params:get("bpm"))
     elseif s == 3 then
-      cache = sound.current_scale
       sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
-      cache_check(cache, sound.current_scale)
     -- elseif s == 4 then
-    --   cache = sound.default_out
     --   sound:set_default_out(util.clamp(sound.default_out + d, 1, #sound.default_out_names))
-    --   cache_check(cache, sound.default_out)
     end
 
   -- cell designer
   elseif p == 2 then
     if not keeper.is_cell_selected then return end
     if s == 1 then
-      cache = keeper.selected_cell.structure
       keeper.selected_cell:set_structure(util.clamp(keeper.selected_cell.structure + d, 1, 3))
-      cache_check(cache, keeper.selected_cell.structure)
     elseif s == 2 then
-      cache = keeper.selected_cell.metabolism
       keeper.selected_cell:set_metabolism(util.clamp(keeper.selected_cell.metabolism + d, 1, 16))
-      cache_check(cache, keeper.selected_cell.metabolism)
     elseif s == 3 then
-      cache = keeper.selected_cell.sound
       keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
-      cache_check(cache, keeper.selected_cell.sound)
     elseif s == 4 then
-      cache = keeper.selected_cell.velocity
       keeper.selected_cell:set_velocity(util.clamp(keeper.selected_cell.velocity + d, 1, 127))
-      cache_check(cache, keeper.selected_cell.velocity)
     end
 
   -- analysis
   elseif p == 3 then
-    print('not yet implemented')
+    -- nothing to change here
   end
-
+  dirty_screen(true)
 end
 
 
@@ -74,8 +58,6 @@ end
 
 
 function page:render()
-  local cache_active_page = self.active_page
-  local cache_selected_item = self.selected_item
   self.active_page = page.active_page
   self.selected_item = page.selected_item
   graphics:top_menu()
@@ -89,8 +71,7 @@ function page:render()
   elseif self.active_page == 3 then
     self:three()
   end
-  cache_check(cache_active_page, self.active_page)
-  cache_check(cache_selected_item, self.selected_item)
+  dirty_screen(true)
 end
 
 
@@ -113,13 +94,7 @@ function page:one()
   graphics:text(2, 34, "SCALE")
   -- graphics:text(2, 42, "DEFAULT OUT")
 
-  if sound.playback == 0 then
-    graphics:icon(56, 35, "||", 1)
-  else
-    local ml = generation_fmod(4)
-    graphics:icon(56, 35, ml, (ml == 1) and 1 or 0)
-  end
-
+  graphics:playback_icon(56, 35)
 
   if is_deleting() then
     graphics:icon(76, 35, "!!", 1)
@@ -127,7 +102,6 @@ function page:one()
     graphics:icon(76, 35, "X", 0)
   end
   
-
   -- graphics:text(98, 52, sound.default_out_name, 0)
 
   graphics:text(56, 61, string.upper(sound.current_scale_name), 0)
@@ -187,7 +161,7 @@ end
 
 -- analysis
 function page:three()
-  graphics:analysis()
+  graphics:analysis(self.selected_item)
 end
 
 
