@@ -27,6 +27,7 @@ function grid_redraw()
   g:led_signal_and_cell_collision()
   g:led_selected_cell()
   g:led_cell_ports()
+  g:led_cell_analysis()
   g:refresh()
 end
 
@@ -49,9 +50,10 @@ function g.key(x, y, z)
 end
 
 function g:led_signals()
+  local level = page.active_page == 3 and page.selected_item ~= 4 and 2 or 10
   for k,v in pairs(keeper.signals) do
     if v.generation <= generation() then
-      self:led(v.x, v.y, 10) 
+      self:led(v.x, v.y, level) 
     end
   end
 end
@@ -97,17 +99,30 @@ function g:led_signal_and_cell_collision()
 end
 
 function g:led_cells()
+  local level = page.active_page == 3 and page.selected_item ~= 5 and 2 or 5
   for k,v in pairs(keeper.cells) do
-    self:led(v.x, v.y, 5) 
+    self:led(v.x, v.y, level) 
+  end
+end
+
+function g:led_cell_analysis()
+  if page.active_page == 3 then
+    for k,v in pairs(keeper.cells) do
+        if v.structure == page.selected_item then
+          self:highlight_cell(v)
+        end
+      end
   end
 end
 
 function g:led_selected_cell()
-  local l = 0
   if keeper.is_cell_selected then
-    l = util.clamp(grid_frame() % 15, 5, 15)
-    self:led(keeper.selected_cell_x, keeper.selected_cell_y, l)
+    self:highlight_cell(keeper.selected_cell)
   end
+end
+
+function g:highlight_cell(cell)
+  self:led(cell.x, cell.y, util.clamp(grid_frame() % 15, 5, 15))
 end
 
 function g:led_cell_ports()

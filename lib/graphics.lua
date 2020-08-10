@@ -425,6 +425,7 @@ function graphics:analysis(selected_item)
           self.analysis_pixels[i] = 15
         end
       end
+      dirty_grid(true)
     elseif selected_item == 4 then
       for k,v in pairs(keeper.signals) do
         if v.index == i then

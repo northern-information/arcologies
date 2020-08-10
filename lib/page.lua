@@ -6,7 +6,7 @@ function page.init()
   page_items = {}
   page_items[1] = 4
   page_items[2] = 4
-  page_items[3] = 4
+  page_items[3] = 5
   page.items = page_items[page.active_page]
 end
 
@@ -16,7 +16,7 @@ end
 function page:change_selected_item_value(d)
 
   local cache
-  local p = page.active_page  
+  local p = page.active_page
   local s = page.selected_item
 
   -- home
@@ -29,8 +29,8 @@ function page:change_selected_item_value(d)
       sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
     elseif s == 4 then
       set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
-    -- elseif s == 5 then
-    --   sound:set_default_out(util.clamp(sound.default_out + d, 1, #sound.default_out_names))
+    elseif s == 5 then
+      -- none
     end
 
   -- cell designer
