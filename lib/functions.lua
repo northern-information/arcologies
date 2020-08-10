@@ -10,11 +10,18 @@ function dirty_screen(bool)
   return screen_dirty
 end
 
+function dirty_seed(bool)
+  if bool == nil then return seed_dirty end
+  seed_dirty = bool
+  return seed_dirty
+end
+
 function is_deleting(bool)
   if bool == nil then return deleting end
   deleting = bool
   return deleting
 end
+
 
 function long_press(k)
   clock.sleep(1)
@@ -22,10 +29,47 @@ function long_press(k)
   if k == 3 then
     keeper:delete_all_cells()
     is_deleting(false)
-    graphics:set_message("DELETED ALL.", 40)
+    graphics:set_message("DELETED", 40)
   end
   dirty_screen(true)
 end
+
+function set_seed(s)
+  graphics:set_message("SEEDING...", 40)
+  seed = s
+  dirty_seed(true)
+  if seed_counter[1] ~= nil then
+    print("canceling " .. seed_counter[1])
+    clock.cancel(seed_counter[1])
+  end
+  seed_counter[1] = clock.run(seed_cells, s)
+end 
+
+function seed_cells()
+  clock.sleep(1)
+  seed_counter[1] = nil
+  keeper:delete_all_cells()
+  graphics:set_message("SEEDED " .. seed, 40)
+  for i = 1, seed do
+    random_cell()
+  end
+  keeper:deselect_cell()
+  dirty_seed(false)
+end
+
+function random_cell()
+  keeper:select_cell(rx(), ry())
+  keeper.selected_cell:set_structure(math.random(1, 3))
+  local ports = { "n", "e", "s", "w" }
+  for i = 1, #ports do
+    if coin() then
+      keeper.selected_cell:open_port(ports[i])
+    end
+  end
+  keeper.selected_cell:set_phase(math.random(1, meter))
+  keeper.selected_cell:set_sound(math.random(1, #dictionary.sounds))
+end
+
 
 function select_page(x)
   page.active_page = x
@@ -85,4 +129,16 @@ end
 
 function round(n)
   return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
+end
+
+function rx()
+  return math.random(1, grid_width())
+end
+
+function ry()
+  return math.random(1, grid_height())
+end
+
+function coin()
+  return math.random(0, 1)
 end

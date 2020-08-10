@@ -1,7 +1,7 @@
 local dictionary = {}
 
 function dictionary.init()
-  dictionary.cell_attributes = { "STRUCTURE", "METABOLISM", "SOUND", "VELOCITY" }
+  dictionary.cell_attributes = { "STRUCTURE", "PHASE", "SOUND", "VELOCITY" }
   dictionary.pages = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS" }
   dictionary.sounds = {
     "C-2", "C#-2", "D-2", "D#-2", "E-2", "F-2", "F#-2", "G-2", "G#-2", "A-2", "A#-2", "B-2",

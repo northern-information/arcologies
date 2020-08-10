@@ -18,7 +18,7 @@ function Cell:new(x, y, g)
 
   -- mutable
   c.structure = 1
-  c.metabolism = 4
+  c.phase = 4
   c.sound = 72
   c.velocity = 127
   c.ports = {}
@@ -30,8 +30,8 @@ function Cell:set_structure(s)
   self.structure = s
 end
 
-function Cell:set_metabolism(m)
-  self.metabolism = m
+function Cell:set_phase(m)
+  self.phase = m
 end
 
 function Cell:set_sound(s)

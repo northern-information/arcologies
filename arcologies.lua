@@ -39,12 +39,14 @@ function init()
   page.init()  
   parameters.init()
   sound.init()
-  deleting = false
+  seed, meter = 0, 16
+  deleting, seed_dirty = false, false
   grid_dirty, screen_dirty = true, true
-  key_counter = {{},{},{}}
+  key_counter, seed_counter = {{},{},{}}, {}
   clock.run(counters.redraw_clock)
-  select_page(3)
-  dev:seed_random()
+  select_page(1)
+  set_seed(16)
+  sound:toggle_playback()
   redraw()
 end
 

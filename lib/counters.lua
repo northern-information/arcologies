@@ -53,8 +53,8 @@ end
 
 function counters.conductor()
   counters.music.time = parameters.bpm_to_seconds
-  counters.music.generation = counters.music.generation + 1    
   if sound.playback == 1 then 
+    counters.music.generation = counters.music.generation + 1    
     keeper:spawn_signals()
     keeper:propagate_signals()
     keeper:collide_signals()

@@ -4,7 +4,7 @@ function page.init()
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
-  page_items[1] = 3
+  page_items[1] = 4
   page_items[2] = 4
   page_items[3] = 4
   page.items = page_items[page.active_page]
@@ -27,7 +27,9 @@ function page:change_selected_item_value(d)
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
     elseif s == 3 then
       sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
-    -- elseif s == 4 then
+    elseif s == 4 then
+      set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
+    -- elseif s == 5 then
     --   sound:set_default_out(util.clamp(sound.default_out + d, 1, #sound.default_out_names))
     end
 
@@ -37,7 +39,7 @@ function page:change_selected_item_value(d)
     if s == 1 then
       keeper.selected_cell:set_structure(util.clamp(keeper.selected_cell.structure + d, 1, 3))
     elseif s == 2 then
-      keeper.selected_cell:set_metabolism(util.clamp(keeper.selected_cell.metabolism + d, 1, 16))
+      keeper.selected_cell:set_phase(util.clamp(keeper.selected_cell.phase + d, 1, meter))
     elseif s == 3 then
       keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
     elseif s == 4 then
@@ -92,7 +94,7 @@ function page:one()
   graphics:text(2, 26, "BPM")
   graphics:bpm(55, 32, params:get("bpm"), 0)
   graphics:text(2, 34, "SCALE")
-  -- graphics:text(2, 42, "DEFAULT OUT")
+  graphics:text(2, 42, "SEED " .. seed)
 
   graphics:playback_icon(56, 35)
 
@@ -125,7 +127,7 @@ function page:two()
     graphics:cell()
     graphics:draw_ports()
     graphics:structure_disable()
-    graphics:metabolism_disable()
+    graphics:phase_disable()
     graphics:sound_disable()
     graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 1 then
@@ -133,7 +135,7 @@ function page:two()
     graphics:draw_ports()
     graphics:structure_type(dictionary.structures[1])
     graphics:structure_enable()
-    graphics:metabolism_enable()
+    graphics:phase_enable()
     graphics:sound_disable()
     graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 2 then
@@ -141,7 +143,7 @@ function page:two()
     graphics:draw_ports(-5)
     graphics:structure_type(dictionary.structures[2])
     graphics:structure_enable()
-    graphics:metabolism_disable()
+    graphics:phase_disable()
     graphics:sound_disable()
     graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 3 then
@@ -149,7 +151,7 @@ function page:two()
     graphics:draw_ports()    
     graphics:structure_type(dictionary.structures[3])
     graphics:structure_enable()
-    graphics:metabolism_disable()
+    graphics:phase_disable()
     graphics:sound_enable()
     graphics:velocity_enable()
   end

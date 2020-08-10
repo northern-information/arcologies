@@ -193,12 +193,12 @@ function graphics:structure_disable()
   self:mls(0, 16, 51, 15, 10)
 end
 
-function graphics:metabolism_enable()
+function graphics:phase_enable()
     self:text(2, 26, dictionary.cell_attributes[2], 15)
-    self:text(56, 25, keeper.selected_cell.metabolism, 0)
+    self:text(56, 25, keeper.selected_cell.phase, 0)
 end
 
-function graphics:metabolism_disable()
+function graphics:phase_disable()
   self:text(2, 26, dictionary.cell_attributes[2], 5)
   self:mls(0, 24, 51, 23, 10)
 end
