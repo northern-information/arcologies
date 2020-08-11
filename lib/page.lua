@@ -4,7 +4,7 @@ function page.init()
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
-  page_items[1] = 4
+  page_items[1] = 5
   page_items[2] = 4
   page_items[3] = 5
   page.items = page_items[page.active_page]
@@ -26,12 +26,11 @@ function page:change_selected_item_value(d)
     elseif s == 2 then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
     elseif s == 3 then
-      sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
+      set_meter(meter + d)
     elseif s == 4 then
-      print(seed + d, 0, math.floor(grid_width() * grid_height() / 4))
-      set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
+      sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
     elseif s == 5 then
-      -- none
+      set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
     end
 
   -- cell designer
@@ -94,15 +93,16 @@ function page:one()
   graphics:text(2, 18, sound.playback == 0 and "READY" or "PLAYING")  
   graphics:text(2, 26, "BPM")
   graphics:bpm(55, 32, params:get("bpm"), 0)
-  graphics:text(2, 34, "SCALE")
-  graphics:text(2, 42, "SEED " .. seed)
+  graphics:text(2, 34, "METER")
+  graphics:text(2, 42, "SCALE")
+  graphics:text(2, 50, "SEED " .. seed)
 
   graphics:playback_icon(56, 35)
-
+  graphics:icon(76, 35, meter, self.selected_item == 3 and 1 or 0)
+  
   if is_deleting() then
-    graphics:icon(76, 35, "!!", 1)
-  else
-    graphics:icon(76, 35, "X", 0)
+    graphics:icon(56, 35, "D:", 1)
+    graphics:icon(76, 35, "D:", 1)
   end
   
   -- graphics:text(98, 52, sound.default_out_name, 0)
@@ -140,21 +140,21 @@ function page:two()
     graphics:sound_disable()
     graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 2 then
-    graphics:gate()
-    graphics:draw_ports(-5)
-    graphics:structure_type(dictionary.structures[2])
-    graphics:structure_enable()
-    graphics:phase_disable()
-    graphics:sound_disable()
-    graphics:velocity_disable()
-  elseif keeper.selected_cell.structure == 3 then
     graphics:shrine()
     graphics:draw_ports()    
-    graphics:structure_type(dictionary.structures[3])
+    graphics:structure_type(dictionary.structures[2])
     graphics:structure_enable()
     graphics:phase_disable()
     graphics:sound_enable()
     graphics:velocity_enable()
+  elseif keeper.selected_cell.structure == 3 then
+    graphics:gate()
+    graphics:draw_ports(-5)
+    graphics:structure_type(dictionary.structures[3])
+    graphics:structure_enable()
+    graphics:phase_disable()
+    graphics:sound_disable()
+    graphics:velocity_disable()
   end
 end
 

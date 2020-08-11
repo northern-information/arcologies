@@ -27,7 +27,13 @@ function Cell:new(x, y, g)
 end
 
 function Cell:set_structure(s)
-  self.structure = s
+  if s > #dictionary.structures then
+    self.structure = 1
+  elseif s < 1 then
+    self.structure = #dictionary.structures
+  else
+    self.structure = s
+  end
 end
 
 function Cell:set_phase(m)
@@ -70,4 +76,8 @@ function Cell:find_port(x, y)
     end
   end
   return false
+end
+
+function Cell:cycle_structure()
+  self:set_structure(self.structure + 1)
 end

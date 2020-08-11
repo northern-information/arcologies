@@ -121,7 +121,7 @@ function graphics:playback_icon(x, y)
   if sound.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, generation_fmod(4), (generation_fmod(4) == 1) and 1 or 0)
+    self:icon(x, y, generation_fmod(meter), (generation_fmod(meter) == 1) and 1 or 0)
   end
 end
 
@@ -161,7 +161,7 @@ function graphics:icon(x, y, string, invert)
     self:rect(x+1, y+1, 16, 16, 15)
     screen.level(0)
   end
-  screen.move(x+2, y+15)
+  screen.move(x+1, y+15)
   screen.font_size(16)
   screen.text(string)
   self:reset_font()

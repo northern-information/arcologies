@@ -35,22 +35,26 @@ function g.key(x, y, z)
   if z == 0 then return end
   if not keeper.is_cell_selected then
     keeper:select_cell(x, y)
+    graphics:set_message(dictionary.structures[keeper.selected_cell.structure], 40)
   else
-    if keeper.selected_cell:find_port(x, y) then
+    if keeper.selected_cell.id == id(x, y) then
+      keeper.selected_cell:cycle_structure()
+      graphics:set_message(dictionary.structures[keeper.selected_cell.structure], 40)
+    elseif keeper.selected_cell:find_port(x, y) then
       keeper.selected_cell:toggle_port(x, y)
     elseif keeper:cell_exists(id(x, y)) then
       keeper:select_cell(x, y)
+      graphics:set_message(dictionary.structures[keeper.selected_cell.structure], 40)
     else
       keeper:deselect_cell()
     end
   end
-  -- select_page(2)
   dirty_grid(true)
   dirty_screen(true)
 end
 
 function g:led_signals()
-  local level = page.active_page == 3 and page.selected_item ~= 4 and 2 or 10
+  local level = page.active_page == 3 and page.selected_item == 4 and 10 or 2
   for k,v in pairs(keeper.signals) do
     if v.generation <= generation() then
       self:led(v.x, v.y, level) 
@@ -99,9 +103,9 @@ function g:led_signal_and_cell_collision()
 end
 
 function g:led_cells()
-  local level = page.active_page == 3 and page.selected_item ~= 5 and 2 or 5
+  -- local level = page.active_page == 3 and page.selected_item ~= 5 and 2 or 5
   for k,v in pairs(keeper.cells) do
-    self:led(v.x, v.y, level) 
+    self:led(v.x, v.y, 5) 
   end
 end
 

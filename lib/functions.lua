@@ -22,7 +22,6 @@ function is_deleting(bool)
   return deleting
 end
 
-
 function long_press(k)
   clock.sleep(1)
   key_counter[k] = nil
@@ -32,6 +31,16 @@ function long_press(k)
     graphics:set_message("DELETED", 40)
   end
   dirty_screen(true)
+end
+
+function set_meter(i)
+  if i > 16 then
+    meter = 1
+  elseif i < 1 then
+    meter = 16
+  else
+    meter = i
+  end
 end
 
 function set_seed(s)
