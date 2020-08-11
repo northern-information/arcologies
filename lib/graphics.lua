@@ -212,7 +212,9 @@ end
 
 function graphics:sound_enable()
   self:text(2, 34, dictionary.cell_attributes[3], 15)
-  graphics:text(56, 33, dictionary.sounds[keeper.selected_cell.sound], 0)
+  if not is_selecting_note() then
+    graphics:text(56, 34, dictionary.sounds[keeper.selected_cell.sound], 0)
+  end
 end
 
 function graphics:sound_disable()
@@ -222,7 +224,7 @@ end
 
 function graphics:velocity_enable()
   self:text(2, 42, dictionary.cell_attributes[4], 15)
-  graphics:text(56, 41, keeper.selected_cell.velocity, 0)
+  graphics:text(56, 42, keeper.selected_cell.velocity, 0)
 end
 
 function graphics:velocity_disable()
@@ -373,23 +375,25 @@ function graphics:analysis(selected_item)
   local pie_chart_y = 30
   local pie_chart_r = 20
   local total_degrees = 0
-  local text_degrees = 0
+  local text_degrees = 1
   local percent = 0
   local spacing = 10
   local pie_highlight = 0
   self:circle(pie_chart_x, pie_chart_y, pie_chart_r, 15)
   self:circle(pie_chart_x, pie_chart_y, pie_chart_r - 1, 0)
-  for i = 1, #chart.percentages do
-    total_degrees = total_degrees + chart.degrees[i]
-    text_degrees = text_degrees + chart.degrees[i] -- / 2
-    sector_x = math.cos(math.rad(total_degrees)) * pie_chart_r
-    sector_y = math.sin(math.rad(total_degrees)) * pie_chart_r
-    self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
-    text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
-    text_y = math.sin(math.rad(text_degrees)) * pie_chart_r    
-    pie_highlight = (i == selected_item) and 15 or 3
-    self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
-    self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
+  if #keeper.cells + #keeper.signals > 0 then
+    for i = 1, #chart.percentages do
+      total_degrees = total_degrees + chart.degrees[i]
+      text_degrees = text_degrees + chart.degrees[i] -- / 2
+      sector_x = math.cos(math.rad(total_degrees)) * pie_chart_r
+      sector_y = math.sin(math.rad(total_degrees)) * pie_chart_r
+      self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
+      text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
+      text_y = math.sin(math.rad(text_degrees)) * pie_chart_r    
+      pie_highlight = (i == selected_item) and 15 or 3
+      self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
+      self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
+    end
   end
 
   -- line graph
@@ -449,7 +453,6 @@ function graphics:analysis(selected_item)
     end
   end
   screen.stroke()
-
   -- more data
   self:text(106, 18, counters.music.generation, 1)
   self:playback_icon(105, 19)
@@ -468,6 +471,65 @@ function graphics:draw_pixel(x, y, b)
     screen.stroke()
     screen.level(1)
   end
+end
+
+
+-- todo the piano note text readout is is one off... or is the note one off?
+function graphics:piano(k)
+  local selected = k % 12
+  print(selected)
+  local x = 56
+  local y = 35
+  local key_width = 8
+  local key_height = 27
+  
+  -- have to draw the white keys first becuase the black are then drawn on top
+  -- so this is a super contrived way of drawing a piano with two loops...
+  -- the only alternative i could think of was to elegantly draw all the keys
+  -- in one pass but then make all these ugly highlights on top for the selected
+  -- with a second pass. this route was the most maintainable and dynamic...
+  local keys = {}
+  for i = 1,12 do
+    keys[i] = {}
+    keys[i]["selected"] = i == selected + 1
+  end
+  
+  keys[1]["color"]  = 1  keys[1]["index"]  = 1 -- c
+  keys[2]["color"]  = 0  keys[2]["index"]  = 1 -- c#
+  keys[3]["color"]  = 1  keys[3]["index"]  = 2 -- d
+  keys[4]["color"]  = 0  keys[4]["index"]  = 2 -- d#
+  keys[5]["color"]  = 1  keys[5]["index"]  = 3 -- e
+  keys[6]["color"]  = 1  keys[6]["index"]  = 4 -- f
+  keys[7]["color"]  = 0  keys[7]["index"]  = 3 -- f# 
+  keys[8]["color"]  = 1  keys[8]["index"]  = 5 -- g
+  keys[9]["color"]  = 0  keys[9]["index"]  = 4 -- g#
+  keys[10]["color"] = 1  keys[10]["index"] = 6 -- a
+  keys[11]["color"] = 0  keys[11]["index"] = 5 -- a#
+  keys[12]["color"] = 1  keys[12]["index"] = 7 -- b
+  
+  -- white keys
+  for i = 1,12 do
+    if keys[i]["color"] == 1 then
+      self:rect(x + ((keys[i]["index"] - 1) * key_width), y, key_width, key_height, 0)
+      self:rect(x + ((keys[i]["index"] - 1) * key_width) + 2, y + 2, key_width - 2, key_height - 4, keys[i]["selected"] and 5 or 15)
+    end
+  end
+  
+  -- black keys
+  for i = 1,12 do
+    if keys[i]["color"] == 0 then
+      local adjust = keys[i]["index"] > 2 and 1 or 0 -- e# doesn't exist! yeah yeah...
+      self:rect(x + ((keys[i]["index"] - 1 + adjust) * key_width) + 6, y, 6, key_height - 10, 0)
+      if keys[i]["selected"] then
+        self:rect(x + ((keys[i]["index"] - 1 + adjust) * key_width) + 8, y + 2, 2, key_height - 14, 5)
+      end
+    end
+  end
+  self:rect(x + (7 * key_width), y, 2, key_height, 0) -- end
+
+  screen.font_size(30)
+  self:text(55, 32, dictionary.sounds[keeper.selected_cell.sound], 0, 10)
+  self:reset_font()
 end
 
 function graphics:ready_animation(i)

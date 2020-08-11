@@ -19,7 +19,7 @@ function Cell:new(x, y, g)
   -- mutable
   c.structure = 1
   c.offset = 0
-  c.sound = 72
+  c.sound = 71
   c.velocity = 127
   c.ports = {}
 

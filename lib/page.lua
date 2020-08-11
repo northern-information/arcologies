@@ -46,7 +46,7 @@ function page:change_selected_item_value(d)
     elseif s == 2 then
       keeper.selected_cell:set_offset(util.clamp(keeper.selected_cell.offset + d, 0, sound.meter - 1))
     elseif s == 3 then
-      keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
+      set_note(d)
     elseif s == 4 then
       keeper.selected_cell:set_velocity(util.clamp(keeper.selected_cell.velocity + d, 1, 127))
     end
@@ -128,38 +128,43 @@ end
 function page:two()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
-  graphics:cell_id()
-  if not keeper.is_cell_selected then
-    graphics:cell()
-    graphics:draw_ports()
-    graphics:structure_disable()
-    graphics:offset_disable()
-    graphics:sound_disable()
-    graphics:velocity_disable()
-  elseif keeper.selected_cell.structure == 1 then
-    graphics:hive()
-    graphics:draw_ports()
-    graphics:structure_type(dictionary.structures[1])
-    graphics:structure_enable()
-    graphics:offset_enable()
-    graphics:sound_disable()
-    graphics:velocity_disable()
-  elseif keeper.selected_cell.structure == 2 then
-    graphics:shrine()
-    graphics:draw_ports()    
-    graphics:structure_type(dictionary.structures[2])
-    graphics:structure_enable()
-    graphics:offset_disable()
+  if is_selecting_note() then
+    graphics:piano(keeper.selected_cell.sound)
     graphics:sound_enable()
-    graphics:velocity_enable()
-  elseif keeper.selected_cell.structure == 3 then
-    graphics:gate()
-    graphics:draw_ports(-5)
-    graphics:structure_type(dictionary.structures[3])
-    graphics:structure_enable()
-    graphics:offset_disable()
-    graphics:sound_disable()
-    graphics:velocity_disable()
+  else
+    graphics:cell_id()
+    if not keeper.is_cell_selected then
+      graphics:cell()
+      graphics:draw_ports()
+      graphics:structure_disable()
+      graphics:offset_disable()
+      graphics:sound_disable()
+      graphics:velocity_disable()
+    elseif keeper.selected_cell.structure == 1 then
+      graphics:hive()
+      graphics:draw_ports()
+      graphics:structure_type(dictionary.structures[1])
+      graphics:structure_enable()
+      graphics:offset_enable()
+      graphics:sound_disable()
+      graphics:velocity_disable()
+    elseif keeper.selected_cell.structure == 2 then
+      graphics:shrine()
+      graphics:draw_ports()    
+      graphics:structure_type(dictionary.structures[2])
+      graphics:structure_enable()
+      graphics:offset_disable()
+      graphics:sound_enable()
+      graphics:velocity_enable()
+    elseif keeper.selected_cell.structure == 3 then
+      graphics:gate()
+      graphics:draw_ports(-5)
+      graphics:structure_type(dictionary.structures[3])
+      graphics:structure_enable()
+      graphics:offset_disable()
+      graphics:sound_disable()
+      graphics:velocity_disable()
+    end
   end
 end
 

@@ -22,19 +22,61 @@ function is_deleting(bool)
   return deleting
 end
 
+function is_selecting_note(bool)
+  if bool == nil then return selecting_note end
+  selecting_note = bool
+  return selecting_note
+end
+
 function long_press(k)
   clock.sleep(1)
   key_counter[k] = nil
   if k == 3 then
     keeper:delete_all_cells()
     is_deleting(false)
-    graphics:set_message("DELETED", 40)
+    graphics:set_message("DELETED", counters.default_message_length)
   end
   dirty_screen(true)
 end
 
+
+
+
+
+
+
+-- todo: move to counters?
+
+function set_note(d)
+  graphics:set_message("NOTE...", counters.default_message_length)
+  if enc_counter[3]["this_clock"] ~= nil then
+    clock.cancel(enc_counter[3]["this_clock"])
+    counters:reset_enc(3)
+  end
+  is_selecting_note(true)
+  keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
+  dirty_screen(true)
+  if enc_counter[3]["this_clock"] == nil then
+    enc_counter[3]["this_clock"] = clock.run(select_note_wait)
+  end
+end 
+
+
+
+
+
+function select_note_wait(s)
+  enc_counter[3]["waiting"] = true
+  clock.sleep(graphics.ui_wait_threshold * 2)
+  graphics:set_message("DONE", counters.default_message_length)
+  enc_counter[3]["waiting"] = false
+  enc_counter[3]["this_clock"] = nil
+  is_selecting_note(false)
+  dirty_screen(true)
+end
+
 function set_seed(s)
-  graphics:set_message("SEEDING...", 40)
+  graphics:set_message("SEEDING...", counters.default_message_length)
   if enc_counter[3]["this_clock"] ~= nil then
     clock.cancel(enc_counter[3]["this_clock"])
     counters:reset_enc(3)
@@ -57,10 +99,10 @@ end
 
 function seed_cells(s)
   if s == 0 then
-    graphics:set_message("CANCELED SEED", 40)
+    graphics:set_message("CANCELED SEED", counters.default_message_length)
   else
     keeper:delete_all_cells()
-    graphics:set_message("SEEDED " .. s, 40)
+    graphics:set_message("SEEDED " .. s, counters.default_message_length)
     for i = 1, s do
       random_cell()
     end
