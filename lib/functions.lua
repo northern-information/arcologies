@@ -36,25 +36,33 @@ end
 
 function set_seed(s)
   graphics:set_message("SEEDING...", 40)
-  seed = s
-  dirty_seed(true)
-  if seed_counter[1] ~= nil then
-    print("canceling " .. seed_counter[1])
-    clock.cancel(seed_counter[1])
+  if enc_counter[3]["this_clock"] ~= nil then
+    clock.cancel(enc_counter[3]["this_clock"])
+    counters:reset_enc(3)
   end
-  seed_counter[1] = clock.run(seed_cells, s)
+  seed = s
+  dirty_screen(true)
+  if enc_counter[3]["this_clock"] == nil then
+    enc_counter[3]["this_clock"] = clock.run(seed_wait, s)
+  end
 end 
 
-function seed_cells()
-  clock.sleep(1)
-  seed_counter[1] = nil
+function seed_wait(s)
+  enc_counter[3]["waiting"] = true
+  clock.sleep(ui_wait_threshold)
+  enc_counter[3]["waiting"] = false
+  enc_counter[3]["this_clock"] = nil
+  seed_cells(s)
+  dirty_screen(true)
+end
+
+function seed_cells(s)
   keeper:delete_all_cells()
-  graphics:set_message("SEEDED " .. seed, 40)
-  for i = 1, seed do
+  graphics:set_message("SEEDED " .. s, 40)
+  for i = 1, s do
     random_cell()
   end
   keeper:deselect_cell()
-  dirty_seed(false)
 end
 
 function random_cell()

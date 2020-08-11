@@ -29,6 +29,13 @@ function counters.init()
   counters.grid:start()
 end
 
+function counters:reset_enc(e)
+  enc_counter[e] = {
+    this_clock = nil,
+    waiting = false
+  }
+end
+
 function counters.redraw_clock()
   while true do
     if dirty_screen() then

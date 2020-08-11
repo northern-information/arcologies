@@ -28,6 +28,7 @@ function page:change_selected_item_value(d)
     elseif s == 3 then
       sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
     elseif s == 4 then
+      print(seed + d, 0, math.floor(grid_width() * grid_height() / 4))
       set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
     elseif s == 5 then
       -- none

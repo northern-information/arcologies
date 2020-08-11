@@ -39,13 +39,14 @@ function init()
   page.init()  
   parameters.init()
   sound.init()
-  seed, meter = 0, 16
-  deleting, seed_dirty = false, false
+  seed, meter, ui_wait_threshold = 0, 16, 0.5
+  deleting = false
   grid_dirty, screen_dirty = true, true
-  key_counter, seed_counter = {{},{},{}}, {}
+  key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   clock.run(counters.redraw_clock)
+  for e = 1, 3 do counters:reset_enc(e) end
   select_page(1)
-  set_seed(16)
+  seed_cells(16)
   sound:toggle_playback()
   redraw()
 end
@@ -72,7 +73,7 @@ function enc(n, d)
   dirty_screen(true) -- todo make sure i'm not over doing it with these
 end
 
-function key(k,z)
+function key(k, z)
   is_deleting(k == 3 and z == 1 and true or false)
   if z == 1 then
     key_counter[k] = clock.run(long_press, k)
