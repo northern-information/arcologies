@@ -39,13 +39,13 @@ function init()
   page.init()  
   parameters.init()
   sound.init()
-  seed, meter, ui_wait_threshold = 5, 16, 0.5
+  seed = 5
   deleting = false
   grid_dirty, screen_dirty= true, true
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   clock.run(counters.redraw_clock)
   for e = 1, 3 do counters:reset_enc(e) end
-  select_page(1)
+  page:select(1)
   seed_cells(seed)
   sound:toggle_playback()
   redraw()
@@ -61,7 +61,7 @@ end
 
 function enc(n, d)
   if n == 1 then
-    select_page(util.clamp(page.active_page + d, 1, #dictionary.pages))
+    page:select(util.clamp(page.active_page + d, 1, #dictionary.pages))
     if page.active_page ~= 2 then
       keeper:deselect_cell()
     end

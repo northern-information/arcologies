@@ -18,7 +18,7 @@ function Cell:new(x, y, g)
 
   -- mutable
   c.structure = 1
-  c.phase = 4
+  c.offset = 0
   c.sound = 72
   c.velocity = 127
   c.ports = {}
@@ -36,8 +36,14 @@ function Cell:set_structure(s)
   end
 end
 
-function Cell:set_phase(m)
-  self.phase = m
+function Cell:set_offset(o)
+  if o > 15 then
+    self.offset = 0
+  elseif o < 0 then
+    self.offset = 15
+  else
+    self.offset = o
+  end
 end
 
 function Cell:set_sound(s)

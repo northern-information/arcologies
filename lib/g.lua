@@ -35,20 +35,21 @@ function g.key(x, y, z)
   if z == 0 then return end
   if not keeper.is_cell_selected then
     keeper:select_cell(x, y)
-    graphics:set_message(dictionary.structures[keeper.selected_cell.structure], 40)
+    graphics:top_message_cell_structure()
   else
     if keeper.selected_cell.id == id(x, y) then
       keeper.selected_cell:cycle_structure()
-      graphics:set_message(dictionary.structures[keeper.selected_cell.structure], 40)
+      graphics:top_message_cell_structure()
     elseif keeper.selected_cell:find_port(x, y) then
       keeper.selected_cell:toggle_port(x, y)
     elseif keeper:cell_exists(id(x, y)) then
       keeper:select_cell(x, y)
-      graphics:set_message(dictionary.structures[keeper.selected_cell.structure], 40)
+      graphics:top_message_cell_structure()
     else
       keeper:deselect_cell()
     end
   end
+  page:select(2)
   dirty_grid(true)
   dirty_screen(true)
 end

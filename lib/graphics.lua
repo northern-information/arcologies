@@ -9,6 +9,7 @@ function graphics.init()
   graphics.structure_y = 26
   graphics.total_cells = grid_height() * grid_width()
   graphics.analysis_pixels = {}
+  graphics.ui_wait_threshold = 0.5
 end
 
 function graphics:get_tab_x(i)
@@ -37,6 +38,12 @@ function graphics:top_message(string)
     self:text(20, 6, self.temporary_message, 0)
   else
     self:text(20, 6, string, 0)
+  end
+end
+
+function graphics:top_message_cell_structure()
+  if page.active_page ~= 2 then
+    self:set_message(dictionary.structures[keeper.selected_cell.structure], counters.default_message_length)
   end
 end
 
@@ -121,7 +128,7 @@ function graphics:playback_icon(x, y)
   if sound.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, generation_fmod(meter), (generation_fmod(meter) == 1) and 1 or 0)
+    self:icon(x, y, generation_fmod(sound.meter), (generation_fmod(sound.meter) == 1) and 1 or 0)
   end
 end
 
@@ -193,12 +200,12 @@ function graphics:structure_disable()
   self:mls(0, 16, 51, 15, 10)
 end
 
-function graphics:phase_enable()
+function graphics:offset_enable()
     self:text(2, 26, dictionary.cell_attributes[2], 15)
-    self:text(56, 25, keeper.selected_cell.phase, 0)
+    self:text(56, 25, keeper.selected_cell.offset, 0)
 end
 
-function graphics:phase_disable()
+function graphics:offset_disable()
   self:text(2, 26, dictionary.cell_attributes[2], 5)
   self:mls(0, 24, 51, 23, 10)
 end

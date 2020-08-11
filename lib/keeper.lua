@@ -12,7 +12,7 @@ end
 
 function keeper:spawn_signals()
   for k,v in pairs(self.cells) do
-    if v.structure == 1 and v.phase == generation() % meter + 1 and #v.ports > 0then
+    if v.structure == 1 and v.offset == generation() % sound.meter and #v.ports > 0 then
       for kk,vv in pairs(v.ports) do
         if vv == "n" then
           self:create_signal(v.x, v.y - 1, "n", generation())

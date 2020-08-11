@@ -33,16 +33,6 @@ function long_press(k)
   dirty_screen(true)
 end
 
-function set_meter(i)
-  if i > 16 then
-    meter = 1
-  elseif i < 1 then
-    meter = 16
-  else
-    meter = i
-  end
-end
-
 function set_seed(s)
   graphics:set_message("SEEDING...", 40)
   if enc_counter[3]["this_clock"] ~= nil then
@@ -58,7 +48,7 @@ end
 
 function seed_wait(s)
   enc_counter[3]["waiting"] = true
-  clock.sleep(ui_wait_threshold)
+  clock.sleep(graphics.ui_wait_threshold)
   enc_counter[3]["waiting"] = false
   enc_counter[3]["this_clock"] = nil
   seed_cells(s)
@@ -66,12 +56,16 @@ function seed_wait(s)
 end
 
 function seed_cells(s)
-  keeper:delete_all_cells()
-  graphics:set_message("SEEDED " .. s, 40)
-  for i = 1, s do
-    random_cell()
+  if s == 0 then
+    graphics:set_message("CANCELED SEED", 40)
+  else
+    keeper:delete_all_cells()
+    graphics:set_message("SEEDED " .. s, 40)
+    for i = 1, s do
+      random_cell()
+    end
+    keeper:deselect_cell()
   end
-  keeper:deselect_cell()
 end
 
 function random_cell()
@@ -83,16 +77,8 @@ function random_cell()
       keeper.selected_cell:open_port(ports[i])
     end
   end
-  keeper.selected_cell:set_phase(math.random(1, meter))
+  keeper.selected_cell:set_offset(math.random(1, sound.meter))
   keeper.selected_cell:set_sound(math.random(1, #dictionary.sounds))
-end
-
-
-function select_page(x)
-  page.active_page = x
-  page.items = page_items[page.active_page]
-  page.selected_item = 1
-  dirty_screen(true)
 end
 
 function in_bounds(x, y)  

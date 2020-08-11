@@ -1,6 +1,7 @@
 local sound = {}
 
 function sound.init()
+  sound.meter = 16
   sound.playback = 0
   sound.default_out = 0
   sound.default_out_name = ""
@@ -12,11 +13,15 @@ function sound.init()
     table.insert(sound.current_scale_names, mu.SCALES[i].name)
   end
   sound:set_default_out(1)
-  sound:set_scale(1)
+  sound:cycle_scale(0)
+end
+
+function sound:cycle_meter(i)
+  self.meter = util.clamp(self.meter + i, 1, 16)
 end
 
 function sound:set_playback(i)
-  sound.playback = i
+  self.playback = util.clamp(i, 0, 1)
 end
 
 function sound:toggle_playback()
@@ -28,9 +33,9 @@ function sound:toggle_playback()
   dirty_screen(true)
 end
 
-function sound:set_scale(i)
-  sound.current_scale = i
-  sound.current_scale_name = sound.current_scale_names[sound.current_scale]
+function sound:cycle_scale(i)
+  self.current_scale = util.clamp(self.current_scale + i, 1, #self.current_scale_names)
+  self.current_scale_name = sound.current_scale_names[sound.current_scale]
 end
 
 function sound:set_default_out(i)

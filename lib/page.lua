@@ -10,7 +10,12 @@ function page.init()
   page.items = page_items[page.active_page]
 end
 
-
+function page:select(i)
+  self.active_page = i
+  self.items = page_items[self.active_page]
+  self.selected_item = 1
+  dirty_screen(true)
+end
 
 
 function page:change_selected_item_value(d)
@@ -22,13 +27,13 @@ function page:change_selected_item_value(d)
   -- home
   if p == 1 then
     if s == 1 then
-      sound.set_playback(util.clamp(d, 0, 1))
+      sound:set_playback(d)
     elseif s == 2 then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
     elseif s == 3 then
-      set_meter(meter + d)
+      sound:cycle_meter(d)
     elseif s == 4 then
-      sound:set_scale(util.clamp(sound.current_scale + d, 1, #sound.current_scale_names))
+      sound:cycle_scale(d)
     elseif s == 5 then
       set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
     end
@@ -39,7 +44,7 @@ function page:change_selected_item_value(d)
     if s == 1 then
       keeper.selected_cell:set_structure(util.clamp(keeper.selected_cell.structure + d, 1, 3))
     elseif s == 2 then
-      keeper.selected_cell:set_phase(util.clamp(keeper.selected_cell.phase + d, 1, meter))
+      keeper.selected_cell:set_offset(util.clamp(keeper.selected_cell.offset + d, 0, sound.meter - 1))
     elseif s == 3 then
       keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
     elseif s == 4 then
@@ -98,7 +103,7 @@ function page:one()
   graphics:text(2, 50, "SEED " .. seed)
 
   graphics:playback_icon(56, 35)
-  graphics:icon(76, 35, meter, self.selected_item == 3 and 1 or 0)
+  graphics:icon(76, 35, sound.meter, self.selected_item == 3 and 1 or 0)
   
   if is_deleting() then
     graphics:icon(56, 35, "D:", 1)
@@ -107,7 +112,7 @@ function page:one()
   
   -- graphics:text(98, 52, sound.default_out_name, 0)
 
-  graphics:text(56, 61, string.upper(sound.current_scale_name), 0)
+  graphics:text(56, 61, sound.current_scale_name, 0)
   graphics:rect(126, 55, 2, 7, 15)
 end
 
@@ -128,7 +133,7 @@ function page:two()
     graphics:cell()
     graphics:draw_ports()
     graphics:structure_disable()
-    graphics:phase_disable()
+    graphics:offset_disable()
     graphics:sound_disable()
     graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 1 then
@@ -136,7 +141,7 @@ function page:two()
     graphics:draw_ports()
     graphics:structure_type(dictionary.structures[1])
     graphics:structure_enable()
-    graphics:phase_enable()
+    graphics:offset_enable()
     graphics:sound_disable()
     graphics:velocity_disable()
   elseif keeper.selected_cell.structure == 2 then
@@ -144,7 +149,7 @@ function page:two()
     graphics:draw_ports()    
     graphics:structure_type(dictionary.structures[2])
     graphics:structure_enable()
-    graphics:phase_disable()
+    graphics:offset_disable()
     graphics:sound_enable()
     graphics:velocity_enable()
   elseif keeper.selected_cell.structure == 3 then
@@ -152,7 +157,7 @@ function page:two()
     graphics:draw_ports(-5)
     graphics:structure_type(dictionary.structures[3])
     graphics:structure_enable()
-    graphics:phase_disable()
+    graphics:offset_disable()
     graphics:sound_disable()
     graphics:velocity_disable()
   end

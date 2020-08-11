@@ -2,6 +2,7 @@ local counters = {}
 
 function counters.init()
   counters.message = 0
+  counters.default_message_length = 40
 
   counters.ui = metro.init()
   counters.ui.time = 1 / 30
