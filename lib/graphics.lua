@@ -43,7 +43,7 @@ end
 
 function graphics:top_message_cell_structure()
   if page.active_page ~= 2 then
-    self:set_message(dictionary.structures[keeper.selected_cell.structure], counters.default_message_length)
+    self:set_message(keeper.selected_cell.available_structures[keeper.selected_cell.structure], counters.default_message_length)
   end
 end
 
@@ -213,7 +213,7 @@ end
 function graphics:sound_enable()
   self:text(2, 34, dictionary.cell_attributes[3], 15)
   if not is_selecting_note() then
-    graphics:text(56, 34, dictionary.sounds[keeper.selected_cell.sound], 0)
+    graphics:text(56, 34, keeper.selected_cell:get_note_name(), 0)
   end
 end
 
@@ -420,7 +420,7 @@ function graphics:analysis(selected_item)
   local menu_highlight = 0
   for i = 1, 4 do
     menu_highlight = (i == selected_item) and 15 or 5
-    menu_item = i ~= 4 and dictionary.structures[i] .. "S" or "SIGNALS"
+    menu_item = i ~= 4 and Cell:new(0, 0, 0).available_structures[i] .. "S" or "SIGNALS"
     menu_item_width = screen.text_extents(menu_item)
     menu_item_x = menu_item_start + ((i - 1) * menu_item_spacing)
     graphics:text(menu_item_x, menu_item_y, menu_item, menu_highlight)
@@ -476,8 +476,7 @@ end
 
 -- todo the piano note text readout is is one off... or is the note one off?
 function graphics:piano(k)
-  local selected = k % 12
-  print(selected)
+  local selected = (k % 12) + 1
   local x = 56
   local y = 35
   local key_width = 8
@@ -488,25 +487,23 @@ function graphics:piano(k)
   -- the only alternative i could think of was to elegantly draw all the keys
   -- in one pass but then make all these ugly highlights on top for the selected
   -- with a second pass. this route was the most maintainable and dynamic...
+  -- here, "index" is where the piano key is on the the white or black color index
   local keys = {}
-  for i = 1,12 do
-    keys[i] = {}
-    keys[i]["selected"] = i == selected + 1
-  end
-  
-  keys[1]["color"]  = 1  keys[1]["index"]  = 1 -- c
-  keys[2]["color"]  = 0  keys[2]["index"]  = 1 -- c#
-  keys[3]["color"]  = 1  keys[3]["index"]  = 2 -- d
-  keys[4]["color"]  = 0  keys[4]["index"]  = 2 -- d#
-  keys[5]["color"]  = 1  keys[5]["index"]  = 3 -- e
-  keys[6]["color"]  = 1  keys[6]["index"]  = 4 -- f
-  keys[7]["color"]  = 0  keys[7]["index"]  = 3 -- f# 
-  keys[8]["color"]  = 1  keys[8]["index"]  = 5 -- g
-  keys[9]["color"]  = 0  keys[9]["index"]  = 4 -- g#
-  keys[10]["color"] = 1  keys[10]["index"] = 6 -- a
-  keys[11]["color"] = 0  keys[11]["index"] = 5 -- a#
-  keys[12]["color"] = 1  keys[12]["index"] = 7 -- b
-  
+  for i = 1,12 do keys[i] = {} end
+  keys[1]  = { ["color"] = 1, ["index"] = 1 } -- c
+  keys[2]  = { ["color"] = 0, ["index"] = 1 } -- c#
+  keys[3]  = { ["color"] = 1, ["index"] = 2 } -- d
+  keys[4]  = { ["color"] = 0, ["index"] = 2 } -- d#
+  keys[5]  = { ["color"] = 1, ["index"] = 3 } -- e
+  keys[6]  = { ["color"] = 1, ["index"] = 4 } -- f
+  keys[7]  = { ["color"] = 0, ["index"] = 3 } -- f# 
+  keys[8]  = { ["color"] = 1, ["index"] = 5 } -- g
+  keys[9]  = { ["color"] = 0, ["index"] = 4 } -- g#
+  keys[10] = { ["color"] = 1, ["index"] = 6 } -- a
+  keys[11] = { ["color"] = 0, ["index"] = 5 } -- a#
+  keys[12] = { ["color"] = 1, ["index"] = 7 } -- b
+  keys[selected]["selected"] = true
+
   -- white keys
   for i = 1,12 do
     if keys[i]["color"] == 1 then
@@ -528,7 +525,8 @@ function graphics:piano(k)
   self:rect(x + (7 * key_width), y, 2, key_height, 0) -- end
 
   screen.font_size(30)
-  self:text(55, 32, dictionary.sounds[keeper.selected_cell.sound], 0, 10)
+  -- self:text(55, 32, dictionary.sounds[keeper.selected_cell.sound], 0, 10)
+  self:text(55, 32, keeper.selected_cell:get_note_name(), 0, 10)
   self:reset_font()
 end
 

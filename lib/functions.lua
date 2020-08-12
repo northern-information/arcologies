@@ -120,7 +120,7 @@ function random_cell()
     end
   end
   keeper.selected_cell:set_offset(math.random(1, sound.meter))
-  keeper.selected_cell:set_sound(math.random(1, #dictionary.sounds))
+  keeper.selected_cell:set_sound(math.random(68, 82))
 end
 
 function in_bounds(x, y)  

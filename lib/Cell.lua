@@ -13,24 +13,30 @@ function Cell:new(x, y, g)
     { c.x, c.y + 1, "s" },
     { c.x - 1, c.y, "w" }
   }
+  c.available_structures = { "HIVE", "SHRINE", "GATE" }
   c.generation = g
   c.index = x + ((y - 1) * grid_width())
 
   -- mutable
-  c.structure = 1
-  c.offset = 0
-  c.sound = 71
-  c.velocity = 127
   c.ports = {}
+  c.structure = 0
+  c.offset = 0
+  c.sound = 0
+  c.velocity = 0
+  c:set_structure(1)
+  c:set_offset(0)
+  c:set_sound(72)
+  c:set_velocity(127)
 
   return c
 end
 
+-- todo "cycle" utility function
 function Cell:set_structure(s)
-  if s > #dictionary.structures then
+  if s > #self.available_structures then
     self.structure = 1
   elseif s < 1 then
-    self.structure = #dictionary.structures
+    self.structure = #available_structures
   else
     self.structure = s
   end
@@ -86,4 +92,8 @@ end
 
 function Cell:cycle_structure()
   self:set_structure(self.structure + 1)
+end
+
+function Cell:get_note_name()
+  return mu.note_num_to_name(self.sound, true)
 end

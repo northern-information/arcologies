@@ -72,18 +72,22 @@ function keeper:collide_signals_and_cells()
   end
 end
 
+-- todo there is some race condition where signals can move through hives
+-- tried debugging and it is inconsistent which direction combination
 function keeper:collide(signal, cell)
-  local heading = signal.heading
   -- smash into closed port
-  if not cell:is_port_open(heading) then
+  if not cell:is_port_open(signal.heading) then
     self:delete_signal(signal.id)
   end
   -- hives don't allow any signals in
   if cell.structure == 1 then
+    print('hive collision')
+    g:register_signal_and_cell_collision_at(cell.x, cell.y)
     self:delete_signal(signal.id)
   end
   -- shrines play sounds
-  if cell.structure == 3 then
+  if cell.structure == 2 then
+    g:register_signal_and_cell_collision_at(cell.x, cell.y)
     sound:play(cell.sound, cell.velocity)
     self:delete_signal(signal.id)
   end

@@ -44,7 +44,7 @@ function sound:set_default_out(i)
 end
 
 function sound:play(note, velocity)
-  -- engine.hz(mu.note_num_to_freq(note))
+  engine.hz(mu.note_num_to_freq(note))
 end
 
 return sound

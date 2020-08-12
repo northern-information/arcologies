@@ -25,7 +25,7 @@
          mu = require("musicutil")                 -- ships with norns
          tu = require("tabutil")                   -- ships with norns 
       graph = require("graph")                     -- ships with norns 
--- engine.name = "PolyPerc"                           -- default engine
+engine.name = "PolyPerc"                           -- default engine
 
 function init()
   audio:pitch_off()
@@ -66,7 +66,7 @@ end
 
 function enc(n, d)
   if n == 1 then
-    page:select(util.clamp(page.active_page + d, 1, #dictionary.pages))
+    page:select(util.clamp(page.active_page + d, 1, #page.titles))
     if page.active_page ~= 2 then
       keeper:deselect_cell()
     end

@@ -1,6 +1,7 @@
 local page = {}
 
 function page.init()
+  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS" }
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
@@ -70,7 +71,7 @@ function page:render()
   graphics:top_menu()
   graphics:select_tab(self.active_page)
   graphics:top_message()
-  graphics:page_name(dictionary.pages[self.active_page])
+  graphics:page_name(self.titles[self.active_page])
   if self.active_page == 1 then
     self:one()
   elseif self.active_page == 2 then
@@ -143,7 +144,7 @@ function page:two()
     elseif keeper.selected_cell.structure == 1 then
       graphics:hive()
       graphics:draw_ports()
-      graphics:structure_type(dictionary.structures[1])
+      graphics:structure_type(keeper.selected_cell.available_structures[1])
       graphics:structure_enable()
       graphics:offset_enable()
       graphics:sound_disable()
@@ -151,7 +152,7 @@ function page:two()
     elseif keeper.selected_cell.structure == 2 then
       graphics:shrine()
       graphics:draw_ports()    
-      graphics:structure_type(dictionary.structures[2])
+      graphics:structure_type(keeper.selected_cell.available_structures[2])
       graphics:structure_enable()
       graphics:offset_disable()
       graphics:sound_enable()
@@ -159,7 +160,7 @@ function page:two()
     elseif keeper.selected_cell.structure == 3 then
       graphics:gate()
       graphics:draw_ports(-5)
-      graphics:structure_type(dictionary.structures[3])
+      graphics:structure_type(keeper.selected_cell.available_structures[3])
       graphics:structure_enable()
       graphics:offset_disable()
       graphics:sound_disable()
