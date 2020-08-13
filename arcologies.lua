@@ -14,18 +14,17 @@
          mu = require("musicutil")                 -- ships with norns
          tu = require("tabutil")                   -- ships with norns 
       graph = require("graph")                     -- ships with norns 
-engine.name = "PolyPerc"                           -- default engine
-              include("arcologies/lib/Cell")       -- the core concept of arcologies
-              include("arcologies/lib/Signal")     -- emitted by Cells
+engine.name = "PolyPerc"                           -- ships with norns
+              include("arcologies/lib/Cell")       -- the core concept of arcologies, interact with Signals
+              include("arcologies/lib/Signal")     -- emitted by Cells, "bangs" that move n, e, s, w
          fn = include("arcologies/lib/functions")  -- global functions
    counters = include("arcologies/lib/counters")   -- clocks, metros, timing
           g = include("arcologies/lib/g")          -- grid interactions and leds
-   graphics = include("arcologies/lib/graphics")   -- all norns screen rendinger
+   graphics = include("arcologies/lib/graphics")   -- all norns screen rendering
      keeper = include("arcologies/lib/keeper")     -- state machine for Cells and Signals
        page = include("arcologies/lib/page")       -- controller for norns pages
       sound = include("arcologies/lib/sound")      -- all sound, midi, samples
  parameters = include("arcologies/lib/parameters") -- exposed norns parameters
-
 
 function init()
   audio:pitch_off()
@@ -71,15 +70,13 @@ end
 function enc(n, d)
   if n == 1 then
     page:select(util.clamp(page.active_page + d, 1, #page.titles))
-    if page.active_page ~= 2 then
-      keeper:deselect_cell()
-    end
+    if page.active_page ~= 2 then keeper:deselect_cell() end
   elseif n == 2 then
     page.selected_item = util.clamp(page.selected_item + d, 1, page.items)
   else
     page:change_selected_item_value(d)
   end
-  fn.dirty_screen(true) -- todo make sure i'm not over doing it with these
+  fn.dirty_screen(true)
 end
 
 function key(k, z)

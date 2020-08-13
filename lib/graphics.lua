@@ -455,7 +455,7 @@ function graphics:analysis(selected_item)
   end
   screen.stroke()
   -- more data
-  self:text(106, 18, counters.music.fn.generation, 1)
+  self:text(106, 18, counters.music.generation, 1)
   self:playback_icon(105, 19)
 
 end
@@ -474,8 +474,6 @@ function graphics:draw_pixel(x, y, b)
   end
 end
 
-
--- todo the piano note text readout is is one off... or is the note one off?
 function graphics:piano(k)
   local selected = (k % 12) + 1
   local x = 56
@@ -483,12 +481,12 @@ function graphics:piano(k)
   local key_width = 8
   local key_height = 27
   
-  -- have to draw the white keys first becuase the black are then drawn on top
-  -- so this is a super contrived way of drawing a piano with two loops...
-  -- the only alternative i could think of was to elegantly draw all the keys
-  -- in one pass but then make all these ugly highlights on top for the selected
-  -- with a second pass. this route was the most maintainable and dynamic...
-  -- here, "index" is where the piano key is on the the white or black color index
+  --[[ have to draw the white keys first becuase the black are then drawn on top
+  so this is a super contrived way of drawing a piano with two loops...
+  the only alternative i could think of was to elegantly draw all the keys
+  in one pass but then make all these ugly highlights on top for the selected
+  with a second pass. this route was the most maintainable and dynamic...
+  here, "index" is where the piano key is on the the white or black color index]]
   local keys = {}
   for i = 1,12 do keys[i] = {} end
   keys[1]  = { ["color"] = 1, ["index"] = 1 } -- c
@@ -528,21 +526,6 @@ function graphics:piano(k)
   screen.font_size(30)
   self:text(55, 32, keeper.selected_cell:get_note_name(), 0, 10)
   self:reset_font()
-end
-
-function graphics:signal_density()
-  local x, y = 0, 0
-  local line_chart_start_x = 0
-  local line_chart_start_y = 32
-  local width_x = 10
-  screen.level(15)
-  screen.move(line_chart_start_x, line_chart_start_y)
-  if #keeper.signal_history > 0 then
-    for i = 1, #keeper.signal_history do
-      -- screen.line_rel(i * width_x, keeper.signal_history[i])
-    end
-  end
-  screen.stroke()
 end
 
 function graphics:ready_animation(i)

@@ -1,14 +1,13 @@
 local page = {}
 
 function page.init()
-  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS", "SIGNAL DENSITY" }
+  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS" }
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
   page_items[1] = 6
   page_items[2] = 4
   page_items[3] = 5
-  page_items[4] = 0
   page.items = page_items[page.active_page]
 end
 
