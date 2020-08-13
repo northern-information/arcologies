@@ -14,19 +14,19 @@ end
 
 function keeper:spawn_signals()
   for k,v in pairs(self.cells) do
-    if v.structure == 1 and v.offset == generation() % sound.meter and #v.ports > 0 then
+    if v.structure == 1 and v.offset == fn.generation() % sound.meter and #v.ports > 0 then
       for kk,vv in pairs(v.ports) do
         if vv == "n" then
-          self:create_signal(v.x, v.y - 1, "n", generation())
+          self:create_signal(v.x, v.y - 1, "n", fn.generation())
         elseif vv == "e" then
-          self:create_signal(v.x + 1, v.y, "e", generation())
+          self:create_signal(v.x + 1, v.y, "e", fn.generation())
         elseif vv == "s" then
-          self:create_signal(v.x, v.y + 1, "s", generation())
+          self:create_signal(v.x, v.y + 1, "s", fn.generation())
         elseif vv == "w" then
-          self:create_signal(v.x - 1, v.y, "w", generation())
+          self:create_signal(v.x - 1, v.y, "w", fn.generation())
         end
-        dirty_grid(true)
-        dirty_screen(true)
+        fn.dirty_grid(true)
+        fn.dirty_screen(true)
       end
     end
   end
@@ -40,9 +40,9 @@ function keeper:propagate_signals()
   if #self.signals < 1 then return end
   local delete = {}
   for k,v in pairs(self.signals) do
-    if v.generation < generation() then
+    if v.generation < fn.generation() then
       v:propagate()
-      if not in_bounds(v.x, v.y) then
+      if not fn.in_bounds(v.x, v.y) then
         table.insert(delete, v.id)
       end
     end
@@ -50,8 +50,8 @@ function keeper:propagate_signals()
   for k,v in pairs(delete) do
     self:delete_signal(v)
   end
-  dirty_grid(true)
-  dirty_screen(true)
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 function keeper:collide_signals()
@@ -107,10 +107,10 @@ function keeper:collide(signal, cell)
         for k,out_port in pairs(cell.ports) do
           if out_port ~= in_port then
             g:register_signal_and_cell_collision_at(cell.x, cell.y)
-            if out_port == "n" then self:create_signal(cell.x, cell.y - 1, "n", generation() + 1) end
-            if out_port == "e" then self:create_signal(cell.x + 1, cell.y, "e", generation() + 1) end
-            if out_port == "s" then self:create_signal(cell.x, cell.y + 1, "s", generation() + 1) end
-            if out_port == "w" then self:create_signal(cell.x - 1, cell.y, "w", generation() + 1) end
+            if out_port == "n" then self:create_signal(cell.x, cell.y - 1, "n", fn.generation() + 1) end
+            if out_port == "e" then self:create_signal(cell.x + 1, cell.y, "e", fn.generation() + 1) end
+            if out_port == "s" then self:create_signal(cell.x, cell.y + 1, "s", fn.generation() + 1) end
+            if out_port == "w" then self:create_signal(cell.x - 1, cell.y, "w", fn.generation() + 1) end
           end
         end
       end
@@ -140,7 +140,7 @@ function keeper:delete_signal(id)
       table.remove(self.signals, k)
     end
   end
-  dirty_grid(true)
+  fn.dirty_grid(true)
 end
 
 function keeper:delete_all_signals()
@@ -168,7 +168,7 @@ function keeper:cell_exists(id)
 end
 
 function keeper:create_cell(x, y)
-  local new_cell = Cell:new(x, y, generation())
+  local new_cell = Cell:new(x, y, fn.generation())
   table.insert(self.cells, new_cell)
   return new_cell
 end
@@ -188,7 +188,7 @@ function keeper:delete_all_cells()
 end
 
 function keeper:select_cell(x, y)
-  local id = id(x, y)
+  local id = fn.id(x, y)
   if self:cell_exists(id) then
     self.selected_cell = self:get_cell(id)
   else
@@ -198,8 +198,8 @@ function keeper:select_cell(x, y)
   self.selected_cell_id = self.selected_cell.id
   self.selected_cell_x = self.selected_cell.x
   self.selected_cell_y = self.selected_cell.y
-  dirty_grid(true)
-  dirty_screen(true)
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 function keeper:deselect_cell()
@@ -207,8 +207,8 @@ function keeper:deselect_cell()
   self.selected_cell_id = ""
   self.selected_cell_x = ""
   self.selected_cell_y = ""
-  dirty_grid(true)
-  dirty_screen(true)
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 function keeper:count_cells(s)

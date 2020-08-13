@@ -34,7 +34,7 @@ function sound:toggle_playback()
   else
     self:set_playback(0)
   end
-  dirty_screen(true)
+  fn.dirty_screen(true)
 end
 
 function sound:build_scale()
@@ -60,7 +60,7 @@ function sound:set_scale(i)
 end
 
 function sound:cycle_root(i)
-  self.current_root = f.cycle(self.current_root + i, 1, 12)
+  self.current_root = fn.cycle(self.current_root + i, 1, 12)
 end
 
 function sound:set_default_out(i)

@@ -39,12 +39,12 @@ end
 
 function counters.redraw_clock()
   while true do
-    if dirty_screen() then
+    if fn.dirty_screen() then
       redraw()
-      dirty_screen(false)
+      fn.dirty_screen(false)
     end
-    if dirty_grid() then
-      grid_redraw()
+    if fn.dirty_grid() then
+      g:grid_redraw()
     end
     clock.sleep(1 / 30)
   end
@@ -55,7 +55,7 @@ function counters.optician()
   if counters.ui.frame % 4 == 0 then
     counters.ui.quarter_frame = counters.ui.quarter_frame +1
   end
-  dirty_screen(true)
+  fn.dirty_screen(true)
   redraw()
 end
 

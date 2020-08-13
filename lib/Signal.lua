@@ -4,14 +4,14 @@ function Signal:new(x, y, h, g)
   local s = setmetatable({}, { __index = Signal })
 
   -- constants
-  s.generation = (g or generation())
+  s.generation = (g or fn.generation())
 
   -- mutable
   s.x = x
   s.y = y
-  s.id = id(s.x, s.y)
+  s.id = fn.id(s.x, s.y)
   s.heading = h
-  s.index = x + ((y - 1) * grid_width())
+  s.index = x + ((y - 1) * fn.grid_width())
 
   return s
 end
@@ -30,6 +30,6 @@ function Signal:propagate()
   elseif self.heading == "w" then
     self.x = self.x - 1
   end
-  self.id = id(self.x, self.y)
-  self.index = self.x + ((self.y - 1) * grid_width())
+  self.id = fn.id(self.x, self.y)
+  self.index = self.x + ((self.y - 1) * fn.grid_width())
 end

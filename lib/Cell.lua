@@ -6,7 +6,7 @@ function Cell:new(x, y, g)
   -- constants
   c.x = x
   c.y = y
-  c.id = id(c.x, c.y)
+  c.id = fn.id(c.x, c.y)
   c.available_ports = {
     { c.x, c.y - 1, "n" },
     { c.x + 1, c.y, "e" },
@@ -16,7 +16,7 @@ function Cell:new(x, y, g)
   c.available_structures = { "HIVE", "SHRINE", "GATE" }
   c.attributes = { "STRUCTURE", "OFFSET", "SOUND", "VELOCITY" }
   c.generation = g
-  c.index = x + ((y - 1) * grid_width())
+  c.index = x + ((y - 1) * fn.grid_width())
 
   -- mutable
   c.ports = {}
@@ -29,11 +29,11 @@ function Cell:new(x, y, g)
 end
 
 function Cell:set_structure(i)
-  self.structure = f.cycle(i, 1, #self.available_structures)
+  self.structure = fn.cycle(i, 1, #self.available_structures)
 end
 
 function Cell:set_offset(i)
-  self.offset = f.cycle(i, 0, 15)
+  self.offset = fn.cycle(i, 0, 15)
 end
 
 function Cell:set_note(i)
@@ -58,7 +58,7 @@ function Cell:open_port(p)
 end
 
 function Cell:close_port(p)
-  table.remove(self.ports, table_find(self.ports, p))
+  table.remove(self.ports, fn.table_find(self.ports, p))
 end
 
 function Cell:is_port_open(p)

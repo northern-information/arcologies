@@ -17,20 +17,19 @@
 engine.name = "PolyPerc"                           -- default engine
               include("arcologies/lib/Cell")       -- the core concept of arcologies
               include("arcologies/lib/Signal")     -- emitted by Cells
-          f = include("arcologies/lib/functions")   -- global functions
+         fn = include("arcologies/lib/functions")  -- global functions
    counters = include("arcologies/lib/counters")   -- clocks, metros, timing
           g = include("arcologies/lib/g")          -- grid interactions and leds
    graphics = include("arcologies/lib/graphics")   -- all norns screen rendinger
      keeper = include("arcologies/lib/keeper")     -- state machine for Cells and Signals
        page = include("arcologies/lib/page")       -- controller for norns pages
       sound = include("arcologies/lib/sound")      -- all sound, midi, samples
-
  parameters = include("arcologies/lib/parameters") -- exposed norns parameters
 
 
 function init()
   audio:pitch_off()
-  f.init()
+  fn.init()
   counters.init()
   g.init()
   graphics.init()  
@@ -38,14 +37,14 @@ function init()
   page.init()  
   parameters.init()
   sound.init()
-  seed = 5
   deleting, selecting_note = false, false
   grid_dirty, screen_dirty= true, true
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   clock.run(counters.redraw_clock)
+  clock.run(g.grid_redraw_clock)
   for e = 1, 3 do counters:reset_enc(e) end
   page:select(1)
-  seed_cells(seed)
+  fn.seed_cells()
   sound:toggle_playback()
   
   -- cell designer
@@ -62,11 +61,11 @@ function init()
 end
 
 function redraw()
-  if not dirty_screen() then return end
+  if not fn.dirty_screen() then return end
   graphics:setup()
   page:render()
   graphics:teardown()
-  dirty_screen(false)
+  fn.dirty_screen(false)
 end
 
 function enc(n, d)
@@ -80,13 +79,13 @@ function enc(n, d)
   else
     page:change_selected_item_value(d)
   end
-  dirty_screen(true) -- todo make sure i'm not over doing it with these
+  fn.dirty_screen(true) -- todo make sure i'm not over doing it with these
 end
 
 function key(k, z)
-  is_deleting(k == 3 and z == 1 and true or false)
+  fn.is_deleting(k == 3 and z == 1 and true or false)
   if z == 1 then
-    key_counter[k] = clock.run(long_press, k)
+    key_counter[k] = clock.run(fn.long_press, k)
   elseif z == 0 then
     if key_counter[k] then
       clock.cancel(key_counter[k])
@@ -98,7 +97,7 @@ function key(k, z)
           keeper:delete_cell(keeper.selected_cell_id)
         end
       end
-      dirty_screen(true)
+      fn.dirty_screen(true)
     end
   end
 end

@@ -7,7 +7,7 @@ function graphics.init()
   graphics.tab_padding = 1
   graphics.structure_x = 94
   graphics.structure_y = 26
-  graphics.total_cells = grid_height() * grid_width()
+  graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
   graphics.cell_attributes = Cell:new(0, 0, 0).attributes
@@ -22,7 +22,7 @@ function graphics:top_menu()
   for i = 1,#page.titles do
     self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
   end
-  self:top_message(graphics:playback(generation_fmod(4)))
+  self:top_message(graphics:playback(fn.generation_fmod(4)))
 end
 
 function graphics:set_message(string, time)
@@ -31,7 +31,7 @@ function graphics:set_message(string, time)
 end
 
 function graphics:top_message(string)
-  if is_deleting() then
+  if fn.is_deleting() then
     self.temporary_message = "DELETING..."
     counters.message = counters.ui.frame + 1
   end
@@ -120,8 +120,8 @@ end
 function graphics:playback()
   self:top_message( 
     (sound.playback == 0) and 
-      self:ready_animation(ui_quarter_frame_fmod(10)) or 
-      self:playing_animation(generation_fmod(4))
+      self:ready_animation(fn.ui_quarter_frame_fmod(10)) or 
+      self:playing_animation(fn.generation_fmod(4))
   )
 end
 
@@ -129,7 +129,7 @@ function graphics:playback_icon(x, y)
   if sound.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, generation_fmod(sound.meter), (generation_fmod(sound.meter) == 1) and 1 or 0)
+    self:icon(x, y, fn.generation_fmod(sound.meter), (fn.generation_fmod(sound.meter) == 1) and 1 or 0)
   end
 end
 
@@ -213,7 +213,7 @@ end
 
 function graphics:sound_enable()
   self:text(2, 34, self.cell_attributes[3], 15)
-  if not f.is_selecting_note() then
+  if not fn.is_selecting_note() then
     graphics:text(56, 34, keeper.selected_cell:get_note_name(), 0)
   end
 end
@@ -429,7 +429,7 @@ function graphics:analysis(selected_item)
   end
   
   -- grid (thank you @okyeron)
-  for i = 1, grid_width() * grid_height() do
+  for i = 1, fn.grid_width() * fn.grid_height() do
     self.analysis_pixels[i] = 0    
     if selected_item ~= 4 then
       for k,v in pairs(keeper.cells) do
@@ -437,7 +437,7 @@ function graphics:analysis(selected_item)
           self.analysis_pixels[i] = 15
         end
       end
-      dirty_grid(true)
+      fn.dirty_grid(true)
     elseif selected_item == 4 then
       for k,v in pairs(keeper.signals) do
         if v.index == i then
@@ -447,22 +447,22 @@ function graphics:analysis(selected_item)
     end
   end
   screen.level(1)
-  for x = 1, grid_width(), 1 do 
-    for y = 1, grid_height(), 1 do 
-      pidx = x + ((y - 1) * grid_width())
+  for x = 1, fn.grid_width(), 1 do 
+    for y = 1, fn.grid_height(), 1 do 
+      pidx = x + ((y - 1) * fn.grid_width())
       self:draw_pixel(x, y, self.analysis_pixels[pidx])
     end
   end
   screen.stroke()
   -- more data
-  self:text(106, 18, counters.music.generation, 1)
+  self:text(106, 18, counters.music.fn.generation, 1)
   self:playback_icon(105, 19)
 
 end
 
 function graphics:draw_pixel(x, y, b)
   local offset = { x = 54, y = 11, spacing = 3 }
-  pidx = x + ((y - 1) * grid_width())
+  pidx = x + ((y - 1) * fn.grid_width())
   if self.analysis_pixels[pidx] > 0 then
     screen.stroke()
     screen.level(b)

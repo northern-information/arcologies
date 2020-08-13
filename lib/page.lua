@@ -16,7 +16,7 @@ function page:select(i)
   self.active_page = i
   self.items = page_items[self.active_page]
   self.selected_item = 1
-  dirty_screen(true)
+  fn.dirty_screen(true)
 end
 
 function page:change_selected_item_value(d)
@@ -29,7 +29,7 @@ function page:change_selected_item_value(d)
       sound:set_playback(d)
 
     elseif s == 2 then
-      set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
+      fn.set_seed(util.clamp(params:get("seed") + d, 0, math.floor(fn.grid_width() * fn.grid_height() / 4)))
 
     elseif s == 3 then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
@@ -55,7 +55,7 @@ function page:change_selected_item_value(d)
       keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
 
     elseif s == 3 then
-      f.set_note(d)
+      fn.set_note(d)
 
     elseif s == 4 then
       keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
@@ -70,7 +70,7 @@ function page:change_selected_item_value(d)
   elseif p == 4 then
     -- nothing to change here
   end
-  dirty_screen(true)
+  fn.dirty_screen(true)
 end
 
 function page:render()
@@ -89,14 +89,14 @@ function page:render()
   elseif self.active_page == 4 then
    graphics:signal_density(self.selected_item)
   end
-  dirty_screen(true)
+  fn.dirty_screen(true)
 end
 
 function page:home()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
   graphics:text(2, 18, sound.playback == 0 and "READY" or "PLAYING")  
-  graphics:text(2, 26, "SEED " .. seed)
+  graphics:text(2, 26, "SEED " .. params:get("seed"))
   graphics:bpm(55, 32, params:get("bpm"), 0)
   graphics:text(2, 34, "BPM")
   graphics:text(2, 42, "METER")
@@ -106,7 +106,7 @@ function page:home()
   graphics:playback_icon(56, 35)
   graphics:icon(76, 35, sound.meter, self.selected_item == 3 and 1 or 0)
   
-  if is_deleting() then
+  if fn.is_deleting() then
     graphics:icon(56, 35, "D:", 1)
     graphics:icon(76, 35, "D:", 1)
   end
@@ -120,7 +120,7 @@ end
 function page:cell_designer()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
-  if f.is_selecting_note() then
+  if fn.is_selecting_note() then
     graphics:piano(keeper.selected_cell.note)
     graphics:sound_enable()
   else
