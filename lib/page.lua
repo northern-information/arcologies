@@ -1,13 +1,14 @@
 local page = {}
 
 function page.init()
-  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS" }
+  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS", "SIGNAL DENSITY" }
   page.active_page = 1
   page.selected_item = 1
   page_items = {}
-  page_items[1] = 5
+  page_items[1] = 6
   page_items[2] = 4
   page_items[3] = 5
+  page_items[4] = 0
   page.items = page_items[page.active_page]
 end
 
@@ -18,10 +19,7 @@ function page:select(i)
   dirty_screen(true)
 end
 
-
 function page:change_selected_item_value(d)
-
-  local cache
   local p = page.active_page
   local s = page.selected_item
 
@@ -29,41 +27,51 @@ function page:change_selected_item_value(d)
   if p == 1 then
     if s == 1 then
       sound:set_playback(d)
+
     elseif s == 2 then
-      params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-    elseif s == 3 then
-      sound:cycle_meter(d)
-    elseif s == 4 then
-      sound:cycle_scale(d)
-    elseif s == 5 then
       set_seed(util.clamp(seed + d, 0, math.floor(grid_width() * grid_height() / 4)))
+
+    elseif s == 3 then
+      params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
+      
+    elseif s == 4 then
+      sound:cycle_meter(d)
+      
+    elseif s == 5 then
+      sound:cycle_root(d)
+
+    elseif s == 6 then
+      sound:set_scale(sound.current_scale + d)
     end
 
   -- cell designer
   elseif p == 2 then
     if not keeper.is_cell_selected then return end
+
     if s == 1 then
-      keeper.selected_cell:set_structure(util.clamp(keeper.selected_cell.structure + d, 1, 3))
+      keeper.selected_cell:set_structure(keeper.selected_cell.structure + d)
+
     elseif s == 2 then
-      keeper.selected_cell:set_offset(util.clamp(keeper.selected_cell.offset + d, 0, sound.meter - 1))
+      keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
+
     elseif s == 3 then
-      set_note(d)
+      f.set_note(d)
+
     elseif s == 4 then
-      keeper.selected_cell:set_velocity(util.clamp(keeper.selected_cell.velocity + d, 1, 127))
+      keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
+
     end
 
   -- analysis
   elseif p == 3 then
     -- nothing to change here
+ 
+  -- signal density
+  elseif p == 4 then
+    -- nothing to change here
   end
   dirty_screen(true)
 end
-
-
-
-
-
-
 
 function page:render()
   self.active_page = page.active_page
@@ -73,35 +81,27 @@ function page:render()
   graphics:top_message()
   graphics:page_name(self.titles[self.active_page])
   if self.active_page == 1 then
-    self:one()
+    self:home()
   elseif self.active_page == 2 then
-    self:two()
+    self:cell_designer()
   elseif self.active_page == 3 then
-    self:three()
+    graphics:analysis(self.selected_item)
+  elseif self.active_page == 4 then
+   graphics:signal_density(self.selected_item)
   end
   dirty_screen(true)
 end
 
-
-
-
-
-
-
-
-
-
-
--- home
-function page:one()
+function page:home()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
   graphics:text(2, 18, sound.playback == 0 and "READY" or "PLAYING")  
-  graphics:text(2, 26, "BPM")
+  graphics:text(2, 26, "SEED " .. seed)
   graphics:bpm(55, 32, params:get("bpm"), 0)
-  graphics:text(2, 34, "METER")
-  graphics:text(2, 42, "SCALE")
-  graphics:text(2, 50, "SEED " .. seed)
+  graphics:text(2, 34, "BPM")
+  graphics:text(2, 42, "METER")
+  graphics:text(2, 50, "ROOT")
+  graphics:text(2, 58, "SCALE")
 
   graphics:playback_icon(56, 35)
   graphics:icon(76, 35, sound.meter, self.selected_item == 3 and 1 or 0)
@@ -113,24 +113,15 @@ function page:one()
   
   -- graphics:text(98, 52, sound.default_out_name, 0)
 
-  graphics:text(56, 61, sound.current_scale_name, 0)
+  graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
   graphics:rect(126, 55, 2, 7, 15)
 end
 
-
-
-
-
-
-
-
-
--- structures
-function page:two()
+function page:cell_designer()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
-  if is_selecting_note() then
-    graphics:piano(keeper.selected_cell.sound)
+  if f.is_selecting_note() then
+    graphics:piano(keeper.selected_cell.note)
     graphics:sound_enable()
   else
     graphics:cell_id()
@@ -168,16 +159,5 @@ function page:two()
     end
   end
 end
-
-
-
-
-
--- analysis
-function page:three()
-  graphics:analysis(self.selected_item)
-end
-
-
 
 return page

@@ -8,6 +8,8 @@ function keeper.init()
   keeper.selected_cell = {}
   keeper.cells = {}
   keeper.signals = {}
+  keeper.signal_history = {}
+  keeper.signal_history_max = 10
 end
 
 function keeper:spawn_signals()
@@ -28,6 +30,10 @@ function keeper:spawn_signals()
       end
     end
   end
+  if #self.signal_history > keeper.signal_history_max then
+    table.remove(self.signal_history, 1)
+  end
+  self.signal_history[#self.signal_history + 1] = #self.signals
 end
 
 function keeper:propagate_signals()
@@ -51,7 +57,7 @@ end
 function keeper:collide_signals()
   for k,v in pairs(self.signals) do
     for kk,vv in pairs(self.signals) do
-      if k ~= kk then 
+      if k ~= kk then -- todo is this right?
         if v.id == vv.id then
           g:register_signal_death_at(v.x, v.y)
           self:delete_signal(v.id)
@@ -75,34 +81,37 @@ end
 -- todo there is some race condition where signals can move through hives
 -- tried debugging and it is inconsistent which direction combination
 function keeper:collide(signal, cell)
+
   -- smash into closed port
   if not cell:is_port_open(signal.heading) then
+    g:register_signal_and_cell_collision_at(cell.x, cell.y)
     self:delete_signal(signal.id)
   end
   -- hives don't allow any signals in
   if cell.structure == 1 then
-    print('hive collision')
     g:register_signal_and_cell_collision_at(cell.x, cell.y)
     self:delete_signal(signal.id)
   end
-  -- shrines play sounds
+  -- shrines play single midi notes
   if cell.structure == 2 then
     g:register_signal_and_cell_collision_at(cell.x, cell.y)
-    sound:play(cell.sound, cell.velocity)
+    sound:play(cell.note, cell.velocity)
     self:delete_signal(signal.id)
   end
   -- gates and shrines reroute & split
   -- look at all the ports to see if this signal made it in
   -- then split the signal to all the other ports
-  for k,in_port in pairs(cell.ports) do
-    if self:are_signal_and_port_compatible(signal, in_port) then
-      for k,out_port in pairs(cell.ports) do
-        if out_port ~= in_port then
-          g:register_signal_and_cell_collision_at(cell.x, cell.y)
-          if out_port == "n" then self:create_signal(cell.x, cell.y - 1, "n", generation() + 1) end
-          if out_port == "e" then self:create_signal(cell.x + 1, cell.y, "e", generation() + 1) end
-          if out_port == "s" then self:create_signal(cell.x, cell.y + 1, "s", generation() + 1) end
-          if out_port == "w" then self:create_signal(cell.x - 1, cell.y, "w", generation() + 1) end
+  if cell.structure == 2 or cell.structure == 3 then
+    for k,in_port in pairs(cell.ports) do
+      if self:are_signal_and_port_compatible(signal, in_port) then
+        for k,out_port in pairs(cell.ports) do
+          if out_port ~= in_port then
+            g:register_signal_and_cell_collision_at(cell.x, cell.y)
+            if out_port == "n" then self:create_signal(cell.x, cell.y - 1, "n", generation() + 1) end
+            if out_port == "e" then self:create_signal(cell.x + 1, cell.y, "e", generation() + 1) end
+            if out_port == "s" then self:create_signal(cell.x, cell.y + 1, "s", generation() + 1) end
+            if out_port == "w" then self:create_signal(cell.x - 1, cell.y, "w", generation() + 1) end
+          end
         end
       end
     end

@@ -10,6 +10,7 @@ function graphics.init()
   graphics.total_cells = grid_height() * grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
+  graphics.cell_attributes = Cell:new(0, 0, 0).attributes
 end
 
 function graphics:get_tab_x(i)
@@ -18,7 +19,7 @@ end
 
 function graphics:top_menu()
   self:rect(0, 0, 128, 7)
-  for i = 1,3 do
+  for i = 1,#page.titles do
     self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
   end
   self:top_message(graphics:playback(generation_fmod(4)))
@@ -35,9 +36,9 @@ function graphics:top_message(string)
     counters.message = counters.ui.frame + 1
   end
   if counters.message > counters.ui.frame then
-    self:text(20, 6, self.temporary_message, 0)
+    self:text((#page.titles + 1) * self.tab_width + 2, 6, self.temporary_message, 0)
   else
-    self:text(20, 6, string, 0)
+    self:text((#page.titles + 1) * self.tab_width + 2, 6, string, 0)
   end
 end
 
@@ -192,43 +193,43 @@ function graphics:structure_type(s)
 end
 
 function graphics:structure_enable()
-  self:text(2, 18, dictionary.cell_attributes[1], 15)  
+  self:text(2, 18, self.cell_attributes[1], 15)  
 end
 
 function graphics:structure_disable()
-  self:text(2, 18, dictionary.cell_attributes[1], 5)
+  self:text(2, 18, self.cell_attributes[1], 5)
   self:mls(0, 16, 51, 15, 10)
 end
 
 function graphics:offset_enable()
-    self:text(2, 26, dictionary.cell_attributes[2], 15)
+    self:text(2, 26, self.cell_attributes[2], 15)
     self:text(56, 25, keeper.selected_cell.offset, 0)
 end
 
 function graphics:offset_disable()
-  self:text(2, 26, dictionary.cell_attributes[2], 5)
+  self:text(2, 26, self.cell_attributes[2], 5)
   self:mls(0, 24, 51, 23, 10)
 end
 
 function graphics:sound_enable()
-  self:text(2, 34, dictionary.cell_attributes[3], 15)
-  if not is_selecting_note() then
+  self:text(2, 34, self.cell_attributes[3], 15)
+  if not f.is_selecting_note() then
     graphics:text(56, 34, keeper.selected_cell:get_note_name(), 0)
   end
 end
 
 function graphics:sound_disable()
-  self:text(2, 34, dictionary.cell_attributes[3], 5)
+  self:text(2, 34, self.cell_attributes[3], 5)
   self:mls(0, 32, 51, 31, 10)
 end
 
 function graphics:velocity_enable()
-  self:text(2, 42, dictionary.cell_attributes[4], 15)
+  self:text(2, 42, self.cell_attributes[4], 15)
   graphics:text(56, 42, keeper.selected_cell.velocity, 0)
 end
 
 function graphics:velocity_disable()
-  self:text(2, 42, dictionary.cell_attributes[4], 5)
+  self:text(2, 42, self.cell_attributes[4], 5)
   self:mls(0, 40, 51, 39, 10)
 end
 
@@ -525,9 +526,23 @@ function graphics:piano(k)
   self:rect(x + (7 * key_width), y, 2, key_height, 0) -- end
 
   screen.font_size(30)
-  -- self:text(55, 32, dictionary.sounds[keeper.selected_cell.sound], 0, 10)
   self:text(55, 32, keeper.selected_cell:get_note_name(), 0, 10)
   self:reset_font()
+end
+
+function graphics:signal_density()
+  local x, y = 0, 0
+  local line_chart_start_x = 0
+  local line_chart_start_y = 32
+  local width_x = 10
+  screen.level(15)
+  screen.move(line_chart_start_x, line_chart_start_y)
+  if #keeper.signal_history > 0 then
+    for i = 1, #keeper.signal_history do
+      -- screen.line_rel(i * width_x, keeper.signal_history[i])
+    end
+  end
+  screen.stroke()
 end
 
 function graphics:ready_animation(i)

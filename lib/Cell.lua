@@ -14,50 +14,34 @@ function Cell:new(x, y, g)
     { c.x - 1, c.y, "w" }
   }
   c.available_structures = { "HIVE", "SHRINE", "GATE" }
+  c.attributes = { "STRUCTURE", "OFFSET", "SOUND", "VELOCITY" }
   c.generation = g
   c.index = x + ((y - 1) * grid_width())
 
   -- mutable
   c.ports = {}
-  c.structure = 0
+  c.structure = 1
   c.offset = 0
-  c.sound = 0
-  c.velocity = 0
-  c:set_structure(1)
-  c:set_offset(0)
-  c:set_sound(72)
-  c:set_velocity(127)
+  c.note = 72 -- gonna need to do some work here once the sound/midi stuff is done
+  c.velocity = 127
 
   return c
 end
 
--- todo "cycle" utility function
-function Cell:set_structure(s)
-  if s > #self.available_structures then
-    self.structure = 1
-  elseif s < 1 then
-    self.structure = #available_structures
-  else
-    self.structure = s
-  end
+function Cell:set_structure(i)
+  self.structure = f.cycle(i, 1, #self.available_structures)
 end
 
-function Cell:set_offset(o)
-  if o > 15 then
-    self.offset = 0
-  elseif o < 0 then
-    self.offset = 15
-  else
-    self.offset = o
-  end
+function Cell:set_offset(i)
+  self.offset = f.cycle(i, 0, 15)
 end
 
-function Cell:set_sound(s)
-  self.sound = s
+function Cell:set_note(i)
+  self.note = mu.snap_note_to_array(util.clamp(i, 1, 144), sound.notes_in_this_scale)
 end
 
-function Cell:set_velocity(v)
-  self.velocity = v
+function Cell:set_velocity(i)
+  self.velocity = util.clamp(i, 0, 127)
 end
 
 function Cell:toggle_port(x, y)
@@ -95,5 +79,5 @@ function Cell:cycle_structure()
 end
 
 function Cell:get_note_name()
-  return mu.note_num_to_name(self.sound, true)
+  return mu.note_num_to_name(self.note, true)
 end

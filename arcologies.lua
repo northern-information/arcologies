@@ -11,26 +11,27 @@
 -- <3 @tyleretters
 -- v0.5.0-beta
 
-              include("arcologies/lib/Cell")       -- the core concept of arcologies
-              include("arcologies/lib/Signal")     -- emitted by Cells
-              include("arcologies/lib/functions")  -- global functions
-   counters = include("arcologies/lib/counters")   -- clocks, metros, timing
- dictionary = include("arcologies/lib/dictionary") -- terminology lookup
-          g = include("arcologies/lib/g")          -- grid interactions and leds
-   graphics = include("arcologies/lib/graphics")   -- all norns screen rendinger
-     keeper = include("arcologies/lib/keeper")     -- state machine for Cells and Signals
-       page = include("arcologies/lib/page")       -- controller for norns pages
- parameters = include("arcologies/lib/parameters") -- exposed norns parameters
-      sound = include("arcologies/lib/sound")      -- all sound, midi, samples
          mu = require("musicutil")                 -- ships with norns
          tu = require("tabutil")                   -- ships with norns 
       graph = require("graph")                     -- ships with norns 
 engine.name = "PolyPerc"                           -- default engine
+              include("arcologies/lib/Cell")       -- the core concept of arcologies
+              include("arcologies/lib/Signal")     -- emitted by Cells
+          f = include("arcologies/lib/functions")   -- global functions
+   counters = include("arcologies/lib/counters")   -- clocks, metros, timing
+          g = include("arcologies/lib/g")          -- grid interactions and leds
+   graphics = include("arcologies/lib/graphics")   -- all norns screen rendinger
+     keeper = include("arcologies/lib/keeper")     -- state machine for Cells and Signals
+       page = include("arcologies/lib/page")       -- controller for norns pages
+      sound = include("arcologies/lib/sound")      -- all sound, midi, samples
+
+ parameters = include("arcologies/lib/parameters") -- exposed norns parameters
+
 
 function init()
   audio:pitch_off()
+  f.init()
   counters.init()
-  dictionary.init()
   g.init()
   graphics.init()  
   keeper.init()
@@ -46,13 +47,17 @@ function init()
   page:select(1)
   seed_cells(seed)
   sound:toggle_playback()
-  -- dev
+  
+  -- cell designer
   page:select(2)
   keeper:select_cell(2, 2)
   keeper.selected_cell:open_port("e")
   keeper.selected_cell.structure = 2
   page.selected_item = 3
-  -- dev
+  
+  -- signal density
+  -- page:select(4)  
+
   redraw()
 end
 

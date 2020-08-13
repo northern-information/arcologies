@@ -1,3 +1,53 @@
+local f = {}
+
+function f.init()
+
+end
+
+function f.cycle(value, min, max)
+  if value > max then
+    return min
+  elseif value < 1 then
+    return max
+  else
+    return value
+  end
+end
+
+
+-- piano keyboard popup, function 1/2
+function f.set_note(i)
+  graphics:set_message("NOTE...", counters.default_message_length)
+  if enc_counter[3]["this_clock"] ~= nil then
+    clock.cancel(enc_counter[3]["this_clock"])
+    counters:reset_enc(3)
+  end
+  f.is_selecting_note(true)
+  keeper.selected_cell:set_note(keeper.selected_cell.note + i)
+  dirty_screen(true)
+  if enc_counter[3]["this_clock"] == nil then
+    enc_counter[3]["this_clock"] = clock.run(f.select_note_wait)
+  end
+end
+
+function f.is_selecting_note(bool)
+  if bool == nil then return selecting_note end
+  selecting_note = bool
+  return selecting_note
+end
+
+-- piano keyboard popup, function 2/2
+function f.select_note_wait()
+  enc_counter[3]["waiting"] = true
+  clock.sleep(graphics.ui_wait_threshold * 2)
+  graphics:set_message("DONE", counters.default_message_length)
+  enc_counter[3]["waiting"] = false
+  enc_counter[3]["this_clock"] = nil
+  f.is_selecting_note(false)
+  dirty_screen(true)
+end
+
+
 function dirty_grid(bool)
   if bool == nil then return grid_dirty end
   grid_dirty = bool
@@ -22,11 +72,7 @@ function is_deleting(bool)
   return deleting
 end
 
-function is_selecting_note(bool)
-  if bool == nil then return selecting_note end
-  selecting_note = bool
-  return selecting_note
-end
+
 
 function long_press(k)
   clock.sleep(1)
@@ -45,35 +91,6 @@ end
 
 
 
--- todo: move to counters?
-
-function set_note(d)
-  graphics:set_message("NOTE...", counters.default_message_length)
-  if enc_counter[3]["this_clock"] ~= nil then
-    clock.cancel(enc_counter[3]["this_clock"])
-    counters:reset_enc(3)
-  end
-  is_selecting_note(true)
-  keeper.selected_cell:set_sound(util.clamp(keeper.selected_cell.sound + d, 1, 144))
-  dirty_screen(true)
-  if enc_counter[3]["this_clock"] == nil then
-    enc_counter[3]["this_clock"] = clock.run(select_note_wait)
-  end
-end 
-
-
-
-
-
-function select_note_wait(s)
-  enc_counter[3]["waiting"] = true
-  clock.sleep(graphics.ui_wait_threshold * 2)
-  graphics:set_message("DONE", counters.default_message_length)
-  enc_counter[3]["waiting"] = false
-  enc_counter[3]["this_clock"] = nil
-  is_selecting_note(false)
-  dirty_screen(true)
-end
 
 function set_seed(s)
   graphics:set_message("SEEDING...", counters.default_message_length)
@@ -120,7 +137,7 @@ function random_cell()
     end
   end
   keeper.selected_cell:set_offset(math.random(1, sound.meter))
-  keeper.selected_cell:set_sound(math.random(68, 82))
+  keeper.selected_cell:set_note(math.random(68, 82))
 end
 
 function in_bounds(x, y)  
@@ -187,3 +204,5 @@ end
 function coin()
   return math.random(0, 1)
 end
+
+return f
