@@ -11,50 +11,45 @@
 -- <3 @tyleretters
 -- v0.5.0-beta
 
-         mu = require("musicutil")                 -- ships with norns
-         tu = require("tabutil")                   -- ships with norns 
-      graph = require("graph")                     -- ships with norns 
-engine.name = "PolyPerc"                           -- ships with norns
-              include("arcologies/lib/Cell")       -- the core concept of arcologies, interact with Signals
-              include("arcologies/lib/Signal")     -- emitted by Cells, "bangs" that move n, e, s, w
-         fn = include("arcologies/lib/functions")  -- global functions
-   counters = include("arcologies/lib/counters")   -- clocks, metros, timing
-          g = include("arcologies/lib/g")          -- grid interactions and leds
-   graphics = include("arcologies/lib/graphics")   -- all norns screen rendering
-     keeper = include("arcologies/lib/keeper")     -- state machine for Cells and Signals
-       page = include("arcologies/lib/page")       -- controller for norns pages
-      sound = include("arcologies/lib/sound")      -- all sound, midi, samples
- parameters = include("arcologies/lib/parameters") -- exposed norns parameters
+include("arcologies/lib/includes")
 
 function init()
-  audio:pitch_off()
-  fn.init()
-  counters.init()
-  g.init()
-  graphics.init()  
-  keeper.init()
-  page.init()  
+          fn.init()
+    counters.init()
+           g.init()
+    graphics.init()
+      keeper.init()
+        page.init()
   parameters.init()
-  sound.init()
-  deleting, selecting_note = false, false
-  grid_dirty, screen_dirty= true, true
+       sound.init()
+  audio:pitch_off()
+  deleting, selecting_note, selecting_seed = false, false, false
+  grid_dirty, screen_dirty = true, true
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
   for e = 1, 3 do counters:reset_enc(e) end
   page:select(1)
-  fn.seed_cells()
-  sound:toggle_playback()
-  
-  -- cell designer
+  -- fn.seed_cells()
+
+  -- dev
   page:select(2)
-  keeper:select_cell(2, 2)
-  keeper.selected_cell:open_port("e")
-  keeper.selected_cell.structure = 2
-  page.selected_item = 3
+  sound:toggle_playback()
+  keeper:select_cell(6, 2)
+  keeper.selected_cell:open_port("s")
+  keeper:select_cell(6, 5)
+  keeper.selected_cell:open_port("n")
   
-  -- signal density
-  -- page:select(4)  
+
+  keeper:select_cell(10, 4)
+  keeper.selected_cell:open_port("e")
+  keeper:select_cell(13, 4)
+  keeper.selected_cell:open_port("w")
+
+  keeper:deselect_cell()
+  -- keeper.selected_cell.structure = 2
+  page.selected_item = 3
+
 
   redraw()
 end

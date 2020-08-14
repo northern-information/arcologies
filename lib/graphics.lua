@@ -77,34 +77,34 @@ function graphics:teardown()
 end
 
 function graphics:mlrs(x1, y1, x2, y2, level)
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.move(x1, y1)
   screen.line_rel(x2, y2)
   screen.stroke()
 end
 
 function graphics:mls(x1, y1, x2, y2, level)
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.move(x1, y1)
   screen.line(x2, y2)
   screen.stroke()
 end
 
 function graphics:rect(x, y, w, h, level)
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.rect(x, y, w, h)
   screen.fill()
 end
 
 function graphics:circle(x, y, r, level)
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.circle(x, y, r)
   screen.fill()
 end
 
 function graphics:text(x, y, string, level)
   if string == nil then return end
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.move(x, y)
   screen.text(string)
 end
@@ -118,9 +118,9 @@ function graphics:bpm(x, y, string, level)
 end
 
 function graphics:playback()
-  self:top_message( 
-    (sound.playback == 0) and 
-      self:ready_animation(fn.ui_quarter_frame_fmod(10)) or 
+  self:top_message(
+    (sound.playback == 0) and
+      self:ready_animation(fn.ui_quarter_frame_fmod(10)) or
       self:playing_animation(fn.generation_fmod(4))
   )
 end
@@ -141,13 +141,13 @@ function graphics:status(x, y, string, level)
 end
 
 function graphics:text_center(x, y, string, level)
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.move(x, y)
   screen.text_center(string)
 end
 
 function graphics:text_right(x, y, string, level)
-  screen.level(level or 15)  
+  screen.level(level or 15)
   screen.move(x, y)
   screen.text_right(string)
 end
@@ -193,7 +193,7 @@ function graphics:structure_type(s)
 end
 
 function graphics:structure_enable()
-  self:text(2, 18, self.cell_attributes[1], 15)  
+  self:text(2, 18, self.cell_attributes[1], 15)
 end
 
 function graphics:structure_disable()
@@ -266,7 +266,7 @@ end
 
 function graphics:floor(x, y)
   self:mls(x, y+18, x+20, y+18, 0)
-  self:mls(x, y+19, x+20, y+19, 0)  
+  self:mls(x, y+19, x+20, y+19, 0)
 end
 
 function graphics:foundation(x, y)
@@ -390,7 +390,7 @@ function graphics:analysis(selected_item)
       sector_y = math.sin(math.rad(total_degrees)) * pie_chart_r
       self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
       text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
-      text_y = math.sin(math.rad(text_degrees)) * pie_chart_r    
+      text_y = math.sin(math.rad(text_degrees)) * pie_chart_r
       pie_highlight = (i == selected_item) and 15 or 3
       self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
       self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
@@ -398,7 +398,7 @@ function graphics:analysis(selected_item)
   end
 
   -- line graph
-  local line_graph_start_x = 56  
+  local line_graph_start_x = 56
   local line_graph_start_y = 43
   local line_graph_spacing = 2
   local line_graph_y = 0
@@ -410,7 +410,7 @@ function graphics:analysis(selected_item)
       self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, line_highlight)
     end
   end
-  
+
   -- menu
   local menu_item_start = 0
   local menu_item_x = 0
@@ -427,10 +427,10 @@ function graphics:analysis(selected_item)
     graphics:text(menu_item_x, menu_item_y, menu_item, menu_highlight)
     menu_item_start = menu_item_start + menu_item_width
   end
-  
+
   -- grid (thank you @okyeron)
   for i = 1, fn.grid_width() * fn.grid_height() do
-    self.analysis_pixels[i] = 0    
+    self.analysis_pixels[i] = 0
     if selected_item ~= 4 then
       for k,v in pairs(keeper.cells) do
         if v.structure == selected_item and v.index == i then
@@ -447,8 +447,8 @@ function graphics:analysis(selected_item)
     end
   end
   screen.level(1)
-  for x = 1, fn.grid_width(), 1 do 
-    for y = 1, fn.grid_height(), 1 do 
+  for x = 1, fn.grid_width(), 1 do
+    for y = 1, fn.grid_height(), 1 do
       pidx = x + ((y - 1) * fn.grid_width())
       self:draw_pixel(x, y, self.analysis_pixels[pidx])
     end
@@ -480,7 +480,7 @@ function graphics:piano(k)
   local y = 35
   local key_width = 8
   local key_height = 27
-  
+
   --[[ have to draw the white keys first becuase the black are then drawn on top
   so this is a super contrived way of drawing a piano with two loops...
   the only alternative i could think of was to elegantly draw all the keys
@@ -495,7 +495,7 @@ function graphics:piano(k)
   keys[4]  = { ["color"] = 0, ["index"] = 2 } -- d#
   keys[5]  = { ["color"] = 1, ["index"] = 3 } -- e
   keys[6]  = { ["color"] = 1, ["index"] = 4 } -- f
-  keys[7]  = { ["color"] = 0, ["index"] = 3 } -- f# 
+  keys[7]  = { ["color"] = 0, ["index"] = 3 } -- f#
   keys[8]  = { ["color"] = 1, ["index"] = 5 } -- g
   keys[9]  = { ["color"] = 0, ["index"] = 4 } -- g#
   keys[10] = { ["color"] = 1, ["index"] = 6 } -- a
@@ -510,7 +510,7 @@ function graphics:piano(k)
       self:rect(x + ((keys[i]["index"] - 1) * key_width) + 2, y + 2, key_width - 2, key_height - 4, keys[i]["selected"] and 5 or 15)
     end
   end
-  
+
   -- black keys
   for i = 1,12 do
     if keys[i]["color"] == 0 then
@@ -523,8 +523,21 @@ function graphics:piano(k)
   end
   self:rect(x + (7 * key_width), y, 2, key_height, 0) -- end
 
+  -- note readout
   screen.font_size(30)
   self:text(55, 32, keeper.selected_cell:get_note_name(), 0, 10)
+  self:reset_font()
+end
+
+function graphics:seed()
+  local seed = params:get("seed")
+  if seed == 0 then
+    screen.font_size(24)
+    self:text(55, 32, "ABORT", 0)
+  else
+    screen.font_size(30)
+    self:text(55, 32, params:get("seed"), 0)
+  end
   self:reset_font()
 end
 

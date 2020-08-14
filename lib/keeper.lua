@@ -1,6 +1,6 @@
 local keeper = {}
 
-function keeper.init()  
+function keeper.init()
   keeper.is_cell_selected = false
   keeper.selected_cell_id = ""
   keeper.selected_cell_x = ""
@@ -8,8 +8,6 @@ function keeper.init()
   keeper.selected_cell = {}
   keeper.cells = {}
   keeper.signals = {}
-  keeper.signal_history = {}
-  keeper.signal_history_max = 10
 end
 
 function keeper:spawn_signals()
@@ -30,10 +28,6 @@ function keeper:spawn_signals()
       end
     end
   end
-  if #self.signal_history > keeper.signal_history_max then
-    table.remove(self.signal_history, 1)
-  end
-  self.signal_history[#self.signal_history + 1] = #self.signals
 end
 
 function keeper:propagate_signals()
@@ -72,7 +66,7 @@ function keeper:collide_signals_and_cells()
   for k,signal in pairs(self.signals) do
     for kk,cell in pairs(self.cells) do
       if signal.id == cell.id then
-        self:collide(signal, cell)              
+        self:collide(signal, cell)
       end
     end
   end

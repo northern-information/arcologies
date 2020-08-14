@@ -35,6 +35,12 @@ function fn.is_deleting(bool)
   return deleting
 end
 
+function fn.is_selecting_seed(bool)
+  if bool == nil then return selecting_seed end
+  selecting_seed = bool
+  return selecting_seed
+end
+
 -- reusable parameter functions
 
 function fn.cycle(value, min, max)
@@ -96,12 +102,12 @@ function fn.table_find(t, element)
   end
 end
 
-function fn.in_bounds(x, y)  
+function fn.in_bounds(x, y)
   if 1 > y then
     return false -- north
   elseif fn.grid_width() < x then
     return false -- east
-  elseif fn.grid_height() < y then 
+  elseif fn.grid_height() < y then
     return false -- south
   elseif 1 > x then
     return false -- west
@@ -143,17 +149,18 @@ function fn.select_note_wait() -- piano keyboard popup, function 2/3
 end
 
 function fn.set_seed(s) -- seed arcologies, function 1/4
-  params:set("seed", s)
   graphics:set_message("SEEDING...", counters.default_message_length)
   if enc_counter[3]["this_clock"] ~= nil then
     clock.cancel(enc_counter[3]["this_clock"])
     counters:reset_enc(3)
   end
+  fn.is_selecting_seed(true)
+  params:set("seed", s)
   fn.dirty_screen(true)
   if enc_counter[3]["this_clock"] == nil then
     enc_counter[3]["this_clock"] = clock.run(fn.seed_wait, s)
   end
-end 
+end
 
 function fn.seed_wait() -- seed arcologies, function 2/4
   enc_counter[3]["waiting"] = true
@@ -161,12 +168,13 @@ function fn.seed_wait() -- seed arcologies, function 2/4
   enc_counter[3]["waiting"] = false
   enc_counter[3]["this_clock"] = nil
   fn.seed_cells()
+  fn.is_selecting_seed(false)
   fn.dirty_screen(true)
 end
 
 function fn.seed_cells() -- seed arcologies, function 3/4
   if params:get("seed") == 0 then
-    graphics:set_message("CANCELED SEED", counters.default_message_length)
+    graphics:set_message("ABORTED SEED", counters.default_message_length)
   else
     keeper:delete_all_cells()
     graphics:set_message("SEEDED " .. params:get("seed"), counters.default_message_length)

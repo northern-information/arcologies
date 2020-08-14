@@ -36,12 +36,12 @@ function g.key(x, y, z)
     keeper:select_cell(x, y)
     graphics:top_message_cell_structure()
   else
-    if keeper.selected_cell.id == id(x, y) then
+    if keeper.selected_cell.id == fn.id(x, y) then
       keeper.selected_cell:cycle_structure()
       graphics:top_message_cell_structure()
     elseif keeper.selected_cell:find_port(x, y) then
       keeper.selected_cell:toggle_port(x, y)
-    elseif keeper:cell_exists(id(x, y)) then
+    elseif keeper:cell_exists(fn.id(x, y)) then
       keeper:select_cell(x, y)
       graphics:top_message_cell_structure()
     else
@@ -57,7 +57,7 @@ function g:led_signals()
   local level = page.active_page == 3 and page.selected_item == 4 and 10 or 2
   for k,v in pairs(keeper.signals) do
     if v.generation <= fn.generation() then
-      self:led(v.x, v.y, level) 
+      self:led(v.x, v.y, level)
     end
   end
 end
@@ -105,7 +105,7 @@ end
 function g:led_cells()
   -- local level = page.active_page == 3 and page.selected_item ~= 5 and 2 or 5
   for k,v in pairs(keeper.cells) do
-    self:led(v.x, v.y, 5) 
+    self:led(v.x, v.y, 5)
   end
 end
 
@@ -144,7 +144,7 @@ function g:led_cell_ports()
   if fn.in_bounds(x, y + 1) then
     self:led(x, y + 1, keeper.selected_cell:is_port_open("s") and high or low)
   end
-  if fn.in_bounds(x - 1 , y) then  
+  if fn.in_bounds(x - 1 , y) then
     self:led(x - 1, y, keeper.selected_cell:is_port_open("w") and high or low)
   end
 end

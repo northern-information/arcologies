@@ -28,14 +28,14 @@ function page:change_selected_item_value(d)
       sound:set_playback(d)
 
     elseif s == 2 then
-      fn.set_seed(util.clamp(params:get("seed") + d, 0, math.floor(fn.grid_width() * fn.grid_height() / 4)))
+      fn.set_seed(params:get("seed") + d)
 
     elseif s == 3 then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-      
+
     elseif s == 4 then
       sound:cycle_meter(d)
-      
+
     elseif s == 5 then
       sound:cycle_root(d)
 
@@ -64,7 +64,7 @@ function page:change_selected_item_value(d)
   -- analysis
   elseif p == 3 then
     -- nothing to change here
- 
+
   -- signal density
   elseif p == 4 then
     -- nothing to change here
@@ -94,26 +94,31 @@ end
 function page:home()
   graphics:panel()
   graphics:menu_highlight(self.selected_item)
-  graphics:text(2, 18, sound.playback == 0 and "READY" or "PLAYING")  
-  graphics:text(2, 26, "SEED " .. params:get("seed"))
-  graphics:bpm(55, 32, params:get("bpm"), 0)
-  graphics:text(2, 34, "BPM")
-  graphics:text(2, 42, "METER")
-  graphics:text(2, 50, "ROOT")
-  graphics:text(2, 58, "SCALE")
+  if fn.is_selecting_seed() then
+    graphics:text(2, 26, "SEED")
+    graphics:seed()
+  else
+    graphics:text(2, 18, sound.playback == 0 and "READY" or "PLAYING")
+    graphics:text(2, 26, "SEED")
+    graphics:bpm(55, 32, params:get("bpm"), 0)
+    graphics:text(2, 34, "BPM")
+    graphics:text(2, 42, "METER")
+    graphics:text(2, 50, "ROOT")
+    graphics:text(2, 58, "SCALE")
 
-  graphics:playback_icon(56, 35)
-  graphics:icon(76, 35, sound.meter, self.selected_item == 3 and 1 or 0)
-  
-  if fn.is_deleting() then
-    graphics:icon(56, 35, "D:", 1)
-    graphics:icon(76, 35, "D:", 1)
+    graphics:playback_icon(56, 35)
+    graphics:icon(76, 35, sound.meter, self.selected_item == 3 and 1 or 0)
+
+    if fn.is_deleting() then
+      graphics:icon(56, 35, "D:", 1)
+      graphics:icon(76, 35, "D:", 1)
+    end
+
+    -- graphics:text(98, 52, sound.default_out_name, 0)
+
+    graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
+    graphics:rect(126, 55, 2, 7, 15)
   end
-  
-  -- graphics:text(98, 52, sound.default_out_name, 0)
-
-  graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
-  graphics:rect(126, 55, 2, 7, 15)
 end
 
 function page:cell_designer()
@@ -141,7 +146,7 @@ function page:cell_designer()
       graphics:velocity_disable()
     elseif keeper.selected_cell.structure == 2 then
       graphics:shrine()
-      graphics:draw_ports()    
+      graphics:draw_ports()
       graphics:structure_type(keeper.selected_cell.available_structures[2])
       graphics:structure_enable()
       graphics:offset_disable()
