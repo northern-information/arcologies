@@ -11,7 +11,6 @@ function counters.init()
   counters.ui.frame = 1
   counters.ui.quarter_frame = 1
   counters.ui.event = counters.optician
-  counters.ui:start()
 
   counters.music = metro.init()
   counters.music.time = 60 / params:get("bpm")
@@ -19,7 +18,6 @@ function counters.init()
   counters.music.play = 1
   counters.music.generation = 1
   counters.music.event = counters.conductor
-  counters.music:start()
 
   counters.grid = metro.init()
   counters.grid.time = 1 / 30
@@ -27,7 +25,6 @@ function counters.init()
   counters.grid.play = 1
   counters.grid.frame = 1
   counters.grid.event = counters.gridmeister
-  counters.grid:start()
 end
 
 function counters:reset_enc(e)
@@ -73,6 +70,21 @@ end
 
 function counters.gridmeister()
   counters.grid.frame = counters.grid.frame + 1
+end
+
+function counters.grid_frame()
+  return counters.grid.frame
+end
+
+function counters.music_generation()
+  return counters.music.generation
+end
+
+function counters.ui_quarter_frame_fmod(i)
+  return math.fmod(counters.ui.quarter_frame, i) + 1
+end
+function counters.generation_fmod(i)
+  return math.fmod(counters.music_generation(), i) + 1
 end
 
 return counters

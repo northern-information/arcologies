@@ -54,7 +54,7 @@ function page:change_selected_item_value(d)
       keeper.selected_cell:cycle_offset(d)
 
     elseif s == 3 then
-      fn.set_note(d)
+      fn.select_cell_note(d)
 
     elseif s == 4 then
       keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
@@ -73,6 +73,7 @@ function page:change_selected_item_value(d)
 end
 
 function page:render()
+  if fn.no_grid() then page:error(1) return end
   self.active_page = page.active_page
   self.selected_item = page.selected_item
   graphics:top_menu()
@@ -161,6 +162,14 @@ function page:cell_designer()
       graphics:sound_disable()
       graphics:velocity_disable()
     end
+  end
+end
+
+function page:error(code)
+  if code == 1 then
+    graphics:rect(1, 1, 128, 64, 15)
+    graphics:text_center(64, 30, "PLEASE CONNECT A", 0)
+    graphics:text_center(64, 42, "MONOME VARIBRIGHT GRID.", 0)
   end
 end
 

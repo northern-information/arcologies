@@ -37,22 +37,6 @@ function sound:toggle_playback()
   fn.dirty_screen(true)
 end
 
-function sound:build_scale()
-  -- left off here...
-  self.notes_in_this_scale = mu.generate_scale_of_length(self.current_root, self.current_scale, 127)
-  local num_to_add = 127 - #self.notes_in_this_scale
-  for i = 1, num_to_add do
-    table.insert(self.notes_in_this_scale, self.notes_in_this_scale[127 - num_to_add])
-  end
-  -- local new_scale = mu.generate_scale_of_length(self.current_root, self.current_scale, 127)
-  -- local num_to_add = 127 - #new_scale
-  -- print(#new_scale)
-  -- self.notes_in_this_scale = {}
-  -- for i = 1, num_to_add do
-  --   table.insert(self.notes_in_this_scale, new_scale[127 - num_to_add])
-  -- end
-end
-
 function sound:set_scale(i)
   self.current_scale = util.clamp(i, 1, #self.current_scale_names)
   self.current_scale_name = sound.current_scale_names[sound.current_scale]
@@ -61,6 +45,11 @@ end
 
 function sound:cycle_root(i)
   self.current_root = fn.cycle(self.current_root + i, 1, 12)
+  self:build_scale()
+end
+
+function sound:build_scale()
+  self.notes_in_this_scale = mu.generate_scale_of_length(self.current_root, self.current_scale, 127)
 end
 
 function sound:set_default_out(i)
@@ -69,7 +58,7 @@ function sound:set_default_out(i)
 end
 
 function sound:play(note, velocity)
-  engine.hz(mu.note_num_to_freq(note))
+  engine.hz(mu.note_num_to_freq(mu.snap_note_to_array(note, sound.notes_in_this_scale)))
 end
 
 return sound

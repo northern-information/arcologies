@@ -45,7 +45,7 @@ function Cell:cycle_offset(i)
 end
 
 function Cell:set_note(i)
-  self.note = mu.snap_note_to_array(util.clamp(i, 1, 144), sound.notes_in_this_scale)
+  self.note = sound.notes_in_this_scale[util.clamp(i, 1, #sound.notes_in_this_scale)]
 end
 
 function Cell:get_note_name()

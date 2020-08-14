@@ -23,36 +23,41 @@ function init()
   sound.init()
   audio:pitch_off()
   deleting, selecting_note, selecting_seed = false, false, false
-  grid_dirty, screen_dirty = true, true
+  grid_dirty, screen_dirty = false, false
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   for e = 1, 3 do counters:reset_enc(e) end
+  counters.ui:start()
+  counters.music:start()
+  counters.grid:start()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
-  page:select(1)
-  fn.seed_cells()
+  -- page:select(1)
+  -- fn.seed_cells()
 
   -- dev
   page:select(2)
-  -- sound:toggle_playback()
-  -- keeper:select_cell(6, 2)
-  -- keeper.selected_cell:open_port("s")
-  -- keeper.selected_cell:open_port("n")
-  -- keeper.selected_cell.structure = 2
-  -- keeper:select_cell(6, 5)
-  -- keeper.selected_cell:open_port("n")
-  
+  sound:toggle_playback()
+  keeper:select_cell(2, 2)
+  keeper:select_cell(2, 1)
+  keeper:select_cell(2, 6)
+  keeper.selected_cell:open_port("s")
+  keeper.selected_cell:open_port("n")
+  keeper.selected_cell.structure = 2
+  keeper:select_cell(6, 5)
+  keeper.selected_cell:open_port("n")
 
-  -- keeper:select_cell(10, 4)
-  -- keeper.selected_cell:open_port("e")
-  -- keeper.selected_cell:open_port("w")
-  -- keeper.selected_cell.structure = 2
-  -- keeper:select_cell(13, 4)
-  -- keeper.selected_cell:open_port("w")
+  keeper:select_cell(10, 4)
+  keeper.selected_cell:open_port("e")
+  keeper.selected_cell:open_port("w")
+  keeper.selected_cell.structure = 2
+  keeper:select_cell(13, 4)
+  keeper.selected_cell:open_port("w")
 
   keeper:deselect_cell()
   page.selected_item = 3
 
   redraw()
+  
 end
 
 function redraw()

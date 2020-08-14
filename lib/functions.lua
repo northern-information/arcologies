@@ -5,6 +5,14 @@ function fn.init()
   fn.id_counter = 1000
 end
 
+function fn.no_grid()
+  if fn.grid_width() == 0 then
+    return true
+  else 
+    return false
+  end
+end
+
 -- user interactions
 
 function fn.long_press(k)
@@ -70,21 +78,6 @@ function fn.index(x, y)
   return x + ((y - 1) * fn.grid_width())
 end
 
-function fn.grid_frame()
-  return counters.grid.frame
-end
-
-function fn.generation()
-  return counters.music.generation
-end
-
-function fn.ui_quarter_frame_fmod(i)
-  return math.fmod(counters.ui.quarter_frame, i) + 1
-end
-function fn.generation_fmod(i)
-  return math.fmod(fn.generation(), i) + 1
-end
-
 function fn.id()
   fn.id_counter = fn.id_counter + 1
   return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
@@ -100,6 +93,17 @@ end
 
 function fn.coin()
   return math.random(0, 1)
+end
+
+function fn.nearest_value(table, number)
+    local nearest_so_far, nearest_index
+    for i, y in ipairs(table) do
+        if not nearest_so_far or (math.abs(number-y) < nearest_so_far) then
+            nearest_so_far = math.abs(number-y)
+            nearest_index = i
+        end
+    end
+    return table[nearest_index]
 end
 
 function fn.table_find(t, element)
@@ -126,27 +130,41 @@ end
 
 -- hyper specific features that combine many entities
 
-function fn.set_note(i) -- piano keyboard popup, function 1/3
+function fn.select_cell_note(i) -- piano keyboard popup, function 1/4
   graphics:set_message("NOTE...", counters.default_message_length)
   if enc_counter[3]["this_clock"] ~= nil then
     clock.cancel(enc_counter[3]["this_clock"])
     counters:reset_enc(3)
   end
   fn.is_selecting_note(true)
-  keeper.selected_cell:set_note(keeper.selected_cell.note + i)
+  keeper.selected_cell:set_note(fn.temp_note() + i)
   fn.dirty_screen(true)
   if enc_counter[3]["this_clock"] == nil then
     enc_counter[3]["this_clock"] = clock.run(fn.select_note_wait)
   end
 end
 
-function fn.is_selecting_note(bool) -- piano keyboard popup, function 2/3
+function fn.temp_note() -- piano keyboard popup, function 2/4
+ -- increment with either the note if is already in this scale or snap
+  return
+    fn.table_find(
+      sound.notes_in_this_scale,
+      keeper.selected_cell.note)
+  or 
+    fn.table_find(
+      sound.notes_in_this_scale,
+      mu.snap_note_to_array(
+        keeper.selected_cell.note,
+        sound.notes_in_this_scale))
+end
+
+function fn.is_selecting_note(bool) -- piano keyboard popup, function 3/4
   if bool == nil then return selecting_note end
   selecting_note = bool
   return selecting_note
 end
 
-function fn.select_note_wait() -- piano keyboard popup, function 2/3
+function fn.select_note_wait() -- piano keyboard popup, function 4/4
   enc_counter[3]["waiting"] = true
   clock.sleep(graphics.ui_wait_threshold * 2)
   graphics:set_message("DONE", counters.default_message_length)
@@ -195,15 +213,15 @@ end
 
 function fn.random_cell() -- seed arcologies, function 4/4
   keeper:select_cell(fn.rx(), fn.ry())
-  keeper.selected_cell:set_structure(math.random(1, 3))
+  keeper.selected_cell:set_structure(math.random(1, 2))
   local ports = { "n", "e", "s", "w" }
   for i = 1, #ports do
-    if fn.coin() then
+    if fn.coin() == 1 then
       keeper.selected_cell:open_port(ports[i])
     end
   end
   keeper.selected_cell:set_offset(math.random(1, sound.meter or 16))
-  keeper.selected_cell:set_note(math.random(68, 82))
+  keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)))
 end
 
 return fn

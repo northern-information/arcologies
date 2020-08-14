@@ -15,7 +15,7 @@ end
 
 function keeper:spawn_signals()
   for k,v in pairs(self.cells) do
-    if v.structure == 1 and v.offset == fn.generation() % sound.meter and #v.ports > 0 then
+    if v.structure == 1 and v.offset == counters.music_generation() % sound.meter and #v.ports > 0 then
       for kk,vv in pairs(v.ports) do
         if vv == "n" then
           self:create_signal(v.x, v.y - 1, "n")
@@ -67,7 +67,7 @@ end
 function keeper:collision(signal, cell)
 
   -- smash into closed port
-  if not cell:is_port_open(signal.heading) then
+  if not self:are_signal_and_port_compatible(signal, cell) then
     self:register_delete_signal(signal.id)    
     g:register_signal_death_at(cell.x, cell.y)
   
@@ -87,27 +87,21 @@ function keeper:collision(signal, cell)
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
   if cell.structure == 2 or cell.structure == 3 then
-    for k, in_port in pairs(cell.ports) do
-      if self:are_signal_and_port_compatible(signal, in_port) then
-        for k, out_port in pairs(cell.ports) do
-          if out_port ~= in_port then
-            if out_port == "n" then self:create_signal(cell.x, cell.y - 1, "n", fn.generation() + 1) end
-            if out_port == "e" then self:create_signal(cell.x + 1, cell.y, "e", fn.generation() + 1) end
-            if out_port == "s" then self:create_signal(cell.x, cell.y + 1, "s", fn.generation() + 1) end
-            if out_port == "w" then self:create_signal(cell.x - 1, cell.y, "w", fn.generation() + 1) end
-            g:register_collision_at(cell.x, cell.y)
-          end
-        end
-      end
+    for k, port in pairs(cell.ports) do
+      if port == "n" and signal.heading ~= "s" then self:create_signal(cell.x, cell.y - 1, "n", counters.music_generation() + 1) end
+      if port == "e" and signal.heading ~= "w" then self:create_signal(cell.x + 1, cell.y, "e", counters.music_generation() + 1) end
+      if port == "s" and signal.heading ~= "n" then self:create_signal(cell.x, cell.y + 1, "s", counters.music_generation() + 1) end
+      if port == "w" and signal.heading ~= "e" then self:create_signal(cell.x - 1, cell.y, "w", counters.music_generation() + 1) end
+      g:register_collision_at(cell.x, cell.y)
     end
   end
 end
 
-function keeper:are_signal_and_port_compatible(signal, port)
-  if (signal.heading == "n" and port == "s") then return true end
-  if (signal.heading == "e" and port == "w") then return true end
-  if (signal.heading == "s" and port == "n") then return true end
-  if (signal.heading == "w" and port == "e") then return true end
+function keeper:are_signal_and_port_compatible(signal, cell)
+  if (signal.heading == "n" and cell:is_port_open("s")) then return true end
+  if (signal.heading == "e" and cell:is_port_open("w")) then return true end
+  if (signal.heading == "s" and cell:is_port_open("n")) then return true end
+  if (signal.heading == "w" and cell:is_port_open("e")) then return true end
   return false
 end
 
@@ -155,7 +149,7 @@ function keeper:get_cell(index)
 end
 
 function keeper:create_cell(x, y)
-  local new_cell = Cell:new(x, y, fn.generation())
+  local new_cell = Cell:new(x, y, counters.music_generation())
   table.insert(self.cells, new_cell)
   return new_cell
 end

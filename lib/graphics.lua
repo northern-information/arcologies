@@ -22,7 +22,7 @@ function graphics:top_menu()
   for i = 1,#page.titles do
     self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
   end
-  self:top_message(graphics:playback(fn.generation_fmod(4)))
+  self:top_message(graphics:playback(counters.generation_fmod(4)))
 end
 
 function graphics:set_message(string, time)
@@ -120,8 +120,8 @@ end
 function graphics:playback()
   self:top_message(
     (sound.playback == 0) and
-      self:ready_animation(fn.ui_quarter_frame_fmod(10)) or
-      self:playing_animation(fn.generation_fmod(4))
+      self:ready_animation(counters.ui_quarter_frame_fmod(10)) or
+      self:playing_animation(counters.generation_fmod(4))
   )
 end
 
@@ -129,7 +129,7 @@ function graphics:playback_icon(x, y)
   if sound.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, fn.generation_fmod(sound.meter), (fn.generation_fmod(sound.meter) == 1) and 1 or 0)
+    self:icon(x, y, counters.generation_fmod(sound.meter), (counters.generation_fmod(sound.meter) == 1) and 1 or 0)
   end
 end
 
