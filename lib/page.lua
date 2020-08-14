@@ -48,10 +48,10 @@ function page:change_selected_item_value(d)
     if not keeper.is_cell_selected then return end
 
     if s == 1 then
-      keeper.selected_cell:set_structure(keeper.selected_cell.structure + d)
+      keeper.selected_cell:cycle_structure(d)
 
     elseif s == 2 then
-      keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
+      keeper.selected_cell:cycle_offset(d)
 
     elseif s == 3 then
       fn.set_note(d)

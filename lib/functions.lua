@@ -1,6 +1,9 @@
 local fn = {}
 
-function fn.init() end
+function fn.init()
+  fn.id_prefix = "arc-"
+  fn.id_counter = 1000
+end
 
 -- user interactions
 
@@ -63,6 +66,10 @@ function fn.grid_height()
   return g.rows
 end
 
+function fn.index(x, y)
+  return x + ((y - 1) * fn.grid_width())
+end
+
 function fn.grid_frame()
   return counters.grid.frame
 end
@@ -78,8 +85,9 @@ function fn.generation_fmod(i)
   return math.fmod(fn.generation(), i) + 1
 end
 
-function fn.id(x, y)
-  return "x" .. x .. "y" .. y
+function fn.id()
+  fn.id_counter = fn.id_counter + 1
+  return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
 end
 
 function fn.rx()

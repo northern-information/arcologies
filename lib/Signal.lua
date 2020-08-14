@@ -9,9 +9,9 @@ function Signal:new(x, y, h, g)
   -- mutable
   s.x = x
   s.y = y
-  s.id = fn.id(s.x, s.y)
+  s.id = fn.id()
   s.heading = h
-  s.index = x + ((y - 1) * fn.grid_width())
+  s.index = fn.index(x, y)
 
   return s
 end
@@ -21,15 +21,19 @@ function Signal:set_heading(h)
 end
 
 function Signal:propagate()
-  if self.heading == "n" then
-    self.y = self.y - 1
-  elseif self.heading == "e" then
-    self.x = self.x + 1
-  elseif self.heading == "s" then
-    self.y = self.y + 1
-  elseif self.heading == "w" then
-    self.x = self.x - 1
+  if self.generation < fn.generation() then
+    if self.heading == "n" then
+      self.y = self.y - 1
+    elseif self.heading == "e" then
+      self.x = self.x + 1
+    elseif self.heading == "s" then
+      self.y = self.y + 1
+    elseif self.heading == "w" then
+      self.x = self.x - 1
+    end
+    self.index = self.x + ((self.y - 1) * fn.grid_width())
+    if not fn.in_bounds(self.x, self.y) then
+      keeper:register_delete_signal(self.id)
+    end
   end
-  self.id = fn.id(self.x, self.y)
-  self.index = self.x + ((self.y - 1) * fn.grid_width())
 end

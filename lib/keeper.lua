@@ -8,20 +8,23 @@ function keeper.init()
   keeper.selected_cell = {}
   keeper.cells = {}
   keeper.signals = {}
+  keeper.signals_to_delete = {}
 end
+
+-- spawning, propagation, and collision
 
 function keeper:spawn_signals()
   for k,v in pairs(self.cells) do
     if v.structure == 1 and v.offset == fn.generation() % sound.meter and #v.ports > 0 then
       for kk,vv in pairs(v.ports) do
         if vv == "n" then
-          self:create_signal(v.x, v.y - 1, "n", fn.generation())
+          self:create_signal(v.x, v.y - 1, "n")
         elseif vv == "e" then
-          self:create_signal(v.x + 1, v.y, "e", fn.generation())
+          self:create_signal(v.x + 1, v.y, "e")
         elseif vv == "s" then
-          self:create_signal(v.x, v.y + 1, "s", fn.generation())
+          self:create_signal(v.x, v.y + 1, "s")
         elseif vv == "w" then
-          self:create_signal(v.x - 1, v.y, "w", fn.generation())
+          self:create_signal(v.x - 1, v.y, "w")
         end
         fn.dirty_grid(true)
         fn.dirty_screen(true)
@@ -31,80 +34,68 @@ function keeper:spawn_signals()
 end
 
 function keeper:propagate_signals()
-  if #self.signals < 1 then return end
-  local delete = {}
-  for k,v in pairs(self.signals) do
-    if v.generation < fn.generation() then
-      v:propagate()
-      if not fn.in_bounds(v.x, v.y) then
-        table.insert(delete, v.id)
-      end
-    end
-  end
-  for k,v in pairs(delete) do
-    self:delete_signal(v)
+  for k,signal in pairs(self.signals) do
+    signal:propagate()
   end
   fn.dirty_grid(true)
   fn.dirty_screen(true)
 end
 
 function keeper:collide_signals()
-  for k,v in pairs(self.signals) do
-    for kk,vv in pairs(self.signals) do
-      if k ~= kk then -- todo is this right?
-        if v.id == vv.id then
-          g:register_signal_death_at(v.x, v.y)
-          self:delete_signal(v.id)
-          self:delete_signal(vv.id)
-        end
+  for ka, signal_from_set_a in pairs(self.signals) do
+    for kb, signal_from_set_b in pairs(self.signals) do
+      if signal_from_set_a.index == signal_from_set_b.index 
+      and signal_from_set_a.id ~= signal_from_set_b.id then 
+        self:register_delete_signal(signal_from_set_a.id)
+        self:register_delete_signal(signal_from_set_b.id)
+        g:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)
       end
     end
   end
-end
+end 
 
 function keeper:collide_signals_and_cells()
-  for k,signal in pairs(self.signals) do
-    for kk,cell in pairs(self.cells) do
-      if signal.id == cell.id then
-        self:collide(signal, cell)
+  for k, signal in pairs(self.signals) do
+    for kk, cell in pairs(self.cells) do
+      if signal.index == cell.index then
+        self:collision(signal, cell)
       end
     end
   end
 end
 
--- todo there is some race condition where signals can move through hives
--- tried debugging and it is inconsistent which direction combination
-function keeper:collide(signal, cell)
+function keeper:collision(signal, cell)
 
   -- smash into closed port
   if not cell:is_port_open(signal.heading) then
-    g:register_signal_and_cell_collision_at(cell.x, cell.y)
-    self:delete_signal(signal.id)
-  end
+    self:register_delete_signal(signal.id)    
+    g:register_signal_death_at(cell.x, cell.y)
+  
   -- hives don't allow any signals in
-  if cell.structure == 1 then
-    g:register_signal_and_cell_collision_at(cell.x, cell.y)
-    self:delete_signal(signal.id)
-  end
+  elseif cell.structure == 1 then
+    self:register_delete_signal(signal.id)
+    g:register_signal_death_at(cell.x, cell.y)
+
   -- shrines play single midi notes
-  if cell.structure == 2 then
-    g:register_signal_and_cell_collision_at(cell.x, cell.y)
+  elseif cell.structure == 2 then
     sound:play(cell.note, cell.velocity)
-    self:delete_signal(signal.id)
+    self:register_delete_signal(signal.id)
+    g:register_collision_at(cell.x, cell.y)
   end
-  -- gates and shrines reroute & split
-  -- look at all the ports to see if this signal made it in
-  -- then split the signal to all the other ports
+  
+  --[[ gates and shrines reroute & split
+    look at all the ports to see if this signal made it in
+    then split the signal to all the other ports ]]
   if cell.structure == 2 or cell.structure == 3 then
-    for k,in_port in pairs(cell.ports) do
+    for k, in_port in pairs(cell.ports) do
       if self:are_signal_and_port_compatible(signal, in_port) then
-        for k,out_port in pairs(cell.ports) do
+        for k, out_port in pairs(cell.ports) do
           if out_port ~= in_port then
-            g:register_signal_and_cell_collision_at(cell.x, cell.y)
             if out_port == "n" then self:create_signal(cell.x, cell.y - 1, "n", fn.generation() + 1) end
             if out_port == "e" then self:create_signal(cell.x + 1, cell.y, "e", fn.generation() + 1) end
             if out_port == "s" then self:create_signal(cell.x, cell.y + 1, "s", fn.generation() + 1) end
             if out_port == "w" then self:create_signal(cell.x - 1, cell.y, "w", fn.generation() + 1) end
+            g:register_collision_at(cell.x, cell.y)
           end
         end
       end
@@ -123,39 +114,41 @@ end
 -- signals
 
 function keeper:create_signal(x, y, h, g)
-  local new_signal = Signal:new(x, y, h, g)
-  table.insert(self.signals, new_signal)
-  return new_signal
+  local signal = Signal:new(x, y, h, g)
+  table.insert(self.signals, signal)
+  return signal
 end
 
-function keeper:delete_signal(id)
-  for k,v in pairs(self.signals) do
-    if v.id == id then
-      table.remove(self.signals, k)
+function keeper:register_delete_signal(id)
+  self.signals_to_delete[#self.signals_to_delete + 1] = id
+end
+
+function keeper:delete_signals()
+  for k, id_to_delete in pairs(self.signals_to_delete) do
+    for k, signal in pairs(self.signals) do
+      if signal.id == id_to_delete then
+        table.remove(self.signals, k)
+      end
     end
   end
+  self.signals_to_delete = {}
   fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 function keeper:delete_all_signals()
   self.signals = {}
+  self.signals_to_delete = {}
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 -- cells
 
-function keeper:get_cell(id)
-   for k,v in pairs(self.cells) do
-    if v.id == id then
-      return v
-    end
-  end
-  return false
-end
-
-function keeper:cell_exists(id)
-  for k,v in pairs(self.cells) do
-    if v.id == id then
-      return true
+function keeper:get_cell(index)
+   for k, cell in pairs(self.cells) do
+    if cell.index == index then
+      return cell
     end
   end
   return false
@@ -182,9 +175,8 @@ function keeper:delete_all_cells()
 end
 
 function keeper:select_cell(x, y)
-  local id = fn.id(x, y)
-  if self:cell_exists(id) then
-    self.selected_cell = self:get_cell(id)
+  if self:get_cell(fn.index(x, y)) then
+    self.selected_cell = self:get_cell(fn.index(x, y))
   else
     self.selected_cell = self:create_cell(x, y)
   end

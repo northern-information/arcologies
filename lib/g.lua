@@ -36,12 +36,12 @@ function g.key(x, y, z)
     keeper:select_cell(x, y)
     graphics:top_message_cell_structure()
   else
-    if keeper.selected_cell.id == fn.id(x, y) then
-      keeper.selected_cell:cycle_structure()
+    if keeper.selected_cell.index == fn.index(x, y) then
+      keeper.selected_cell:cycle_structure(1)
       graphics:top_message_cell_structure()
     elseif keeper.selected_cell:find_port(x, y) then
       keeper.selected_cell:toggle_port(x, y)
-    elseif keeper:cell_exists(fn.id(x, y)) then
+    elseif keeper:get_cell(fn.index(x, y)) then
       keeper:select_cell(x, y)
       graphics:top_message_cell_structure()
     else
@@ -67,7 +67,7 @@ function g:register_signal_death_at(x, y)
   signal.x = x
   signal.y = y
   signal.generation = fn.generation()
-  signal.level = 15
+  signal.level = 10
   table.insert(self.signal_deaths, signal)
 end
 
@@ -82,7 +82,7 @@ function g:led_signal_deaths()
   end
 end
 
-function g:register_signal_and_cell_collision_at(x, y)
+function g:register_collision_at(x, y)
   local collision = {}
   collision.x = x
   collision.y = y

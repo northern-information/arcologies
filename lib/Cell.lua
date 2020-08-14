@@ -6,7 +6,7 @@ function Cell:new(x, y, g)
   -- constants
   c.x = x
   c.y = y
-  c.id = fn.id(c.x, c.y)
+  c.id = fn.id()
   c.available_ports = {
     { c.x, c.y - 1, "n" },
     { c.x + 1, c.y, "e" },
@@ -16,7 +16,7 @@ function Cell:new(x, y, g)
   c.available_structures = { "HIVE", "SHRINE", "GATE" }
   c.attributes = { "STRUCTURE", "OFFSET", "SOUND", "VELOCITY" }
   c.generation = g
-  c.index = x + ((y - 1) * fn.grid_width())
+  c.index = fn.index(x, y)
 
   -- mutable
   c.ports = {}
@@ -29,15 +29,27 @@ function Cell:new(x, y, g)
 end
 
 function Cell:set_structure(i)
-  self.structure = fn.cycle(i, 1, #self.available_structures)
+  self.structure = i
+end
+
+function Cell:cycle_structure(i)
+  self:set_structure(fn.cycle(self.structure + i, 1, #self.available_structures))
 end
 
 function Cell:set_offset(i)
-  self.offset = fn.cycle(i, 0, 15)
+  self.offset = i
+end
+
+function Cell:cycle_offset(i)
+  self:set_offset(fn.cycle(self.offset + i, 0, 15))
 end
 
 function Cell:set_note(i)
   self.note = mu.snap_note_to_array(util.clamp(i, 1, 144), sound.notes_in_this_scale)
+end
+
+function Cell:get_note_name()
+  return mu.note_num_to_name(self.note, true)
 end
 
 function Cell:set_velocity(i)
@@ -46,23 +58,12 @@ end
 
 function Cell:toggle_port(x, y)
   local port = self:find_port(x, y)
+  -- port[3] is where the direction string is stored
   if self:is_port_open(port[3]) then
     self:close_port(port[3])
   else
     self:open_port(port[3])
   end
-end
-
-function Cell:open_port(p)
-  table.insert(self.ports, p)
-end
-
-function Cell:close_port(p)
-  table.remove(self.ports, fn.table_find(self.ports, p))
-end
-
-function Cell:is_port_open(p)
-  return tu.contains(self.ports, p)
 end
 
 function Cell:find_port(x, y)
@@ -74,10 +75,14 @@ function Cell:find_port(x, y)
   return false
 end
 
-function Cell:cycle_structure()
-  self:set_structure(self.structure + 1)
+function Cell:is_port_open(p)
+  return tu.contains(self.ports, p)
 end
 
-function Cell:get_note_name()
-  return mu.note_num_to_name(self.note, true)
+function Cell:open_port(p)
+  table.insert(self.ports, p)
+end
+
+function Cell:close_port(p)
+  table.remove(self.ports, fn.table_find(self.ports, p))
 end

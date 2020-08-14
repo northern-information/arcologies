@@ -61,13 +61,13 @@ end
 
 function counters.conductor()
   counters.music.time = parameters.bpm_to_seconds
-  if sound.playback == 1 then
-    counters.music.generation = counters.music.generation + 1
-    keeper:spawn_signals()
-    keeper:propagate_signals()
-    keeper:collide_signals()
-    keeper:collide_signals_and_cells()
-  end
+  if sound.playback == 0 then return end
+  counters.music.generation = counters.music.generation + 1
+  keeper:spawn_signals()
+  keeper:propagate_signals()
+  keeper:collide_signals()
+  keeper:collide_signals_and_cells()
+  keeper:delete_signals()
   redraw()
 end
 
