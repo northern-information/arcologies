@@ -9,6 +9,7 @@ function menu:reset()
   self.show_all = true
   self.items = {}
   self.focus_item = ""
+  self.focus_on = false
   self.selected_item = 1
   self.offset = 0
 end
@@ -41,7 +42,6 @@ function menu:scroll_value(d)
     elseif s == 6 then
       sound:set_scale(sound.current_scale + d)
     end
-  end
 
   -- -- cell designer
   -- elseif p == 2 then
@@ -61,16 +61,10 @@ function menu:scroll_value(d)
 
   --   end
 
-  -- -- analysis
-  -- elseif p == 3 then
-  --   -- nothing to change here
-
-  -- -- signal density
-  -- elseif p == 4 then
-  --   -- nothing to change here
-  -- end
-  -- fn.dirty_screen(true)
-
+  -- analysis
+  elseif p == 3 then
+    -- nothing to change here
+  end
 
 end
 
@@ -80,41 +74,39 @@ end
 
 function menu:focus(string)
   self.focus_item = string
-  self.show_all = false
-  self:render()
+  self.focus_on = true
 end
 
 function menu:focus_off()
   self.focus_item = ""
-  self.show_all = true
+  self.focus_on = false
 end
 
 function menu:render()
-  self:highlight(self.selected_item)
-
+  local item_level = 15  
+  -- rectangular highlight
+  graphics:rect(0, ((self.selected_item - 1) * 8) + 12 - (self.offset * 8), 51, 7, 2)
+  -- iterate through items and control focus
   for i = 1, #self.items do
-    graphics:text(2, 10 + (i * 8) - (self.offset * 8), self.items[i])
+    if self.focus_on then
+      item_level = self.items[i] == self.focus_item and 15 or 0
+    end
+    graphics:text(2, 10 + (i * 8) - (self.offset * 8), self.items[i], item_level)
   end
-  
   -- indicate when more menu items are available above
   if self.offset > 0 then
     -- pop the ellipses once we start to scroll down
     graphics:rect(0, 7, 51, 14, 0) 
-    graphics:text(2, 18, "...")
+    graphics:text(2, 18, "...", item_level)
   else
     -- top mask to stop the text from running over the title bar
     graphics:rect(0, 7, 51, 5, 0)
   end
-
   -- indicate when menu items are available below
   if #self.items > self.threshold and self.selected_item ~= #self.items then
     graphics:rect(0, 59, 51, 14, 0) 
-    graphics:text(2, 64, "...")
+    graphics:text(2, 64, "...", item_level)
   end
-end
-
-function menu:highlight(i)
-  graphics:rect(0, ((i - 1) * 8) + 12 - (self.offset * 8), 51, 7, 2)
 end
 
 return menu

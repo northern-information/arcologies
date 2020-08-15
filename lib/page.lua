@@ -24,12 +24,9 @@ function page:render()
     self:home()
   -- elseif self.active_page == 2 then
   --   self:cell_designer()
-  -- elseif self.active_page == 3 then
-  --   graphics:analysis(menu.selected_item)
-  -- elseif self.active_page == 4 then
-  --  graphics:signal_density(menu.selected_item)
-  end  
-  
+  elseif self.active_page == 3 then
+    self:analysis()
+  end
   graphics:title_bar()
   graphics:select_tab(self.active_page)
   graphics:top_message()
@@ -45,36 +42,25 @@ function page:home()
     "BPM", 
     "METER", 
     "ROOT", 
-    "SCALE", 
-    "MERCURY", 
-    "VENUS", 
-    "EARTH", 
-    "MARS"
+    "SCALE"
   })
   menu:render()
   graphics:panel()
-  -- sound:set_playback(d)
-  -- if fn.is_selecting_seed() then
-  --   menu:focus("SEED")
-  --   graphics:seed()
-  -- else
-  --   menu:focus_off()
-    -- menu:render()
-
-    -- there is some memory leak or something that tanks performance after a few minutes
-
-    -- graphics:bpm(55, 32, params:get("bpm"), 0)
-    -- graphics:playback_icon(56, 35)
-    -- graphics:icon(76, 35, sound.meter, menu.selected_item == 4 and 1 or 0)
-
-    -- if fn.is_deleting() then
-    --   graphics:icon(56, 35, "D:", 1)
-    --   graphics:icon(76, 35, "D:", 1)
-    -- end
-
-    -- graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
-    -- graphics:rect(126, 55, 2, 7, 15)
-  -- end
+  if fn.is_selecting_seed() then
+    menu:focus("SEED")
+    graphics:seed()
+  else
+    menu:focus_off()
+    graphics:bpm(55, 32, params:get("bpm"), 0)
+    graphics:playback_icon(56, 35)
+    graphics:icon(76, 35, sound.meter, menu.selected_item == 4 and 1 or 0)
+    if fn.is_deleting() then
+      graphics:icon(56, 35, "D:", 1)
+      graphics:icon(76, 35, "D:", 1)
+    end
+    graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
+    graphics:rect(126, 55, 2, 7, 15)
+  end
 end
 
 function page:cell_designer()
@@ -117,6 +103,16 @@ function page:cell_designer()
   --     graphics:velocity_disable()
   --   end
   -- end
+end
+
+function page:analysis()
+  menu:set_items({
+    "HIVES",
+    "SHRINES", 
+    "GATES", 
+    "SIGNALS"
+  })
+  graphics:analysis(menu.selected_item)
 end
 
 function page:error(code)

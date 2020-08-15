@@ -19,7 +19,7 @@ function dev:scene(i)
   -- keeper:select_cell(13, 4)
   -- keeper.selected_cell:open_port("w")
   -- keeper:deselect_cell()
-  -- page.selected_item = 3
+  -- menu.selected_item = 3
 end
 
 return dev

@@ -55,7 +55,7 @@ function g.key(x, y, z)
 end
 
 function g:led_signals()
-  local level = page.active_page == 3 and page.selected_item == 4 and 10 or 2
+  local level = page.active_page == 3 and menu.selected_item == 4 and 10 or 2
   for k,v in pairs(keeper.signals) do
     if v.generation <= counters.music_generation() then
       self:led(v.x, v.y, level)
@@ -112,7 +112,7 @@ end
 function g:led_cell_analysis()
   if page.active_page == 3 then
     for k,v in pairs(keeper.cells) do
-        if v.structure == page.selected_item then
+        if v.structure == menu.selected_item then
           self:highlight_cell(v)
         end
       end

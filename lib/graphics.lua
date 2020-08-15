@@ -418,7 +418,6 @@ function graphics:analysis(selected_item)
           self.analysis_pixels[i] = 15
         end
       end
-      fn.dirty_grid(true)
     elseif selected_item == 4 then
       for k,v in pairs(keeper.signals) do
         if v.index == i then
@@ -438,7 +437,7 @@ function graphics:analysis(selected_item)
   -- more data
   self:text(106, 18, counters.music.generation, 1)
   self:playback_icon(105, 19)
-
+  fn.dirty_grid(true)
 end
 
 function graphics:draw_pixel(x, y, b)
