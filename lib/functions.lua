@@ -83,6 +83,10 @@ function fn.id()
   return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
 end
 
+function fn.xy(cell)
+  return "X" .. cell.x .. "Y" .. cell.y
+end
+
 function fn.rx()
   return math.random(1, fn.grid_width())
 end

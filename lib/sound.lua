@@ -3,9 +3,6 @@ local sound = {}
 function sound.init()
   sound.meter = 16
   sound.playback = 0
-  sound.default_out = 0
-  sound.default_out_name = ""
-  sound.default_out_names = {"AUDIO", "MIDI", "CROW", "iiJF"}
   sound.default_root = 12
   sound.current_root = 12
   sound.default_scale = 0
@@ -16,7 +13,6 @@ function sound.init()
   for i = 1, #mu.SCALES do
     table.insert(sound.current_scale_names, mu.SCALES[i].name)
   end
-  sound:set_default_out(1)
   sound:set_scale(sound.default_scale)
 end
 
@@ -52,10 +48,6 @@ function sound:build_scale()
   self.notes_in_this_scale = mu.generate_scale_of_length(self.current_root, self.current_scale, 127)
 end
 
-function sound:set_default_out(i)
-  sound.default_out = i
-  sound.default_out_name = sound.default_out_names[sound.default_out]
-end
 
 function sound:play(note, velocity)
   engine.hz(mu.note_num_to_freq(mu.snap_note_to_array(note, sound.notes_in_this_scale)))

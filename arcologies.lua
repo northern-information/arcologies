@@ -18,6 +18,7 @@ function init()
   g.init()
   graphics.init()
   keeper.init()
+  menu.init()
   page.init()
   parameters.init()
   sound.init()
@@ -31,33 +32,10 @@ function init()
   counters.grid:start()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
-  -- page:select(1)
+  page:select(1)
   -- fn.seed_cells()
-
-  -- dev
-  page:select(2)
-  sound:toggle_playback()
-  keeper:select_cell(2, 2)
-  keeper:select_cell(2, 1)
-  keeper:select_cell(2, 6)
-  keeper.selected_cell:open_port("s")
-  keeper.selected_cell:open_port("n")
-  keeper.selected_cell.structure = 2
-  keeper:select_cell(6, 5)
-  keeper.selected_cell:open_port("n")
-
-  keeper:select_cell(10, 4)
-  keeper.selected_cell:open_port("e")
-  keeper.selected_cell:open_port("w")
-  keeper.selected_cell.structure = 2
-  keeper:select_cell(13, 4)
-  keeper.selected_cell:open_port("w")
-
-  keeper:deselect_cell()
-  page.selected_item = 3
-
+  -- dev:scene(1)
   redraw()
-  
 end
 
 function redraw()
@@ -70,12 +48,11 @@ end
 
 function enc(n, d)
   if n == 1 then
-    page:select(util.clamp(page.active_page + d, 1, #page.titles))
-    if page.active_page ~= 2 then keeper:deselect_cell() end
+    page:scroll(d)
   elseif n == 2 then
-    page.selected_item = util.clamp(page.selected_item + d, 1, page.items)
-  else
-    page:change_selected_item_value(d)
+    menu:scroll(d)
+  elseif n == 3 then
+    menu:scroll_value(d)
   end
   fn.dirty_screen(true)
 end

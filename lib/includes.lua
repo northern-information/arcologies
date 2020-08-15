@@ -28,6 +28,9 @@ graphics = include("arcologies/lib/graphics")
 -- state machine for Cells and Signals
 keeper = include("arcologies/lib/keeper")
 
+-- build the side menus for norns pages
+menu = include("arcologies/lib/menu")
+
 -- controller for norns pages
 page = include("arcologies/lib/page")
 
@@ -35,4 +38,7 @@ page = include("arcologies/lib/page")
 sound = include("arcologies/lib/sound")
 
 -- exposed norns parameters
-parameters = include("arcologies/lib/parameters") 
+parameters = include("arcologies/lib/parameters")
+
+-- dev only stuff
+dev = include("arcologies/lib/dev") 

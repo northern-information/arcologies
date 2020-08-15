@@ -5,7 +5,7 @@ function graphics.init()
   graphics.tab_width = 5
   graphics.tab_height = 5
   graphics.tab_padding = 1
-  graphics.structure_x = 94
+  graphics.structure_x = 98
   graphics.structure_y = 26
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
@@ -17,7 +17,7 @@ function graphics:get_tab_x(i)
   return (((self.tab_width + self.tab_padding) * i) - self.tab_width)
 end
 
-function graphics:top_menu()
+function graphics:title_bar()
   self:rect(0, 0, 128, 7)
   for i = 1,#page.titles do
     self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
@@ -156,10 +156,6 @@ function graphics:text_left(x, y, string, level)
   self:text(x, y, string, level)
 end
 
-function graphics:menu_highlight(i)
-  self:rect(0, ((i - 1) * 8) + 12, 51, 7, 2)
-end
-
 function graphics:icon(x, y, string, invert)
   if invert == 0 then
     self:rect(x, y, 18, 18, 0)
@@ -177,15 +173,6 @@ end
 
 function graphics:seed_selected(x, y)
   self:rect(x, y, 18, 18, 0)
-end
-
-function graphics:cell_id()
-  -- self:text(2, 61, "CELL ID", 5)
-  local id = "NONE"
-  if keeper.is_cell_selected then
-    id = keeper.selected_cell_id
-  end
-  self:text(56, 61, id, 0)
 end
 
 function graphics:structure_type(s)
@@ -315,36 +302,30 @@ end
 function graphics:draw_ports(adjust)
   local x = self.structure_x
   local y = self.structure_y
-  local ports = ""
   if keeper.is_cell_selected then
     if keeper.selected_cell:is_port_open("n") then
       self:north_port(x, y, (adjust or 0))
-      ports = ports .. "N"
     end
     if keeper.selected_cell:is_port_open("e") then
       self:east_port(x, y)
-      ports = ports .. "E"
     end
     if keeper.selected_cell:is_port_open("s") then
       self:south_port(x, y)
-      ports = ports .. "S"
     end
     if keeper.selected_cell:is_port_open("w") then
       self:west_port(x, y)
-      ports = ports .. "W"
     end
-    self:text(56, 52, ports, 0)
   end
 end
 
 function graphics:north_port(x, y, adjust)
-  self:rect(x+9, y-8 + adjust, 2, 4, 0)
-  self:rect(x+8, y-6 + adjust, 4, 2, 0)
+  self:rect(x+9, y-7 + adjust, 2, 4, 0)
+  self:rect(x+8, y-5 + adjust, 4, 2, 0)
 end
 
 function graphics:east_port(x, y)
-  self:rect(x+24, y+11, 4, 2, 0)
-  self:rect(x+24, y+10, 2, 4, 0)
+  self:rect(x+23, y+11, 4, 2, 0)
+  self:rect(x+23, y+10, 2, 4, 0)
 end
 
 function graphics:south_port(x, y)
@@ -353,8 +334,8 @@ function graphics:south_port(x, y)
 end
 
 function graphics:west_port(x, y)
-  self:rect(x-8, y+11, 4, 2, 0)
-  self:rect(x-6, y+10, 2, 4, 0)
+  self:rect(x-7, y+11, 4, 2, 0)
+  self:rect(x-5, y+10, 2, 4, 0)
 end
 
 function graphics:analysis(selected_item)

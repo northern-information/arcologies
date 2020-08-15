@@ -59,7 +59,7 @@ end
 function Cell:toggle_port(x, y)
   local port = self:find_port(x, y)
   -- port[3] is where the direction string is stored
-  if self:is_port_open(port[3]) then
+  if self:is_port_open(port[3]) then -- also is this sloppy?
     self:close_port(port[3])
   else
     self:open_port(port[3])
