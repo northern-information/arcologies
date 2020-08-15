@@ -34,7 +34,7 @@ function init()
   clock.run(g.grid_redraw_clock)
   page:select(1)
   -- fn.seed_cells()
-  -- dev:scene(1)
+  dev:scene(1)
   redraw()
 end
 

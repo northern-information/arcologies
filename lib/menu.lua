@@ -91,7 +91,13 @@ function menu:render()
     if self.focus_on then
       item_level = self.items[i] == self.focus_item and 15 or 0
     end
-    graphics:text(2, 10 + (i * 8) - (self.offset * 8), self.items[i], item_level)
+    local offset = 10 + (i * 8) - (self.offset * 8)
+    -- menu item
+    graphics:text(2, offset, self.items[i], item_level)
+    -- panel value for cell designer
+    if page.active_page == 2 and self.items[i] ~= "STRUCTURE" then
+      graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
+    end
   end
   -- indicate when more menu items are available above
   if self.offset > 0 then

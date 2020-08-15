@@ -22,8 +22,8 @@ function page:render()
   if fn.no_grid() then page:error(1) return end
   if self.active_page == 1 then
     self:home()
-  -- elseif self.active_page == 2 then
-  --   self:cell_designer()
+  elseif self.active_page == 2 then
+    self:cell_designer()
   elseif self.active_page == 3 then
     self:analysis()
   end
@@ -36,14 +36,7 @@ end
 
 function page:home()
   local playback = sound.playback == 0 and "READY" or "PLAYING"
-  menu:set_items({
-    playback,
-    "SEED",
-    "BPM", 
-    "METER", 
-    "ROOT", 
-    "SCALE"
-  })
+  menu:set_items({ playback, "SEED", "BPM", "METER", "ROOT", "SCALE" })
   menu:render()
   graphics:panel()
   if fn.is_selecting_seed() then
@@ -64,54 +57,28 @@ function page:home()
 end
 
 function page:cell_designer()
-  -- graphics:panel()
-  -- -- graphics:menu_highlight(menu.selected_item)
-  -- if fn.is_selecting_note() then
-  --   graphics:piano(keeper.selected_cell.note)
-  --   graphics:sound_enable()
-  -- else
-  --   if not keeper.is_cell_selected then
-  --     graphics:cell()
-  --     graphics:draw_ports()
-  --     graphics:structure_disable()
-  --     graphics:offset_disable()
-  --     graphics:sound_disable()
-  --     graphics:velocity_disable()
-  --   elseif keeper.selected_cell.structure == 1 then
-  --     graphics:hive()
-  --     graphics:draw_ports()
-  --     graphics:structure_type(keeper.selected_cell.available_structures[1])
-  --     graphics:structure_enable()
-  --     graphics:offset_enable()
-  --     graphics:sound_disable()
-  --     graphics:velocity_disable()
-  --   elseif keeper.selected_cell.structure == 2 then
-  --     graphics:shrine()
-  --     graphics:draw_ports()
-  --     graphics:structure_type(keeper.selected_cell.available_structures[2])
-  --     graphics:structure_enable()
-  --     graphics:offset_disable()
-  --     graphics:sound_enable()
-  --     graphics:velocity_enable()
-  --   elseif keeper.selected_cell.structure == 3 then
-  --     graphics:gate()
-  --     graphics:draw_ports(-5)
-  --     graphics:structure_type(keeper.selected_cell.available_structures[3])
-  --     graphics:structure_enable()
-  --     graphics:offset_disable()
-  --     graphics:sound_disable()
-  --     graphics:velocity_disable()
-  --   end
-  -- end
+  graphics:panel()
+  if not keeper.is_cell_selected then
+    graphics:text(64, 33, "SELECT", 0)
+    graphics:text(64, 43, "A CELL", 0)
+    graphics:cell()
+    return
+  end
+
+  menu:set_items(keeper.selected_cell:menu_items())
+  menu:render()
+  
+  if fn.is_selecting_note() then
+    graphics:piano(keeper.selected_cell.note)
+    graphics:sound_enable()
+  else
+    graphics:draw_ports()
+    graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
+  end
 end
 
 function page:analysis()
-  menu:set_items({
-    "HIVES",
-    "SHRINES", 
-    "GATES", 
-    "SIGNALS"
-  })
+  menu:set_items({ "HIVES", "SHRINES", "GATES", "SIGNALS", "NONE" })
   graphics:analysis(menu.selected_item)
 end
 

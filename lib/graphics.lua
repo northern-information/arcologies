@@ -6,7 +6,7 @@ function graphics.init()
   graphics.tab_height = 5
   graphics.tab_padding = 1
   graphics.structure_x = 98
-  graphics.structure_y = 26
+  graphics.structure_y = 22
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
@@ -175,49 +175,15 @@ function graphics:seed_selected(x, y)
   self:rect(x, y, 18, 18, 0)
 end
 
-function graphics:structure_type(s)
-    self:text(56, 18, s, 0)
-end
-
-function graphics:structure_enable()
-  self:text(2, 18, self.cell_attributes[1], 15)
-end
-
-function graphics:structure_disable()
-  self:text(2, 18, self.cell_attributes[1], 5)
-  self:mls(0, 16, 51, 15, 10)
-end
-
-function graphics:offset_enable()
-    self:text(2, 26, self.cell_attributes[2], 15)
-    self:text(56, 25, keeper.selected_cell.offset, 0)
-end
-
-function graphics:offset_disable()
-  self:text(2, 26, self.cell_attributes[2], 5)
-  self:mls(0, 24, 51, 23, 10)
-end
-
-function graphics:sound_enable()
-  self:text(2, 34, self.cell_attributes[3], 15)
-  if not fn.is_selecting_note() then
-    graphics:text(56, 34, keeper.selected_cell:get_note_name(), 0)
-  end
-end
-
-function graphics:sound_disable()
-  self:text(2, 34, self.cell_attributes[3], 5)
-  self:mls(0, 32, 51, 31, 10)
-end
-
-function graphics:velocity_enable()
-  self:text(2, 42, self.cell_attributes[4], 15)
-  graphics:text(56, 42, keeper.selected_cell.velocity, 0)
-end
-
-function graphics:velocity_disable()
-  self:text(2, 42, self.cell_attributes[4], 5)
-  self:mls(0, 40, 51, 39, 10)
+function graphics:structure(string)
+    self:text_center(107, 61, string, 0)
+    if string == "HIVE" then
+      self:hive()
+    elseif string == "SHRINE" then
+      self:shrine()
+    elseif string == "GATE" then
+      self:gate()
+    end
 end
 
 function graphics:left_wall(x, y)
@@ -225,15 +191,25 @@ function graphics:left_wall(x, y)
   self:mls(x+1, y-1, x, y+25, 0)
 end
 
+function graphics:three_quarter_left_wall(x, y)
+  self:mls(x, y+5, x, y+25, 0)
+  self:mls(x+1, y+5, x, y+25, 0)
+end
+
 function graphics:right_wall(x, y)
   self:mls(x+20, y-1, x+20, y+25, 0)
   self:mls(x+21, y-1, x+20, y+25, 0)
 end
 
+function graphics:three_quarter_right_wall(x, y)
+  self:mls(x+20, y+5, x+20, y+25, 0)
+  self:mls(x+21, y+5, x+20, y+25, 0)
+end
+
 
 function graphics:kasagi(x, y)
-  self:mls(x-5, y-6, x+25, y-6, 0)
-  self:mls(x-5, y-5, x+25, y-5, 0)
+  self:mls(x-5, y, x+25, y, 0)
+  self:mls(x-5, y+1, x+25, y+1, 0)
 end
 
 function graphics:roof(x, y)
@@ -278,16 +254,6 @@ function graphics:hive()
   self:second_floor(x, y)
 end
 
-function graphics:gate()
-  local x = self.structure_x
-  local y = self.structure_y
-  self:left_wall(x, y)
-  self:right_wall(x, y)
-  self:kasagi(x, y)
-  self:roof(x, y)
-  self:third_floor(x, y)
-end
-
 function graphics:shrine()
   local x = self.structure_x
   local y = self.structure_y
@@ -299,12 +265,22 @@ function graphics:shrine()
   self:mls(x+11, y+11, x+11, y+19, 0)
 end
 
-function graphics:draw_ports(adjust)
+function graphics:gate()
+  local x = self.structure_x
+  local y = self.structure_y
+  self:three_quarter_left_wall(x, y)
+  self:three_quarter_right_wall(x, y)
+  self:kasagi(x, y)
+  self:third_floor(x, y)
+  self:second_floor(x, y)
+end
+
+function graphics:draw_ports()
   local x = self.structure_x
   local y = self.structure_y
   if keeper.is_cell_selected then
     if keeper.selected_cell:is_port_open("n") then
-      self:north_port(x, y, (adjust or 0))
+      self:north_port(x, y)
     end
     if keeper.selected_cell:is_port_open("e") then
       self:east_port(x, y)
@@ -318,9 +294,9 @@ function graphics:draw_ports(adjust)
   end
 end
 
-function graphics:north_port(x, y, adjust)
-  self:rect(x+9, y-7 + adjust, 2, 4, 0)
-  self:rect(x+8, y-5 + adjust, 4, 2, 0)
+function graphics:north_port(x, y)
+  self:rect(x+9, y-7, 2, 4, 0)
+  self:rect(x+8, y-5, 4, 2, 0)
 end
 
 function graphics:east_port(x, y)
