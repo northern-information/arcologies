@@ -20,10 +20,10 @@ function init()
   menu.init()
   page.init()
   parameters.init()
+  popup.init()
   sound.init()
   audio:pitch_off()
-  deleting, selecting_note, selecting_seed = false, false, false
-  grid_dirty, screen_dirty  = false, false
+  grid_dirty, screen_dirty, deleting = false, false, false
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   for e = 1, 3 do counters:reset_enc(e) end
   counters.ui:start()
@@ -31,8 +31,10 @@ function init()
   counters.grid:start()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
-  page:select(1)
-  -- fn.seed_cells()
+  page:select(2)
+  fn.seed_cells()
+  sound:toggle_playback()
+  menu:select_item(2)
   dev:scene(1)
   redraw()
 end
@@ -78,5 +80,8 @@ end
 
 function cleanup()
   g.all(0)
+  -- crow.clear()
+  -- crow.reset()
+  -- crow.ii.jf.mode(0)
   poll:clear_all()
 end

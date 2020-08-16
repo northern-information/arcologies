@@ -46,12 +46,6 @@ function fn.is_deleting(bool)
   return deleting
 end
 
-function fn.is_selecting_seed(bool)
-  if bool == nil then return selecting_seed end
-  selecting_seed = bool
-  return selecting_seed
-end
-
 -- reusable parameter functions
 
 function fn.cycle(value, min, max)
@@ -137,116 +131,20 @@ end
 
 -- hyper specific features that combine many entities
 
--- structure cycler
-
-function fn.select_cell_structure(i) -- structure popup, function 1/3
-  if enc_counter[3]["this_clock"] ~= nil then
-    clock.cancel(enc_counter[3]["this_clock"])
-    counters:reset_enc(3)
-  end
-  fn.is_selecting_structure(true)
-  keeper.selected_cell:cycle_structure(i)
-  fn.dirty_screen(true)
-  if enc_counter[3]["this_clock"] == nil then
-    enc_counter[3]["this_clock"] = clock.run(fn.select_structure_wait)
-  end
-end
-
-function fn.is_selecting_structure(bool) -- structure popup, function 2/3
-  if bool == nil then return selecting_structure end
-  selecting_structure = bool
-  return selecting_structure
-end
-
-function fn.select_structure_wait() -- structure popup, function 3/3
-  enc_counter[3]["waiting"] = true
-  clock.sleep(graphics.ui_wait_threshold * 2)
-  graphics:set_message("DONE", counters.default_message_length)
-  enc_counter[3]["waiting"] = false
-  enc_counter[3]["this_clock"] = nil
-  fn.is_selecting_structure(false)
-  menu:focus_off()
-  fn.dirty_screen(true)
-end
-
--- piano / note picker
-
-function fn.select_cell_note(i) -- piano keyboard popup, function 1/4
-  graphics:set_message("NOTE...", counters.default_message_length)
-  if enc_counter[3]["this_clock"] ~= nil then
-    clock.cancel(enc_counter[3]["this_clock"])
-    counters:reset_enc(3)
-  end
-  fn.is_selecting_note(true)
-  keeper.selected_cell:set_note(fn.temp_note() + i)
-  fn.dirty_screen(true)
-  if enc_counter[3]["this_clock"] == nil then
-    enc_counter[3]["this_clock"] = clock.run(fn.select_note_wait)
-  end
-end
-
-function fn.temp_note() -- piano keyboard popup, function 2/4
+function fn.temp_note()
  -- increment with either the note if is already in this scale or snap
   return
-    fn.table_find(
-      sound.notes_in_this_scale,
-      keeper.selected_cell.note)
+    fn.table_find(sound.notes_in_this_scale, keeper.selected_cell.note)
   or 
-    fn.table_find(
-      sound.notes_in_this_scale,
-      mu.snap_note_to_array(
-        keeper.selected_cell.note,
-        sound.notes_in_this_scale))
+    fn.table_find(sound.notes_in_this_scale, mu.snap_note_to_array(keeper.selected_cell.note, sound.notes_in_this_scale))
 end
 
-function fn.is_selecting_note(bool) -- piano keyboard popup, function 3/4
-  if bool == nil then return selecting_note end
-  selecting_note = bool
-  return selecting_note
-end
-
-function fn.select_note_wait() -- piano keyboard popup, function 4/4
-  enc_counter[3]["waiting"] = true
-  clock.sleep(graphics.ui_wait_threshold * 2)
-  graphics:set_message("DONE", counters.default_message_length)
-  enc_counter[3]["waiting"] = false
-  enc_counter[3]["this_clock"] = nil
-  fn.is_selecting_note(false)
-  fn.dirty_screen(true)
-end
-
--- seed
-
-function fn.set_seed(s) -- seed arcologies, function 1/4
-  graphics:set_message("SEEDING...", counters.default_message_length)
-  if enc_counter[3]["this_clock"] ~= nil then
-    clock.cancel(enc_counter[3]["this_clock"])
-    counters:reset_enc(3)
-  end
-  fn.is_selecting_seed(true)
-  params:set("seed", s)
-  fn.dirty_screen(true)
-  if enc_counter[3]["this_clock"] == nil then
-    enc_counter[3]["this_clock"] = clock.run(fn.seed_wait, s)
-  end
-end
-
-function fn.seed_wait() -- seed arcologies, function 2/4
-  enc_counter[3]["waiting"] = true
-  clock.sleep(graphics.ui_wait_threshold)
-  enc_counter[3]["waiting"] = false
-  enc_counter[3]["this_clock"] = nil
-  fn.seed_cells()
-  fn.is_selecting_seed(false)
-  fn.dirty_screen(true)
-end
-
-function fn.seed_cells() -- seed arcologies, function 3/4
+function fn.seed_cells()
   if params:get("seed") == 0 then
-    graphics:set_message("ABORTED SEED", counters.default_message_length)
+    graphics:set_message(popup.messages.seed.abort, counters.default_message_length)
   else
     keeper:delete_all_cells()
-    graphics:set_message("SEEDED " .. params:get("seed"), counters.default_message_length)
+    graphics:set_message(popup.messages.seed.done .. " " .. params:get("seed"), counters.default_message_length)
     for i = 1, params:get("seed") do
       fn.random_cell()
     end
@@ -254,7 +152,7 @@ function fn.seed_cells() -- seed arcologies, function 3/4
   end
 end
 
-function fn.random_cell() -- seed arcologies, function 4/4
+function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
   keeper.selected_cell:set_structure(math.random(1, 2))
   local ports = { "n", "e", "s", "w" }

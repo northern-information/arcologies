@@ -39,11 +39,9 @@ function page:home()
   menu:select_item()
   menu:render()
   graphics:panel()
-  if fn.is_selecting_seed() then
-    menu:focus("SEED")
-    graphics:seed()
+  if popup:is_active() then
+    popup:render()
   else
-    menu:focus_off()
     graphics:bpm(55, 32, params:get("bpm"), 0)
     graphics:playback_icon(56, 35)
     graphics:icon(76, 35, sound.meter, menu.selected_item == 4 and 1 or 0)
@@ -67,17 +65,11 @@ function page:cell_designer()
 
   menu:set_items(keeper.selected_cell:menu_items())
   menu:select_item()
-  menu:render()
 
-  if fn.is_selecting_note() then
-    menu:focus("NOTE")    
-    menu:render_no_values()
-    graphics:piano(keeper.selected_cell.note)
-  elseif fn.is_selecting_structure() then
-    menu:focus("STRUCTURE")
-    graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
+ if popup:is_active() then
+    popup:render()
   else
-    menu:focus_off()
+    menu:render()
     graphics:draw_ports()
     graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
   end

@@ -171,10 +171,6 @@ function graphics:icon(x, y, string, invert)
   self:reset_font()
 end
 
-function graphics:seed_selected(x, y)
-  self:rect(x, y, 18, 18, 0)
-end
-
 function graphics:structure(string)
     self:text_center(107, 61, string, 0)
     if string == "HIVE" then

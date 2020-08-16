@@ -34,11 +34,14 @@ menu = include("arcologies/lib/menu")
 -- controller for norns pages
 page = include("arcologies/lib/page")
 
--- all sound, midi, samples
-sound = include("arcologies/lib/sound")
-
 -- exposed norns parameters
 parameters = include("arcologies/lib/parameters")
+
+-- popup menu for selecting complex values
+popup = include("arcologies/lib/popup")
+
+-- all sound, midi, samples
+sound = include("arcologies/lib/sound")
 
 -- dev only stuff
 dev = include("arcologies/lib/dev") 

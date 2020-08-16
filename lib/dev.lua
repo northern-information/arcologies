@@ -13,7 +13,7 @@ function dev:scene(i)
   keeper.selected_cell:open_port("e")
   keeper.selected_cell:open_port("s")
   keeper.selected_cell:open_port("w")
-  keeper.selected_cell.structure = 3
+  keeper.selected_cell.structure = 2
   -- keeper.selected_cell:open_port("n")
   -- keeper:select_cell(10, 4)
   -- keeper.selected_cell:open_port("e")

@@ -14,6 +14,22 @@ function sound.init()
     table.insert(sound.current_scale_names, mu.SCALES[i].name)
   end
   sound:set_scale(sound.default_scale)
+
+  -- crow initialization
+  if params:get("crow_out") == 1 then
+    print("crow on")
+    -- crow.init()
+    -- crow.clear()
+    -- crow.reset()
+    -- crow.output[2].action = "pulse(.025, 5, 1)"
+    -- crow.output[4].action = "pulse(.025, 5, 1)"
+  end
+
+  -- midi initialization
+  if params:get("midi_out") == 1 then
+    print("midi on")
+  --   sound.midi_out = midi.connect(1)
+  end
 end
 
 function sound:cycle_meter(i)
@@ -49,8 +65,16 @@ function sound:build_scale()
 end
 
 
-function sound:play(note, velocity)
-  engine.hz(mu.note_num_to_freq(mu.snap_note_to_array(note, sound.notes_in_this_scale)))
+function sound:play(note, velocity, out)
+  if out == "crow" then
+    crow.output[1].volts = mu.snap_note_to_array(note, sound.notes_in_this_scale) -- % 12
+    crow.output[2].execute()
+  elseif out =="midi" then
+    -- self.midi_out:note_off this cell
+    self.midi_out:note_on(mu.snap_note_to_array(note, sound.notes_in_this_scale))
+  else
+    engine.hz(mu.note_num_to_freq(mu.snap_note_to_array(note, sound.notes_in_this_scale)))
+  end
 end
 
 return sound

@@ -32,14 +32,15 @@ end
 
 function menu:scroll_value(d)
   local s = self.selected_item_string
-  print(s)
-  print(d)
+  -- print(s)
+  -- print(d)
   -- home
   if page.active_page == 1 then
     if s == fn.playback() then
       sound:set_playback(d)
     elseif s == "SEED" then
-      fn.set_seed(params:get("seed") + d)
+      popup:launch("seed", d)
+      -- fn.set_seed(params:get("seed") + d)
     elseif s == "BPM" then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
     elseif s == "METER" then
@@ -61,7 +62,8 @@ function menu:scroll_value(d)
       keeper.selected_cell:cycle_offset(d)
 
     elseif s == "NOTE" then
-      fn.select_cell_note(d)
+      popup:launch("note", d)
+      -- fn.select_cell_note(d)
 
     elseif s == "VELOCITY" then
       keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
