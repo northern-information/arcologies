@@ -12,20 +12,16 @@
 include("arcologies/lib/includes")
 
 function init()
-  fn.init()
-  counters.init()
-  g.init()
-  graphics.init()
-  keeper.init()
-  menu.init()
-  page.init()
-  parameters.init()
-  popup.init()
-  sound.init()
+  fn.init()       counters.init()    
+  g.init()        graphics.init()
+  keeper.init()   menu.init()
+  page.init()     parameters.init()
+  popup.init()    sound.init()
   audio:pitch_off()
-  grid_dirty, screen_dirty, deleting = false, false, false
+  grid_dirty, screen_dirty = false, false
+  k1, k2, k3 = 0, 0, 0
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
-  for e = 1, 3 do counters:reset_enc(e) end
+  for i = 1, 3 do counters:reset_enc(i) end
   counters.ui:start()
   counters.music:start()
   counters.grid:start()
@@ -41,37 +37,45 @@ end
 
 function redraw()
   if not fn.dirty_screen() then return end
-  graphics:setup()
   page:render()
-  graphics:teardown()
   fn.dirty_screen(false)
 end
 
-function enc(n, d)
-  if n == 1 then
-    page:scroll(d)
-  elseif n == 2 then
+function enc(e, d)
+  -- e1 only ever scrolls between pages
+  if e == 1 then
+    page:scroll(d)  
+  -- e2 only ever scrolls the page menu     
+  elseif e == 2 then
     menu:scroll(d)
-  elseif n == 3 then
-    menu:scroll_value(d)
+  -- e3 only ever changes the menu value     
+  elseif e == 3 then
+    menu:scroll_value(d) 
   end
   fn.dirty_screen(true)
 end
 
 function key(k, z)
-  fn.is_deleting(k == 3 and z == 1 and true or false)
+  -- always store the key states
+  if k == 1 then k1 = z end
+  if k == 2 then k2 = z end
+  if k == 3 then k3 = z end
   if z == 1 then
+    -- detect long press
     key_counter[k] = clock.run(fn.long_press, k)
   elseif z == 0 then
-    if key_counter[k] then
-      clock.cancel(key_counter[k])
-      if k == 2 then
+    -- detect short press
+    if key_counter[k] then 
+      -- cancel long press counter
+      clock.cancel(key_counter[k]) 
+      -- short k1 is the default exit to norns
+      if k == 1 then
+      -- short k2 only ever toggles playback               
+      elseif k == 2 then           
         sound:toggle_playback()
-        keeper:deselect_cell()
+      -- short k3 only ever deletes the selected cell
       elseif k == 3 then
-        if keeper.is_cell_selected then
-          keeper:delete_cell(keeper.selected_cell_id)
-        end
+        keeper:delete_cell()
       end
       fn.dirty_screen(true)
     end

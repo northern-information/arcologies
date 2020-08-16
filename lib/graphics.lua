@@ -36,10 +36,10 @@ end
 
 function graphics:top_message()
   local message = ""
-  if fn.is_deleting() then
-    self.temporary_message = "DELETING..."
-    counters.message = counters.ui.frame + 1
-  end
+  -- if fn.is_deleting() then
+  --   self.temporary_message = "DELETING..."
+  --   counters.message = counters.ui.frame + 1
+  -- end
   if counters.message > counters.ui.frame then
     message = self.temporary_message
   else
@@ -506,6 +506,22 @@ function graphics:seed()
     self:text_center(64, 50, params:get("seed"), 15)
   end
   self:reset_font()
+end
+
+
+function graphics:deleting_all(timer)
+  screen.font_size(16)
+  self:text_center(64, 28, "DELETING ALL", 15)
+  screen.font_size(32)
+  self:text_left(14, 54, timer .. "." .. math.random(1, 10) .. math.random(1, 10), 15)
+  self:reset_font()
+end
+
+function graphics:select_a_cell()
+  self:panel()
+  self:text(64, 33, "SELECT", 0)
+  self:text(64, 43, "A CELL", 0)
+  self:cell()
 end
 
 function graphics:ready_animation(i)

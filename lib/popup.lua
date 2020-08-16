@@ -2,13 +2,21 @@ popup = {}
 
 function popup.init()
   popup.active = false
+  popup.input = "" -- key or enc
+  popup.number = 0
   popup.current_attribute = ""
   popup.current_value = ""
+  popup.key_timer = 0
   popup.messages = {
     ["seed"] = {
       ["start"] = "SEEDING...",
       ["abort"] = "ABORTED SEED",
       ["done"] = "SEEDED"
+    },
+    ["delete_all"] = {
+      ["start"] = "",
+      ["abort"] = "ABORTED",
+      ["done"] = "DELETED ALL CELLS"
     },
     ["structure"] = {
       ["start"] = "STRUCTURE...",
@@ -23,9 +31,11 @@ function popup.init()
   }
 end
 
-function popup:launch(attribute, value)
+function popup:launch(attribute, value, input, number)
   self.current_attribute = attribute
   self.current_value = value
+  self.input = input
+  self.number = number
   self.active = true
   self:start()
 end
@@ -43,25 +53,52 @@ function popup:title_message(s)
 end
 
 function popup:start()
-  self:title_message(self.messages[self.current_attribute]["start"])
-  if enc_counter[3]["this_clock"] ~= nil then
-    clock.cancel(enc_counter[3]["this_clock"])
-    counters:reset_enc(3)
-  end
-  self:change()
-  fn.dirty_screen(true)
-  if enc_counter[3]["this_clock"] == nil then
-    enc_counter[3]["this_clock"] = clock.run(self.wait)
+
+  -- encoders wait for a period after you stop spinning
+  if self.input == "enc" then
+    self:title_message(self.messages[self.current_attribute]["start"])
+    if enc_counter[self.number]["this_clock"] ~= nil then
+      clock.cancel(enc_counter[self.number]["this_clock"])
+      counters:reset_enc(self.number)
+    end
+    self:change()
+    fn.dirty_screen(true)
+    if enc_counter[self.number]["this_clock"] == nil then
+      enc_counter[self.number]["this_clock"] = clock.run(self.enc_wait)
+    end
+
+  -- keys give you time to cancel
+  elseif self.input == "key" then
+    clock.run(self.key_wait)
   end
 end
 
-function popup:wait()
-  enc_counter[3]["waiting"] = true
+function popup:key_wait()
+  if popup.current_attribute == "delete_all" then
+    popup.key_timer = 250
+    while popup.key_timer > 0 and k3 == 1 do
+      popup:title_message(popup.messages[popup.current_attribute]["start"])
+      popup.key_timer = popup.key_timer - 1
+      fn.dirty_screen(true)
+      clock.sleep(1/100)
+    end
+    if k3 == 0 then
+      popup.active = false
+      popup:title_message(popup.messages.delete_all.abort)
+    else
+      popup:title_message(popup.messages.delete_all.done)
+      popup:done()
+    end
+    fn.dirty_screen(true)
+  end
+end
+
+function popup:enc_wait()
+  enc_counter[popup.number]["waiting"] = true
   clock.sleep(graphics.ui_wait_threshold)
-  enc_counter[3]["waiting"] = false
-  enc_counter[3]["this_clock"] = nil
+  enc_counter[popup.number]["waiting"] = false
+  enc_counter[popup.number]["this_clock"] = nil
   popup:done()
-  popup.active = false
   fn.dirty_screen(true)
 end
 
@@ -82,9 +119,13 @@ function popup:render()
   if self.current_attribute == "note" then
     graphics:piano(keeper.selected_cell.note)
   end
+  if self.current_attribute == "delete_all" then
+    graphics:deleting_all(self.key_timer)
+  end
 end
 
 function popup:done()
+  self.active = false
   if self.current_attribute == "seed" then 
     fn.seed_cells()
     if params:get("seed") == 0 then
@@ -97,7 +138,10 @@ function popup:done()
     self:title_message(self.messages.note.done .. " " .. keeper.selected_cell:get_note_name())
   end
   if self.current_attribute == "structure" then
-    print("done note")
+    print("done structure")
+  end
+  if self.current_attribute == "delete_all" then
+    keeper:delete_all_cells()
   end
 end
 

@@ -155,6 +155,7 @@ function keeper:create_cell(x, y)
 end
 
 function keeper:delete_cell(id)
+  id = id == nil and self.selected_cell_id or id
   for k,v in pairs(self.cells) do
     if v.id == id then
       table.remove(self.cells, k)

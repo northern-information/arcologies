@@ -1,64 +1,7 @@
 local fn = {}
 
-function fn.init()
-  fn.id_prefix = "arc-"
-  fn.id_counter = 1000
-end
-
-function fn.no_grid()
-  if fn.grid_width() == 0 then
-    return true
-  else 
-    return false
-  end
-end
-
--- user interactions
-
-function fn.long_press(k)
-  clock.sleep(1)
-  key_counter[k] = nil
-  if k == 3 then
-    keeper:delete_all_cells()
-    fn.is_deleting(false)
-    graphics:set_message("DELETED", counters.default_message_length)
-  end
-  fn.dirty_screen(true)
-end
-
--- simple boolean getters/setters/checks
-
-function fn.dirty_grid(bool)
-  if bool == nil then return grid_dirty end
-  grid_dirty = bool
-  return grid_dirty
-end
-
-function fn.dirty_screen(bool)
-  if bool == nil then return screen_dirty end
-  screen_dirty = bool
-  return screen_dirty
-end
-
-function fn.is_deleting(bool)
-  if bool == nil then return deleting end
-  deleting = bool
-  return deleting
-end
-
--- reusable parameter functions
-
-function fn.cycle(value, min, max)
-  if value > max then
-    return min
-  elseif value < 1 then
-    return max
-  else
-    return value
-  end
-end
-
 -- frequently used state checks, utilities, and formatters
+
 function fn.playback()
   return sound.playback == 0 and "READY" or "PLAYING"
 end
@@ -127,6 +70,53 @@ function fn.in_bounds(x, y)
   else
     return true -- ok
   end
+end
+
+function fn.init()
+  fn.id_prefix = "arc-"
+  fn.id_counter = 1000
+end
+
+function fn.no_grid()
+  if fn.grid_width() == 0 then
+    return true
+  else 
+    return false
+  end
+end
+
+function fn.cycle(value, min, max)
+  if value > max then
+    return min
+  elseif value < 1 then
+    return max
+  else
+    return value
+  end
+end
+
+function fn.long_press(k)
+  -- anythin greater than half a second is a long press
+  clock.sleep(.5)
+  key_counter[k] = nil
+  if k == 3 then
+    popup:launch("delete_all", true, "key", 3)
+  end
+  fn.dirty_screen(true)
+end
+
+-- simple boolean getters/setters/checks
+
+function fn.dirty_grid(bool)
+  if bool == nil then return grid_dirty end
+  grid_dirty = bool
+  return grid_dirty
+end
+
+function fn.dirty_screen(bool)
+  if bool == nil then return screen_dirty end
+  screen_dirty = bool
+  return screen_dirty
 end
 
 -- hyper specific features that combine many entities
