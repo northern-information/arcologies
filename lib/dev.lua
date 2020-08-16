@@ -1,5 +1,9 @@
 local dev = {}
 
+function rerun()
+  norns.script.load(norns.state.script)
+end
+
 function dev:scene(i)
   sound:toggle_playback()
   keeper:select_cell(2, 2)

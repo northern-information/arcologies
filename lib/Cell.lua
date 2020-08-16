@@ -13,14 +13,15 @@ function Cell:new(x, y, g)
     { c.x, c.y + 1, "s" },
     { c.x - 1, c.y, "w" }
   }
-  c.available_structures = { "HIVE", "SHRINE", "GATE" }
-  c.attributes = { "STRUCTURE", "OFFSET", "SOUND", "VELOCITY", "DOCS" }
+  c.available_structures = { "HIVE", "SHRINE", "GATE", "RAVE" }
+  c.attributes = { "STRUCTURE", "OFFSET", "NOTE", "VELOCITY", "DOCS" }
   c.generation = g
   c.index = fn.index(x, y)
   c.structure_attribute_map = {
     ["HIVE"] = {"OFFSET"},
-    ["SHRINE"] = {"SOUND", "VELOCITY"},
-    ["GATE"] = {}
+    ["SHRINE"] = {"NOTE", "VELOCITY"},
+    ["GATE"] = {},
+    ["RAVE"] = {"ENERGY"}
   }
   for k,v in pairs(c.structure_attribute_map) do
     c.structure_attribute_map[k][#c.structure_attribute_map[k] + 1] = "STRUCTURE"
@@ -41,13 +42,14 @@ function Cell:menu_items()
       if self.structure == 1 then return self.structure_attribute_map["HIVE"]
   elseif self.structure == 2 then return self.structure_attribute_map["SHRINE"]
   elseif self.structure == 3 then return self.structure_attribute_map["GATE"]
+  elseif self.structure == 4 then return self.structure_attribute_map["RAVE"]
   end
 end
 
 function Cell:get_menu_value_by_attribute(attribute)
   if attribute == "STRUCTURE" then return self.available_structures[self.structure] end
   if attribute == "OFFSET"    then return self.offset end
-  if attribute == "SOUND"     then return self:get_note_name() end
+  if attribute == "NOTE"     then return self:get_note_name() end
   if attribute == "VELOCITY"  then return self.velocity end
 end
 

@@ -10,12 +10,19 @@ function menu:reset()
   self.items = {}
   self.focus_item = ""
   self.focus_on = false
+  self.focus_index = 0
   self.selected_item = 1
+  self.selected_item_string = ""
   self.offset = 0
 end
 
 function menu:scroll(d)
-  self.selected_item = util.clamp(self.selected_item + d, 1, #self.items)
+  self:select_item(util.clamp(self.selected_item + d, 1, #self.items))
+end
+
+function menu:select_item(i)
+  self.selected_item = i == nil and self.selected_item or i
+  self.selected_item_string  = self.items[self.selected_item]
   self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
 end
 
@@ -24,45 +31,48 @@ function menu:set_items(items)
 end
 
 function menu:scroll_value(d)
-  local p = page.active_page
-  local s = self.selected_item
-
+  local s = self.selected_item_string
+  print(s)
+  print(d)
   -- home
-  if p == 1 then
-    if s == 1 then
+  if page.active_page == 1 then
+    if s == fn.playback() then
       sound:set_playback(d)
-    elseif s == 2 then
+    elseif s == "SEED" then
       fn.set_seed(params:get("seed") + d)
-    elseif s == 3 then
+    elseif s == "BPM" then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-    elseif s == 4 then
+    elseif s == "METER" then
       sound:cycle_meter(d)
-    elseif s == 5 then
+    elseif s == "ROOT" then
       sound:cycle_root(d)
-    elseif s == 6 then
+    elseif s == "SCALE" then
       sound:set_scale(sound.current_scale + d)
     end
 
-  -- -- cell designer
-  -- elseif p == 2 then
-  --   if not keeper.is_cell_selected then return end
+  -- cell designer
+  elseif page.active_page == 2 then
+    -- if not keeper.is_cell_selected then return end
 
-  --   if s == 1 then
-  --     keeper.selected_cell:cycle_structure(d)
+    if s == "STRUCTURE" then
+      fn.select_cell_structure(d)
 
-  --   elseif s == 2 then
-  --     keeper.selected_cell:cycle_offset(d)
+    elseif s == "OFFSET" then
+      keeper.selected_cell:cycle_offset(d)
 
-  --   elseif s == 3 then
-  --     fn.select_cell_note(d)
+    elseif s == "NOTE" then
+      fn.select_cell_note(d)
 
-  --   elseif s == 4 then
-  --     keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
+    elseif s == "VELOCITY" then
+      keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
 
-  --   end
-
+    elseif s == "DOCS" then
+      print("DOCS...")
+    
+    end
+  
   -- analysis
-  elseif p == 3 then
+  elseif page.active_page == 3 then
     -- nothing to change here
   end
 
@@ -75,14 +85,25 @@ end
 function menu:focus(string)
   self.focus_item = string
   self.focus_on = true
+  self.focus_index = fn.table_find(self.items, string)
 end
 
 function menu:focus_off()
   self.focus_item = ""
   self.focus_on = false
+  self.focus_index = 0
 end
 
-function menu:render()
+function menu:render_no_values()
+  self:render(false)
+end
+
+-- ok im throwing in the towel for tonight. just added focus index so when you scroll thorugh
+-- structures on the cell page i'll be able to make that stick. i think this will be the only
+-- instance where this is a thing but i sorta want to make it maintainable...
+
+function menu:render(bool)
+  local render_values = (bool == nil) and true or bool
   local item_level = 15  
   -- rectangular highlight
   graphics:rect(0, ((self.selected_item - 1) * 8) + 12 - (self.offset * 8), 51, 7, 2)
@@ -95,7 +116,7 @@ function menu:render()
     -- menu item
     graphics:text(2, offset, self.items[i], item_level)
     -- panel value for cell designer
-    if page.active_page == 2 and self.items[i] ~= "STRUCTURE" then
+    if page.active_page == 2 and self.items[i] ~= "STRUCTURE" and render_values then
       graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
     end
   end

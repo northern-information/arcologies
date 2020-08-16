@@ -8,7 +8,6 @@
 --
 -- ........................................
 -- l.llllllll.co/arcologies
--- <3 @tyleretters
 
 include("arcologies/lib/includes")
 
@@ -24,7 +23,7 @@ function init()
   sound.init()
   audio:pitch_off()
   deleting, selecting_note, selecting_seed = false, false, false
-  grid_dirty, screen_dirty = false, false
+  grid_dirty, screen_dirty  = false, false
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   for e = 1, 3 do counters:reset_enc(e) end
   counters.ui:start()

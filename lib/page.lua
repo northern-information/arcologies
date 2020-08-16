@@ -35,8 +35,8 @@ function page:render()
 end
 
 function page:home()
-  local playback = sound.playback == 0 and "READY" or "PLAYING"
-  menu:set_items({ playback, "SEED", "BPM", "METER", "ROOT", "SCALE" })
+  menu:set_items({ fn.playback(), "SEED", "BPM", "METER", "ROOT", "SCALE" })
+  menu:select_item()
   menu:render()
   graphics:panel()
   if fn.is_selecting_seed() then
@@ -66,12 +66,18 @@ function page:cell_designer()
   end
 
   menu:set_items(keeper.selected_cell:menu_items())
+  menu:select_item()
   menu:render()
-  
+
   if fn.is_selecting_note() then
+    menu:focus("NOTE")    
+    menu:render_no_values()
     graphics:piano(keeper.selected_cell.note)
-    graphics:sound_enable()
+  elseif fn.is_selecting_structure() then
+    menu:focus("STRUCTURE")
+    graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
   else
+    menu:focus_off()
     graphics:draw_ports()
     graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
   end

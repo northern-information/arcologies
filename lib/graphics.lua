@@ -183,6 +183,8 @@ function graphics:structure(string)
       self:shrine()
     elseif string == "GATE" then
       self:gate()
+    elseif string == "RAVE" then
+      self:rave()
     end
 end
 
@@ -206,30 +208,29 @@ function graphics:three_quarter_right_wall(x, y)
   self:mls(x+21, y+5, x+20, y+25, 0)
 end
 
-
 function graphics:kasagi(x, y)
   self:mls(x-5, y, x+25, y, 0)
   self:mls(x-5, y+1, x+25, y+1, 0)
 end
 
 function graphics:roof(x, y)
-  self:mls(x, y, x+20, y, 0)
-  self:mls(x, y+1, x+20, y+1, 0)
+  self:mls(x, y, x+21, y, 0)
+  self:mls(x, y+1, x+21, y+1, 0)
 end
 
 function graphics:third_floor(x, y)
-  self:mls(x, y+6, x+20, y+6, 0)
-  self:mls(x, y+7, x+20, y+7, 0)
+  self:mls(x, y+6, x+21, y+6, 0)
+  self:mls(x, y+7, x+21, y+7, 0)
 end
 
 function graphics:second_floor(x, y)
-  self:mls(x, y+12, x+20, y+12, 0)
-  self:mls(x, y+13, x+20, y+13, 0)
+  self:mls(x, y+12, x+21, y+12, 0)
+  self:mls(x, y+13, x+21, y+13, 0)
 end
 
 function graphics:floor(x, y)
-  self:mls(x, y+18, x+20, y+18, 0)
-  self:mls(x, y+19, x+20, y+19, 0)
+  self:mls(x, y+18, x+21, y+18, 0)
+  self:mls(x, y+19, x+21, y+19, 0)
 end
 
 function graphics:foundation(x, y)
@@ -273,6 +274,15 @@ function graphics:gate()
   self:kasagi(x, y)
   self:third_floor(x, y)
   self:second_floor(x, y)
+end
+
+function graphics:rave()
+  local x = self.structure_x
+  local y = self.structure_y
+  self:left_wall(x, y)
+  self:three_quarter_right_wall(x, y)
+  self:roof(x, y)
+  self:third_floor(x, y)
 end
 
 function graphics:draw_ports()

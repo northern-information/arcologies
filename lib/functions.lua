@@ -65,6 +65,9 @@ function fn.cycle(value, min, max)
 end
 
 -- frequently used state checks, utilities, and formatters
+function fn.playback()
+  return sound.playback == 0 and "READY" or "PLAYING"
+end
 
 function fn.grid_width()
   return g.cols
@@ -134,6 +137,40 @@ end
 
 -- hyper specific features that combine many entities
 
+-- structure cycler
+
+function fn.select_cell_structure(i) -- structure popup, function 1/3
+  if enc_counter[3]["this_clock"] ~= nil then
+    clock.cancel(enc_counter[3]["this_clock"])
+    counters:reset_enc(3)
+  end
+  fn.is_selecting_structure(true)
+  keeper.selected_cell:cycle_structure(i)
+  fn.dirty_screen(true)
+  if enc_counter[3]["this_clock"] == nil then
+    enc_counter[3]["this_clock"] = clock.run(fn.select_structure_wait)
+  end
+end
+
+function fn.is_selecting_structure(bool) -- structure popup, function 2/3
+  if bool == nil then return selecting_structure end
+  selecting_structure = bool
+  return selecting_structure
+end
+
+function fn.select_structure_wait() -- structure popup, function 3/3
+  enc_counter[3]["waiting"] = true
+  clock.sleep(graphics.ui_wait_threshold * 2)
+  graphics:set_message("DONE", counters.default_message_length)
+  enc_counter[3]["waiting"] = false
+  enc_counter[3]["this_clock"] = nil
+  fn.is_selecting_structure(false)
+  menu:focus_off()
+  fn.dirty_screen(true)
+end
+
+-- piano / note picker
+
 function fn.select_cell_note(i) -- piano keyboard popup, function 1/4
   graphics:set_message("NOTE...", counters.default_message_length)
   if enc_counter[3]["this_clock"] ~= nil then
@@ -177,6 +214,8 @@ function fn.select_note_wait() -- piano keyboard popup, function 4/4
   fn.is_selecting_note(false)
   fn.dirty_screen(true)
 end
+
+-- seed
 
 function fn.set_seed(s) -- seed arcologies, function 1/4
   graphics:set_message("SEEDING...", counters.default_message_length)
