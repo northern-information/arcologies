@@ -22,6 +22,9 @@ counters = include("arcologies/lib/counters")
 -- grid interactions and leds
 g = include("arcologies/lib/g")
 
+-- structure glyph drawings
+glyphs = include("arcologies/lib/glyphs")
+
 -- all norns screen rendering
 graphics = include("arcologies/lib/graphics")
 

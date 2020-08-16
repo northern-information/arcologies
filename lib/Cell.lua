@@ -1,6 +1,9 @@
 Cell = {}
 
 function Cell:new(x, y, g)
+  local x = x ~= nil and x or 0
+  local y = y ~= nil and y or 0
+  local g = g ~= nil and g or 0
   local c = setmetatable({}, { __index = Cell })
 
   -- constants

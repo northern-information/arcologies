@@ -1,7 +1,7 @@
 local page = {}
 
 function page.init()
-  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS" }
+  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS", "DEV" }
   page.active_page = 1
 end
 
@@ -27,6 +27,8 @@ function page:render()
     self:cell_designer()
   elseif self.active_page == 3 then
     self:analysis()
+  elseif self.active_page == 4 then
+    glyphs:test()
   end
   graphics:title_bar_and_tabs()
   fn.dirty_screen(true)
@@ -62,7 +64,7 @@ function page:cell_designer()
     graphics:panel()
     menu:render()
     graphics:draw_ports()
-    graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
+    graphics:structure_and_title(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
   end
 end
 

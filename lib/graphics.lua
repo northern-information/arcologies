@@ -7,7 +7,7 @@ function graphics.init()
   graphics.tab_height = 5
   graphics.tab_padding = 1
   graphics.structure_x = 98
-  graphics.structure_y = 22
+  graphics.structure_y = 21
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
@@ -36,10 +36,6 @@ end
 
 function graphics:top_message()
   local message = ""
-  -- if fn.is_deleting() then
-  --   self.temporary_message = "DELETING..."
-  --   counters.message = counters.ui.frame + 1
-  -- end
   if counters.message > counters.ui.frame then
     message = self.temporary_message
   else
@@ -176,153 +172,34 @@ function graphics:icon(x, y, string, invert)
   self:reset_font()
 end
 
-function graphics:structure(string)
-    self:text_center(107, 61, string, 0)
+function graphics:structure_and_title(string)
+    self:text_center(self.structure_x + 10, self.structure_y + 40, string, 0)
     if string == "HIVE" then
-      self:hive()
+      glyphs:hive(self.structure_x, self.structure_y, 0)
     elseif string == "SHRINE" then
-      self:shrine()
+      glyphs:shrine(self.structure_x, self.structure_y, 0)
     elseif string == "GATE" then
-      self:gate()
+      glyphs:gate(self.structure_x, self.structure_y, 0)
     elseif string == "RAVE" then
-      self:rave()
+      glyphs:rave(self.structure_x, self.structure_y, 0)
     end
-end
-
-function graphics:left_wall(x, y)
-  self:mls(x, y-1, x, y+25, 0)
-  self:mls(x+1, y-1, x, y+25, 0)
-end
-
-function graphics:three_quarter_left_wall(x, y)
-  self:mls(x, y+5, x, y+25, 0)
-  self:mls(x+1, y+5, x, y+25, 0)
-end
-
-function graphics:right_wall(x, y)
-  self:mls(x+20, y-1, x+20, y+25, 0)
-  self:mls(x+21, y-1, x+20, y+25, 0)
-end
-
-function graphics:three_quarter_right_wall(x, y)
-  self:mls(x+20, y+5, x+20, y+25, 0)
-  self:mls(x+21, y+5, x+20, y+25, 0)
-end
-
-function graphics:kasagi(x, y)
-  self:mls(x-5, y, x+25, y, 0)
-  self:mls(x-5, y+1, x+25, y+1, 0)
-end
-
-function graphics:roof(x, y)
-  self:mls(x, y, x+21, y, 0)
-  self:mls(x, y+1, x+21, y+1, 0)
-end
-
-function graphics:third_floor(x, y)
-  self:mls(x, y+6, x+21, y+6, 0)
-  self:mls(x, y+7, x+21, y+7, 0)
-end
-
-function graphics:second_floor(x, y)
-  self:mls(x, y+12, x+21, y+12, 0)
-  self:mls(x, y+13, x+21, y+13, 0)
-end
-
-function graphics:floor(x, y)
-  self:mls(x, y+18, x+21, y+18, 0)
-  self:mls(x, y+19, x+21, y+19, 0)
-end
-
-function graphics:foundation(x, y)
-  self:mls(x-5, y+24, x+25, y+24, 0)
-  self:mls(x-5, y+25, x+25, y+25, 0)
-end
-
-function graphics:cell()
-  local x = self.structure_x
-  local y = self.structure_y
-  self:left_wall(x, y)
-  self:right_wall(x, y)
-  self:roof(x, y)
-  self:floor(x, y)
-end
-
-function graphics:hive()
-  local x = self.structure_x
-  local y = self.structure_y
-  self:cell(x, y)
-  self:third_floor(x, y)
-  self:second_floor(x, y)
-end
-
-function graphics:shrine()
-  local x = self.structure_x
-  local y = self.structure_y
-  self:left_wall(x, y)
-  self:right_wall(x, y)
-  self:roof(x, y)
-  self:third_floor(x, y)
-  self:mls(x+10, y+11, x+10, y+19, 0)
-  self:mls(x+11, y+11, x+11, y+19, 0)
-end
-
-function graphics:gate()
-  local x = self.structure_x
-  local y = self.structure_y
-  self:three_quarter_left_wall(x, y)
-  self:three_quarter_right_wall(x, y)
-  self:kasagi(x, y)
-  self:third_floor(x, y)
-  self:second_floor(x, y)
-end
-
-function graphics:rave()
-  local x = self.structure_x
-  local y = self.structure_y
-  self:left_wall(x, y)
-  self:three_quarter_right_wall(x, y)
-  self:roof(x, y)
-  self:third_floor(x, y)
 end
 
 function graphics:draw_ports()
-  local x = self.structure_x
-  local y = self.structure_y
   if keeper.is_cell_selected then
     if keeper.selected_cell:is_port_open("n") then
-      self:north_port(x, y)
+      glyphs:north_port(self.structure_x, self.structure_y, 0)
     end
     if keeper.selected_cell:is_port_open("e") then
-      self:east_port(x, y)
+      glyphs:east_port(self.structure_x, self.structure_y, 0)
     end
     if keeper.selected_cell:is_port_open("s") then
-      self:south_port(x, y)
+      glyphs:south_port(self.structure_x, self.structure_y, 0)
     end
     if keeper.selected_cell:is_port_open("w") then
-      self:west_port(x, y)
+      glyphs:west_port(self.structure_x, self.structure_y, 0)
     end
   end
-end
-
-function graphics:north_port(x, y)
-  self:rect(x+9, y-7, 2, 4, 0)
-  self:rect(x+8, y-5, 4, 2, 0)
-end
-
-function graphics:east_port(x, y)
-  self:rect(x+23, y+11, 4, 2, 0)
-  self:rect(x+23, y+10, 2, 4, 0)
-end
-
-function graphics:south_port(x, y)
-  self:rect(x+9, y+26, 2, 4, 0)
-  self:rect(x+8, y+26, 4, 2, 0)
-end
-
-function graphics:west_port(x, y)
-  self:rect(x-7, y+11, 4, 2, 0)
-  self:rect(x-5, y+10, 2, 4, 0)
 end
 
 function graphics:analysis(selected_item)
@@ -496,6 +373,14 @@ function graphics:piano(k)
   self:reset_font()
 end
 
+function graphics:structure_palette(i)
+  self:rect(((i - 1) * 15) + 1, 12, 13, 13, 15)
+  glyphs:small_hive(5, 15, i == 1 and 0 or 15)
+  glyphs:small_shrine(20, 15, i == 2 and 0 or 15)
+  glyphs:small_gate(35, 15, i == 3 and 0 or 15)
+  glyphs:small_rave(50, 15, i == 4 and 0 or 15)
+end
+
 function graphics:seed()
   local seed = params:get("seed")
   if seed == 0 then
@@ -507,7 +392,6 @@ function graphics:seed()
   end
   self:reset_font()
 end
-
 
 function graphics:deleting_all(timer)
   screen.font_size(16)
@@ -521,7 +405,7 @@ function graphics:select_a_cell()
   self:panel()
   self:text(64, 33, "SELECT", 0)
   self:text(64, 43, "A CELL", 0)
-  self:cell()
+  glyphs:cell(self.structure_x, self.structure_y, 0)
 end
 
 function graphics:ready_animation(i)
