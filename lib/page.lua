@@ -27,21 +27,18 @@ function page:render()
   elseif self.active_page == 3 then
     self:analysis()
   end
-  graphics:title_bar()
-  graphics:select_tab(self.active_page)
-  graphics:top_message()
-  graphics:page_name(self.titles[self.active_page])  
+  graphics:title_bar_and_tabs()
   fn.dirty_screen(true)
 end
 
 function page:home()
   menu:set_items({ fn.playback(), "SEED", "BPM", "METER", "ROOT", "SCALE" })
   menu:select_item()
-  menu:render()
-  graphics:panel()
   if popup:is_active() then
     popup:render()
   else
+    menu:render()
+    graphics:panel()
     graphics:bpm(55, 32, params:get("bpm"), 0)
     graphics:playback_icon(56, 35)
     graphics:icon(76, 35, sound.meter, menu.selected_item == 4 and 1 or 0)
@@ -55,8 +52,8 @@ function page:home()
 end
 
 function page:cell_designer()
-  graphics:panel()
   if not keeper.is_cell_selected then
+    graphics:panel()
     graphics:text(64, 33, "SELECT", 0)
     graphics:text(64, 43, "A CELL", 0)
     graphics:cell()
@@ -69,6 +66,7 @@ function page:cell_designer()
  if popup:is_active() then
     popup:render()
   else
+    graphics:panel()
     menu:render()
     graphics:draw_ports()
     graphics:structure(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))

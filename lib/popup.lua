@@ -10,13 +10,17 @@ function popup.init()
       ["abort"] = "ABORTED SEED",
       ["done"] = "SEEDED"
     },
+    ["structure"] = {
+      ["start"] = "STRUCTURE...",
+      ["abort"] = "ABORTED",
+      ["done"] = "CHOSE"
+    },
     ["note"] = {
       ["start"] = "NOTE...",
       ["abort"] = "ABORTED",
       ["done"] = "CHOSE"
     }
   }
-
 end
 
 function popup:launch(attribute, value)
@@ -67,37 +71,34 @@ function popup:change()
   end
   if self.current_attribute == "note" then
     keeper.selected_cell:set_note(fn.temp_note() + self.current_value)
+    self:title_message("MIDI " .. keeper.selected_cell.note)
   end
 end
 
 function popup:render()
   if self.current_attribute == "seed" then
-    menu:focus("SEED")
     graphics:seed()
   end
   if self.current_attribute == "note" then
-    menu:focus("NOTE")
     graphics:piano(keeper.selected_cell.note)
   end
 end
 
 function popup:done()
-  menu:focus_off()
-  if self.current_attribute == "seed" then self:done_seed() end
-  if self.current_attribute == "note" then self:done_note() end
-  if self.current_attribute == "structure" then self:done_structure() end
-end
-
-function popup:done_seed()
- fn.seed_cells()
-end
-
-function popup:done_note()
-  self:title_message(self.messages.note.done .. " " .. keeper.selected_cell:get_note_name())
-end
-
-function popup:done_structure()
-  print("done note")
+  if self.current_attribute == "seed" then 
+    fn.seed_cells()
+    if params:get("seed") == 0 then
+      self:title_message(self.messages.seed.abort)
+    else
+      self:title_message(self.messages.seed.done .. " " .. params:get("seed"))
+    end
+  end
+  if self.current_attribute == "note" then
+    self:title_message(self.messages.note.done .. " " .. keeper.selected_cell:get_note_name())
+  end
+  if self.current_attribute == "structure" then
+    print("done note")
+  end
 end
 
 return popup

@@ -1,6 +1,7 @@
 local graphics = {}
 
 function graphics.init()
+  graphics.temporary_message_on = false
   graphics.temporary_message = ""
   graphics.tab_width = 5
   graphics.tab_height = 5
@@ -17,29 +18,39 @@ function graphics:get_tab_x(i)
   return (((self.tab_width + self.tab_padding) * i) - self.tab_width)
 end
 
-function graphics:title_bar()
+function graphics:title_bar_and_tabs()
   self:rect(0, 0, 128, 7)
   for i = 1,#page.titles do
     self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height, 5)
   end
-  self:top_message(graphics:playback(counters.generation_fmod(4)))
+  self:select_tab(page.active_page)
+  self:top_message()
+  self:page_name()
 end
 
 function graphics:set_message(string, time)
+  self.temporary_message_on = true
   self.temporary_message = string
   counters.message = counters.ui.frame + time
 end
 
-function graphics:top_message(string)
+function graphics:top_message()
+  local message = ""
   if fn.is_deleting() then
     self.temporary_message = "DELETING..."
     counters.message = counters.ui.frame + 1
   end
   if counters.message > counters.ui.frame then
-    self:text((#page.titles + 1) * self.tab_width + 2, 6, self.temporary_message, 0)
+    message = self.temporary_message
   else
-    self:text((#page.titles + 1) * self.tab_width + 2, 6, string, 0)
+    self.temporary_message_on = false
+    if sound.playback == 0 then
+      message = self:ready_animation(counters.ui_quarter_frame_fmod(10))
+    else
+      message = self:playing_animation(counters.generation_fmod(4))
+    end
   end
+  self:text((#page.titles + 1) * self.tab_width + 2, 6, message, 0)
 end
 
 function graphics:top_message_cell_structure()
@@ -57,8 +68,10 @@ function graphics:select_tab(i)
   self:mlrs(self:get_tab_x(i) + 2, 3, 1, 6)
 end
 
-function graphics:page_name(string)
-  self:text_right(127, 6, string, 0)
+function graphics:page_name()
+  if not self.temporary_message_on then
+    self:text_right(127, 6, page.titles[page.active_page], 0)
+  end
 end
 
 function graphics:setup()
@@ -115,14 +128,6 @@ function graphics:bpm(x, y, string, level)
   screen.font_size(30)
   screen.text(string)
   self:reset_font()
-end
-
-function graphics:playback()
-  self:top_message(
-    (sound.playback == 0) and
-      self:ready_animation(counters.ui_quarter_frame_fmod(10)) or
-      self:playing_animation(counters.generation_fmod(4))
-  )
 end
 
 function graphics:playback_icon(x, y)
@@ -438,10 +443,10 @@ end
 
 function graphics:piano(k)
   local selected = (k % 12) + 1
-  local x = 56
-  local y = 35
-  local key_width = 8
-  local key_height = 27
+  local x = 29
+  local y = 12
+  local key_width = 10
+  local key_height = 30
 
   --[[ have to draw the white keys first becuase the black are then drawn on top
   so this is a super contrived way of drawing a piano with two loops...
@@ -477,9 +482,9 @@ function graphics:piano(k)
   for i = 1,12 do
     if keys[i]["color"] == 0 then
       local adjust = keys[i]["index"] > 2 and 1 or 0 -- e# doesn't exist! yeah yeah...
-      self:rect(x + ((keys[i]["index"] - 1 + adjust) * key_width) + 6, y, 6, key_height - 10, 0)
+      self:rect(x + ((keys[i]["index"] - 1 + adjust) * key_width) + 8, y, 6, key_height - 10, 0)
       if keys[i]["selected"] then
-        self:rect(x + ((keys[i]["index"] - 1 + adjust) * key_width) + 8, y + 2, 2, key_height - 14, 5)
+        self:rect(x + ((keys[i]["index"] - 1 + adjust) * key_width) + 10, y + 2, 2, key_height - 14, 5)
       end
     end
   end
@@ -487,18 +492,18 @@ function graphics:piano(k)
 
   -- note readout
   screen.font_size(30)
-  self:text(55, 32, keeper.selected_cell:get_note_name(), 0, 10)
+  self:text_center(64, 64, keeper.selected_cell:get_note_name(), 15, 10)
   self:reset_font()
 end
 
 function graphics:seed()
   local seed = params:get("seed")
   if seed == 0 then
-    screen.font_size(24)
-    self:text(55, 32, "ABORT", 0)
+    screen.font_size(42)
+    self:text_center(64, 50, "ABORT", 15)
   else
-    screen.font_size(30)
-    self:text(55, 32, params:get("seed"), 0)
+    screen.font_size(42)
+    self:text_center(64, 50, params:get("seed"), 15)
   end
   self:reset_font()
 end

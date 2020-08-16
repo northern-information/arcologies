@@ -140,11 +140,8 @@ function fn.temp_note()
 end
 
 function fn.seed_cells()
-  if params:get("seed") == 0 then
-    graphics:set_message(popup.messages.seed.abort, counters.default_message_length)
-  else
+  if params:get("seed") ~= 0 then
     keeper:delete_all_cells()
-    graphics:set_message(popup.messages.seed.done .. " " .. params:get("seed"), counters.default_message_length)
     for i = 1, params:get("seed") do
       fn.random_cell()
     end
