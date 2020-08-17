@@ -33,6 +33,7 @@ end
 
 function g.key(x, y, z)
   if z == 0 then return end
+  fn.break_splash(true)
   if not keeper.is_cell_selected then
     keeper:select_cell(x, y)
     graphics:top_message_cell_structure()

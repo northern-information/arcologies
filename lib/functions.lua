@@ -119,7 +119,13 @@ function fn.dirty_screen(bool)
   return screen_dirty
 end
 
--- hyper specific features that combine many entities
+function fn.break_splash(bool)
+  if bool == nil then return splash_break end
+  splash_break = bool
+  return splash_break
+end
+
+-- the lost souls
 
 function fn.temp_note()
  -- increment with either the note if is already in this scale or snap
@@ -151,5 +157,7 @@ function fn.random_cell()
   keeper.selected_cell:set_offset(math.random(1, sound.meter or 16))
   keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)))
 end
+
+
 
 return fn

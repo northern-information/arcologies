@@ -12,14 +12,19 @@
 include("arcologies/lib/includes")
 
 function init()
-  fn.init()         counters.init()    
-  g.init()          glyphs.init()
-  graphics.init()   keeper.init()
-  menu.init()       page.init()     
-  parameters.init() popup.init() 
+  parameters.init() 
+  fn.init()         
+  counters.init()    
+  g.init()          
+  glyphs.init()
+  graphics.init()   
+  keeper.init()
+  menu.init()       
+  page.init()     
+  popup.init() 
   sound.init()
   audio:pitch_off()
-  grid_dirty, screen_dirty = false, false
+  grid_dirty, screen_dirty, splash_break = false, false, false
   k1, k2, k3 = 0, 0, 0
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
   for i = 1, 3 do counters:reset_enc(i) end
@@ -28,9 +33,9 @@ function init()
   counters.grid:start()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
-  page:select(1)
+  page:select(parameters.is_splash_screen_on and 0 or 1)
   fn.seed_cells()
-  dev:scene(1)
+  -- dev:scene(1)
   redraw()
 end
 
@@ -41,6 +46,7 @@ function redraw()
 end
 
 function enc(e, d)
+  fn.break_splash(true)
   -- e1 only ever scrolls between pages
   if e == 1 then
     page:scroll(d)  
@@ -63,6 +69,7 @@ function key(k, z)
     -- detect long press
     key_counter[k] = clock.run(fn.long_press, k)
   elseif z == 0 then
+    fn.break_splash(true)
     -- detect short press
     if key_counter[k] then 
       -- cancel long press counter

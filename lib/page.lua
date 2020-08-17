@@ -2,7 +2,7 @@ local page = {}
 
 function page.init()
   page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS", "DEV" }
-  page.active_page = 1
+  page.active_page = 0
 end
 
 function page:scroll(d)
@@ -28,14 +28,17 @@ function page:render()
   elseif self.active_page == 3 then
     self:analysis()
   elseif self.active_page == 4 then
+    graphics:title_bar_and_tabs()
     glyphs:test()
+  elseif self.active_page == 0 then
+    graphics:splash()
   end
-  graphics:title_bar_and_tabs()
   fn.dirty_screen(true)
   graphics:teardown()
 end
 
 function page:home()
+  graphics:title_bar_and_tabs()
   menu:set_items({ fn.playback(), "SEED", "BPM", "METER", "ROOT", "SCALE" })
   menu:select_item()
   if popup:is_active() then
@@ -52,6 +55,7 @@ function page:home()
 end
 
 function page:cell_designer()
+  graphics:title_bar_and_tabs()
   if popup:is_active() then
     popup:render()
   else
@@ -69,6 +73,7 @@ function page:cell_designer()
 end
 
 function page:analysis()
+  graphics:title_bar_and_tabs()
   menu:set_items({ "HIVES", "SHRINES", "GATES", "SIGNALS", "NONE" })
   graphics:analysis(menu.selected_item)
 end

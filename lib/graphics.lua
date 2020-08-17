@@ -1,6 +1,7 @@
 local graphics = {}
 
 function graphics.init()
+  graphics.ni_frame = 0
   graphics.temporary_message_on = false
   graphics.temporary_message = ""
   graphics.tab_width = 5
@@ -433,5 +434,60 @@ function graphics:playing_animation(i)
   }
   return f[i]
 end
+
+function graphics:splash()
+  local col_x = -55
+  local row_x = 123
+  local y = 45
+  local l = counters.ui.frame >= 89 and 0 or 15  
+  col_x = col_x + self.ni_frame
+  row_x = row_x - self.ni_frame
+  if counters.ui.frame >= 89 then
+    self:rect(0, 0, 128, 50, 15)
+  end
+  self:n_col(col_x, y, l)
+  self:n_col(col_x+20, y, l)
+  self:n_col(col_x+40, y, l)
+  self:n_row_top(row_x, y, l)
+  self:n_row_top(row_x+20, y, l)
+  self:n_row_top(row_x+40, y, l)
+  self:n_row_bottom(row_x+9, y+37, l)
+  self:n_row_bottom(row_x+29, y+37, l)
+  if counters.ui.frame >= 89 then
+    self:text_center(64, 60, "NORTHERN INFORMATION")
+  end
+  if counters.ui.frame < 90 then
+    self.ni_frame = self.ni_frame + 1  
+    fn.dirty_screen(true)
+  end
+  if counters.ui.frame == 160 or fn.break_splash() then
+    fn.break_splash(true)
+    page:select(1)
+  end
+end
+
+function graphics:n_col(x, y, l)
+  self:mls(x, y, x+12, y-40, l)
+  self:mls(x+1, y, x+13, y-40, l)
+  self:mls(x+2, y, x+14, y-40, l)
+  self:mls(x+3, y, x+15, y-40, l)
+  self:mls(x+4, y, x+16, y-40, l)
+  self:mls(x+5, y, x+17, y-40, l)
+end
+
+function graphics:n_row_top(x, y, l)
+  self:mls(x+20, y-39, x+28, y-39, l)
+  self:mls(x+20, y-38, x+28, y-38, l)
+  self:mls(x+19, y-37, x+27, y-37, l)
+  self:mls(x+19, y-36, x+27, y-36, l)
+end
+
+function graphics:n_row_bottom(x, y, l)
+  self:mls(x+21, y-40, x+29, y-40, l)
+  self:mls(x+20, y-39, x+28, y-39, l)
+  self:mls(x+20, y-38, x+28, y-38, l)  
+  self:mls(x+19, y-37, x+27, y-37, l)
+end
+
 
 return graphics
