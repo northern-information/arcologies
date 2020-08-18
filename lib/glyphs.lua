@@ -1,7 +1,7 @@
 glyphs = {}
 
 function glyphs.init()
-  glyphs.available = Cell:new().available_structures
+  glyphs.available = Cell:new().structures
 end
 
 -- full-size glyphs (22 x 26)

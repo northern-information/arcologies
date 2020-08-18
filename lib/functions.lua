@@ -56,6 +56,7 @@ function fn.table_find(t, element)
       return i
     end
   end
+  return false
 end
 
 function fn.in_bounds(x, y)
@@ -147,7 +148,7 @@ end
 
 function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
-  keeper.selected_cell:set_structure(math.random(1, 2))
+  keeper.selected_cell:set_structure(math.random(1, 4))
   local ports = { "n", "e", "s", "w" }
   for i = 1, #ports do
     if fn.coin() == 1 then

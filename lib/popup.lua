@@ -108,7 +108,7 @@ function popup:change()
   end
   if self.current_attribute == "structure" then
     keeper.selected_cell:cycle_structure(self.current_value)
-    self:title_message(keeper.selected_cell.available_structures[keeper.selected_cell.structure])
+    self:title_message(keeper.selected_cell.structure_value)
   end
   if self.current_attribute == "note" then
     keeper.selected_cell:set_note(fn.temp_note() + self.current_value)
@@ -124,7 +124,7 @@ function popup:render()
     graphics:piano(keeper.selected_cell.note)
   end
   if self.current_attribute == "structure" then
-    graphics:structure_palette(keeper.selected_cell.structure)
+    graphics:structure_palette(keeper.selected_cell.structure_key)
   end
   if self.current_attribute == "delete_all" then
     graphics:deleting_all(self.key_timer)
@@ -145,7 +145,7 @@ function popup:done()
     self:title_message(self.messages.note.done .. " " .. keeper.selected_cell:get_note_name())
   end
   if self.current_attribute == "structure" then
-    self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.available_structures[keeper.selected_cell.structure])
+    self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.structure_value)
     menu:select_item(1)
   end
   if self.current_attribute == "delete_all" then

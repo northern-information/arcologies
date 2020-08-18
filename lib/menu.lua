@@ -56,6 +56,8 @@ function menu:scroll_value(d)
       popup:launch("note", d, "enc", 3)
     elseif s == "VELOCITY" then
       keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
+    elseif s == "METABOLISM" then
+      keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
     elseif s == "DOCS" then
       print("DOCS...")
     end

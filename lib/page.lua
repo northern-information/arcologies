@@ -38,44 +38,44 @@ function page:render()
 end
 
 function page:home()
-  graphics:title_bar_and_tabs()
-  menu:set_items({ fn.playback(), "SEED", "BPM", "METER", "ROOT", "SCALE" })
+  menu:set_items({ fn.playback(), "SEED", "BPM", "METER", "ROOT", "SCALE", "DOCS" })
   menu:select_item()
   if popup:is_active() then
     popup:render()
   else
-    menu:render()
     graphics:panel()
+    menu:render()
     graphics:bpm(55, 32, params:get("bpm"), 0)
     graphics:playback_icon(56, 35)
     graphics:icon(76, 35, sound.meter, menu.selected_item == 4 and 1 or 0)
     graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
     graphics:rect(126, 55, 2, 7, 15)
   end
+  graphics:title_bar_and_tabs()
 end
 
 function page:cell_designer()
-  graphics:title_bar_and_tabs()
   if popup:is_active() then
     popup:render()
   else
     if not keeper.is_cell_selected then
       graphics:select_a_cell()
-      return
+    else
+      graphics:panel()
+      menu:set_items(keeper.selected_cell:menu_items())
+      menu:select_item()
+      menu:render()
+      graphics:draw_ports()
+      graphics:structure_and_title(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
     end
-    menu:set_items(keeper.selected_cell:menu_items())
-    menu:select_item()
-    graphics:panel()
-    menu:render()
-    graphics:draw_ports()
-    graphics:structure_and_title(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
   end
+  graphics:title_bar_and_tabs()
 end
 
 function page:analysis()
-  graphics:title_bar_and_tabs()
   menu:set_items({ "HIVES", "SHRINES", "GATES", "SIGNALS", "NONE" })
   graphics:analysis(menu.selected_item)
+  graphics:title_bar_and_tabs()
 end
 
 function page:error(code)

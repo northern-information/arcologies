@@ -52,7 +52,7 @@ end
 
 function graphics:top_message_cell_structure()
   if page.active_page ~= 2 then
-    self:set_message(keeper.selected_cell.available_structures[keeper.selected_cell.structure], counters.default_message_length)
+    self:set_message(keeper.selected_cell.structures_value, counters.default_message_length)
   end
 end
 
@@ -267,7 +267,7 @@ function graphics:analysis(selected_item)
   local menu_highlight = 0
   for i = 1, 4 do
     menu_highlight = (i == selected_item) and 15 or 5
-    menu_item = i ~= 4 and Cell:new(0, 0, 0).available_structures[i] .. "S" or "SIGNALS"
+    menu_item = i ~= 4 and Cell:new().structures[i] .. "S" or "SIGNALS"
     menu_item_width = screen.text_extents(menu_item)
     menu_item_x = menu_item_start + ((i - 1) * menu_item_spacing)
     graphics:text(menu_item_x, menu_item_y, menu_item, menu_highlight)
@@ -279,7 +279,7 @@ function graphics:analysis(selected_item)
     self.analysis_pixels[i] = 0
     if selected_item ~= 4 then
       for k,v in pairs(keeper.cells) do
-        if v.structure == selected_item and v.index == i then
+        if v.structure_key == selected_item and v.index == i then
           self.analysis_pixels[i] = 15
         end
       end

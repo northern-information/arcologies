@@ -13,24 +13,22 @@ end
 
 -- spawning, propagation, and collision
 
+function keeper:setup()
+  for k,v in pairs(self.cells) do v:setup() end
+end
+
 function keeper:spawn_signals()
-  for k,v in pairs(self.cells) do
-    if v.structure == 1 and v.offset == counters.music_generation() % sound.meter and #v.ports > 0 then
-      for kk,vv in pairs(v.ports) do
-        if vv == "n" then
-          self:create_signal(v.x, v.y - 1, "n")
-        elseif vv == "e" then
-          self:create_signal(v.x + 1, v.y, "e")
-        elseif vv == "s" then
-          self:create_signal(v.x, v.y + 1, "s")
-        elseif vv == "w" then
-          self:create_signal(v.x - 1, v.y, "w")
-        end
-        fn.dirty_grid(true)
-        fn.dirty_screen(true)
-      end
+  -- refactored for more cell structures
+  for k,cell in pairs(self.cells) do
+    if cell:is_spawning() and #cell.ports > 0 then
+      if cell:is_port_open("n") then self:create_signal(cell.x, cell.y - 1, "n") end
+      if cell:is_port_open("e") then self:create_signal(cell.x + 1, cell.y, "e") end
+      if cell:is_port_open("s") then self:create_signal(cell.x, cell.y + 1, "s") end
+      if cell:is_port_open("w") then self:create_signal(cell.x - 1, cell.y, "w") end
     end
   end
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 function keeper:propagate_signals()
@@ -66,43 +64,57 @@ end
 
 function keeper:collision(signal, cell)
 
+  -- all collisions result in signal deaths
+  self:register_delete_signal(signal.id)    
+  g:register_signal_death_at(cell.x, cell.y)
+
   -- smash into closed port
   if not self:are_signal_and_port_compatible(signal, cell) then
-    self:register_delete_signal(signal.id)    
-    g:register_signal_death_at(cell.x, cell.y)
+    -- empty
   
-  -- hives don't allow any signals in
-  elseif cell.structure == 1 then
-    self:register_delete_signal(signal.id)
-    g:register_signal_death_at(cell.x, cell.y)
+  -- hives don't allow signals in
+  elseif cell:is("HIVE") then
+    -- empty
 
   -- shrines play single midi notes
-  elseif cell.structure == 2 then
+  elseif cell:is("SHRINE") then
     sound:play(cell.note, cell.velocity)
-    self:register_delete_signal(signal.id)
-    g:register_collision_at(cell.x, cell.y)
+  
+  -- gates redirect signls
+  elseif cell:is("GATE") then
+    -- empty
+
+  -- raves don't allow signals in
+  elseif cell:is("RAVE") then
+    -- empty
+
   end
   
   --[[ gates and shrines reroute & split
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
-  if cell.structure == 2 or cell.structure == 3 then
+  if cell:is("SHRINE") or cell:is("GATE") then
+    local g = counters.music_generation() + 1
     for k, port in pairs(cell.ports) do
-      if port == "n" and signal.heading ~= "s" then self:create_signal(cell.x, cell.y - 1, "n", counters.music_generation() + 1) end
-      if port == "e" and signal.heading ~= "w" then self:create_signal(cell.x + 1, cell.y, "e", counters.music_generation() + 1) end
-      if port == "s" and signal.heading ~= "n" then self:create_signal(cell.x, cell.y + 1, "s", counters.music_generation() + 1) end
-      if port == "w" and signal.heading ~= "e" then self:create_signal(cell.x - 1, cell.y, "w", counters.music_generation() + 1) end
-      g:register_collision_at(cell.x, cell.y)
+          if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", g)
+      elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", g)
+      elseif (port == "s" and signal.heading ~= "n") then self:create_signal(cell.x, cell.y + 1, "s", g)
+      elseif (port == "w" and signal.heading ~= "e") then self:create_signal(cell.x - 1, cell.y, "w", g)
+      end
     end
   end
 end
 
 function keeper:are_signal_and_port_compatible(signal, cell)
-  if (signal.heading == "n" and cell:is_port_open("s")) then return true end
-  if (signal.heading == "e" and cell:is_port_open("w")) then return true end
-  if (signal.heading == "s" and cell:is_port_open("n")) then return true end
-  if (signal.heading == "w" and cell:is_port_open("e")) then return true end
-  return false
+  if (signal.heading == "n" and cell:is_port_open("s"))  
+  or (signal.heading == "e" and cell:is_port_open("w"))  
+  or (signal.heading == "s" and cell:is_port_open("n"))  
+  or (signal.heading == "w" and cell:is_port_open("e"))
+  then
+    return true
+  else
+    return false
+  end
 end
 
 -- signals
@@ -195,7 +207,7 @@ end
 function keeper:count_cells(s)
   local count = 0
   for k,v in pairs(self.cells) do
-    if v.structure == s then
+    if v.structure_key == s then
       count = count + 1
     end
   end
