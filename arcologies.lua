@@ -34,8 +34,9 @@ function init()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
-  -- fn.seed_cells()
-  dev:scene(1)
+  fn.seed_cells()
+  sound:toggle_playback()
+  -- dev:scene(1)
   redraw()
 end
 
@@ -89,9 +90,5 @@ function key(k, z)
 end
 
 function cleanup()
-  g.all(0)
-  -- crow.clear()
-  -- crow.reset()
-  -- crow.ii.jf.mode(0)
-  poll:clear_all()
+  fn.cleanup()
 end

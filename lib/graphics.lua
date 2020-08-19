@@ -8,12 +8,33 @@ function graphics.init()
   graphics.tab_height = 5
   graphics.tab_padding = 1
   graphics.structure_x = 98
-  graphics.structure_y = 21
+  graphics.structure_y = 20
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
   graphics.cell_attributes = Cell:new(0, 0, 0).attributes
 end
+
+function graphics:time(x, y)
+  local o = 3
+  local m = sound.meter
+  local b = counters.this_beat()
+  -- print(b .. "/" .. m)
+  for i = 1,m do
+    self:ps((i * o) + x, y, (b == i) and 5 or 0)
+  end
+  if keeper.is_cell_selected then
+    local x2 = x
+    local y2 = y + 3
+    local meta = keeper.selected_cell.metabolism
+    local off =  keeper.selected_cell.offset
+    -- print(fn.cycle(b % meta, 1, meta))
+    for i = 1,meta do
+      self:ps(((i + off)* o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
+    end
+  end
+end
+
 
 function graphics:get_tab_x(i)
   return (((self.tab_width + self.tab_padding) * i) - self.tab_width)
@@ -44,7 +65,8 @@ function graphics:top_message()
     if sound.playback == 0 then
       message = self:ready_animation(counters.ui_quarter_frame_fmod(10))
     else
-      message = self:playing_animation(counters.generation_fmod(4))
+      self:time(#page.titles * (self.tab_padding + self.tab_width), 2)
+      -- message = counters.this_beat() .. " " .. self:playing_animation(counters.generation_fmod(4))
     end
   end
   self:text((#page.titles + 1) * self.tab_width + 2, 6, message, 0)
@@ -52,7 +74,7 @@ end
 
 function graphics:top_message_cell_structure()
   if page.active_page ~= 2 then
-    self:set_message(keeper.selected_cell.structures_value, counters.default_message_length)
+    self:set_message(keeper.selected_cell.structure_value, counters.default_message_length)
   end
 end
 
@@ -66,7 +88,11 @@ function graphics:select_tab(i)
 end
 
 function graphics:page_name()
-  if not self.temporary_message_on then
+  if self.temporary_message_on then
+    -- empty
+  elseif page.active_page == 2 and keeper.is_cell_selected then
+    self:text_right(127, 6, keeper.selected_cell.structure_value, 0)
+  else
     self:text_right(127, 6, page.titles[page.active_page], 0)
   end
 end
@@ -110,6 +136,12 @@ function graphics:circle(x, y, r, level)
   screen.level(level or 15)
   screen.circle(x, y, r)
   screen.fill()
+end
+
+function graphics:ps(x, y, level)
+  screen.level(level or 15)
+  screen.pixel(x, y)
+  screen.stroke(s)
 end
 
 function graphics:text(x, y, string, level)
@@ -174,7 +206,6 @@ function graphics:icon(x, y, string, invert)
 end
 
 function graphics:structure_and_title(string)
-    self:text_center(self.structure_x + 10, self.structure_y + 40, string, 0)
     if string == "HIVE" then
       glyphs:hive(self.structure_x, self.structure_y, 0)
     elseif string == "SHRINE" then

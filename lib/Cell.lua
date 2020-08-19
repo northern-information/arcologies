@@ -11,14 +11,13 @@ function Cell:new(x, y, g)
   c.cardinals = { "n", "e", "s", "w" }
   c.structures = { "HIVE", "SHRINE", "GATE", "RAVE" }
   c.attributes = { "STRUCTURE", "OFFSET", "NOTE", "VELOCITY", "METABOLISM", "DOCS" }
-  c.metabolism_names = {"1 bar", "1/2", "1/3", "1/4", "1/6", "1/8", "1/12", "1/16", "1/24", "1/32", "1/48", "1/64"}
-  c.metabolism_dividers = {1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64}
+  c.metabolisms = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
   c.index = fn.index(c.x, c.y)
   c.structure_attribute_map = {
     ["HIVE"] = {"OFFSET", "METABOLISM"},
     ["SHRINE"] = {"NOTE", "VELOCITY"},
     ["GATE"] = {},
-    ["RAVE"] = {"METABOLISM"}
+    ["RAVE"] = {"OFFSET", "METABOLISM"}
   }
   for k,v in pairs(c.structure_attribute_map) do
     c.structure_attribute_map[k][#c.structure_attribute_map[k] + 1] = "STRUCTURE"
@@ -46,7 +45,7 @@ function Cell:get_menu_value_by_attribute(attribute)
   elseif attribute == "OFFSET"     then return self.offset
   elseif attribute == "NOTE"       then return self:get_note_name()
   elseif attribute == "VELOCITY"   then return self.velocity
-  elseif attribute == "METABOLISM" then return self:get_metabolism_name()
+  elseif attribute == "METABOLISM" then return self.metabolism
   end
 end
 
@@ -84,15 +83,7 @@ function Cell:set_velocity(i)
 end
 
 function Cell:set_metabolism(i)
-  self.metabolism = util.clamp(i, 1, 12)
-end
-
-function Cell:get_metabolism_name()
-  return self.metabolism_names[self.metabolism]
-end
-
-function Cell:get_metabolism_divider()
-  return self.metabolism_dividers[self.metabolism]
+  self.metabolism = util.clamp(i, 0, 16)
 end
 
 function Cell:toggle_port(x, y)
@@ -132,12 +123,42 @@ function Cell:close_port(p)
   table.remove(self.ports, fn.table_find(self.ports, p))
 end
 
+function Cell:is_it_time()
+  -- metabolism of 0 is mute
+  if self.metabolism == 0 then
+    return false
+  end
+
+
+  if fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 1, self.metabolism) == 1 then
+    return true
+  end
+
+
+
+  -- shift offset up one because a zero offset means we're on the down beat
+  -- elseif (self.offset + 1 == counters.this_beat()) % self.metabolism == 0 then 
+  -- elseif (counters.this_beat() / self.metabolism == 4) then
+  --   return true
+    -- print("metabolism:")
+    -- print(self.metabolism)
+    -- print("this_beat:")
+    -- print(counters.this_beat())
+    -- -- hrmmm
+    -- return counters.this_beat() 
+  return false
+end
+
 -- divergent cell structures
 
 function Cell:is_spawning()
-  if  self:is("HIVE") and self.offset == counters.music_generation() % sound.meter then
+  -- print(self.offset + 1 == counters.this_beat())
+  -- print(self:is_it_time())
+  -- print("=========")
+  -- print(self:it_is_time())
+  if self:is("HIVE") and self:is_it_time() then
     return true
-  elseif self:is("RAVE") and self.offset == counters.music_generation() % sound.meter then
+  elseif self:is("RAVE") and self:is_it_time() then
     return true
   end
   return false
@@ -147,6 +168,8 @@ function Cell:setup()
   if self:is("RAVE") then self:drugs() end
 end
 
+-- turn on, tune in, drop out...
+-- close all the ports, then flip coins to open them
 function Cell:drugs()
   self.ports = {}
   for i = 1,4 do

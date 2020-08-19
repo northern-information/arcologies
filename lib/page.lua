@@ -1,7 +1,7 @@
 local page = {}
 
 function page.init()
-  page.titles = { "ARCOLOGIES", "CELL DESIGNER" , "ANALYSIS", "DEV" }
+  page.titles = { "ARCOLOGIES", "DESIGNER" , "ANALYSIS" }
   page.active_page = 0
 end
 
@@ -29,7 +29,8 @@ function page:render()
     self:analysis()
   elseif self.active_page == 4 then
     graphics:title_bar_and_tabs()
-    glyphs:test()
+    -- glyphs:test()
+    graphics:time(27, 32)
   elseif self.active_page == 0 then
     graphics:splash()
   end

@@ -1,9 +1,17 @@
 local fn = {}
 
--- frequently used state checks, utilities, and formatters
+-- state checks, utilities, and formatters
 
-function fn.playback()
-  return sound.playback == 0 and "READY" or "PLAYING"
+function fn.init()
+  fn.id_prefix = "arc-"
+  fn.id_counter = 1000
+end
+
+function fn.id()
+  -- a servicable attempt creating unique ids
+  -- i (tried a md5 library but it tanked performance)
+  fn.id_counter = fn.id_counter + 1
+  return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
 end
 
 function fn.grid_width()
@@ -18,11 +26,6 @@ function fn.index(x, y)
   return x + ((y - 1) * fn.grid_width())
 end
 
-function fn.id()
-  fn.id_counter = fn.id_counter + 1
-  return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
-end
-
 function fn.xy(cell)
   return "X" .. cell.x .. "Y" .. cell.y
 end
@@ -33,6 +36,10 @@ end
 
 function fn.ry()
   return math.random(1, fn.grid_height())
+end
+
+function fn.playback()
+  return sound.playback == 0 and "READY" or "PLAYING"
 end
 
 function fn.coin()
@@ -71,11 +78,6 @@ function fn.in_bounds(x, y)
   else
     return true -- ok
   end
-end
-
-function fn.init()
-  fn.id_prefix = "arc-"
-  fn.id_counter = 1000
 end
 
 function fn.no_grid()
@@ -128,6 +130,14 @@ end
 
 -- the lost souls
 
+function fn.cleanup()
+  g.all(0)
+  -- crow.clear()
+  -- crow.reset()
+  -- crow.ii.jf.mode(0)
+  poll:clear_all()
+end
+
 function fn.temp_note()
  -- increment with either the note if is already in this scale or snap
   return
@@ -147,6 +157,7 @@ function fn.seed_cells()
 end
 
 function fn.random_cell()
+  params:set("bpm", math.random(120, 240))
   keeper:select_cell(fn.rx(), fn.ry())
   keeper.selected_cell:set_structure(math.random(1, 4))
   local ports = { "n", "e", "s", "w" }
@@ -156,9 +167,8 @@ function fn.random_cell()
     end
   end
   keeper.selected_cell:set_offset(math.random(1, sound.meter or 16))
+  keeper.selected_cell:set_metabolism(math.random(1, sound.meter or 16))
   keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)))
 end
-
-
 
 return fn

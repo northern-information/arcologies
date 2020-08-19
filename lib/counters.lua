@@ -81,6 +81,10 @@ function counters.music_generation()
   return counters.music.generation
 end
 
+function counters.this_beat()
+  return (counters.music_generation() % sound.meter) + 1
+end
+
 function counters.ui_quarter_frame_fmod(i)
   return math.fmod(counters.ui.quarter_frame, i) + 1
 end
