@@ -8,11 +8,17 @@ function Cell:new(x, y, g)
   c.y = y ~= nil and y or 0
   c.generation = g ~= nil and g or 0
   c.id = fn.id()
+  c.index = fn.index(c.x, c.y)
   c.cardinals = { "n", "e", "s", "w" }
+  c.available_ports = {
+    { c.x, c.y - 1, "n" },
+    { c.x + 1, c.y, "e" },
+    { c.x, c.y + 1, "s" },
+    { c.x - 1, c.y, "w" }
+  }
+  c.metabolisms = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
   c.structures = { "HIVE", "SHRINE", "GATE", "RAVE" }
   c.attributes = { "STRUCTURE", "OFFSET", "NOTE", "VELOCITY", "METABOLISM", "DOCS" }
-  c.metabolisms = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
-  c.index = fn.index(c.x, c.y)
   c.structure_attribute_map = {
     ["HIVE"] = {"OFFSET", "METABOLISM"},
     ["SHRINE"] = {"NOTE", "VELOCITY"},
@@ -62,12 +68,13 @@ function Cell:is(s)
   return self.structure_value == s and true or false
 end
 
-function Cell:set_offset(i)
-  self.offset = i
+function Cell:has(s)
+  return fn.table_find(self.structure_attribute_map[self.structure_value], s)
 end
 
-function Cell:cycle_offset(i)
-  self:set_offset(fn.cycle(self.offset + i, 0, 15))
+
+function Cell:set_offset(i)
+  self.offset = i
 end
 
 function Cell:set_note(i)
@@ -88,8 +95,8 @@ end
 
 function Cell:toggle_port(x, y)
   local port = self:find_port(x, y)
-  -- port[3] is where the direction string is stored
-  if self:is_port_open(port[3]) then -- also is this sloppy?
+  if not port then return end
+  if self:is_port_open(port[3]) then
     self:close_port(port[3])
   else
     self:open_port(port[3])
@@ -97,13 +104,8 @@ function Cell:toggle_port(x, y)
 end
 
 function Cell:find_port(x, y)
-  local available_ports = {
-    { self.x, self.y - 1, "n" },
-    { self.x + 1, self.y, "e" },
-    { self.x, self.y + 1, "s" },
-    { self.x - 1, self.y, "w" }
-  }
-  for k,v in pairs(available_ports) do
+  if not fn.in_bounds(x, y) then return false end
+  for k,v in pairs(self.available_ports) do
     if v[1] == x and v[2] == y then
       return v
     end
@@ -121,6 +123,12 @@ end
 
 function Cell:close_port(p)
   table.remove(self.ports, fn.table_find(self.ports, p))
+end
+
+function Cell:invert_ports()
+  for k,v in pairs(self.available_ports) do
+    self:toggle_port(v[1], v[2])
+  end
 end
 
 function Cell:is_it_time()

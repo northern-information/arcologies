@@ -38,8 +38,8 @@ function menu:scroll_value(d)
       popup:launch("seed", d, "enc", 3)
     elseif s == "BPM" then
       params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-    elseif s == "METER" then
-      sound:cycle_meter(d)
+    elseif s == "LENGTH" then
+      sound:cycle_length(d)
     elseif s == "ROOT" then
       sound:cycle_root(d)
     elseif s == "SCALE" then
@@ -51,7 +51,7 @@ function menu:scroll_value(d)
     if s == "STRUCTURE" then
       popup:launch("structure", d, "enc", 3)
     elseif s == "OFFSET" then
-      keeper.selected_cell:cycle_offset(d)
+      keeper.selected_cell:set_offset(util.clamp(keeper.selected_cell.offset + d, 0, 15))
     elseif s == "NOTE" then
       popup:launch("note", d, "enc", 3)
     elseif s == "VELOCITY" then

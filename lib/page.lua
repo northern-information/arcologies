@@ -3,6 +3,8 @@ local page = {}
 function page.init()
   page.titles = { "ARCOLOGIES", "DESIGNER" , "ANALYSIS" }
   page.active_page = 0
+  page.error = false
+  page.error_code = 0
 end
 
 function page:scroll(d)
@@ -20,8 +22,9 @@ end
 
 function page:render()
   graphics:setup()
-  if fn.no_grid() then page:error(1) return end
-  if self.active_page == 1 then
+  if page.error then
+    self:error_message()
+  elseif self.active_page == 1 then
     self:home()
   elseif self.active_page == 2 then
     self:cell_designer()
@@ -39,7 +42,7 @@ function page:render()
 end
 
 function page:home()
-  menu:set_items({ fn.playback(), "SEED", "BPM", "METER", "ROOT", "SCALE", "DOCS" })
+  menu:set_items({ fn.playback(), "SEED", "BPM", "LENGTH", "ROOT", "SCALE", "DOCS" })
   menu:select_item()
   if popup:is_active() then
     popup:render()
@@ -48,7 +51,7 @@ function page:home()
     menu:render()
     graphics:bpm(55, 32, params:get("bpm"), 0)
     graphics:playback_icon(56, 35)
-    graphics:icon(76, 35, sound.meter, menu.selected_item == 4 and 1 or 0)
+    graphics:icon(76, 35, sound.length, menu.selected_item == 4 and 1 or 0)
     graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
     graphics:rect(126, 55, 2, 7, 15)
   end
@@ -74,17 +77,31 @@ function page:cell_designer()
 end
 
 function page:analysis()
-  menu:set_items({ "HIVES", "SHRINES", "GATES", "SIGNALS", "NONE" })
-  graphics:analysis(menu.selected_item)
-  graphics:title_bar_and_tabs()
+  if popup:is_active() then
+    popup:render()
+  else
+    menu:set_items({ "HIVES", "SHRINES", "GATES", "SIGNALS", "NONE" })
+    graphics:analysis(menu.selected_item)
+    graphics:title_bar_and_tabs()
+  end
 end
 
-function page:error(code)
-  if code == 1 then
+function page:error_message()
+  if self.error_code == 1 then
     graphics:rect(1, 1, 128, 64, 15)
     graphics:text_center(64, 30, "PLEASE CONNECT A", 0)
     graphics:text_center(64, 42, "MONOME VARIBRIGHT GRID.", 0)
   end
+end
+
+function page:set_error(i)
+  self.error = true
+  self.error_code = i
+end
+
+function page:clear_error()
+  self.error = false
+  self.error_code = 0
 end
 
 return page

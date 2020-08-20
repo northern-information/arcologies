@@ -1,7 +1,7 @@
 local sound = {}
 
 function sound.init()
-  sound.meter = 16
+  sound.length = 16
   sound.playback = 0
   sound.default_root = 12
   sound.current_root = 12
@@ -32,8 +32,8 @@ function sound.init()
   end
 end
 
-function sound:cycle_meter(i)
-  self.meter = util.clamp(self.meter + i, 1, 16)
+function sound:cycle_length(i)
+  self.length = util.clamp(self.length + i, 1, 16)
 end
 
 function sound:set_playback(i)

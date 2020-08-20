@@ -9,23 +9,24 @@ end
 
 function dev:scene(i)
   
-  sound:toggle_playback()
+  -- sound:toggle_playback()
 
   keeper:select_cell(6, 4)
-  keeper.selected_cell:open_port("n")
+  -- keeper.selected_cell:open_port("n")
   keeper.selected_cell:open_port("e")
-  keeper.selected_cell:open_port("s")
-  keeper.selected_cell:open_port("w")
-  keeper.selected_cell:set_metabolism(16)
+  -- keeper.selected_cell:open_port("s")
+  -- keeper.selected_cell:open_port("w")
+  -- keeper.selected_cell:set_metabolism(16)
   -- keeper.selected_cell:set_structure(1)
   
-  keeper:select_cell(12, 6)
-  keeper.selected_cell:open_port("n")
-  keeper.selected_cell:open_port("e")
-  keeper.selected_cell:open_port("s")
+  keeper:select_cell(10, 4)
+  -- keeper.selected_cell:open_port("n")
+  -- keeper.selected_cell:open_port("e")
+  -- keeper.selected_cell:open_port("s")
   keeper.selected_cell:open_port("w")
-  keeper.selected_cell:set_offset(1)
-  keeper.selected_cell:set_metabolism(16)
+  -- keeper.selected_cell:set_offset(1)
+  -- keeper.selected_cell:set_metabolism(16)
+  keeper.selected_cell:set_structure(3)
 
   -- keeper:select_cell(10, 4)
   -- keeper.selected_cell:set_structure(3)
@@ -43,7 +44,7 @@ function dev:scene(i)
   params:set("bpm", 240)
   -- keeper:select_cell(6, 4)
 
-  keeper:deselect_cell()
+  -- keeper:deselect_cell()
   -- menu.selected_item = 3
 end
 

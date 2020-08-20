@@ -52,6 +52,7 @@ function counters.optician()
   if counters.ui.frame % 4 == 0 then
     counters.ui.quarter_frame = counters.ui.quarter_frame +1
   end
+  if fn.no_grid() then page:set_error(1) else page:clear_error() end
   fn.dirty_screen(true)
   redraw()
 end
@@ -82,7 +83,7 @@ function counters.music_generation()
 end
 
 function counters.this_beat()
-  return (counters.music_generation() % sound.meter) + 1
+  return (counters.music_generation() % sound.length) + 1
 end
 
 function counters.ui_quarter_frame_fmod(i)

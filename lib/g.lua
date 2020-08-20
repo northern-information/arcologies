@@ -20,8 +20,8 @@ end
 
 function g:grid_redraw()
   self:all(0)
-  self:led_cells()
   self:led_leylines()
+  self:led_cells()
   self:led_signals()
   self:led_signal_deaths()
   self:led_signal_and_cell_collision()
@@ -50,7 +50,6 @@ function g.key(x, y, z)
       keeper:deselect_cell()
     end
   end
-  page:select(2)
   fn.dirty_grid(true)
   fn.dirty_screen(true)
 end
@@ -135,7 +134,7 @@ function g:led_cell_ports()
   local x = keeper.selected_cell_x
   local y = keeper.selected_cell_y
   local high = util.clamp(counters.grid_frame() % 15, 10, 15)
-  local low = util.clamp(counters.grid_frame() % 15, 3, 5)
+  local low = 2
   if fn.in_bounds(x, y - 1) then
     self:led(x, y - 1, keeper.selected_cell:is_port_open("n") and high or low)
   end

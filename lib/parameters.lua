@@ -10,7 +10,7 @@ function parameters.init()
   }
 
   params:add{ type = "number", id = "seed", name = "SEED",
-    min = 0, max = math.floor(fn.grid_width() * fn.grid_height() / 4), default = 13
+    min = 0, max = 32, default = 13
   }
   params:hide("seed")
 

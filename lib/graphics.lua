@@ -17,13 +17,12 @@ end
 
 function graphics:time(x, y)
   local o = 3
-  local m = sound.meter
   local b = counters.this_beat()
   -- print(b .. "/" .. m)
-  for i = 1,m do
+  for i = 1,sound.length do
     self:ps((i * o) + x, y, (b == i) and 5 or 0)
   end
-  if keeper.is_cell_selected then
+  if keeper.is_cell_selected and keeper.selected_cell:has("OFFSET") then
     local x2 = x
     local y2 = y + 3
     local meta = keeper.selected_cell.metabolism
@@ -163,7 +162,7 @@ function graphics:playback_icon(x, y)
   if sound.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, counters.generation_fmod(sound.meter), (counters.generation_fmod(sound.meter) == 1) and 1 or 0)
+    self:icon(x, y, counters.generation_fmod(sound.length), (counters.generation_fmod(sound.length) == 1) and 1 or 0)
   end
 end
 

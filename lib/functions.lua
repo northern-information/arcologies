@@ -147,7 +147,7 @@ function fn.temp_note()
 end
 
 function fn.seed_cells()
-  if params:get("seed") ~= 0 then
+  if params:get("seed") ~= 0 and not fn.no_grid() then
     keeper:delete_all_cells()
     for i = 1, params:get("seed") do
       fn.random_cell()
@@ -166,8 +166,8 @@ function fn.random_cell()
       keeper.selected_cell:open_port(ports[i])
     end
   end
-  keeper.selected_cell:set_offset(math.random(1, sound.meter or 16))
-  keeper.selected_cell:set_metabolism(math.random(1, sound.meter or 16))
+  keeper.selected_cell:set_offset(math.random(1, 5))
+  keeper.selected_cell:set_metabolism(math.random(1, sound.length or 16))
   keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)))
 end
 

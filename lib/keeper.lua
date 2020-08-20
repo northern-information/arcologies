@@ -68,8 +68,12 @@ function keeper:collision(signal, cell)
   self:register_delete_signal(signal.id)    
   g:register_signal_death_at(cell.x, cell.y)
 
-  -- smash into closed port
-  if not self:are_signal_and_port_compatible(signal, cell) then
+  -- gates redirect signls
+  if cell:is("GATE") then
+    cell:invert_ports()
+
+  -- cells below this only interact with open ports
+  elseif not self:are_signal_and_port_compatible(signal, cell) then
     -- empty
   
   -- hives don't allow signals in
@@ -79,10 +83,6 @@ function keeper:collision(signal, cell)
   -- shrines play single midi notes
   elseif cell:is("SHRINE") then
     sound:play(cell.note, cell.velocity)
-  
-  -- gates redirect signls
-  elseif cell:is("GATE") then
-    -- empty
 
   -- raves don't allow signals in
   elseif cell:is("RAVE") then
@@ -120,6 +120,7 @@ end
 -- signals
 
 function keeper:create_signal(x, y, h, g)
+  if not fn.in_bounds(x, y) then return false end
   local signal = Signal:new(x, y, h, g)
   table.insert(self.signals, signal)
   return signal
