@@ -39,8 +39,7 @@ function g.key(x, y, z)
     graphics:top_message_cell_structure()
   else
     if keeper.selected_cell.index == fn.index(x, y) then
-      keeper.selected_cell:cycle_structure(1)
-      graphics:top_message_cell_structure()
+      keeper:deselect_cell()
     elseif keeper.selected_cell:find_port(x, y) then
       keeper.selected_cell:toggle_port(x, y)
     elseif keeper:get_cell(fn.index(x, y)) then
