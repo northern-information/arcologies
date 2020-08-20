@@ -146,7 +146,9 @@ function popup:done()
   end
   if self.current_attribute == "structure" then
     self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.structure_value)
-    menu:select_item(1)
+    menu:reset()
+    menu:set_items(keeper.selected_cell:menu_items())
+    menu:select_item_by_name("STRUCTURE")
   end
   if self.current_attribute == "delete_all" then
     keeper:delete_all_cells()

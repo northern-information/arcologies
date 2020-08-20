@@ -8,17 +8,19 @@ function keeper.init()
   keeper.selected_cell = {}
   keeper.cells = {}
   keeper.signals = {}
+  keeper.new_signals = {}
   keeper.signals_to_delete = {}
 end
 
 -- spawning, propagation, and collision
 
 function keeper:setup()
+  for k,v in pairs(keeper.new_signals) do table.insert(keeper.signals, v) end
+  keeper.new_signals = {}
   for k,v in pairs(self.cells) do v:setup() end
 end
 
 function keeper:spawn_signals()
-  -- refactored for more cell structures
   for k,cell in pairs(self.cells) do
     if cell:is_spawning() and #cell.ports > 0 then
       if cell:is_port_open("n") then self:create_signal(cell.x, cell.y - 1, "n") end
@@ -68,8 +70,8 @@ function keeper:collision(signal, cell)
   self:register_delete_signal(signal.id)    
   g:register_signal_death_at(cell.x, cell.y)
 
-  -- gates redirect signls
-  if cell:is("GATE") then
+  -- gates redirect signals
+  if cell:is("GATE") and not self:are_signal_and_port_compatible(signal, cell) then
     cell:invert_ports()
 
   -- cells below this only interact with open ports
@@ -122,7 +124,7 @@ end
 function keeper:create_signal(x, y, h, g)
   if not fn.in_bounds(x, y) then return false end
   local signal = Signal:new(x, y, h, g)
-  table.insert(self.signals, signal)
+  table.insert(self.new_signals, signal)
   return signal
 end
 

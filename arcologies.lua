@@ -27,16 +27,19 @@ function init()
   grid_dirty, screen_dirty, splash_break = false, false, false
   k1, k2, k3 = 0, 0, 0
   key_counter, enc_counter = {{},{},{}}, {{},{},{}}
-  for i = 1, 3 do counters:reset_enc(i) end
+  for i = 1, 3 do
+    norns.encoders.set_sens(i, 16)
+    counters:reset_enc(i)
+  end
   counters.ui:start()
   counters.music:start()
   counters.grid:start()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
-  fn.seed_cells()
+  -- fn.seed_cells()
   sound:toggle_playback()
-  -- dev:scene(1)
+  dev:scene(1)
   redraw()
 end
 

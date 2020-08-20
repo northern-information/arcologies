@@ -13,9 +13,6 @@ end
 
 function page:select(i)
   self.active_page = i
-  if page.active_page ~= 2 then
-    keeper:deselect_cell()
-  end
   menu:reset()
   fn.dirty_screen(true)
 end

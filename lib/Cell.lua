@@ -131,45 +131,19 @@ function Cell:invert_ports()
   end
 end
 
-function Cell:is_it_time()
-  -- metabolism of 0 is mute
-  if self.metabolism == 0 then
-    return false
-  end
-
-
-  if fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 1, self.metabolism) == 1 then
-    return true
-  end
-
-
-
-  -- shift offset up one because a zero offset means we're on the down beat
-  -- elseif (self.offset + 1 == counters.this_beat()) % self.metabolism == 0 then 
-  -- elseif (counters.this_beat() / self.metabolism == 4) then
-  --   return true
-    -- print("metabolism:")
-    -- print(self.metabolism)
-    -- print("this_beat:")
-    -- print(counters.this_beat())
-    -- -- hrmmm
-    -- return counters.this_beat() 
-  return false
-end
-
 -- divergent cell structures
 
 function Cell:is_spawning()
-  -- print(self.offset + 1 == counters.this_beat())
-  -- print(self:is_it_time())
-  -- print("=========")
-  -- print(self:it_is_time())
-  if self:is("HIVE") and self:is_it_time() then
-    return true
-  elseif self:is("RAVE") and self:is_it_time() then
-    return true
+  -- metabolism of 0 is mute
+  if self.metabolism == 0 then
+    return false
+  elseif fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 1, self.metabolism) == 1 then
+        if self:is("HIVE") then return true
+    elseif self:is("RAVE") then return true
+       end
+  else
+    return false
   end
-  return false
 end
 
 function Cell:setup()

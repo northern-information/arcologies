@@ -23,6 +23,10 @@ function menu:select_item(i)
   self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
 end
 
+function menu:select_item_by_name(name)
+  menu:select_item(fn.table_find(self.items, name) or 1)
+end
+
 function menu:set_items(items)
   self.items = items
 end
