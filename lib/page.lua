@@ -77,10 +77,10 @@ function page:analysis()
   if popup:is_active() then
     popup:render()
   else
-    menu:set_items({ "HIVES", "SHRINES", "GATES", "SIGNALS", "NONE" })
+    menu:set_items({ "SIGNALS", "HIVE", "SHRINE", "GATE", "RAVE", "TOPIARY", "DOME" })
     graphics:analysis(menu.selected_item)
-    graphics:title_bar_and_tabs()
   end
+  graphics:title_bar_and_tabs()
 end
 
 function page:error_message()

@@ -249,10 +249,13 @@ end
 function graphics:analysis(selected_item)
   local chart = {}
   chart.values = {}
-  chart.values[1] = keeper:count_cells(1)
+  chart.values[1] = #keeper.signals  
   chart.values[2] = keeper:count_cells(2)
   chart.values[3] = keeper:count_cells(3)
-  chart.values[4] = #keeper.signals
+  chart.values[4] = keeper:count_cells(4)
+  chart.values[5] = keeper:count_cells(5)
+  chart.values[6] = keeper:count_cells(6)
+  chart.values[7] = keeper:count_cells(7)
   chart.values_total = 0
   for i = 1, #chart.values do chart.values_total = chart.values_total + chart.values[i] end
   chart.percentages = {}
@@ -261,7 +264,7 @@ function graphics:analysis(selected_item)
   for i = 1, #chart.percentages do chart.degrees[i] = chart.percentages[i] * 360 end
 
 
-  local pie_chart_x = 22
+  local pie_chart_x = 95
   local pie_chart_y = 30
   local pie_chart_r = 20
   local total_degrees = 0
@@ -280,19 +283,19 @@ function graphics:analysis(selected_item)
       self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
       text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
       text_y = math.sin(math.rad(text_degrees)) * pie_chart_r
-      pie_highlight = (i == selected_item) and 15 or 3
+      pie_highlight = (i == selected_item + 1) and 15 or 3
       self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
       self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
     end
   end
 
   -- line graph
-  local line_graph_start_x = 56
-  local line_graph_start_y = 43
+  local line_graph_start_x = 0
+  local line_graph_start_y = 40
   local line_graph_spacing = 2
   local line_graph_y = 0
   local line_highlight = 0
-  for i = 1, 4 do
+  for i = 1, 7 do
     if chart.values[i] ~= 0 then
       line_highlight = (i == selected_item) and 15 or 3
       line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
@@ -301,32 +304,20 @@ function graphics:analysis(selected_item)
   end
 
   -- menu
-  local menu_item_start = 0
-  local menu_item_x = 0
-  local menu_item_y = 64
-  local menu_item = ""
-  local menu_item_width = 0
-  local menu_item_spacing =  6
-  local menu_highlight = 0
-  for i = 1, 4 do
-    menu_highlight = (i == selected_item) and 15 or 5
-    menu_item = i ~= 4 and Cell:new().structures[i] .. "S" or "SIGNALS"
-    menu_item_width = screen.text_extents(menu_item)
-    menu_item_x = menu_item_start + ((i - 1) * menu_item_spacing)
-    graphics:text(menu_item_x, menu_item_y, menu_item, menu_highlight)
-    menu_item_start = menu_item_start + menu_item_width
-  end
+  self:structure_palette_analysis(1, 56, 4, selected_item)
+
+
 
   -- grid (thank you @okyeron)
   for i = 1, fn.grid_width() * fn.grid_height() do
     self.analysis_pixels[i] = 0
-    if selected_item ~= 4 then
+    if selected_item ~= 1 then
       for k,v in pairs(keeper.cells) do
-        if v.structure_key == selected_item and v.index == i then
+        if v.structure_key + 1 == selected_item and v.index == i then
           self.analysis_pixels[i] = 15
         end
       end
-    elseif selected_item == 4 then
+    elseif selected_item == 1 then
       for k,v in pairs(keeper.signals) do
         if v.index == i then
           self.analysis_pixels[i] = 15
@@ -343,13 +334,13 @@ function graphics:analysis(selected_item)
   end
   screen.stroke()
   -- more data
-  self:text(106, 18, counters.music.generation, 1)
-  self:playback_icon(105, 19)
+  self:text(48, 18, counters.music.generation, 1)
+  self:playback_icon(48, 19)
   fn.dirty_grid(true)
 end
 
 function graphics:draw_pixel(x, y, b)
-  local offset = { x = 54, y = 11, spacing = 3 }
+  local offset = { x = -5, y = 11, spacing = 3 }
   pidx = x + ((y - 1) * fn.grid_width())
   if self.analysis_pixels[pidx] > 0 then
     screen.stroke()
@@ -426,6 +417,16 @@ function graphics:structure_palette(i)
   glyphs:small_rave(50, 15, i == 4 and 0 or 15)
   glyphs:small_topiary(65, 15, i == 5 and 0 or 15)
   glyphs:small_dome(80, 15, i == 6 and 0 or 15)
+end
+
+function graphics:structure_palette_analysis(x, y, o, i)
+  glyphs:small_cell(x, y, i == 1 and 15 or 5)
+  glyphs:small_hive(x + (o * 3), y, i == 2 and 15 or 5)
+  glyphs:small_shrine(x + (o * 6), y, i == 3 and 15 or 5)
+  glyphs:small_gate(x + (o * 9), y, i == 4 and 15 or 5)
+  glyphs:small_rave(x + (o * 12), y, i == 5 and 15 or 5)
+  glyphs:small_topiary(x + (o * 15), y, i == 6 and 15 or 5)
+  glyphs:small_dome(x + (o * 18), y, i == 7 and 15 or 5)
 end
 
 function graphics:seed()

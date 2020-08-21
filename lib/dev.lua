@@ -54,6 +54,9 @@ print(i)
     page:select(2)      
 
 
+  elseif i == 4 then
+    fn.seed_cells()
+    page:select(3)      
 
 
 
