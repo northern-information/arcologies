@@ -29,8 +29,8 @@ function page:render()
     self:analysis()
   elseif self.active_page == 4 then
     graphics:title_bar_and_tabs()
-    -- glyphs:test()
-    graphics:time(27, 32)
+    glyphs:test()
+    -- graphics:time(27, 32)
   elseif self.active_page == 0 then
     graphics:splash()
   end
@@ -85,9 +85,7 @@ end
 
 function page:error_message()
   if self.error_code == 1 then
-    graphics:rect(1, 1, 128, 64, 15)
-    graphics:text_center(64, 30, "PLEASE CONNECT A", 0)
-    graphics:text_center(64, 42, "MONOME VARIBRIGHT GRID.", 0)
+    graphics:grid_connect_error()
   end
 end
 

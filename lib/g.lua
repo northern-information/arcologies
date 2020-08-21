@@ -240,7 +240,7 @@ function g:draw_leyline(start_x, start_y, end_x, end_y)
       if fn.in_bounds(i, start_y) then self:led(i, start_y, 2) end
     end
   else
-    print("Error: leylines must be perpendicular to the field.")
+    print("Error: leylines must be perpendicular.")
   end
   fn.dirty_grid(true)
 end

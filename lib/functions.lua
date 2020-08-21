@@ -138,12 +138,12 @@ function fn.cleanup()
   poll:clear_all()
 end
 
-function fn.temp_note()
+function fn.temp_note(i)
  -- increment with either the note if is already in this scale or snap
   return
-    fn.table_find(sound.notes_in_this_scale, keeper.selected_cell.note)
+    fn.table_find(sound.notes_in_this_scale, keeper.selected_cell.notes[i])
   or 
-    fn.table_find(sound.notes_in_this_scale, mu.snap_note_to_array(keeper.selected_cell.note, sound.notes_in_this_scale))
+    fn.table_find(sound.notes_in_this_scale, mu.snap_note_to_array(keeper.selected_cell.notes[i], sound.notes_in_this_scale))
 end
 
 function fn.seed_cells()
@@ -157,9 +157,8 @@ function fn.seed_cells()
 end
 
 function fn.random_cell()
-  params:set("bpm", math.random(120, 240))
   keeper:select_cell(fn.rx(), fn.ry())
-  keeper.selected_cell:set_structure(math.random(1, 4))
+  keeper.selected_cell:set_structure(math.random(1, 5))
   local ports = { "n", "e", "s", "w" }
   for i = 1, #ports do
     if fn.coin() == 1 then
@@ -168,7 +167,11 @@ function fn.random_cell()
   end
   keeper.selected_cell:set_offset(math.random(1, 5))
   keeper.selected_cell:set_metabolism(math.random(1, sound.length or 16))
-  keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)))
+  if keeper.selected_cell:is("TOPIARY") then
+    for i=1,8 do
+      keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)), i)
+    end
+  end
 end
 
 return fn

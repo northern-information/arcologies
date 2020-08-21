@@ -8,17 +8,16 @@ function graphics.init()
   graphics.tab_height = 5
   graphics.tab_padding = 1
   graphics.structure_x = 98
-  graphics.structure_y = 20
+  graphics.structure_y = 24
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
-  graphics.cell_attributes = Cell:new(0, 0, 0).attributes
+  graphics.cell_attributes = Cell:new().attributes
 end
 
 function graphics:time(x, y)
   local o = 3
   local b = counters.this_beat()
-  -- print(b .. "/" .. m)
   for i = 1,sound.length do
     self:ps((i * o) + x, y, (b == i) and 5 or 0)
   end
@@ -27,7 +26,6 @@ function graphics:time(x, y)
     local y2 = y + 3
     local meta = keeper.selected_cell.metabolism
     local off =  keeper.selected_cell.offset
-    -- print(fn.cycle(b % meta, 1, meta))
     for i = 1,meta do
       self:ps(((i + off)* o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
     end
@@ -62,10 +60,9 @@ function graphics:top_message()
   else
     self.temporary_message_on = false
     if sound.playback == 0 then
-      message = self:ready_animation(counters.ui_quarter_frame_fmod(10))
+      message = self:ready_animation(math.fmod(counters.ui.quarter_frame, 10) + 1)
     else
       self:time(#page.titles * (self.tab_padding + self.tab_width), 2)
-      -- message = counters.this_beat() .. " " .. self:playing_animation(counters.generation_fmod(4))
     end
   end
   self:text((#page.titles + 1) * self.tab_width + 2, 6, message, 0)
@@ -162,7 +159,7 @@ function graphics:playback_icon(x, y)
   if sound.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, counters.generation_fmod(sound.length), (counters.generation_fmod(sound.length) == 1) and 1 or 0)
+    self:icon(x, y, counters.this_beat(), (counters.this_beat() == 1) and 1 or 0)
   end
 end
 
@@ -213,6 +210,8 @@ function graphics:structure_and_title(string)
       glyphs:gate(self.structure_x, self.structure_y, 0)
     elseif string == "RAVE" then
       glyphs:rave(self.structure_x, self.structure_y, 0)
+    elseif string == "TOPIARY" then
+      glyphs:topiary(self.structure_x, self.structure_y, 0)
     end
 end
 
@@ -349,7 +348,8 @@ function graphics:draw_pixel(x, y, b)
   end
 end
 
-function graphics:piano(k)
+function graphics:piano(i)
+  local k = keeper.selected_cell.notes[i]
   local selected = (k % 12) + 1
   local x = 29
   local y = 12
@@ -400,7 +400,7 @@ function graphics:piano(k)
 
   -- note readout
   screen.font_size(30)
-  self:text_center(64, 64, keeper.selected_cell:get_note_name(), 15, 10)
+  self:text_center(64, 64, keeper.selected_cell:get_note_name(i), 15, 10)
   self:reset_font()
 end
 
@@ -410,6 +410,7 @@ function graphics:structure_palette(i)
   glyphs:small_shrine(20, 15, i == 2 and 0 or 15)
   glyphs:small_gate(35, 15, i == 3 and 0 or 15)
   glyphs:small_rave(50, 15, i == 4 and 0 or 15)
+  glyphs:small_topiary(65, 15, i == 5 and 0 or 15)
 end
 
 function graphics:seed()
@@ -425,10 +426,14 @@ function graphics:seed()
 end
 
 function graphics:deleting_all(timer)
+  screen.font_size(64)
+  self:text_center(64, 60, math.floor(timer / 10))
   screen.font_size(16)
-  self:text_center(64, 28, "DELETING ALL", 15)
-  screen.font_size(32)
-  self:text_left(14, 54, timer .. "." .. math.random(1, 10) .. math.random(1, 10), 15)
+  self:text(84, 60, "." .. math.random(0, 9) .. math.random(0, 9).. math.random(0, 9), 15)
+  glyphs:random(18, 20, 1, true)
+  glyphs:small_random(90, 38, 1, true)
+  glyphs:small_random(101, 38, 1, true)
+  glyphs:small_random(112, 38, 1, true)
   self:reset_font()
 end
 
@@ -455,23 +460,31 @@ function graphics:ready_animation(i)
   return f[i]
 end
 
-function graphics:playing_animation(i)
-  local f = {
-    ">",
-    " >",
-    "  >",
-    "   >"
-  }
-  return f[i]
+function graphics:grid_connect_error()
+  self:rect(1, 1, 128, 64, 15)
+  self:text_center(64, 30, "PLEASE CONNECT A", 0)
+  self:text_left(11, 42, "MONOME", 0)
+  self:text_left(97, 42, "GRID.", 0)
+  local l = counters.ui.quarter_frame % 15
+  self:text_left(46, 42, "V", fn.cycle(l-0, 0, 15))
+  self:text_left(51, 42, "A", fn.cycle(l-1, 0, 15))
+  self:text_left(56, 42, "R", fn.cycle(l-2, 0, 15))
+  self:text_left(61, 42, "I", fn.cycle(l-3, 0, 15))
+  self:text_left(65, 42, "B", fn.cycle(l-4, 0, 15))
+  self:text_left(70, 42, "R", fn.cycle(l-5, 0, 15))
+  self:text_left(75, 42, "I", fn.cycle(l-6, 0, 15))
+  self:text_left(79, 42, "G", fn.cycle(l-7, 0, 15))
+  self:text_left(84, 42, "H", fn.cycle(l-8, 0, 15))
+  self:text_left(89, 42, "T", fn.cycle(l-9, 0, 15))
 end
 
 function graphics:splash()
-  local col_x = -55
-  local row_x = 123
+  local col_x = 123
+  local row_x = -59
   local y = 45
   local l = counters.ui.frame >= 89 and 0 or 15  
-  col_x = col_x + self.ni_frame
-  row_x = row_x - self.ni_frame
+  col_x = col_x - self.ni_frame
+  row_x = row_x + self.ni_frame
   if counters.ui.frame >= 89 then
     self:rect(0, 0, 128, 50, 15)
   end

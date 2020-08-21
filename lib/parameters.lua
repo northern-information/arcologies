@@ -24,7 +24,6 @@ function parameters.init()
 
   params:default()
   params:bang()
-  params:set("bpm", math.random(20, 240))
 end
 
 return parameters

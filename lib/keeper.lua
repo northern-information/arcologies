@@ -23,14 +23,12 @@ end
 function keeper:spawn_signals()
   for k,cell in pairs(self.cells) do
     if cell:is_spawning() and #cell.ports > 0 then
-      if cell:is_port_open("n") then self:create_signal(cell.x, cell.y - 1, "n") end
-      if cell:is_port_open("e") then self:create_signal(cell.x + 1, cell.y, "e") end
-      if cell:is_port_open("s") then self:create_signal(cell.x, cell.y + 1, "s") end
-      if cell:is_port_open("w") then self:create_signal(cell.x - 1, cell.y, "w") end
+      if cell:is_port_open("n") then self:create_signal(cell.x, cell.y - 1, "n", "now") end
+      if cell:is_port_open("e") then self:create_signal(cell.x + 1, cell.y, "e", "now") end
+      if cell:is_port_open("s") then self:create_signal(cell.x, cell.y + 1, "s", "now") end
+      if cell:is_port_open("w") then self:create_signal(cell.x - 1, cell.y, "w", "now") end
     end
   end
-  fn.dirty_grid(true)
-  fn.dirty_screen(true)
 end
 
 function keeper:propagate_signals()
@@ -70,7 +68,7 @@ function keeper:collision(signal, cell)
   self:register_delete_signal(signal.id)    
   g:register_signal_death_at(cell.x, cell.y)
 
-  -- gates redirect signals
+  -- bang a closed port and gates redirect invert ports
   if cell:is("GATE") and not self:are_signal_and_port_compatible(signal, cell) then
     cell:invert_ports()
 
@@ -82,9 +80,14 @@ function keeper:collision(signal, cell)
   elseif cell:is("HIVE") then
     -- empty
 
-  -- shrines play single midi notes
+  -- shrines play single notes
   elseif cell:is("SHRINE") then
-    sound:play(cell.note, cell.velocity)
+    sound:play(cell.notes[1], cell.velocity)
+
+  -- topiaries cylce through notes
+  elseif cell:is("TOPIARY") then
+    sound:play(cell.notes[cell.note_index], cell.velocity)
+    keeper.selected_cell:cycle_note_index(1)
 
   -- raves don't allow signals in
   elseif cell:is("RAVE") then
@@ -95,13 +98,12 @@ function keeper:collision(signal, cell)
   --[[ gates and shrines reroute & split
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
-  if cell:is("SHRINE") or cell:is("GATE") then
-    local g = counters.music_generation() + 1
+  if cell:is("SHRINE") or cell:is("GATE") or cell:is("TOPIARY") then
     for k, port in pairs(cell.ports) do
-          if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", g)
-      elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", g)
-      elseif (port == "s" and signal.heading ~= "n") then self:create_signal(cell.x, cell.y + 1, "s", g)
-      elseif (port == "w" and signal.heading ~= "e") then self:create_signal(cell.x - 1, cell.y, "w", g)
+          if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
+      elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")
+      elseif (port == "s" and signal.heading ~= "n") then self:create_signal(cell.x, cell.y + 1, "s", "tomorrow")
+      elseif (port == "w" and signal.heading ~= "e") then self:create_signal(cell.x - 1, cell.y, "w", "tomorrow")
       end
     end
   end
@@ -121,11 +123,15 @@ end
 
 -- signals
 
-function keeper:create_signal(x, y, h, g)
+function keeper:create_signal(x, y, h, when)
   if not fn.in_bounds(x, y) then return false end
-  local signal = Signal:new(x, y, h, g)
-  table.insert(self.new_signals, signal)
-  return signal
+  if when == "now" then
+    table.insert(self.signals, Signal:new(x, y, h))
+  elseif when =="tomorrow" then
+    table.insert(self.new_signals, Signal:new(x, y, h, counters.music_generation() + 1))
+  end
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
 end
 
 function keeper:register_delete_signal(id)

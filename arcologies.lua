@@ -37,9 +37,9 @@ function init()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
-  -- fn.seed_cells()
+  fn.seed_cells()
   sound:toggle_playback()
-  dev:scene(1)
+  -- dev:scene(2)
   redraw()
 end
 
