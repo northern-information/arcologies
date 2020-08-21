@@ -62,6 +62,8 @@ function menu:scroll_value(d)
       keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
     elseif s == "NOTE INDEX" then
       keeper.selected_cell:cycle_note_index(d)
+    elseif s == "PULSES" then
+      keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
     elseif s == "DOCS" then
       print("DOCS...")
     elseif s == "NOTE 1" then

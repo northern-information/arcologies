@@ -158,7 +158,7 @@ end
 
 function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
-  keeper.selected_cell:set_structure(math.random(1, 5))
+  keeper.selected_cell:set_structure(math.random(1, 6))
   local ports = { "n", "e", "s", "w" }
   for i = 1, #ports do
     if fn.coin() == 1 then
@@ -171,6 +171,9 @@ function fn.random_cell()
     for i=1,8 do
       keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)), i)
     end
+  end
+  if keeper.selected_cell:is("DOME") then
+    keeper.selected_cell:set_pulses(math.random(1, keeper.selected_cell.metabolism))
   end
 end
 

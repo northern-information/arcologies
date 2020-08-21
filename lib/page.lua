@@ -1,7 +1,7 @@
 local page = {}
 
 function page.init()
-  page.titles = { "ARCOLOGIES", "DESIGNER" , "ANALYSIS" }
+  page.titles = { "ARCOLOGIES", "DESIGNER" , "ANALYSIS", "DEV"}
   page.active_page = 0
   page.error = false
   page.error_code = 0

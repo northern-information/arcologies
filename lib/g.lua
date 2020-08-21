@@ -233,11 +233,11 @@ end
 function g:draw_leyline(start_x, start_y, end_x, end_y)
   if start_x == end_x then -- vertical
     for i = math.min(start_y, end_y), math.max(start_y, end_y) do
-      if fn.in_bounds(start_x, i) then self:led(start_x, i, 2) end
+      if fn.in_bounds(start_x, i) then self:led(start_x, i, 1) end
     end
   elseif start_y == end_y then -- horizontal
     for i = math.min(start_x, end_x), math.max(start_x, end_x) do
-      if fn.in_bounds(i, start_y) then self:led(i, start_y, 2) end
+      if fn.in_bounds(i, start_y) then self:led(i, start_y, 1) end
     end
   else
     print("Error: leylines must be perpendicular.")

@@ -8,10 +8,11 @@ function rerun(option)
 end
 
 function dev:scene(i)
-  print(i)
+print(i)
   -- ode to joy
  
 
+  -- hive test
   if i == 1 then 
     page:select(3)
     menu:select_item(4)
@@ -39,7 +40,18 @@ function dev:scene(i)
 
 
 
-
+  elseif i == 3 then
+    keeper:select_cell(4, 4)
+    keeper.selected_cell:set_structure(6)
+    keeper.selected_cell:open_port("n")
+    keeper.selected_cell:open_port("e")
+    keeper.selected_cell:open_port("s")
+    keeper.selected_cell:open_port("w")
+    keeper.selected_cell:set_metabolism(16)
+    keeper.selected_cell:set_pulses(8)
+    keeper.selected_cell:open_port("w")
+    keeper:deselect_cell()
+    page:select(2)      
 
 
 

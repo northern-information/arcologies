@@ -17,15 +17,27 @@ end
 
 function graphics:time(x, y)
   local o = 3
+  local x2 = x
+  local y2 = y + o
+  local meta = keeper.selected_cell.metabolism or 0
+  local off =  keeper.selected_cell.offset or 0
   local b = counters.this_beat()
+  -- global transport
   for i = 1,sound.length do
     self:ps((i * o) + x, y, (b == i) and 5 or 0)
   end
-  if keeper.is_cell_selected and keeper.selected_cell:has("OFFSET") then
-    local x2 = x
-    local y2 = y + 3
-    local meta = keeper.selected_cell.metabolism
-    local off =  keeper.selected_cell.offset
+  -- dome
+  if keeper.is_cell_selected and keeper.selected_cell:is("DOME") then
+    for k,v in pairs(keeper.selected_cell.er) do
+      local step = ((fn.cycle(b % meta, 1, meta)) == k)
+      local level = 0
+          if step and v then level = 5
+      elseif not step and v then level = 0
+      else   level = 15 end
+      self:ps(((k + off) * o) + x2, y2, level)
+    end
+  -- anything with an offset
+  elseif keeper.is_cell_selected and keeper.selected_cell:has("OFFSET") then
     for i = 1,meta do
       self:ps(((i + off)* o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
     end
@@ -212,6 +224,8 @@ function graphics:structure_and_title(string)
       glyphs:rave(self.structure_x, self.structure_y, 0)
     elseif string == "TOPIARY" then
       glyphs:topiary(self.structure_x, self.structure_y, 0)
+    elseif string == "DOME" then
+      glyphs:dome(self.structure_x, self.structure_y, 0)
     end
 end
 
@@ -411,6 +425,7 @@ function graphics:structure_palette(i)
   glyphs:small_gate(35, 15, i == 3 and 0 or 15)
   glyphs:small_rave(50, 15, i == 4 and 0 or 15)
   glyphs:small_topiary(65, 15, i == 5 and 0 or 15)
+  glyphs:small_dome(80, 15, i == 6 and 0 or 15)
 end
 
 function graphics:seed()

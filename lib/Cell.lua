@@ -17,17 +17,18 @@ function Cell:new(x, y, g)
     { c.x - 1, c.y, "w" }
   }
   c.metabolisms = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
-  c.structures = { "HIVE", "SHRINE", "GATE", "RAVE", "TOPIARY" }
-  c.attributes = { "STRUCTURE", "OFFSET", "VELOCITY", "METABOLISM", "DOCS",
+  c.structures = { "HIVE", "SHRINE", "GATE", "RAVE", "TOPIARY", "DOME" }
+  c.attributes = { "STRUCTURE", "OFFSET", "VELOCITY", "METABOLISM", "DOCS", "PULSES",
                    "NOTE INDEX", "NOTE 1", "NOTE 2", "NOTE 3", "NOTE 4", "NOTE 5",
-                   "NOTE 6", "NOTE 7", "NOTE 8", }
+                   "NOTE 6", "NOTE 7", "NOTE 8" }
   c.structure_attribute_map = {
-    ["HIVE"] = {"OFFSET", "METABOLISM"},
-    ["SHRINE"] = {"NOTE 1", "VELOCITY"},
+    ["HIVE"] = { "OFFSET", "METABOLISM" },
+    ["SHRINE"] = { "NOTE 1", "VELOCITY" },
     ["GATE"] = {},
-    ["RAVE"] = {"OFFSET", "METABOLISM"},
-    ["TOPIARY"] = {"NOTE INDEX", "NOTE 1", "NOTE 2", "NOTE 3", "NOTE 4", 
-                   "NOTE 5", "NOTE 6", "NOTE 7", "NOTE 8", "VELOCITY"}
+    ["RAVE"] = { "OFFSET", "METABOLISM" },
+    ["TOPIARY"] = { "NOTE INDEX", "NOTE 1", "NOTE 2", "NOTE 3", "NOTE 4", 
+                    "NOTE 5", "NOTE 6", "NOTE 7", "NOTE 8", "VELOCITY" },
+    ["DOME"] = { "OFFSET", "METABOLISM", "PULSES" }
   }
   for k,v in pairs(c.structure_attribute_map) do
     c.structure_attribute_map[k][#c.structure_attribute_map[k] + 1] = "STRUCTURE"
@@ -35,17 +36,18 @@ function Cell:new(x, y, g)
   end
 
   -- mutable
-  c.ports = {}
-  c.structure_key = 1
-  c.structure_value = c.structures[c.structure_key]
-  c.offset = 0
-  c.notes = {72, 72, 72, 72, 72, 72, 72, 72}
+  c.max_note_index = 8
+  c.metabolism = 4
   c.note_count = 1
   c.note_index = 1  
-  c.max_note_index = 8
+  c.notes = {72, 72, 72, 72, 72, 72, 72, 72}
+  c.offset = 0
+  c.ports = {}
+  c.pulses = 0
+  c.structure_key = 1
+  c.structure_value = c.structures[c.structure_key]
   c.velocity = 127
-  c.metabolism = 4
-  
+  c.er = {}
   
 
   return c
@@ -61,6 +63,7 @@ function Cell:get_menu_value_by_attribute(attribute)
   elseif attribute == "NOTE INDEX" then return self.note_index  
   elseif attribute == "VELOCITY"   then return self.velocity
   elseif attribute == "METABOLISM" then return self.metabolism
+  elseif attribute == "PULSES"     then return self.pulses
   -- keep it stupid simple, don't want to fuck with substrings or loops  
   elseif attribute == "NOTE 1"     then return self:get_note_name(1)
   elseif attribute == "NOTE 2"     then return self:get_note_name(2)
@@ -95,6 +98,21 @@ function Cell:set_offset(i)
   self.offset = i
 end
 
+function Cell:set_pulses(i)
+  self.pulses = util.clamp(i, 0, self.metabolism)
+  self:set_er()
+end
+
+function Cell:set_metabolism(i)
+  self.metabolism = util.clamp(i, 0, 16)
+  self:set_pulses(self.pulses)
+  self:set_er()
+end
+
+function Cell:set_er()
+  self.er = er.gen(self.pulses, self.metabolism)
+end
+
 function Cell:set_note(note, index)
   local index = index ~= nil and index or 1
   self.notes[index] = sound.notes_in_this_scale[util.clamp(note, 1, #sound.notes_in_this_scale)]
@@ -112,9 +130,7 @@ function Cell:set_velocity(i)
   self.velocity = util.clamp(i, 0, 127)
 end
 
-function Cell:set_metabolism(i)
-  self.metabolism = util.clamp(i, 0, 16)
-end
+
 
 function Cell:toggle_port(x, y)
   local port = self:find_port(x, y)
@@ -162,6 +178,8 @@ function Cell:is_spawning()
   -- metabolism of 0 is mute
   if self.metabolism == 0 then
     return false
+  elseif self:is("DOME") then
+    return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 then
         if self:is("HIVE") then return true
     elseif self:is("RAVE") then return true
@@ -173,6 +191,7 @@ end
 
 function Cell:setup()
   if self:is("RAVE") then self:drugs() end
+  if self:is("DOME") then self:set_er() end
 end
 
 -- turn on, tune in, drop out...

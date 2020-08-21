@@ -5,6 +5,9 @@ mu = require("musicutil")
 tu = require("tabutil")
 
 -- ships with norns
+er = require("er")
+
+-- ships with norns
 engine.name = "PolyPerc"
 
 -- the core concept of arcologies, interact with Signals

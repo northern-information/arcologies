@@ -18,6 +18,7 @@ function glyphs:random(x, y, l, jitter)
   elseif r == 4 then self:gate(x, y, l)
   elseif r == 5 then self:rave(x, y, l)
   elseif r == 6 then self:topiary(x, y, l)
+  elseif r == 7 then self:dome(x, y, l)
   end
 end
 
@@ -66,6 +67,11 @@ function glyphs:topiary(x, y, l)
   self:floor(x, y, l)
 end
 
+function glyphs:dome(x, y, l)
+  self:cell(x, y, l)
+  self:column(x, y, l)
+end
+
 function glyphs:test()
   local x = 32
   local y = 20
@@ -76,9 +82,10 @@ function glyphs:test()
   -- self:shrine(x, y, l)
   -- self:gate(x, y, l)
   -- self:rave(x, y, l)
-  self:topiary(x, y, 15)
-  -- self:small_hive(x+60, y, 15)
-  self:small_topiary(x+60, y, 15)
+  self:dome(x, y, l)
+  -- self:small_hive(x+60, y, l)
+  self:small_dome(x+60, y, l)
+  -- self:small_topiary(x+60, y, 15)
   -- self:left_wall(x, y, l)
   -- self:right_wall(x, y, l)
   -- self:three_quarter_left_wall(x, y, l)
@@ -128,6 +135,10 @@ end
 
 function glyphs:half_right_wall(x, y, l)
   graphics:rect(x+20, y+12, 2, 14, l)
+end
+
+function glyphs:column(x, y, l)
+  graphics:rect(x+10, y, 2, 20, l)
 end
 
 function glyphs:kasagi(x, y, l)
@@ -203,6 +214,7 @@ function glyphs:small_random(x, y, l, jitter)
   elseif r == 4 then self:small_gate(x, y, l)
   elseif r == 5 then self:small_rave(x, y, l)
   elseif r == 6 then self:small_topiary(x, y, l)
+  elseif r == 7 then self:small_dome(x, y, l)
   end
 end
 
@@ -251,6 +263,11 @@ function glyphs:small_topiary(x, y, l)
   self:small_floor(x, y, l)  
 end
 
+function glyphs:small_dome(x, y, l)
+  self:small_cell(x, y, l)
+  self:small_column(x, y, l)
+end
+
 -- small components
 
 function glyphs:small_left_wall(x, y, l)
@@ -275,6 +292,10 @@ end
 
 function glyphs:small_half_right_wall(x, y, l)
   graphics:mls(x+6, y+3, x+6, y+8, l)
+end
+
+function glyphs:small_column(x, y, l)
+  graphics:mlrs(x+2, y, 1, 6, l)
 end
 
 function glyphs:small_kasagi(x, y, l)
