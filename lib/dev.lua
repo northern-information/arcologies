@@ -8,9 +8,6 @@ function rerun(option)
 end
 
 function dev:scene(i)
-print(i)
-  -- ode to joy
- 
 
   -- hive test
   if i == 1 then 
@@ -47,8 +44,8 @@ print(i)
     -- keeper.selected_cell:open_port("e")
     -- keeper.selected_cell:open_port("s")
     -- keeper.selected_cell:open_port("w")
-    keeper.selected_cell:set_metabolism(16)
-    keeper.selected_cell:set_offset(5)
+    keeper.selected_cell:set_metabolism(8)
+    keeper.selected_cell:set_offset(1)
     -- keeper:deselect_cell()
     page:select(2)      
 
@@ -63,6 +60,7 @@ print(i)
 
 
   elseif i == 10 then
+    -- ode to joy
     params:set("bpm", 240)
     sound:set_scale(47)
     page:select(2)

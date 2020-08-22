@@ -58,20 +58,20 @@ function graphics:time(x, y)
   local meta = keeper.selected_cell.metabolism
   local off =  keeper.selected_cell.offset or 0
   local b = counters.this_beat()
+  local l = sound.length
   -- global transport
-  for i = 1, sound.length do
+  for i = 1, l do
     self:ps((i * o) + x, y, (b == i) and 5 or 0)
   end
   -- no metabolism, no soup
-  if meta == 0 then return end
-  -- dome & maze
-  if keeper.is_cell_selected and (keeper.selected_cell:is("DOME") or keeper.selected_cell:is("MAZE")) then
+  if meta == 0 or not keeper.is_cell_selected then return end
+
     local steps = {}
-    if keeper.selected_cell:is("DOME") then
-      steps = keeper.selected_cell.er
-    elseif keeper.selected_cell:is("MAZE") then
-      steps = keeper.selected_cell.turing
+        if keeper.selected_cell:is("DOME") then steps = keeper.selected_cell.er
+    elseif keeper.selected_cell:is("MAZE") then steps = keeper.selected_cell.turing
     end
+  
+  if #steps > 0 then
     for k,v in pairs(steps) do
       local step = ((fn.cycle(b % meta, 1, meta)) == k)
       local level = 0
@@ -82,16 +82,18 @@ function graphics:time(x, y)
       else 
         level = 15
       end
-      local this_offset = ((k + off) > meta) and ((k + off) - meta) or (k + off)
-      self:ps((this_offset * o) + x2, y2, level)
+      self:ps((self:wrap_offset(k, off, l) * o) + x2, y2, level)
     end
   -- anything with an offset
-  elseif keeper.is_cell_selected and keeper.selected_cell:has("OFFSET") then
+  elseif keeper.selected_cell:has("OFFSET") then
     for i = 1, meta do
-      local this_offset = ((i + off) > meta) and ((i + off) - meta) or (i + off)
-      self:ps((this_offset * o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
+      self:ps((self:wrap_offset(i, off, l) * o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
     end
   end
+end
+
+function graphics:wrap_offset(i, off, l)
+  return ((i + off) > l) and ((i + off) - l) or (i + off)
 end
 
 
