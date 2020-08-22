@@ -214,18 +214,15 @@ function graphics:icon(x, y, string, invert)
 end
 
 function graphics:structure_and_title(string)
-    if string == "HIVE" then
-      glyphs:hive(self.structure_x, self.structure_y, 0)
-    elseif string == "SHRINE" then
-      glyphs:shrine(self.structure_x, self.structure_y, 0)
-    elseif string == "GATE" then
-      glyphs:gate(self.structure_x, self.structure_y, 0)
-    elseif string == "RAVE" then
-      glyphs:rave(self.structure_x, self.structure_y, 0)
-    elseif string == "TOPIARY" then
-      glyphs:topiary(self.structure_x, self.structure_y, 0)
-    elseif string == "DOME" then
-      glyphs:dome(self.structure_x, self.structure_y, 0)
+    local x = self.structure_x
+    local y = self.structure_y
+    local l = 0
+        if string == "HIVE"     then glyphs:hive(x, y, l)
+    elseif string == "SHRINE"   then glyphs:shrine(x, y, l)
+    elseif string == "GATE"     then glyphs:gate(x, y, l)
+    elseif string == "RAVE"     then glyphs:rave(x, y, l)
+    elseif string == "TOPIARY"  then glyphs:topiary(x, y, l)
+    elseif string == "DOME"     then glyphs:dome(x, y, l)
     end
 end
 
@@ -246,16 +243,24 @@ function graphics:draw_ports()
   end
 end
 
-function graphics:analysis(selected_item)
+function graphics:analysis(items, selected_item_string)
+  local selected_item_key = fn.table_find(items, selected_item_string)
+
+  -- menu
+  self:structure_palette_analysis(1, 56, 4, selected_item_string)
+
+
+
+  -- values
   local chart = {}
   chart.values = {}
   chart.values[1] = #keeper.signals  
-  chart.values[2] = keeper:count_cells(2)
-  chart.values[3] = keeper:count_cells(3)
-  chart.values[4] = keeper:count_cells(4)
-  chart.values[5] = keeper:count_cells(5)
-  chart.values[6] = keeper:count_cells(6)
-  chart.values[7] = keeper:count_cells(7)
+  chart.values[2] = keeper:count_cells("HIVE")
+  chart.values[3] = keeper:count_cells("SHRINE")
+  chart.values[4] = keeper:count_cells("GATE")
+  chart.values[5] = keeper:count_cells("RAVE")
+  chart.values[6] = keeper:count_cells("TOPIARY")
+  chart.values[7] = keeper:count_cells("DOME")
   chart.values_total = 0
   for i = 1, #chart.values do chart.values_total = chart.values_total + chart.values[i] end
   chart.percentages = {}
@@ -264,9 +269,10 @@ function graphics:analysis(selected_item)
   for i = 1, #chart.percentages do chart.degrees[i] = chart.percentages[i] * 360 end
 
 
-  local pie_chart_x = 95
+  -- pie chart
+  local pie_chart_x = 25
   local pie_chart_y = 30
-  local pie_chart_r = 20
+  local pie_chart_r = 18
   local total_degrees = 0
   local text_degrees = 1
   local percent = 0
@@ -283,41 +289,40 @@ function graphics:analysis(selected_item)
       self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
       text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
       text_y = math.sin(math.rad(text_degrees)) * pie_chart_r
-      pie_highlight = (i == selected_item + 1) and 15 or 3
+      pie_highlight = (i == selected_item_key) and 15 or 3
       self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
       self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
     end
   end
 
+
+
   -- line graph
-  local line_graph_start_x = 0
-  local line_graph_start_y = 40
+  local line_graph_start_x = 54
+  local line_graph_start_y = 36
   local line_graph_spacing = 2
   local line_graph_y = 0
   local line_highlight = 0
   for i = 1, 7 do
     if chart.values[i] ~= 0 then
-      line_highlight = (i == selected_item) and 15 or 3
+      line_highlight = (i == selected_item_key) and 15 or 1
       line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
       self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, line_highlight)
     end
   end
-
-  -- menu
-  self:structure_palette_analysis(1, 56, 4, selected_item)
 
 
 
   -- grid (thank you @okyeron)
   for i = 1, fn.grid_width() * fn.grid_height() do
     self.analysis_pixels[i] = 0
-    if selected_item ~= 1 then
+    if selected_item_string ~= "SIGNALS" then
       for k,v in pairs(keeper.cells) do
-        if v.structure_key + 1 == selected_item and v.index == i then
+        if v.structure_value == selected_item_string and v.index == i then
           self.analysis_pixels[i] = 15
         end
       end
-    elseif selected_item == 1 then
+    elseif selected_item_string == "SIGNALS" then
       for k,v in pairs(keeper.signals) do
         if v.index == i then
           self.analysis_pixels[i] = 15
@@ -333,14 +338,16 @@ function graphics:analysis(selected_item)
     end
   end
   screen.stroke()
+
+
   -- more data
-  self:text(48, 18, counters.music.generation, 1)
-  self:playback_icon(48, 19)
+  self:text(105, 16, counters.music.generation, 1)
+  self:playback_icon(105, 17)
   fn.dirty_grid(true)
 end
 
 function graphics:draw_pixel(x, y, b)
-  local offset = { x = -5, y = 11, spacing = 3 }
+  local offset = { x = 52, y = 9, spacing = 3 }
   pidx = x + ((y - 1) * fn.grid_width())
   if self.analysis_pixels[pidx] > 0 then
     screen.stroke()
@@ -419,14 +426,14 @@ function graphics:structure_palette(i)
   glyphs:small_dome(80, 15, i == 6 and 0 or 15)
 end
 
-function graphics:structure_palette_analysis(x, y, o, i)
-  glyphs:small_cell(x, y, i == 1 and 15 or 5)
-  glyphs:small_hive(x + (o * 3), y, i == 2 and 15 or 5)
-  glyphs:small_shrine(x + (o * 6), y, i == 3 and 15 or 5)
-  glyphs:small_gate(x + (o * 9), y, i == 4 and 15 or 5)
-  glyphs:small_rave(x + (o * 12), y, i == 5 and 15 or 5)
-  glyphs:small_topiary(x + (o * 15), y, i == 6 and 15 or 5)
-  glyphs:small_dome(x + (o * 18), y, i == 7 and 15 or 5)
+function graphics:structure_palette_analysis(x, y, o, name)
+  glyphs:small_signal(x, y, name == "SIGNALS" and 15 or 5)
+  glyphs:small_hive(x + (o * 3), y, name == "HIVE" and 15 or 5)
+  glyphs:small_shrine(x + (o * 6), y, name == "SHRINE" and 15 or 5)
+  glyphs:small_gate(x + (o * 9), y, name == "GATE" and 15 or 5)
+  glyphs:small_rave(x + (o * 12), y, name == "RAVE" and 15 or 5)
+  glyphs:small_topiary(x + (o * 15), y, name == "TOPIARY" and 15 or 5)
+  glyphs:small_dome(x + (o * 18), y, name == "DOME" and 15 or 5)
 end
 
 function graphics:seed()

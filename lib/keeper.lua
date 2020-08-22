@@ -86,8 +86,8 @@ function keeper:collision(signal, cell)
 
   -- topiaries cylce through notes
   elseif cell:is("TOPIARY") then
-    sound:play(cell.notes[cell.note_index], cell.velocity)
-    keeper.selected_cell:cycle_note_index(1)
+    sound:play(cell.notes[cell.state_index], cell.velocity)
+    keeper.selected_cell:cycle_state_index(1)
 
   -- raves don't allow signals in
   elseif cell:is("RAVE") then
@@ -213,10 +213,10 @@ function keeper:deselect_cell()
   fn.dirty_screen(true)
 end
 
-function keeper:count_cells(s)
+function keeper:count_cells(name)
   local count = 0
   for k,v in pairs(self.cells) do
-    if v.structure_key == s then
+    if v.structure_value == name then
       count = count + 1
     end
   end

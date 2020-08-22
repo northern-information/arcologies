@@ -112,8 +112,7 @@ end
 function g:led_cell_analysis()
   if page.active_page == 3 then
     for k,v in pairs(keeper.cells) do
-        -- plus one is some jank to account for the signal at index 1
-        if v.structure_key + 1 == menu.selected_item then
+        if v.structure_value == menu.selected_item_string then
           self:highlight_cell(v)
         end
       end

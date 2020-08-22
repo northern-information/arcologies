@@ -39,7 +39,7 @@ function init()
   page:select(parameters.is_splash_screen_on and 0 or 1)
   fn.seed_cells()
   sound:toggle_playback()
-  dev:scene(4)
+  -- dev:scene(3)
   redraw()
 end
 

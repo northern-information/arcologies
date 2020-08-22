@@ -1,7 +1,7 @@
 local page = {}
 
 function page.init()
-  page.titles = { "ARCOLOGIES", "DESIGNER" , "ANALYSIS", "DEV"}
+  page.titles = config.page_titles
   page.active_page = 0
   page.error = false
   page.error_code = 0
@@ -39,7 +39,9 @@ function page:render()
 end
 
 function page:home()
-  menu:set_items({ fn.playback(), "SEED", "BPM", "LENGTH", "ROOT", "SCALE", "DOCS" })
+  local menu_items = { fn.playback() }
+  for k,v in pairs(config["home_items"]) do menu_items[k+1] = v end
+  menu:set_items(menu_items)
   menu:select_item()
   if popup:is_active() then
     popup:render()
@@ -67,7 +69,7 @@ function page:cell_designer()
       menu:select_item()
       menu:render()
       graphics:draw_ports()
-      graphics:structure_and_title(keeper.selected_cell:get_menu_value_by_attribute("STRUCTURE"))
+      graphics:structure_and_title(keeper.selected_cell.structure_value)
     end
   end
   graphics:title_bar_and_tabs()
@@ -77,8 +79,9 @@ function page:analysis()
   if popup:is_active() then
     popup:render()
   else
-    menu:set_items({ "SIGNALS", "HIVE", "SHRINE", "GATE", "RAVE", "TOPIARY", "DOME" })
-    graphics:analysis(menu.selected_item)
+    menu:set_items(config.analysis_items)
+    menu:select_item()
+    graphics:analysis(menu.items, menu.selected_item_string)
   end
   graphics:title_bar_and_tabs()
 end

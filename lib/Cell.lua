@@ -2,13 +2,19 @@ Cell = {}
 
 function Cell:new(x, y, g)
   local c = setmetatable({}, { __index = Cell })
-
-  -- constants
   c.x = x ~= nil and x or 0
   c.y = y ~= nil and y or 0
   c.generation = g ~= nil and g or 0
-  c.id = fn.id()
-  c.index = fn.index(c.x, c.y)
+  c.structures = config.structures
+  c.attributes = config.attributes
+  c.structure_attribute_map = config.structure_attribute_map
+  c.id = "cell-" .. fn.id() -- unique identifier for this cell
+  c.index = fn.index(c.x, c.y) -- location on the grid
+  c.state_index = 1  -- keeps track of cell state i.e. which note to play next
+  c.max_state_index = 8
+  c.structure_key = 1
+  c.structure_value = c.structures[c.structure_key]
+  c.ports = {}
   c.cardinals = { "n", "e", "s", "w" }
   c.available_ports = {
     { c.x, c.y - 1, "n" },
@@ -16,121 +22,36 @@ function Cell:new(x, y, g)
     { c.x, c.y + 1, "s" },
     { c.x - 1, c.y, "w" }
   }
-  c.metabolisms = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
-  c.structures = { "HIVE", "SHRINE", "GATE", "RAVE", "TOPIARY", "DOME" }
-  c.attributes = { "STRUCTURE", "OFFSET", "VELOCITY", "METABOLISM", "DOCS", "PULSES",
-                   "NOTE INDEX", "NOTE 1", "NOTE 2", "NOTE 3", "NOTE 4", "NOTE 5",
-                   "NOTE 6", "NOTE 7", "NOTE 8" }
-  c.structure_attribute_map = {
-    ["HIVE"] = { "OFFSET", "METABOLISM" },
-    ["SHRINE"] = { "NOTE 1", "VELOCITY" },
-    ["GATE"] = {},
-    ["RAVE"] = { "OFFSET", "METABOLISM" },
-    ["TOPIARY"] = { "NOTE INDEX", "NOTE 1", "NOTE 2", "NOTE 3", "NOTE 4", 
-                    "NOTE 5", "NOTE 6", "NOTE 7", "NOTE 8", "VELOCITY" },
-    ["DOME"] = { "OFFSET", "METABOLISM", "PULSES" }
-  }
-  for k,v in pairs(c.structure_attribute_map) do
-    c.structure_attribute_map[k][#c.structure_attribute_map[k] + 1] = "STRUCTURE"
-    c.structure_attribute_map[k][#c.structure_attribute_map[k] + 1] = "DOCS"
-  end
-
-  -- mutable
-  c.max_note_index = 8
-  c.metabolism = 4
-  c.note_count = 1
-  c.note_index = 1  
-  c.notes = {72, 72, 72, 72, 72, 72, 72, 72}
-  c.offset = 0
-  c.ports = {}
-  c.pulses = 0
-  c.structure_key = 1
-  c.structure_value = c.structures[c.structure_key]
-  c.velocity = 127
-  c.er = {}
-  
-
+  er_trait.init(self)
+  metabolism_trait.init(self)
+  notes_trait.init(self)
+  offset_trait.init(self)
+  pulses_trait.init(self)
+  velocity_trait.init(self)
   return c
 end
 
-function Cell:menu_items()
- return self.structure_attribute_map[self.structure_value] or "NONE?"
+function Cell:is(name)
+  return self.structure_value == name
 end
 
-function Cell:get_menu_value_by_attribute(attribute)
-      if attribute == "STRUCTURE"  then return self.structure_value
-  elseif attribute == "OFFSET"     then return self.offset
-  elseif attribute == "NOTE INDEX" then return self.note_index  
-  elseif attribute == "VELOCITY"   then return self.velocity
-  elseif attribute == "METABOLISM" then return self.metabolism
-  elseif attribute == "PULSES"     then return self.pulses
-  -- keep it stupid simple, don't want to fuck with substrings or loops  
-  elseif attribute == "NOTE 1"     then return self:get_note_name(1)
-  elseif attribute == "NOTE 2"     then return self:get_note_name(2)
-  elseif attribute == "NOTE 3"     then return self:get_note_name(3)
-  elseif attribute == "NOTE 4"     then return self:get_note_name(4)
-  elseif attribute == "NOTE 5"     then return self:get_note_name(5)
-  elseif attribute == "NOTE 6"     then return self:get_note_name(6)
-  elseif attribute == "NOTE 7"     then return self:get_note_name(7)
-  elseif attribute == "NOTE 8"     then return self:get_note_name(8)
-  end
+function Cell:has(name)
+  return fn.table_find(self.structure_attribute_map[self.structure_value], name) or false
 end
 
-function Cell:set_structure(i)
-  self.structure_key = util.clamp(i, 1, #self.structures)
+function Cell:change(name)
+  self:set_structure_by_key(fn.table_find(self.structures, name))
+end
+
+function Cell:set_structure_by_key(key)
+  self.structure_key = util.clamp(key, 1, #self.structures)
   self.structure_value = self.structures[self.structure_key]
-  self.note_count = self.structure_value == "TOPIARY" and 8 or 1
+  self:callback("set_structure_by_key")
 end
 
-function Cell:cycle_note_index(i)
-  self.note_index = fn.cycle(self.note_index + i, 1, self.max_note_index)
+function Cell:cycle_state_index(i)
+  self.state_index = fn.cycle(self.state_index + i, 1, self.max_state_index)
 end
-
-function Cell:is(s)
-  return self.structure_value == s and true or false
-end
-
-function Cell:has(s)
-  return fn.table_find(self.structure_attribute_map[self.structure_value], s) or false
-end
-
-function Cell:set_offset(i)
-  self.offset = i
-end
-
-function Cell:set_pulses(i)
-  self.pulses = util.clamp(i, 0, self.metabolism)
-  self:set_er()
-end
-
-function Cell:set_metabolism(i)
-  self.metabolism = util.clamp(i, 0, 16)
-  self:set_pulses(self.pulses)
-  self:set_er()
-end
-
-function Cell:set_er()
-  self.er = er.gen(self.pulses, self.metabolism)
-end
-
-function Cell:set_note(note, index)
-  local index = index ~= nil and index or 1
-  self.notes[index] = sound.notes_in_this_scale[util.clamp(note, 1, #sound.notes_in_this_scale)]
-end
-
-function Cell:get_note()
-  return mu.note_num_to_name(self.notes[self.index], true)
-end
-
-function Cell:get_note_name(i)
-  return mu.note_num_to_name(self.notes[i], true)
-end
-
-function Cell:set_velocity(i)
-  self.velocity = util.clamp(i, 0, 127)
-end
-
-
 
 function Cell:toggle_port(x, y)
   local port = self:find_port(x, y)
@@ -170,32 +91,49 @@ function Cell:invert_ports()
   end
 end
 
--- divergent cell structures
+-- menu junk
+function Cell:menu_items()
+ return self.structure_attribute_map[self.structure_value]
+end
 
-
-
-function Cell:is_spawning()
-  -- metabolism of 0 is mute
-  if self.metabolism == 0 then
-    return false
-  elseif self:is("DOME") then
-    return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
-  elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 then
-        if self:is("HIVE") then return true
-    elseif self:is("RAVE") then return true
-       end
-  else
-    return false
+-- todo: there's gotta be a better way to do this
+function Cell:get_menu_value_by_attribute(a)
+      if a == "STRUCTURE"  then return self.structure_value
+  elseif a == "OFFSET"     then return self.offset
+  elseif a == "INDEX"      then return self.state_index  
+  elseif a == "VELOCITY"   then return self.velocity
+  elseif a == "METABOLISM" then return self.metabolism
+  elseif a == "PULSES"     then return self.pulses
+  elseif a == "NOTE 1"     then return self:get_note_name(1)
+  elseif a == "NOTE 2"     then return self:get_note_name(2)
+  elseif a == "NOTE 3"     then return self:get_note_name(3)
+  elseif a == "NOTE 4"     then return self:get_note_name(4)
+  elseif a == "NOTE 5"     then return self:get_note_name(5)
+  elseif a == "NOTE 6"     then return self:get_note_name(6)
+  elseif a == "NOTE 7"     then return self:get_note_name(7)
+  elseif a == "NOTE 8"     then return self:get_note_name(8)
   end
 end
 
+
+
+--[[
+from here out we get into what is essentially "descendent class behaviors"
+since all cells can change structures at any time, it makes no sense to 
+actually implement classes for each one. that would result in lots of
+creating and destroying objects for no real benefit other than having these
+behaviors encapsulated in their own classes. and as of writing this
+theres  only ~40 lines of code below... 
+]]
+
+
+-- does this cell need to do anything to boot up this beat?
 function Cell:setup()
   if self:is("RAVE") then self:drugs() end
   if self:is("DOME") then self:set_er() end
 end
 
--- turn on, tune in, drop out...
--- close all the ports, then flip coins to open them
+-- turn on, tune in, drop out... close all the ports, then flip coins to open them
 function Cell:drugs()
   self.ports = {}
   for i = 1,4 do
@@ -205,4 +143,30 @@ function Cell:drugs()
   end
 end
 
+-- all signals are "spawned" but only under certain conditions
+function Cell:is_spawning()
+  if self.metabolism == 0 then
+    return false
+  elseif self:is("DOME") then
+    return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+  elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 then
+        if self:is("HIVE") then return true
+    elseif self:is("RAVE") then return true
+       end
+  end
+  return false
+end
 
+-- to keep traits reasonably indempotent, even though the have to interact with one another
+function Cell:callback(method)
+  if method == "set_structure_by_key" then
+    self:set_note_count()
+  elseif method == "set_metabolism" then
+    if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
+    if self:is("DOME") then self:set_er() end
+  elseif method == "set_pulses" then
+    if self:is("DOME")    then self:set_er() end
+  elseif method == "set_notes" then
+    self:set_note_count(self:is("TOPIARY") and 8 or 1)
+  end
+end

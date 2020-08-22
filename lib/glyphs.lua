@@ -77,14 +77,15 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-
+  
   -- self:hive(x, y, l)
   -- self:shrine(x, y, l)
   -- self:gate(x, y, l)
   -- self:rave(x, y, l)
-  self:dome(x, y, l)
-  -- self:small_hive(x+60, y, l)
-  self:small_dome(x+60, y, l)
+  -- self:dome(x, y, l)
+  self:small_hive(x+60, y, 5)
+self:small_signal(x+60, y, l)
+  -- self:small_dome(x+60, y, l)
   -- self:small_topiary(x+60, y, 15)
   -- self:left_wall(x, y, l)
   -- self:right_wall(x, y, l)
@@ -216,6 +217,12 @@ function glyphs:small_random(x, y, l, jitter)
   elseif r == 6 then self:small_topiary(x, y, l)
   elseif r == 7 then self:small_dome(x, y, l)
   end
+end
+
+function glyphs:small_signal(x, y, l)
+  graphics:mlrs(x-1, y-1, 3, 3, l)
+  graphics:mlrs(x+2, y+3, 4, -4, l)
+  graphics:mlrs(x+3, y+3, 0, 5, l)
 end
 
 function glyphs:small_cell(x, y, l)

@@ -1,17 +1,22 @@
 -- ships with norns
 mu = require("musicutil")
-
--- ships with norns
 tu = require("tabutil")
-
--- ships with norns
 er = require("er")
-
--- ships with norns
 engine.name = "PolyPerc"
+
+-- stores application configuration and cell composition data
+include("arcologies/lib/config")
 
 -- the core concept of arcologies, interact with Signals
 include("arcologies/lib/Cell")
+
+-- the non-universal traits of cells
+include("arcologies/lib/traits/er_trait")
+include("arcologies/lib/traits/metabolism_trait")
+include("arcologies/lib/traits/notes_trait")
+include("arcologies/lib/traits/offset_trait")
+include("arcologies/lib/traits/pulses_trait")
+include("arcologies/lib/traits/velocity_trait")
 
 -- emitted by Cells, "bangs" that move n, e, s, w
 include("arcologies/lib/Signal")

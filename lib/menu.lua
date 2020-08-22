@@ -55,13 +55,13 @@ function menu:scroll_value(d)
     if s == "STRUCTURE" then
       popup:launch("structure", d, "enc", 3)
     elseif s == "OFFSET" then
-      keeper.selected_cell:set_offset(util.clamp(keeper.selected_cell.offset + d, 0, 15))
+      keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
     elseif s == "VELOCITY" then
       keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
     elseif s == "METABOLISM" then
       keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
-    elseif s == "NOTE INDEX" then
-      keeper.selected_cell:cycle_note_index(d)
+    elseif s == "INDEX" then
+      keeper.selected_cell:cycle_state_index(d)
     elseif s == "PULSES" then
       keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
     elseif s == "DOCS" then
@@ -107,7 +107,7 @@ function menu:render(bool)
     if page.active_page == 2 and render_values 
       and keeper.selected_cell:is("TOPIARY") 
       and string.find(self.items[i], "NOTE") 
-      and string.find(self.items[i], keeper.selected_cell.note_index)
+      and string.find(self.items[i], keeper.selected_cell.state_index)
       and not string.find(self.items[i], "INDEX") then
       graphics:text(56, offset, "> " .. keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
   

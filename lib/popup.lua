@@ -114,7 +114,7 @@ function popup:change()
   if self.current_attribute == "seed" then
     params:set("seed", params:get("seed") + self.current_value)
   elseif self.current_attribute == "structure" then
-    keeper.selected_cell:set_structure(keeper.selected_cell.structure_key + self.current_value)
+    keeper.selected_cell:set_structure_by_key(keeper.selected_cell.structure_key + self.current_value)
     self:title_message(keeper.selected_cell.structure_value)
   elseif self.current_attribute == "note1" then
     keeper.selected_cell:set_note(fn.temp_note(1) + self.current_value, 1)

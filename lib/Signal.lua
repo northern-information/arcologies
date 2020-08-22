@@ -2,17 +2,12 @@ Signal = {}
 
 function Signal:new(x, y, h, g)
   local s = setmetatable({}, { __index = Signal })
-
-  -- constants
   s.generation = (g or counters.music_generation())
-
-  -- mutable
   s.x = x
   s.y = y
-  s.id = fn.id()
+  s.id = "signal-" .. fn.id()  -- unique identifier for this signal
+  s.index = fn.index(x, y) -- location on the grid
   s.heading = h
-  s.index = fn.index(x, y)
-
   return s
 end
 
