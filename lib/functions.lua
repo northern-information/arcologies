@@ -158,7 +158,7 @@ end
 
 function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
-  keeper.selected_cell:set_structure_by_key(math.random(1, 6))
+  keeper.selected_cell:set_structure_by_key(math.random(1, #config.structures))
   local ports = { "n", "e", "s", "w" }
   for i = 1, #ports do
     if fn.coin() == 1 then

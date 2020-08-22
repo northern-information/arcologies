@@ -1,10 +1,56 @@
 glyphs = {}
 
 function glyphs.init()
-  glyphs.available = Cell:new().structures
+  glyphs.available = config.structures
 end
 
 -- full-size glyphs (22 x 26)
+
+function glyphs:test()
+  local x = 32
+  local y = 20
+  local l = 15
+  self:bounding_box(x, y, l)
+  
+  -- self:hive(x, y, 5)
+  -- self:shrine(x, y, l)
+  -- self:gate(x, y, l)
+  -- self:rave(x, y, l)
+  -- self:dome(x, y, l)
+  -- self:hive(x, y, l)
+  self:maze(x, y, l)
+
+  -- self:small_hive(x+60, y, 5)
+  -- self:small_signal(x+60, y, l)
+  -- self:small_dome(x+60, y, l)
+  -- self:small_topiary(x+60, y, 15)
+  self:small_maze(x+60, y, l)
+
+
+  -- self:left_wall(x, y, l)
+  -- self:right_wall(x, y, l)
+  -- self:three_quarter_left_wall(x, y, l)
+  -- self:three_quarter_right_wall(x, y, l)
+  -- self:roof(x, y, l)
+  -- self:third_floor(x, y, l)
+  -- self:second_floor(x, y, l)
+  -- self:floor(x, y, l)
+  -- self:kasagi(x, y, l)
+  -- self:foundation(x, y, l)
+
+  -- self:north_port(x, y, l)
+  -- self:east_port(x, y, l)
+  -- self:south_port(x, y, l)
+  -- self:west_port(x, y, l)
+end
+
+function glyphs:bounding_box(x, y, l)
+  graphics:mlrs(x, y-2, 22, 0, 5)
+  graphics:mlrs(x, y+29, 22, 0, 5)
+  graphics:mlrs(x-2, y, 0, 26, 5)
+  graphics:mlrs(x+25, y, 0, 26, 5)
+end
+
 
 function glyphs:random(x, y, l, jitter)
   local r = math.random(1, 6)
@@ -72,45 +118,17 @@ function glyphs:dome(x, y, l)
   self:column(x, y, l)
 end
 
-function glyphs:test()
-  local x = 32
-  local y = 20
-  local l = 15
-  self:bounding_box(x, y, l)
-  
-  -- self:hive(x, y, l)
-  -- self:shrine(x, y, l)
-  -- self:gate(x, y, l)
-  -- self:rave(x, y, l)
-  -- self:dome(x, y, l)
-  self:small_hive(x+60, y, 5)
-self:small_signal(x+60, y, l)
-  -- self:small_dome(x+60, y, l)
-  -- self:small_topiary(x+60, y, 15)
-  -- self:left_wall(x, y, l)
-  -- self:right_wall(x, y, l)
-  -- self:three_quarter_left_wall(x, y, l)
-  -- self:three_quarter_right_wall(x, y, l)
-  -- self:roof(x, y, l)
-  -- self:third_floor(x, y, l)
-  -- self:second_floor(x, y, l)
-  -- self:floor(x, y, l)
-  -- self:kasagi(x, y, l)
-  -- self:foundation(x, y, l)
-
-  -- self:north_port(x, y, l)
-  -- self:east_port(x, y, l)
-  -- self:south_port(x, y, l)
-  -- self:west_port(x, y, l)
+function glyphs:maze(x, y, l)
+  self:roof(x, y, l)
+  self:third_floor(x, y, l)
+  self:second_floor(x, y, l)
+  graphics:rect(x+10, y+18, 12, 2, l)  
+  self:basement(x, y, l)
+  self:half_left_wall(x, y, l)
+  graphics:rect(x, y, 2, 8, l)
+  graphics:rect(x+20, y+6, 2, 8, l)
+  graphics:rect(x+20, y+18, 2, 8, l)
 end
-
-function glyphs:bounding_box(x, y, l)
-  graphics:mlrs(x, y-2, 22, 0, 5)
-  graphics:mlrs(x, y+29, 22, 0, 5)
-  graphics:mlrs(x-2, y, 0, 26, 5)
-  graphics:mlrs(x+25, y, 0, 26, 5)
-end
-
 
 -- full-size glyph components
 
@@ -160,6 +178,10 @@ end
 
 function glyphs:floor(x, y, l)
   graphics:rect(x, y+18, 22, 2, l)
+end
+
+function glyphs:basement(x, y, l)
+  graphics:rect(x, y+24, 22, 2, l)
 end
 
 function glyphs:foundation(x, y, l)
@@ -275,6 +297,18 @@ function glyphs:small_dome(x, y, l)
   self:small_column(x, y, l)
 end
 
+function glyphs:small_maze(x, y, l)
+  self:small_roof(x, y, l)
+  self:small_third_floor(x, y, l)
+  self:small_second_floor(x, y, l)
+  graphics:mlrs(x-1, y, 1, 2, l)  
+  self:small_basement(x, y, l)
+  self:small_half_left_wall(x, y, l)
+  graphics:mlrs(x+5, y+2, 1, 2, l)  
+  graphics:mlrs(x+5, y+5, 1, 2, l)  
+  graphics:mlrs(x+2, y+5, 3, 1, l)  
+end
+
 -- small components
 
 function glyphs:small_left_wall(x, y, l)
@@ -310,7 +344,7 @@ function glyphs:small_kasagi(x, y, l)
 end
 
 function glyphs:small_roof(x, y, l)
-  graphics:mls(x, y, x+6, y, l)
+  graphics:mls(x-1, y, x+6, y, l)
 end
 
 function glyphs:small_third_floor(x, y, l)
@@ -323,6 +357,10 @@ end
 
 function glyphs:small_floor(x, y, l)
   graphics:mls(x-1, y+6, x+6, y+6, l)
+end
+
+function glyphs:small_basement(x, y, l)
+  graphics:mls(x-1, y+8, x+6, y+8, l)
 end
 
 function glyphs:small_foundation(x, y, l)

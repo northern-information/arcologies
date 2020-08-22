@@ -1,7 +1,7 @@
 local parameters = {}
 
 function parameters.init()
-  params:add_separator("ARCOLOGIES")
+  params:add_separator("A R C O L O G I E S")
 
   parameters.bpm_to_seconds = 0
   params:add{ type = "number", id = "bpm", name = "BPM",
@@ -10,13 +10,9 @@ function parameters.init()
   }
 
   params:add{ type = "number", id = "seed", name = "SEED",
-    min = 0, max = 32, default = 13
+    min = 0, max = 32, default = 16
   }
   params:hide("seed")
-
-  params:add_option("crow_out", "CROW", {"ENABLED", "DISABLED"}, 1)
-  params:add_option("just_friends_out", "JUST FRIENDS", {"ENABLED", "DISABLED"}, 1)
-  params:add_option("midi_out", "MIDI", {"ENABLED", "DISABLED"}, 1)
   
   parameters.is_splash_screen_on = true
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})

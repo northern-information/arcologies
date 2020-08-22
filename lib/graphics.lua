@@ -15,31 +15,81 @@ function graphics.init()
   graphics.cell_attributes = Cell:new().attributes
 end
 
+function graphics:structure_and_title(string)
+    local x = self.structure_x
+    local y = self.structure_y
+    local l = 0
+        if string == "HIVE"     then glyphs:hive(x, y, l)
+    elseif string == "SHRINE"   then glyphs:shrine(x, y, l)
+    elseif string == "GATE"     then glyphs:gate(x, y, l)
+    elseif string == "RAVE"     then glyphs:rave(x, y, l)
+    elseif string == "TOPIARY"  then glyphs:topiary(x, y, l)
+    elseif string == "DOME"     then glyphs:dome(x, y, l)
+    elseif string == "MAZE"     then glyphs:maze(x, y, l)
+    end
+end
+
+function graphics:structure_palette(i)
+  self:rect(((i - 1) * 15) + 1, 12, 13, 13, 15)
+  glyphs:small_hive(     5, 15, i == 1 and 0 or 15)
+  glyphs:small_shrine(  20, 15, i == 2 and 0 or 15)
+  glyphs:small_gate(    35, 15, i == 3 and 0 or 15)
+  glyphs:small_rave(    50, 15, i == 4 and 0 or 15)
+  glyphs:small_topiary( 65, 15, i == 5 and 0 or 15)
+  glyphs:small_dome(    80, 15, i == 6 and 0 or 15)
+  glyphs:small_maze(    95, 15, i == 7 and 0 or 15)
+end
+
+function graphics:structure_palette_analysis(x, y, o, name)
+  glyphs:small_signal(  x + (o * 0),  y, name == "SIGNALS" and 15 or 5)
+  glyphs:small_hive(    x + (o * 3),  y, name == "HIVE" and 15 or 5)
+  glyphs:small_shrine(  x + (o * 6),  y, name == "SHRINE" and 15 or 5)
+  glyphs:small_gate(    x + (o * 9),  y, name == "GATE" and 15 or 5)
+  glyphs:small_rave(    x + (o * 12), y, name == "RAVE" and 15 or 5)
+  glyphs:small_topiary( x + (o * 15), y, name == "TOPIARY" and 15 or 5)
+  glyphs:small_dome(    x + (o * 18), y, name == "DOME" and 15 or 5)
+  glyphs:small_maze(    x + (o * 21), y, name == "MAZE" and 15 or 5)
+end
+
 function graphics:time(x, y)
   local o = 3
   local x2 = x
   local y2 = y + o
-  local meta = keeper.selected_cell.metabolism or 0
+  local meta = keeper.selected_cell.metabolism
   local off =  keeper.selected_cell.offset or 0
   local b = counters.this_beat()
   -- global transport
-  for i = 1,sound.length do
+  for i = 1, sound.length do
     self:ps((i * o) + x, y, (b == i) and 5 or 0)
   end
-  -- dome
-  if keeper.is_cell_selected and keeper.selected_cell:is("DOME") then
-    for k,v in pairs(keeper.selected_cell.er) do
+  -- no metabolism, no soup
+  if meta == 0 then return end
+  -- dome & maze
+  if keeper.is_cell_selected and (keeper.selected_cell:is("DOME") or keeper.selected_cell:is("MAZE")) then
+    local steps = {}
+    if keeper.selected_cell:is("DOME") then
+      steps = keeper.selected_cell.er
+    elseif keeper.selected_cell:is("MAZE") then
+      steps = keeper.selected_cell.turing
+    end
+    for k,v in pairs(steps) do
       local step = ((fn.cycle(b % meta, 1, meta)) == k)
       local level = 0
-          if step and v then level = 5
-      elseif not step and v then level = 0
-      else   level = 15 end
-      self:ps(((k + off) * o) + x2, y2, level)
+      if step and v then
+        level = 5
+      elseif not step and v then
+        level = 0
+      else 
+        level = 15
+      end
+      local this_offset = ((k + off) > meta) and ((k + off) - meta) or (k + off)
+      self:ps((this_offset * o) + x2, y2, level)
     end
   -- anything with an offset
   elseif keeper.is_cell_selected and keeper.selected_cell:has("OFFSET") then
-    for i = 1,meta do
-      self:ps(((i + off)* o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
+    for i = 1, meta do
+      local this_offset = ((i + off) > meta) and ((i + off) - meta) or (i + off)
+      self:ps((this_offset * o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
     end
   end
 end
@@ -213,19 +263,6 @@ function graphics:icon(x, y, string, invert)
   self:reset_font()
 end
 
-function graphics:structure_and_title(string)
-    local x = self.structure_x
-    local y = self.structure_y
-    local l = 0
-        if string == "HIVE"     then glyphs:hive(x, y, l)
-    elseif string == "SHRINE"   then glyphs:shrine(x, y, l)
-    elseif string == "GATE"     then glyphs:gate(x, y, l)
-    elseif string == "RAVE"     then glyphs:rave(x, y, l)
-    elseif string == "TOPIARY"  then glyphs:topiary(x, y, l)
-    elseif string == "DOME"     then glyphs:dome(x, y, l)
-    end
-end
-
 function graphics:draw_ports()
   if keeper.is_cell_selected then
     if keeper.selected_cell:is_port_open("n") then
@@ -249,22 +286,19 @@ function graphics:analysis(items, selected_item_string)
   -- menu
   self:structure_palette_analysis(1, 56, 4, selected_item_string)
 
-
-
   -- values
   local chart = {}
+
   chart.values = {}
-  chart.values[1] = #keeper.signals  
-  chart.values[2] = keeper:count_cells("HIVE")
-  chart.values[3] = keeper:count_cells("SHRINE")
-  chart.values[4] = keeper:count_cells("GATE")
-  chart.values[5] = keeper:count_cells("RAVE")
-  chart.values[6] = keeper:count_cells("TOPIARY")
-  chart.values[7] = keeper:count_cells("DOME")
+  chart.values[1] = #keeper.signals
+  for i = 1, #config.structures do chart.values[i+1] = keeper:count_cells(config.structures[i]) end
+
   chart.values_total = 0
   for i = 1, #chart.values do chart.values_total = chart.values_total + chart.values[i] end
+
   chart.percentages = {}
   for i = 1, #chart.values do chart.percentages[i] = chart.values[i] / chart.values_total end
+
   chart.degrees = {}
   for i = 1, #chart.percentages do chart.degrees[i] = chart.percentages[i] * 360 end
 
@@ -278,7 +312,7 @@ function graphics:analysis(items, selected_item_string)
   local percent = 0
   local spacing = 10
   local pie_highlight = 0
-  self:circle(pie_chart_x, pie_chart_y, pie_chart_r, 15)
+  self:circle(pie_chart_x, pie_chart_y, pie_chart_r, 5)
   self:circle(pie_chart_x, pie_chart_y, pie_chart_r - 1, 0)
   if #keeper.cells + #keeper.signals > 0 then
     for i = 1, #chart.percentages do
@@ -286,16 +320,15 @@ function graphics:analysis(items, selected_item_string)
       text_degrees = text_degrees + chart.degrees[i] -- / 2
       sector_x = math.cos(math.rad(total_degrees)) * pie_chart_r
       sector_y = math.sin(math.rad(total_degrees)) * pie_chart_r
-      self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, 15)
+      self:mlrs(pie_chart_x, pie_chart_y, sector_x, sector_y, i == selected_item_key and 15 or 5)
       text_x = math.cos(math.rad(text_degrees)) * pie_chart_r
       text_y = math.sin(math.rad(text_degrees)) * pie_chart_r
-      pie_highlight = (i == selected_item_key) and 15 or 3
-      self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, pie_highlight)
-      self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
+      if i == selected_item_key then
+        self:rect(pie_chart_x + text_x, pie_chart_y + text_y, screen.text_extents(chart.values[i]) + 2, 7, 15)
+        self:text_left(pie_chart_x + text_x + 1, pie_chart_y + text_y + 6, chart.values[i], 0)
+      end
     end
   end
-
-
 
   -- line graph
   local line_graph_start_x = 54
@@ -303,15 +336,13 @@ function graphics:analysis(items, selected_item_string)
   local line_graph_spacing = 2
   local line_graph_y = 0
   local line_highlight = 0
-  for i = 1, 7 do
+  for i = 1, #config.structures do
     if chart.values[i] ~= 0 then
       line_highlight = (i == selected_item_key) and 15 or 1
       line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
       self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, line_highlight)
     end
   end
-
-
 
   -- grid (thank you @okyeron)
   for i = 1, fn.grid_width() * fn.grid_height() do
@@ -414,26 +445,6 @@ function graphics:piano(i)
   screen.font_size(30)
   self:text_center(64, 64, keeper.selected_cell:get_note_name(i), 15, 10)
   self:reset_font()
-end
-
-function graphics:structure_palette(i)
-  self:rect(((i - 1) * 15) + 1, 12, 13, 13, 15)
-  glyphs:small_hive(5, 15, i == 1 and 0 or 15)
-  glyphs:small_shrine(20, 15, i == 2 and 0 or 15)
-  glyphs:small_gate(35, 15, i == 3 and 0 or 15)
-  glyphs:small_rave(50, 15, i == 4 and 0 or 15)
-  glyphs:small_topiary(65, 15, i == 5 and 0 or 15)
-  glyphs:small_dome(80, 15, i == 6 and 0 or 15)
-end
-
-function graphics:structure_palette_analysis(x, y, o, name)
-  glyphs:small_signal(x, y, name == "SIGNALS" and 15 or 5)
-  glyphs:small_hive(x + (o * 3), y, name == "HIVE" and 15 or 5)
-  glyphs:small_shrine(x + (o * 6), y, name == "SHRINE" and 15 or 5)
-  glyphs:small_gate(x + (o * 9), y, name == "GATE" and 15 or 5)
-  glyphs:small_rave(x + (o * 12), y, name == "RAVE" and 15 or 5)
-  glyphs:small_topiary(x + (o * 15), y, name == "TOPIARY" and 15 or 5)
-  glyphs:small_dome(x + (o * 18), y, name == "DOME" and 15 or 5)
 end
 
 function graphics:seed()

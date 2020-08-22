@@ -62,6 +62,8 @@ function menu:scroll_value(d)
       keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
     elseif s == "INDEX" then
       keeper.selected_cell:cycle_state_index(d)
+    elseif s == "PROBABILITY" then
+      keeper.selected_cell:set_probability(keeper.selected_cell.probability + d)
     elseif s == "PULSES" then
       keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
     elseif s == "DOCS" then
@@ -103,18 +105,20 @@ function menu:render(bool)
     local offset = 10 + (i * 8) - (self.offset * 8)
     -- menu item
     graphics:text(2, offset, self.items[i], item_level)
+    
     -- panel value for cell designer
-    if page.active_page == 2 and render_values 
-      and keeper.selected_cell:is("TOPIARY") 
-      and string.find(self.items[i], "NOTE") 
-      and string.find(self.items[i], keeper.selected_cell.state_index)
-      and not string.find(self.items[i], "INDEX") then
-      graphics:text(56, offset, "> " .. keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
-  
-    elseif page.active_page == 2 and render_values 
-      and self.items[i] ~= "STRUCTURE" then
-      graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
-
+    if page.active_page == 2 and render_values then
+      if keeper.selected_cell:is("TOPIARY") 
+        and string.find(self.items[i], "NOTE") 
+        and string.find(self.items[i], keeper.selected_cell.state_index)
+        and not string.find(self.items[i], "INDEX") then
+        graphics:text(56, offset, "> " .. keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
+      end
+      if self.items[i] == "PROBABILITY" then
+        graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]) .. "%", 0)
+      elseif self.items[i] ~= "STRUCTURE" then
+        graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
+      end
     end
   end
   -- indicate when more menu items are available above

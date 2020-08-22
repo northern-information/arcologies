@@ -1,9 +1,14 @@
 config = {}
+config["outputs"] = {
+  ["crow"] = false,
+  ["jf"] = false,
+  ["midi"] = false
+}
 config["page_titles"] = {
   "ARCOLOGIES",
   "DESIGNER",
   "ANALYSIS",
-  -- "DEV"
+  "DEV"
 }
 config["home_items"] = {
   "SEED",
@@ -20,7 +25,8 @@ config["analysis_items"] = {
   "GATE",
   "RAVE",
   "TOPIARY",
-  "DOME"
+  "DOME",
+  "MAZE"
 }
 config["structures"] = {
   "HIVE",
@@ -28,7 +34,8 @@ config["structures"] = {
   "GATE",
   "RAVE",
   "TOPIARY",
-  "DOME"
+  "DOME",
+  "MAZE"
 }
 config["attributes"] = {
   "STRUCTURE",
@@ -88,6 +95,14 @@ config["structure_attribute_map"] = {
     "OFFSET",
     "METABOLISM",
     "PULSES",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["MAZE"] = {
+    "INDEX",
+    "OFFSET",
+    "METABOLISM",
+    "PROBABILITY",
     "STRUCTURE",
     "DOCS"
   }

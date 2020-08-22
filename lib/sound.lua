@@ -16,7 +16,7 @@ function sound.init()
   sound:set_scale(sound.default_scale)
 
   -- crow initialization
-  if params:get("crow_out") == 1 then
+  if config.outputs.crow then
     print("crow on")
     -- crow.init()
     -- crow.clear()
@@ -26,7 +26,7 @@ function sound.init()
   end
 
   -- midi initialization
-  if params:get("midi_out") == 1 then
+  if config.outputs.midi == 1 then
     print("midi on")
   --   sound.midi_out = midi.connect(1)
   end

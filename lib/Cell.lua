@@ -26,7 +26,9 @@ function Cell:new(x, y, g)
   metabolism_trait.init(self)
   notes_trait.init(self)
   offset_trait.init(self)
+  probability_trait.init(self)
   pulses_trait.init(self)
+  turing_trait.init(self)
   velocity_trait.init(self)
   return c
 end
@@ -98,20 +100,21 @@ end
 
 -- todo: there's gotta be a better way to do this
 function Cell:get_menu_value_by_attribute(a)
-      if a == "STRUCTURE"  then return self.structure_value
-  elseif a == "OFFSET"     then return self.offset
-  elseif a == "INDEX"      then return self.state_index  
-  elseif a == "VELOCITY"   then return self.velocity
-  elseif a == "METABOLISM" then return self.metabolism
-  elseif a == "PULSES"     then return self.pulses
-  elseif a == "NOTE 1"     then return self:get_note_name(1)
-  elseif a == "NOTE 2"     then return self:get_note_name(2)
-  elseif a == "NOTE 3"     then return self:get_note_name(3)
-  elseif a == "NOTE 4"     then return self:get_note_name(4)
-  elseif a == "NOTE 5"     then return self:get_note_name(5)
-  elseif a == "NOTE 6"     then return self:get_note_name(6)
-  elseif a == "NOTE 7"     then return self:get_note_name(7)
-  elseif a == "NOTE 8"     then return self:get_note_name(8)
+      if a == "INDEX"       then return self.state_index  
+  elseif a == "METABOLISM"  then return self.metabolism
+  elseif a == "OFFSET"      then return self.offset
+  elseif a == "PROBABILITY" then return self.probability
+  elseif a == "PULSES"      then return self.pulses
+  elseif a == "STRUCTURE"   then return self.structure_value  
+  elseif a == "VELOCITY"    then return self.velocity
+  elseif a == "NOTE 1"      then return self:get_note_name(1)
+  elseif a == "NOTE 2"      then return self:get_note_name(2)
+  elseif a == "NOTE 3"      then return self:get_note_name(3)
+  elseif a == "NOTE 4"      then return self:get_note_name(4)
+  elseif a == "NOTE 5"      then return self:get_note_name(5)
+  elseif a == "NOTE 6"      then return self:get_note_name(6)
+  elseif a == "NOTE 7"      then return self:get_note_name(7)
+  elseif a == "NOTE 8"      then return self:get_note_name(8)
   end
 end
 
@@ -131,6 +134,7 @@ theres  only ~40 lines of code below...
 function Cell:setup()
   if self:is("RAVE") then self:drugs() end
   if self:is("DOME") then self:set_er() end
+  if self:is("MAZE") then self:set_turing() end
 end
 
 -- turn on, tune in, drop out... close all the ports, then flip coins to open them
@@ -149,6 +153,8 @@ function Cell:is_spawning()
     return false
   elseif self:is("DOME") then
     return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+  elseif self:is("MAZE") then
+    return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 then
         if self:is("HIVE") then return true
     elseif self:is("RAVE") then return true
@@ -165,7 +171,7 @@ function Cell:callback(method)
     if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
     if self:is("DOME") then self:set_er() end
   elseif method == "set_pulses" then
-    if self:is("DOME")    then self:set_er() end
+    if self:is("DOME") then self:set_er() end
   elseif method == "set_notes" then
     self:set_note_count(self:is("TOPIARY") and 8 or 1)
   end

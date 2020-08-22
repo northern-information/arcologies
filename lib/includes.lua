@@ -15,7 +15,9 @@ include("arcologies/lib/traits/er_trait")
 include("arcologies/lib/traits/metabolism_trait")
 include("arcologies/lib/traits/notes_trait")
 include("arcologies/lib/traits/offset_trait")
+include("arcologies/lib/traits/probability_trait")
 include("arcologies/lib/traits/pulses_trait")
+include("arcologies/lib/traits/turing_trait")
 include("arcologies/lib/traits/velocity_trait")
 
 -- emitted by Cells, "bangs" that move n, e, s, w
