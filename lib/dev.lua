@@ -38,16 +38,18 @@ function dev:scene(i)
 
 
   elseif i == 3 then
-    keeper:select_cell(4, 4)
-    keeper.selected_cell:change("HIVE")
-    -- keeper.selected_cell:open_port("n")
-    -- keeper.selected_cell:open_port("e")
-    -- keeper.selected_cell:open_port("s")
-    -- keeper.selected_cell:open_port("w")
-    keeper.selected_cell:set_metabolism(8)
-    keeper.selected_cell:set_offset(1)
+    -- keeper:select_cell(4, 4)
+    -- keeper.selected_cell:change("SHRINE")
+    -- keeper.selected_cell:set_note(72)
+    -- -- keeper.selected_cell:open_port("n")
+    -- -- keeper.selected_cell:open_port("e")
+    -- -- keeper.selected_cell:open_port("s")
+    -- -- keeper.selected_cell:open_port("w")
+    -- keeper.selected_cell:set_metabolism(8)
+    -- keeper.selected_cell:set_offset(1)
     -- keeper:deselect_cell()
-    page:select(2)      
+    page:select(2)
+    menu:select_item(7)      
 
 
   elseif i == 4 then

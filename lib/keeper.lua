@@ -177,8 +177,8 @@ end
 
 function keeper:delete_cell(id)
   id = id == nil and self.selected_cell_id or id
-  for k,v in pairs(self.cells) do
-    if v.id == id then
+  for k,cell in pairs(self.cells) do
+    if cell.id == id then
       table.remove(self.cells, k)
       self:deselect_cell()
     end
@@ -215,12 +215,22 @@ end
 
 function keeper:count_cells(name)
   local count = 0
-  for k,v in pairs(self.cells) do
-    if v.structure_value == name then
+  for k,cell in pairs(self.cells) do
+    if cell.structure_value == name then
       count = count + 1
     end
   end
   return count
+end
+
+-- happens when the user changes the root note or the scale
+function keeper:update_all_notes()
+  for k,cell in pairs(self.cells) do
+    for i=1,8 do
+      -- delta of zero just jiggles the handle
+      cell:browse_notes(0, i)
+    end
+  end
 end
 
 return keeper

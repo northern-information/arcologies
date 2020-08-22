@@ -1,11 +1,12 @@
 -- ships with norns
+crow = require("crow")
 mu = require("musicutil")
 tu = require("tabutil")
 er = require("er")
 engine.name = "PolyPerc"
 
 -- stores application configuration and cell composition data
-include("arcologies/lib/config")
+config = include("arcologies/lib/config")
 
 -- the core concept of arcologies, interact with Signals
 include("arcologies/lib/Cell")
@@ -26,8 +27,14 @@ include("arcologies/lib/Signal")
 -- global functions
 fn = include("arcologies/lib/functions")
 
+-- the whole murder of them
+c = include("arcologies/lib/crow")
+
 -- clocks, metros, timing
 counters = include("arcologies/lib/counters")
+
+-- in app documentation
+docs = include("arcologies/lib/docs")
 
 -- grid interactions and leds
 g = include("arcologies/lib/g")
@@ -43,6 +50,9 @@ keeper = include("arcologies/lib/keeper")
 
 -- build the side menus for norns pages
 menu = include("arcologies/lib/menu")
+
+-- midi interface
+m = include("arcologies/lib/midi")
 
 -- controller for norns pages
 page = include("arcologies/lib/page")

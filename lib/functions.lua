@@ -138,14 +138,6 @@ function fn.cleanup()
   poll:clear_all()
 end
 
-function fn.temp_note(i)
- -- increment with either the note if is already in this scale or snap
-  return
-    fn.table_find(sound.notes_in_this_scale, keeper.selected_cell.notes[i])
-  or 
-    fn.table_find(sound.notes_in_this_scale, mu.snap_note_to_array(keeper.selected_cell.notes[i], sound.notes_in_this_scale))
-end
-
 function fn.seed_cells()
   if params:get("seed") ~= 0 and not fn.no_grid() then
     keeper:delete_all_cells()
@@ -169,7 +161,7 @@ function fn.random_cell()
   keeper.selected_cell:set_metabolism(math.random(1, sound.length or 16))
   if keeper.selected_cell:is("TOPIARY") then
     for i=1,8 do
-      keeper.selected_cell:set_note(math.random(math.floor(#sound.notes_in_this_scale * .6, #sound.notes_in_this_scale * .8)), i)
+      keeper.selected_cell:set_note(math.random(math.floor(#sound.scale_notes * .6, #sound.scale_notes * .8)), i)
     end
   end
   if keeper.selected_cell:is("DOME") then

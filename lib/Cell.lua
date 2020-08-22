@@ -172,7 +172,7 @@ function Cell:callback(method)
     if self:is("DOME") then self:set_er() end
   elseif method == "set_pulses" then
     if self:is("DOME") then self:set_er() end
-  elseif method == "set_notes" then
+  elseif method == "set_note" then
     self:set_note_count(self:is("TOPIARY") and 8 or 1)
   end
 end

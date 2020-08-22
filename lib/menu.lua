@@ -11,6 +11,7 @@ function menu:reset()
   self.selected_item = 1
   self.selected_item_string = ""
   self.offset = 0
+  docs:set_active(false)
 end
 
 function menu:scroll(d)
@@ -21,6 +22,7 @@ function menu:select_item(i)
   self.selected_item = i == nil and self.selected_item or i
   self.selected_item_string  = self.items[self.selected_item]
   self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
+  docs:set_active(self.selected_item_string == "DOCS")
 end
 
 function menu:select_item_by_name(name)
@@ -46,8 +48,10 @@ function menu:scroll_value(d)
       sound:cycle_length(d)
     elseif s == "ROOT" then
       sound:cycle_root(d)
+      keeper:update_all_notes()
     elseif s == "SCALE" then
-      sound:set_scale(sound.current_scale + d)
+      sound:set_scale(sound.scale + d)
+      keeper:update_all_notes()
     end
 
   -- cell designer
@@ -113,8 +117,7 @@ function menu:render(bool)
         and string.find(self.items[i], keeper.selected_cell.state_index)
         and not string.find(self.items[i], "INDEX") then
         graphics:text(56, offset, "> " .. keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
-      end
-      if self.items[i] == "PROBABILITY" then
+      elseif self.items[i] == "PROBABILITY" then
         graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]) .. "%", 0)
       elseif self.items[i] ~= "STRUCTURE" then
         graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)

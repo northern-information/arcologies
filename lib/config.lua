@@ -1,15 +1,26 @@
 config = {}
-config["outputs"] = {
-  ["crow"] = false,
-  ["jf"] = false,
-  ["midi"] = false
+
+config["settings"] = {
+  ["playback"] = 0,
+  ["length"] = 16,
+  ["root"] = 0,
+  ["scale"] = 1,
+  ["octaves"] = 11
 }
+
+config["outputs"] = {
+  ["midi"] = false,
+  ["crow"] = false,
+  ["jf"] = false
+}
+
 config["page_titles"] = {
   "ARCOLOGIES",
   "DESIGNER",
   "ANALYSIS",
   "DEV"
 }
+
 config["home_items"] = {
   "SEED",
   "BPM",
@@ -18,6 +29,7 @@ config["home_items"] = {
   "SCALE",
   "DOCS"
 }
+
 config["analysis_items"] = {
   "SIGNALS",
   "HIVE",
@@ -28,6 +40,7 @@ config["analysis_items"] = {
   "DOME",
   "MAZE"
 }
+
 config["structures"] = {
   "HIVE",
   "SHRINE",
@@ -37,6 +50,7 @@ config["structures"] = {
   "DOME",
   "MAZE"
 }
+
 config["attributes"] = {
   "STRUCTURE",
   "OFFSET",
@@ -54,6 +68,7 @@ config["attributes"] = {
   "NOTE 7",
   "NOTE 8"
 }
+
 config["structure_attribute_map"] = {
   ["HIVE"] = {
     "OFFSET",
@@ -107,3 +122,37 @@ config["structure_attribute_map"] = {
     "DOCS"
   }
 }
+
+local note_message = { 
+  ["start"] = "NOTE...",
+  ["abort"] = "ABORTED",
+  ["done"] = "CHOSE"
+}
+
+config["popup_messages"] = {
+  ["seed"] = {
+    ["start"] = "SEEDING...",
+    ["abort"] = "ABORTED SEED",
+    ["done"] = "SEEDED"
+  },
+  ["delete_all"] = {
+    ["start"] = "DELETING ALL IN...",
+    ["abort"] = "ABORTED",
+    ["done"] = "DELETED ALL CELLS"
+  },
+  ["structure"] = {
+    ["start"] = "",
+    ["abort"] = "",
+    ["done"] = "CHOSE"
+  },
+  ["note1"] = note_message,
+  ["note2"] = note_message,
+  ["note3"] = note_message,
+  ["note4"] = note_message,
+  ["note5"] = note_message,
+  ["note6"] = note_message,
+  ["note7"] = note_message,
+  ["note8"] = note_message
+}
+
+return config

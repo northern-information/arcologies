@@ -45,13 +45,17 @@ function page:home()
   menu:select_item()
   if popup:is_active() then
     popup:render()
+  elseif docs:is_active() then
+    graphics:panel()
+    menu:render(false)
+    graphics:render_docs()
   else
     graphics:panel()
     menu:render()
     graphics:bpm(55, 32, params:get("bpm"), 0)
     graphics:playback_icon(56, 35)
     graphics:icon(76, 35, sound.length, menu.selected_item == 4 and 1 or 0)
-    graphics:text(56, 61, mu.note_num_to_name(sound.current_root) .. " " .. sound.current_scale_name, 0)
+    graphics:text(56, 61, mu.note_num_to_name(sound.root) .. " " .. sound.scale_name, 0)
     graphics:rect(126, 55, 2, 7, 15)
   end
   graphics:title_bar_and_tabs()
@@ -63,6 +67,10 @@ function page:cell_designer()
   else
     if not keeper.is_cell_selected then
       graphics:select_a_cell()
+    elseif docs:is_active() then
+      graphics:panel()
+      menu:render(false)
+      graphics:render_docs()
     else
       graphics:panel()
       menu:set_items(keeper.selected_cell:menu_items())

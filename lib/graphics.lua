@@ -51,6 +51,19 @@ function graphics:structure_palette_analysis(x, y, o, name)
   glyphs:small_maze(    x + (o * 21), y, name == "MAZE" and 15 or 5)
 end
 
+function graphics:render_docs()
+  local sheet = page.active_page == 1 and "HOME" or keeper.structure_value
+  if docs.sheets[sheet] == nil then
+    glyphs:random(81, self.structure_y, 13) 
+    self:text_center(91, 33, "NO DOCS", 0)
+    self:text_center(91, 43, "FOUND", 0)
+  else
+    for i, row in pairs(docs.sheets[sheet]) do
+      graphics:text(56, 10 + (i * 8), docs.sheets[sheet][i], 0)
+    end
+  end
+end
+
 function graphics:time(x, y)
   local o = 3
   local x2 = x
@@ -125,7 +138,7 @@ function graphics:top_message()
     self.temporary_message_on = false
     if sound.playback == 0 then
       message = self:ready_animation(math.fmod(counters.ui.quarter_frame, 10) + 1)
-    else
+    elseif not docs:is_active() then
       self:time(#page.titles * (self.tab_padding + self.tab_width), 2)
     end
   end
@@ -150,6 +163,8 @@ end
 function graphics:page_name()
   if self.temporary_message_on then
     -- empty
+  elseif docs:is_active() then
+    self:text_right(127, 6, "DOCUMENTATION", 0)
   elseif page.active_page == 2 and keeper.is_cell_selected then
     self:text_right(127, 6, keeper.selected_cell.structure_value, 0)
   else
@@ -475,9 +490,9 @@ end
 
 function graphics:select_a_cell()
   self:panel()
-  self:text(64, 33, "SELECT", 0)
-  self:text(64, 43, "A CELL", 0)
-  glyphs:cell(self.structure_x, self.structure_y, 0)
+  glyphs:random(81, self.structure_y, 13) 
+  self:text_center(92, 33, "SELECT", 0)
+  self:text_center(92, 43, "A CELL", 0)
 end
 
 function graphics:ready_animation(i)

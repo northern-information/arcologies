@@ -7,36 +7,7 @@ function popup.init()
   popup.current_attribute = ""
   popup.current_value = ""
   popup.key_timer = 0
-  popup.note_message = { 
-      ["start"] = "NOTE...",
-      ["abort"] = "ABORTED",
-      ["done"] = "CHOSE"
-  }
-  popup.messages = {
-    ["seed"] = {
-      ["start"] = "SEEDING...",
-      ["abort"] = "ABORTED SEED",
-      ["done"] = "SEEDED"
-    },
-    ["delete_all"] = {
-      ["start"] = "DELETING ALL IN...",
-      ["abort"] = "ABORTED",
-      ["done"] = "DELETED ALL CELLS"
-    },
-    ["structure"] = {
-      ["start"] = "",
-      ["abort"] = "",
-      ["done"] = "CHOSE"
-    },
-    ["note1"] = popup.note_message,
-    ["note2"] = popup.note_message,
-    ["note3"] = popup.note_message,
-    ["note4"] = popup.note_message,
-    ["note5"] = popup.note_message,
-    ["note6"] = popup.note_message,
-    ["note7"] = popup.note_message,
-    ["note8"] = popup.note_message
-  }
+  popup.messages = config.popup_messages
 end
 
 function popup:launch(attribute, value, input, number)
@@ -84,13 +55,13 @@ end
 function popup:key_wait()
   if popup.current_attribute == "delete_all" then
     popup.key_timer = 40
-    while popup.key_timer > 0 and k3 == 1 do
+    while popup.key_timer > 0 and keys[3] == 1 do
       popup:title_message(popup.messages[popup.current_attribute]["start"])
       popup.key_timer = popup.key_timer - 1
       fn.dirty_screen(true)
       clock.sleep(1/10)
     end
-    if k3 == 0 then
+    if keys[3] == 0 then
       popup.active = false
       popup:title_message(popup.messages.delete_all.abort)
     else
@@ -117,28 +88,28 @@ function popup:change()
     keeper.selected_cell:set_structure_by_key(keeper.selected_cell.structure_key + self.current_value)
     self:title_message(keeper.selected_cell.structure_value)
   elseif self.current_attribute == "note1" then
-    keeper.selected_cell:set_note(fn.temp_note(1) + self.current_value, 1)
+    keeper.selected_cell:browse_notes(self.current_value, 1)
     self:title_message("MIDI " .. keeper.selected_cell.notes[1])
   elseif self.current_attribute == "note2" then
-    keeper.selected_cell:set_note(fn.temp_note(2) + self.current_value, 2)
+    keeper.selected_cell:browse_notes(self.current_value, 2)
     self:title_message("MIDI " .. keeper.selected_cell.notes[2])
   elseif self.current_attribute == "note3" then
-    keeper.selected_cell:set_note(fn.temp_note(3) + self.current_value, 3)
+    keeper.selected_cell:browse_notes(self.current_value, 3)
     self:title_message("MIDI " .. keeper.selected_cell.notes[3])
   elseif self.current_attribute == "note4" then
-    keeper.selected_cell:set_note(fn.temp_note(4) + self.current_value, 4)
+    keeper.selected_cell:browse_notes(self.current_value, 4)
     self:title_message("MIDI " .. keeper.selected_cell.notes[4])
   elseif self.current_attribute == "note5" then
-    keeper.selected_cell:set_note(fn.temp_note(5) + self.current_value, 5)
+    keeper.selected_cell:browse_notes(self.current_value, 5)
     self:title_message("MIDI " .. keeper.selected_cell.notes[5])
   elseif self.current_attribute == "note6" then
-    keeper.selected_cell:set_note(fn.temp_note(6) + self.current_value, 6)
+    keeper.selected_cell:browse_notes(self.current_value, 6)
     self:title_message("MIDI " .. keeper.selected_cell.notes[6])
   elseif self.current_attribute == "note7" then
-    keeper.selected_cell:set_note(fn.temp_note(7) + self.current_value, 7)
+    keeper.selected_cell:browse_notes(self.current_value, 7)
     self:title_message("MIDI " .. keeper.selected_cell.notes[7])
   elseif self.current_attribute == "note8" then
-    keeper.selected_cell:set_note(fn.temp_note(8) + self.current_value, 8)
+    keeper.selected_cell:browse_notes(self.current_value, 8)
     self:title_message("MIDI " .. keeper.selected_cell.notes[8])
   end
 end

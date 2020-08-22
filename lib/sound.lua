@@ -1,35 +1,20 @@
 local sound = {}
 
 function sound.init()
-  sound.length = 16
-  sound.playback = 0
-  sound.default_root = 12
-  sound.current_root = 12
-  sound.default_scale = 0
-  sound.current_scale = 0
-  sound.current_scale_name = ""
-  sound.current_scale_names = {}
-  sound.notes_in_this_scale = {}
-  for i = 1, #mu.SCALES do
-    table.insert(sound.current_scale_names, mu.SCALES[i].name)
-  end
-  sound:set_scale(sound.default_scale)
+  sound.length = config.settings.length
+  sound.playback = config.settings.playback
+  sound.root = config.settings.root
+  sound.scale = config.settings.scale
+  sound.octaves = config.settings.octaves
+  sound.scale_name = ""
+  sound.scale_names = {}
+  for k,v in pairs(mu.SCALES) do sound.scale_names[k] = mu.SCALES[k].name end
+  sound.scale_notes = {}
+  sound:set_scale(sound.scale)
+end
 
-  -- crow initialization
-  if config.outputs.crow then
-    print("crow on")
-    -- crow.init()
-    -- crow.clear()
-    -- crow.reset()
-    -- crow.output[2].action = "pulse(.025, 5, 1)"
-    -- crow.output[4].action = "pulse(.025, 5, 1)"
-  end
-
-  -- midi initialization
-  if config.outputs.midi == 1 then
-    print("midi on")
-  --   sound.midi_out = midi.connect(1)
-  end
+function sound:snap_note(note)
+  return mu.snap_note_to_array(note, self.scale_notes)
 end
 
 function sound:cycle_length(i)
@@ -41,7 +26,7 @@ function sound:set_playback(i)
 end
 
 function sound:toggle_playback()
-  if sound.playback == 0 then
+  if self.playback == 0 then
     self:set_playback(1)
   else
     self:set_playback(0)
@@ -50,30 +35,34 @@ function sound:toggle_playback()
 end
 
 function sound:set_scale(i)
-  self.current_scale = util.clamp(i, 1, #self.current_scale_names)
-  self.current_scale_name = sound.current_scale_names[sound.current_scale]
+  self.scale = util.clamp(i, 1, #self.scale_names)
+  self.scale_name = sound.scale_names[sound.scale]
   self:build_scale()
 end
 
 function sound:cycle_root(i)
-  self.current_root = fn.cycle(self.current_root + i, 1, 12)
+  self.root = fn.cycle(self.root + i, 0, 12)
   self:build_scale()
 end
 
 function sound:build_scale()
-  self.notes_in_this_scale = mu.generate_scale_of_length(self.current_root, self.current_scale, 127)
+  self.scale_notes =  mu.generate_scale(self.root, self.scale_name, self.octaves)
+end
+
+function sound:print_scale()
+  for i = 1, #self.scale_notes do
+    print(self.scale_notes[i], mu.note_num_to_name(self.scale_notes[i]))
+  end
 end
 
 
 function sound:play(note, velocity, out)
   if out == "crow" then
-    crow.output[1].volts = mu.snap_note_to_array(note, sound.notes_in_this_scale) -- % 12
-    crow.output[2].execute()
+    -- crow things
   elseif out =="midi" then
-    -- self.midi_out:note_off this cell
-    self.midi_out:note_on(mu.snap_note_to_array(note, sound.notes_in_this_scale))
+    -- midi things
   else
-    engine.hz(mu.note_num_to_freq(mu.snap_note_to_array(note, sound.notes_in_this_scale)))
+    engine.hz(mu.note_num_to_freq(self:snap_note(note)))
   end
 end
 

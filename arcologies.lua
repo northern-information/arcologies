@@ -14,20 +14,21 @@ include("arcologies/lib/includes")
 
 function init()
   parameters.init() 
-  fn.init()         
-  counters.init()    
-  g.init()          
+  fn.init()      
+  c.init()   
+  counters.init()
+  g.init()
   glyphs.init()
   graphics.init()   
   keeper.init()
-  menu.init()       
+  menu.init()  
+  m.init()     
   page.init()     
   popup.init() 
   sound.init()
   audio:pitch_off()
   grid_dirty, screen_dirty, splash_break = false, false, false
-  k1, k2, k3 = 0, 0, 0
-  key_counter, enc_counter = {{},{},{}}, {{},{},{}}
+  keys, key_counter, enc_counter = {}, {{},{},{}}, {{},{},{}}
   for i = 1, 3 do
     norns.encoders.set_sens(i, 16)
     counters:reset_enc(i)
@@ -67,9 +68,7 @@ end
 
 function key(k, z)
   -- always store the key states
-  if k == 1 then k1 = z end
-  if k == 2 then k2 = z end
-  if k == 3 then k3 = z end
+  keys[k] = z
   if z == 1 then
     -- detect long press
     key_counter[k] = clock.run(fn.long_press, k)
