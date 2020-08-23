@@ -76,8 +76,8 @@ function keeper:collision(signal, cell)
   elseif not self:are_signal_and_port_compatible(signal, cell) then
     -- empty
   
-  -- hives don't allow signals in
-  elseif cell:is("HIVE") then
+  -- hives and raves don't allow signals in
+  elseif cell:is("HIVE") or cell:is("RAVE") then
     -- empty
 
   -- shrines play single notes
@@ -89,16 +89,16 @@ function keeper:collision(signal, cell)
     sound:play(cell.notes[cell.state_index], cell.velocity)
     keeper.selected_cell:cycle_state_index(1)
 
-  -- raves don't allow signals in
-  elseif cell:is("RAVE") then
-    -- empty
+  -- crypts play samples
+  elseif cell:is("CRYPT") then
+    s:one_shot(cell.state_index, cell.level / 100)
 
   end
   
   --[[ gates and shrines reroute & split
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
-  if cell:is("SHRINE") or cell:is("GATE") or cell:is("TOPIARY") then
+  if cell:is("SHRINE") or cell:is("GATE") or cell:is("TOPIARY") or cell:is("CRYPT") then
     for k, port in pairs(cell.ports) do
           if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
       elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")

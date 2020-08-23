@@ -15,8 +15,10 @@ include("arcologies/lib/includes")
 function init()
   parameters.init() 
   fn.init()      
-  c.init()   
+  c.init()
+  docs.init()
   counters.init()
+  filesystem.init()
   g.init()
   glyphs.init()
   graphics.init()   
@@ -24,7 +26,8 @@ function init()
   menu.init()  
   m.init()     
   page.init()     
-  popup.init() 
+  popup.init()
+  s.init()
   sound.init()
   audio:pitch_off()
   grid_dirty, screen_dirty, splash_break = false, false, false
@@ -41,7 +44,7 @@ function init()
   page:select(parameters.is_splash_screen_on and 0 or 1)
   -- fn.seed_cells()
   sound:toggle_playback()
-  dev:scene(3)
+  dev:scene(2)
   redraw()
 end
 
@@ -53,38 +56,29 @@ end
 
 function enc(e, d)
   fn.break_splash(true)
-  -- e1 only ever scrolls between pages
-  if e == 1 then
+  if e == 1 then  -- e1 only ever scrolls between pages
     page:scroll(d)  
-  -- e2 only ever scrolls the page menu     
-  elseif e == 2 then
+  elseif e == 2 then -- e2 only ever scrolls the page menu
     menu:scroll(d)
-  -- e3 only ever changes the menu value     
   elseif e == 3 then
-    menu:scroll_value(d) 
+    menu:scroll_value(d) -- e3 only ever changes the menu value
   end
   fn.dirty_screen(true)
 end
 
 function key(k, z)
-  -- always store the key states
-  keys[k] = z
-  if z == 1 then
-    -- detect long press
+  keys[k] = z -- always store the key states
+  if z == 1 then -- detect long press
     key_counter[k] = clock.run(fn.long_press, k)
-  elseif z == 0 then
+  elseif z == 0 then -- detect short press
     fn.break_splash(true)
-    -- detect short press
-    if key_counter[k] then 
-      -- cancel long press counter
+    if key_counter[k] then -- cancel long press counter
       clock.cancel(key_counter[k]) 
-      -- short k1 is the default exit to norns
-      if k == 1 then
-      -- short k2 only ever toggles playback               
-      elseif k == 2 then           
+      if k == 1 then -- short k1 is the default exit to norns
+        -- empty
+      elseif k == 2 then -- short k2 only ever toggles playback
         sound:toggle_playback()
-      -- short k3 only ever deletes the selected cell
-      elseif k == 3 then
+      elseif k == 3 then -- short k3 only ever deletes the selected cell
         keeper:delete_cell()
       end
       fn.dirty_screen(true)

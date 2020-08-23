@@ -23,6 +23,7 @@ function Cell:new(x, y, g)
     { c.x - 1, c.y, "w" }
   }
   er_trait.init(self)
+  level_trait.init(self)
   metabolism_trait.init(self)
   notes_trait.init(self)
   offset_trait.init(self)
@@ -51,8 +52,17 @@ function Cell:set_structure_by_key(key)
   self:callback("set_structure_by_key")
 end
 
+function Cell:set_state_index(i)
+  self.state_index = i
+  self:callback("set_state_index")
+end
+
+function Cell:set_max_state_index(i)
+  self.max_state_index = i
+end
+
 function Cell:cycle_state_index(i)
-  self.state_index = fn.cycle(self.state_index + i, 1, self.max_state_index)
+  self:set_state_index(fn.cycle(self.state_index + i, 1, self.max_state_index))
 end
 
 function Cell:toggle_port(x, y)
@@ -101,6 +111,7 @@ end
 -- todo: there's gotta be a better way to do this
 function Cell:get_menu_value_by_attribute(a)
       if a == "INDEX"       then return self.state_index  
+  elseif a == "LEVEL"       then return self.level
   elseif a == "METABOLISM"  then return self.metabolism
   elseif a == "OFFSET"      then return self.offset
   elseif a == "PROBABILITY" then return self.probability
@@ -167,6 +178,10 @@ end
 function Cell:callback(method)
   if method == "set_structure_by_key" then
     self:set_note_count()
+    self:set_max_state_index(self:is("CRYPT") and 6 or 8)
+    self:cycle_state_index(0)
+  elseif method == "set_state_index" then
+    if self:is("CRYPT") then s:crypt_load(self.state_index) end
   elseif method == "set_metabolism" then
     if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
     if self:is("DOME") then self:set_er() end

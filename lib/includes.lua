@@ -13,6 +13,7 @@ include("arcologies/lib/Cell")
 
 -- the non-universal traits of cells
 include("arcologies/lib/traits/er_trait")
+include("arcologies/lib/traits/level_trait")
 include("arcologies/lib/traits/metabolism_trait")
 include("arcologies/lib/traits/notes_trait")
 include("arcologies/lib/traits/offset_trait")
@@ -35,6 +36,9 @@ counters = include("arcologies/lib/counters")
 
 -- in app documentation
 docs = include("arcologies/lib/docs")
+
+-- read & write on norns
+filesystem = include("arcologies/lib/filesystem")
 
 -- grid interactions and leds
 g = include("arcologies/lib/g")
@@ -63,7 +67,10 @@ parameters = include("arcologies/lib/parameters")
 -- popup menu for selecting complex values
 popup = include("arcologies/lib/popup")
 
--- all sound, midi, samples
+-- softcut
+s = include("arcologies/lib/softcut")
+
+-- all things musical
 sound = include("arcologies/lib/sound")
 
 -- dev only stuff

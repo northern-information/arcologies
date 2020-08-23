@@ -18,14 +18,16 @@ function glyphs:test()
   -- self:rave(x, y, l)
   -- self:dome(x, y, l)
   -- self:hive(x, y, l)
-  self:maze(x, y, l)
+  -- self:maze(x, y, l)
+  self:crypt(x, y, l)
 
   -- self:small_hive(x+60, y, 5)
+  -- self:small_shrine(x+60, y, l)
   -- self:small_signal(x+60, y, l)
   -- self:small_dome(x+60, y, l)
   -- self:small_topiary(x+60, y, 15)
-  self:small_maze(x+60, y, l)
-
+  -- self:small_maze(x+60, y, l)
+  self:small_crypt(x+60, y, l)
 
   -- self:left_wall(x, y, l)
   -- self:right_wall(x, y, l)
@@ -130,6 +132,15 @@ function glyphs:maze(x, y, l)
   graphics:rect(x+20, y+18, 2, 8, l)
 end
 
+function glyphs:crypt(x, y, l)
+  self:left_wall(x, y, l)
+  self:crypt_left_wall(x, y, l)
+  self:right_wall(x, y, l)
+  self:crypt_right_wall(x, y, l)
+  self:partial_roof(x, y, l)
+  self:lesser_bell(x, y, l)
+end
+
 -- full-size glyph components
 
 function glyphs:left_wall(x, y, l)
@@ -144,6 +155,10 @@ function glyphs:half_left_wall(x, y, l)
   graphics:rect(x, y+12, 2, 14, l)
 end
 
+function glyphs:crypt_left_wall(x, y, l)
+  graphics:rect(x+5, y, 2, 20, l)
+end
+
 function glyphs:right_wall(x, y, l)
   graphics:rect(x+20, y, 2, 26, l)
 end
@@ -156,6 +171,10 @@ function glyphs:half_right_wall(x, y, l)
   graphics:rect(x+20, y+12, 2, 14, l)
 end
 
+function glyphs:crypt_right_wall(x, y, l)
+  graphics:rect(x+15, y, 2, 20, l)
+end
+
 function glyphs:column(x, y, l)
   graphics:rect(x+10, y, 2, 20, l)
 end
@@ -166,6 +185,10 @@ end
 
 function glyphs:roof(x, y, l)
   graphics:rect(x, y, 22, 2, l)
+end
+
+function glyphs:partial_roof(x, y, l)
+  graphics:rect(x+5, y, 12, 2, l)
 end
 
 function glyphs:third_floor(x, y, l)
@@ -189,7 +212,11 @@ function glyphs:foundation(x, y, l)
 end
 
 function glyphs:bell(x, y, l)
-  graphics:rect(x+10, y+11, 2, 8, l)
+  graphics:rect(x+10, y+12, 2, 8, l)
+end
+
+function glyphs:lesser_bell(x, y, l)
+  graphics:rect(x+10, y+12, 2, 6, l)
 end
 
 function glyphs:north_port(x, y, l)
@@ -309,6 +336,14 @@ function glyphs:small_maze(x, y, l)
   graphics:mlrs(x+2, y+5, 3, 1, l)  
 end
 
+function glyphs:small_crypt(x, y, l)
+  self:small_left_wall(x, y, l)
+  self:small_crypt_left_wall(x, y, l)
+  self:small_right_wall(x, y, l)
+  self:small_crypt_right_wall(x, y, l)
+  self:small_partial_roof(x, y, l)
+end
+
 -- small components
 
 function glyphs:small_left_wall(x, y, l)
@@ -317,6 +352,10 @@ end
 
 function glyphs:small_three_quarter_left_wall(x, y, l)
   graphics:mls(x, y+2, x, y+8, l)
+end
+
+function glyphs:small_crypt_left_wall(x, y, l)
+  graphics:mls(x+2, y-1, x+2, y+6, l)
 end
 
 function glyphs:small_half_left_wall(x, y, l)
@@ -331,8 +370,16 @@ function glyphs:small_three_quarter_right_wall(x, y, l)
   graphics:mls(x+6, y+2, x+6, y+8, l)
 end
 
+function glyphs:small_right_wall(x, y, l)
+  graphics:mls(x+6, y-1, x+6, y+8, l)
+end
+
 function glyphs:small_half_right_wall(x, y, l)
   graphics:mls(x+6, y+3, x+6, y+8, l)
+end
+
+function glyphs:small_crypt_right_wall(x, y, l)
+  graphics:mls(x+4, y-1, x+4, y+6, l)
 end
 
 function glyphs:small_column(x, y, l)
@@ -345,6 +392,10 @@ end
 
 function glyphs:small_roof(x, y, l)
   graphics:mls(x-1, y, x+6, y, l)
+end
+
+function glyphs:small_partial_roof(x, y, l)
+  graphics:mls(x+2, y, x+4, y, l)
 end
 
 function glyphs:small_third_floor(x, y, l)

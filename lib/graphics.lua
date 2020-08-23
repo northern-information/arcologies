@@ -15,17 +15,18 @@ function graphics.init()
   graphics.cell_attributes = Cell:new().attributes
 end
 
-function graphics:structure_and_title(string)
+function graphics:structure_and_title(s)
     local x = self.structure_x
     local y = self.structure_y
     local l = 0
-        if string == "HIVE"     then glyphs:hive(x, y, l)
-    elseif string == "SHRINE"   then glyphs:shrine(x, y, l)
-    elseif string == "GATE"     then glyphs:gate(x, y, l)
-    elseif string == "RAVE"     then glyphs:rave(x, y, l)
-    elseif string == "TOPIARY"  then glyphs:topiary(x, y, l)
-    elseif string == "DOME"     then glyphs:dome(x, y, l)
-    elseif string == "MAZE"     then glyphs:maze(x, y, l)
+        if s == "HIVE"     then glyphs:hive(x, y, l)
+    elseif s == "SHRINE"   then glyphs:shrine(x, y, l)
+    elseif s == "GATE"     then glyphs:gate(x, y, l)
+    elseif s == "RAVE"     then glyphs:rave(x, y, l)
+    elseif s == "TOPIARY"  then glyphs:topiary(x, y, l)
+    elseif s == "DOME"     then glyphs:dome(x, y, l)
+    elseif s == "MAZE"     then glyphs:maze(x, y, l)
+    elseif s == "CRYPT"    then glyphs:crypt(x, y, l)
     end
 end
 
@@ -38,6 +39,7 @@ function graphics:structure_palette(i)
   glyphs:small_topiary( 65, 15, i == 5 and 0 or 15)
   glyphs:small_dome(    80, 15, i == 6 and 0 or 15)
   glyphs:small_maze(    95, 15, i == 7 and 0 or 15)
+  glyphs:small_crypt(  110, 15, i == 8 and 0 or 15)
 end
 
 function graphics:structure_palette_analysis(x, y, o, name)
@@ -49,6 +51,7 @@ function graphics:structure_palette_analysis(x, y, o, name)
   glyphs:small_topiary( x + (o * 15), y, name == "TOPIARY" and 15 or 5)
   glyphs:small_dome(    x + (o * 18), y, name == "DOME" and 15 or 5)
   glyphs:small_maze(    x + (o * 21), y, name == "MAZE" and 15 or 5)
+  glyphs:small_crypt(   x + (o * 24), y, name == "CRYPT" and 15 or 5)
 end
 
 function graphics:render_docs()

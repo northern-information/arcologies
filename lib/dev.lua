@@ -26,13 +26,15 @@ function dev:scene(i)
     keeper:select_cell(4, 1)
     keeper.selected_cell:open_port("s")
     keeper:select_cell(4, 4)
-    keeper.selected_cell:change("TOPIARY")
+    keeper.selected_cell:change("CRYPT")
     keeper.selected_cell:open_port("n")
     keeper.selected_cell:open_port("e")
     keeper.selected_cell:open_port("s")
     keeper.selected_cell:open_port("w")
+    keeper.selected_cell:set_state_index(1)
     page:select(2)
-    menu:select_item(4)
+    menu:select_item(1)
+    -- keeper:deselect_cell()
     params:set("bpm", 120)
 
 
@@ -185,6 +187,13 @@ function dev:scene(i)
     print('else block')
 
   end
+end
+
+-- thank you @dndrks
+function screenshot()
+  --_norns.screen_export_png("/home/we/"..menu.."-"..os.time()..".png")
+  local which_screen = string.match(string.match(string.match(norns.state.script,"/home/we/dust/code/(.*)"),"/(.*)"),"(.+).lua")
+  _norns.screen_export_png("/home/we/"..which_screen.."-"..os.time()..".png")
 end
 
 return dev

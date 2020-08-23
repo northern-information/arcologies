@@ -70,6 +70,8 @@ function menu:scroll_value(d)
       keeper.selected_cell:set_probability(keeper.selected_cell.probability + d)
     elseif s == "PULSES" then
       keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
+    elseif s == "LEVEL" then
+      keeper.selected_cell:set_level(keeper.selected_cell.level + d)
     elseif s == "DOCS" then
       print("DOCS...")
     elseif s == "NOTE 1" then
@@ -117,7 +119,7 @@ function menu:render(bool)
         and string.find(self.items[i], keeper.selected_cell.state_index)
         and not string.find(self.items[i], "INDEX") then
         graphics:text(56, offset, "> " .. keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
-      elseif self.items[i] == "PROBABILITY" then
+      elseif self.items[i] == "PROBABILITY" or self.items[i] == "LEVEL" then
         graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]) .. "%", 0)
       elseif self.items[i] ~= "STRUCTURE" then
         graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)

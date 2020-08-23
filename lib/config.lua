@@ -5,7 +5,9 @@ config["settings"] = {
   ["length"] = 16,
   ["root"] = 0,
   ["scale"] = 1,
-  ["octaves"] = 11
+  ["octaves"] = 11,
+  ["save_path"] = _path.audio .. "arcologies/",
+  ["crypt_path"] =  _path.audio .. "arcologies/crypt/"
 }
 
 config["outputs"] = {
@@ -48,7 +50,8 @@ config["structures"] = {
   "RAVE",
   "TOPIARY",
   "DOME",
-  "MAZE"
+  "MAZE",
+  "CRYPT"
 }
 
 config["attributes"] = {
@@ -118,6 +121,12 @@ config["structure_attribute_map"] = {
     "OFFSET",
     "METABOLISM",
     "PROBABILITY",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["CRYPT"] = {
+    "INDEX",
+    "LEVEL",
     "STRUCTURE",
     "DOCS"
   }
