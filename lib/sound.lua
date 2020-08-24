@@ -80,6 +80,7 @@ function sound:play(note, velocity, out)
   elseif out =="midi" then
     -- midi things
   else
+    engine.amp(velocity / 127)
     engine.hz(mu.note_num_to_freq(self:snap_note(note)))
   end
 end

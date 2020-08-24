@@ -20,7 +20,7 @@ config["page_titles"] = {
   "ARCOLOGIES",
   "DESIGNER",
   "ANALYSIS",
-  -- "DEV"
+  "DEV"
 }
 
 config["home_items"] = {
@@ -41,7 +41,9 @@ config["analysis_items"] = {
   "TOPIARY",
   "DOME",
   "MAZE",
-  "CRYPT"
+  "CRYPT",
+  "VALE",
+  "SOLARIUM"
 }
 
 config["structures"] = {
@@ -52,7 +54,9 @@ config["structures"] = {
   "TOPIARY",
   "DOME",
   "MAZE",
-  "CRYPT"
+  "CRYPT",
+  "VALE",
+  "SOLARIUM"
 }
 
 config["attributes"] = {
@@ -63,7 +67,11 @@ config["attributes"] = {
   "DOCS",
   "PULSES",
   "INDEX",
-  "NOTES"
+  "NOTES",
+  "RANGE MIN",
+  "RANGE MAX",
+  "CHARGE",
+  "PAYLOAD"
 }
 
 config["structure_attribute_map"] = {
@@ -104,7 +112,6 @@ config["structure_attribute_map"] = {
     "DOCS"
   },
   ["MAZE"] = {
-    "INDEX",
     "OFFSET",
     "METABOLISM",
     "PROBABILITY",
@@ -114,6 +121,19 @@ config["structure_attribute_map"] = {
   ["CRYPT"] = {
     "INDEX",
     "LEVEL",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["VALE"] = {
+    "RANGE MIN",
+    "RANGE MAX",
+    "VELOCITY",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["SOLARIUM"] = {
+    "CHARGE",
+    "PAYLOAD",
     "STRUCTURE",
     "DOCS"
   }
@@ -152,11 +172,3 @@ config["popup_messages"] = {
 }
 
 return config
-
-
-
-
-
-
-
-  

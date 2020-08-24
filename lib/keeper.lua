@@ -93,12 +93,16 @@ function keeper:collision(signal, cell)
   elseif cell:is("CRYPT") then
     s:one_shot(cell.state_index, cell.level / 100)
 
+  -- vales play random notes
+  elseif cell:is("VALE") then
+    sound:play(sound:get_random_note(cell.range_min / 100, cell.range_max / 100), cell.velocity)
+
   end
 
   --[[ gates and shrines reroute & split
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
-  if cell:is("SHRINE") or cell:is("GATE") or cell:is("TOPIARY") or cell:is("CRYPT") then
+  if cell:is("SHRINE") or cell:is("GATE") or cell:is("TOPIARY") or cell:is("CRYPT") or cell:is("VALE") then
     for k, port in pairs(cell.ports) do
           if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
       elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")

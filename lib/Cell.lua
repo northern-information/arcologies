@@ -20,6 +20,7 @@ function Cell:new(x, y, g)
   ports_trait.init(self)
   probability_trait.init(self)
   pulses_trait.init(self)
+  range_trait.init(self)
   state_index_trait.init(self)
   turing_trait.init(self)
   velocity_trait.init(self)
@@ -35,6 +36,7 @@ function Cell:new(x, y, g)
   c.setup_ports(c)
   c.setup_probability(c)
   c.setup_pulses(c)
+  c.setup_range(c)
   c.setup_state_index(c)
   c.setup_turing(c)
   c.setup_velocity(c)
@@ -84,7 +86,7 @@ function Cell:is_spawning()
     return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("MAZE") then
     return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
-  elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 then
+  elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 or self.metabolism == 1 then
         if self:is("HIVE") then return true
     elseif self:is("RAVE") then return true
        end
@@ -151,6 +153,8 @@ function Cell:get_menu_value_by_attribute(a)
   elseif a == "PULSES"      then return self.pulses
   elseif a == "STRUCTURE"   then return self.structure_value
   elseif a == "VELOCITY"    then return self.velocity
+  elseif a == "RANGE MIN"   then return self.range_min
+  elseif a == "RANGE MAX"   then return self.range_max
   elseif a == "NOTE"        then return self:get_note_name(1)
   elseif a == "NOTE #1"     then return self:get_note_name(1)
   elseif a == "NOTE #2"     then return self:get_note_name(2)

@@ -27,19 +27,28 @@ function graphics:structure_and_title(s)
     elseif s == "DOME"     then glyphs:dome(x, y, l)
     elseif s == "MAZE"     then glyphs:maze(x, y, l)
     elseif s == "CRYPT"    then glyphs:crypt(x, y, l)
+    elseif s == "VALE"     then glyphs:vale(x, y, l)
+    elseif s == "SOLARIUM" then glyphs:solarium(x, y, l)
     end
 end
 
 function graphics:structure_palette(i)
-  self:rect(((i - 1) * 15) + 1, 12, 13, 13, 15)
-  glyphs:small_hive(     5, 15, i == 1 and 0 or 15)
-  glyphs:small_shrine(  20, 15, i == 2 and 0 or 15)
-  glyphs:small_gate(    35, 15, i == 3 and 0 or 15)
-  glyphs:small_rave(    50, 15, i == 4 and 0 or 15)
-  glyphs:small_topiary( 65, 15, i == 5 and 0 or 15)
-  glyphs:small_dome(    80, 15, i == 6 and 0 or 15)
-  glyphs:small_maze(    95, 15, i == 7 and 0 or 15)
-  glyphs:small_crypt(  110, 15, i == 8 and 0 or 15)
+  -- todo refactor
+  local row = i > 8 and 15 or 0
+  local i = i > 8 and i - 8 or i
+  self:rect(((i - 1) * 15) + 1, 12 + row, 13, 13, 15)
+  -- row 1
+  glyphs:small_hive(     5, 15, (i == 1 and row == 0) and 0 or 15)
+  glyphs:small_shrine(  20, 15, (i == 2 and row == 0) and 0 or 15)
+  glyphs:small_gate(    35, 15, (i == 3 and row == 0) and 0 or 15)
+  glyphs:small_rave(    50, 15, (i == 4 and row == 0) and 0 or 15)
+  glyphs:small_topiary( 65, 15, (i == 5 and row == 0) and 0 or 15)
+  glyphs:small_dome(    80, 15, (i == 6 and row == 0) and 0 or 15)
+  glyphs:small_maze(    95, 15, (i == 7 and row == 0) and 0 or 15)
+  glyphs:small_crypt(  110, 15, (i == 8 and row == 0) and 0 or 15)
+  -- row 2
+  glyphs:small_vale(     5, 30, (i == 1 and row == 15) and 0 or 15)
+  glyphs:small_solarium(20, 30, (i == 2 and row == 15) and 0 or 15)
 end
 
 function graphics:structure_palette_analysis(x, y, o, name)
@@ -52,6 +61,8 @@ function graphics:structure_palette_analysis(x, y, o, name)
   glyphs:small_dome(    x + (o * 18), y, name == "DOME" and 15 or 5)
   glyphs:small_maze(    x + (o * 21), y, name == "MAZE" and 15 or 5)
   glyphs:small_crypt(   x + (o * 24), y, name == "CRYPT" and 15 or 5)
+  glyphs:small_vale(    x + (o * 27), y, name == "VALE" and 15 or 5)
+  glyphs:small_solarium(x + (o * 30), y, name == "SOLARIUM" and 15 or 5)
 end
 
 function graphics:render_docs()

@@ -19,9 +19,11 @@ function glyphs:test()
   -- self:dome(x, y, l)
   -- self:hive(x, y, l)
   -- self:maze(x, y, l)
-  -- self:
-  self:crypt(x, y, l)
+  -- self:crypt(x, y, 5)
+  -- self:vale(x, y, l)
+  self:solarium(x, y, l)
   -- self:tunnel(x, y, l)
+  
 
   -- self:small_hive(x+60, y, 5)
   -- self:small_shrine(x+60, y, l)
@@ -29,7 +31,9 @@ function glyphs:test()
   -- self:small_dome(x+60, y, l)
   -- self:small_topiary(x+60, y, 15)
   -- self:small_maze(x+60, y, l)
-  self:small_crypt(x+60, y, l)
+  -- self:small_crypt(x+60, y, l)
+  self:small_solarium(x+60, y, l)
+  -- self:small_vale(x+60, y, l)
 
   -- self:left_wall(x, y, l)
   -- self:right_wall(x, y, l)
@@ -57,7 +61,7 @@ end
 
 
 function glyphs:random(x, y, l, jitter)
-  local r = math.random(1, 6)
+  local r = math.random(1, #config.structures)
   if jitter then
     x = x + math.random(-1, 1)
     y = y + math.random(-1, 1)
@@ -69,6 +73,9 @@ function glyphs:random(x, y, l, jitter)
   elseif r == 5 then self:rave(x, y, l)
   elseif r == 6 then self:topiary(x, y, l)
   elseif r == 7 then self:dome(x, y, l)
+  elseif r == 8 then self:maze(x, y, l)
+  elseif r == 9 then self:crypt(x, y, l)
+  elseif r == 10 then self:vale(x, y, l)
   end
 end
 
@@ -144,6 +151,23 @@ function glyphs:crypt(x, y, l)
   graphics:rect(x+9, y, 4, 2, l)
   graphics:rect(x+9, y+6, 4, 2, l)
   graphics:rect(x+9, y+12, 4, 2, l)
+end
+
+function glyphs:vale(x, y, l)
+  self:third_floor(x, y, l)
+  self:foundation(x, y, l)
+  graphics:rect(x+9, y, 13, 2, l)
+  graphics:rect(x+20, y, 2, 8, l)
+  graphics:rect(x+15, y, 2, 26, l)  
+end
+
+function glyphs:solarium(x, y, l)
+  self:three_quarter_left_wall(x, y, l)
+  self:three_quarter_right_wall(x, y, l)
+  self:tunnel_left_wall(x, y, l)
+  self:tunnel_right_wall(x, y, l)
+  self:floor(x, y, l)
+  self:bell(x, y, l)
 end
 
 function glyphs:tunnel(x, y, l)
@@ -276,7 +300,7 @@ end
 -- small glyphs
 
 function glyphs:small_random(x, y, l, jitter)
-  local r = math.random(1, 6)
+  local r = math.random(1, #config.structures)
   if jitter then
     x = x + math.random(-1, 1)
     y = y + math.random(-1, 1)
@@ -288,6 +312,9 @@ function glyphs:small_random(x, y, l, jitter)
   elseif r == 5 then self:small_rave(x, y, l)
   elseif r == 6 then self:small_topiary(x, y, l)
   elseif r == 7 then self:small_dome(x, y, l)
+  elseif r == 8 then self:small_maze(x, y, l)
+  elseif r == 9 then self:small_crypt(x, y, l)
+  elseif r == 10 then self:small_vale(x, y, l)
   end
 end
 
@@ -369,6 +396,23 @@ function glyphs:small_crypt(x, y, l)
   graphics:mlrs(x+2, y, 1, 0, l)
   graphics:mlrs(x+2, y+2, 1, 0, l)
   graphics:mlrs(x+2, y+4, 1, 0, l)
+end
+
+function glyphs:small_vale(x, y, l)
+  self:small_third_floor(x, y, l)
+  self:small_foundation(x, y, l)
+  graphics:mls(x+4, y-1, x+4, y+8, l)
+  graphics:mls(x+6, y-1, x+6, y+2, l)
+  graphics:mlrs(x+2, y, 4, 0, l)
+end
+
+function glyphs:small_solarium(x, y, l)
+  self:small_three_quarter_left_wall(x-1, y, l)
+  self:small_three_quarter_right_wall(x+1, y, l)
+  self:small_tunnel_left_wall(x-1, y, l)
+  self:small_tunnel_right_wall(x+1, y, l)
+  self:small_floor(x, y, l)
+  self:small_bell(x, y, l)
 end
 
 function glyphs:small_tunnel(x, y, l)

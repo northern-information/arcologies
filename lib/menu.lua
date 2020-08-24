@@ -72,6 +72,10 @@ function menu:scroll_value(d)
       keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
     elseif s == "LEVEL" then
       keeper.selected_cell:set_level(keeper.selected_cell.level + d)
+    elseif s == "RANGE MIN" then
+      keeper.selected_cell:set_range_min(keeper.selected_cell.range_min + d)
+    elseif s == "RANGE MAX" then
+      keeper.selected_cell:set_range_max(keeper.selected_cell.range_max + d)
     elseif s == "DOCS" then
       -- selecting docs automatically toggles them on
     elseif s == "NOTE" then
@@ -124,7 +128,10 @@ function menu:render(bool)
             and string.find(self.items[i], "NOTE")
             and string.find(self.items[i], keeper.selected_cell.state_index) then
             graphics:text(56, offset, "> " .. value, 0)
-          elseif self.items[i] == "PROBABILITY" or self.items[i] == "LEVEL" then
+          elseif self.items[i] == "PROBABILITY" 
+              or self.items[i] == "LEVEL"
+              or self.items[i] == "RANGE MIN"
+              or self.items[i] == "RANGE MAX" then
             graphics:text(56, offset, value .. "%", 0)
           elseif self.items[i] ~= "STRUCTURE" then
             graphics:text(56, offset, value, 0)
