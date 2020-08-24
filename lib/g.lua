@@ -168,7 +168,7 @@ function g:draw_northern_leyline()
   for k, cell in pairs(keeper.cells) do
     if cell.x == keeper.selected_cell.x and cell.id ~= keeper.selected_cell.id and cell.y < keeper.selected_cell.y then
       table.insert(neighbors, cell.y)
-    end    
+    end
   end
   destination["x"] = keeper.selected_cell.x
   destination["y"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.y) + 1 or 1
@@ -185,7 +185,7 @@ function g:draw_eastern_leyline()
   for k, cell in pairs(keeper.cells) do
     if cell.y == keeper.selected_cell.y and cell.id ~= keeper.selected_cell.id and cell.x > keeper.selected_cell.x then
       table.insert(neighbors, cell.x)
-    end    
+    end
   end
   destination["x"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.x) - 1 or fn.grid_width()
   destination["y"] = keeper.selected_cell.y
@@ -193,7 +193,7 @@ function g:draw_eastern_leyline()
     keeper.selected_cell.x + 2, -- +1 for this cell & +1 for its open port
     keeper.selected_cell.y,
     destination.x,
-    destination.y 
+    destination.y
   )
 end
 
@@ -202,7 +202,7 @@ function g:draw_southern_leyline()
   for k, cell in pairs(keeper.cells) do
     if cell.x == keeper.selected_cell.x and cell.id ~= keeper.selected_cell.id and cell.y > keeper.selected_cell.y then
       table.insert(neighbors, cell.y)
-    end    
+    end
   end
   destination["x"] = keeper.selected_cell.x
   destination["y"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.y) - 1 or fn.grid_height()
@@ -219,7 +219,7 @@ function g:draw_western_leyline()
   for k, cell in pairs(keeper.cells) do
     if cell.y == keeper.selected_cell.y and cell.id ~= keeper.selected_cell.id and cell.x < keeper.selected_cell.x then
       table.insert(neighbors, cell.x)
-    end    
+    end
   end
   destination["x"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.x) + 1 or 1
   destination["y"] = keeper.selected_cell.y
@@ -227,7 +227,7 @@ function g:draw_western_leyline()
     keeper.selected_cell.x - 2, -- -1 for this cell & -1 for its open port
     keeper.selected_cell.y,
     destination.x,
-    destination.y 
+    destination.y
   )
 end
 

@@ -67,7 +67,6 @@ function counters.this_beat()
   end
 end
 
-
 function counters.optician()
   counters.ui.frame = counters.ui.frame + 1
   if counters.ui.frame % 4 == 0 then

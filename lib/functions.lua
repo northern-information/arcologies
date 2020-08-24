@@ -83,7 +83,7 @@ end
 function fn.no_grid()
   if fn.grid_width() == 0 then
     return true
-  else 
+  else
     return false
   end
 end
@@ -141,6 +141,9 @@ end
 function fn.seed_cells()
   if params:get("seed") ~= 0 and not fn.no_grid() then
     keeper:delete_all_cells()
+    sound:set_random_root()
+    sound:set_random_scale()
+    params:set("bpm", math.random(100, 160))
     for i = 1, params:get("seed") do
       fn.random_cell()
     end
@@ -157,15 +160,20 @@ function fn.random_cell()
       keeper.selected_cell:open_port(ports[i])
     end
   end
-  keeper.selected_cell:set_offset(math.random(1, 5))
-  keeper.selected_cell:set_metabolism(math.random(1, sound.length or 16))
-  if keeper.selected_cell:is("TOPIARY") then
-    for i=1,8 do
-      keeper.selected_cell:set_note(math.random(math.floor(#sound.scale_notes * .6, #sound.scale_notes * .8)), i)
-    end
+  if keeper.selected_cell:has("OFFSET") then
+    keeper.selected_cell:set_offset(math.random(1, 5))
+  end
+  if keeper.selected_cell:has("METABOLISM") then
+    keeper.selected_cell:set_metabolism(math.random(1, sound.length or 16))
+  end
+  if keeper.selected_cell:is("SHRINE") then
+    keeper.selected_cell:set_note(sound:get_random_note(.6, .7), 1)
   end
   if keeper.selected_cell:is("DOME") then
     keeper.selected_cell:set_pulses(math.random(1, keeper.selected_cell.metabolism))
+  end
+  if keeper.selected_cell:is("CRYPT") then
+    keeper.selected_cell:set_state_index(math.random(1, 6))
   end
 end
 

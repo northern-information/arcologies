@@ -11,7 +11,7 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-  
+
   -- self:hive(x, y, 5)
   -- self:shrine(x, y, l)
   -- self:gate(x, y, l)
@@ -19,7 +19,9 @@ function glyphs:test()
   -- self:dome(x, y, l)
   -- self:hive(x, y, l)
   -- self:maze(x, y, l)
+  -- self:
   self:crypt(x, y, l)
+  -- self:tunnel(x, y, l)
 
   -- self:small_hive(x+60, y, 5)
   -- self:small_shrine(x+60, y, l)
@@ -124,7 +126,7 @@ function glyphs:maze(x, y, l)
   self:roof(x, y, l)
   self:third_floor(x, y, l)
   self:second_floor(x, y, l)
-  graphics:rect(x+10, y+18, 12, 2, l)  
+  graphics:rect(x+10, y+18, 12, 2, l)
   self:basement(x, y, l)
   self:half_left_wall(x, y, l)
   graphics:rect(x, y, 2, 8, l)
@@ -134,9 +136,21 @@ end
 
 function glyphs:crypt(x, y, l)
   self:left_wall(x, y, l)
-  self:crypt_left_wall(x, y, l)
+  self:tunnel_left_wall(x, y, l)
   self:right_wall(x, y, l)
-  self:crypt_right_wall(x, y, l)
+  self:tunnel_right_wall(x, y, l)
+  self:partial_floor(x, y, l)
+  self:outer_partial_roof(x, y, l)
+  graphics:rect(x+9, y, 4, 2, l)
+  graphics:rect(x+9, y+6, 4, 2, l)
+  graphics:rect(x+9, y+12, 4, 2, l)
+end
+
+function glyphs:tunnel(x, y, l)
+  self:left_wall(x, y, l)
+  self:tunnel_left_wall(x, y, l)
+  self:right_wall(x, y, l)
+  self:tunnel_right_wall(x, y, l)
   self:partial_roof(x, y, l)
   self:lesser_bell(x, y, l)
 end
@@ -155,7 +169,7 @@ function glyphs:half_left_wall(x, y, l)
   graphics:rect(x, y+12, 2, 14, l)
 end
 
-function glyphs:crypt_left_wall(x, y, l)
+function glyphs:tunnel_left_wall(x, y, l)
   graphics:rect(x+5, y, 2, 20, l)
 end
 
@@ -171,7 +185,7 @@ function glyphs:half_right_wall(x, y, l)
   graphics:rect(x+20, y+12, 2, 14, l)
 end
 
-function glyphs:crypt_right_wall(x, y, l)
+function glyphs:tunnel_right_wall(x, y, l)
   graphics:rect(x+15, y, 2, 20, l)
 end
 
@@ -185,6 +199,11 @@ end
 
 function glyphs:roof(x, y, l)
   graphics:rect(x, y, 22, 2, l)
+end
+
+function glyphs:outer_partial_roof(x, y, l)
+  graphics:rect(x, y, 7, 2, l)
+  graphics:rect(x+15, y, 7, 2, l)
 end
 
 function glyphs:partial_roof(x, y, l)
@@ -201,6 +220,10 @@ end
 
 function glyphs:floor(x, y, l)
   graphics:rect(x, y+18, 22, 2, l)
+end
+
+function glyphs:partial_floor(x, y, l)
+  graphics:rect(x+5, y+18, 12, 2, l)
 end
 
 function glyphs:basement(x, y, l)
@@ -313,10 +336,10 @@ end
 
 function glyphs:small_topiary(x, y, l)
   self:small_half_left_wall(x, y, l)
-  self:small_half_right_wall(x, y, l)  
+  self:small_half_right_wall(x, y, l)
   self:small_shrub(x, y, l)
   self:small_second_floor(x, y, l)
-  self:small_floor(x, y, l)  
+  self:small_floor(x, y, l)
 end
 
 function glyphs:small_dome(x, y, l)
@@ -328,19 +351,31 @@ function glyphs:small_maze(x, y, l)
   self:small_roof(x, y, l)
   self:small_third_floor(x, y, l)
   self:small_second_floor(x, y, l)
-  graphics:mlrs(x-1, y, 1, 2, l)  
+  graphics:mlrs(x-1, y, 1, 2, l)
   self:small_basement(x, y, l)
   self:small_half_left_wall(x, y, l)
-  graphics:mlrs(x+5, y+2, 1, 2, l)  
-  graphics:mlrs(x+5, y+5, 1, 2, l)  
-  graphics:mlrs(x+2, y+5, 3, 1, l)  
+  graphics:mlrs(x+5, y+2, 1, 2, l)
+  graphics:mlrs(x+5, y+5, 1, 2, l)
+  graphics:mlrs(x+2, y+5, 3, 1, l)
 end
 
 function glyphs:small_crypt(x, y, l)
+  self:small_left_wall(x-1, y, l)
+  self:small_tunnel_left_wall(x-1, y, l)
+  self:small_right_wall(x+1, y, l)
+  self:small_tunnel_right_wall(x+1, y, l)
+  self:small_partial_floor(x, y, l)
+  self:small_outer_partial_roof(x, y, l)
+  graphics:mlrs(x+2, y, 1, 0, l)
+  graphics:mlrs(x+2, y+2, 1, 0, l)
+  graphics:mlrs(x+2, y+4, 1, 0, l)
+end
+
+function glyphs:small_tunnel(x, y, l)
   self:small_left_wall(x, y, l)
-  self:small_crypt_left_wall(x, y, l)
+  self:small_tunnel_left_wall(x, y, l)
   self:small_right_wall(x, y, l)
-  self:small_crypt_right_wall(x, y, l)
+  self:small_tunnel_right_wall(x, y, l)
   self:small_partial_roof(x, y, l)
 end
 
@@ -354,7 +389,7 @@ function glyphs:small_three_quarter_left_wall(x, y, l)
   graphics:mls(x, y+2, x, y+8, l)
 end
 
-function glyphs:small_crypt_left_wall(x, y, l)
+function glyphs:small_tunnel_left_wall(x, y, l)
   graphics:mls(x+2, y-1, x+2, y+6, l)
 end
 
@@ -378,7 +413,7 @@ function glyphs:small_half_right_wall(x, y, l)
   graphics:mls(x+6, y+3, x+6, y+8, l)
 end
 
-function glyphs:small_crypt_right_wall(x, y, l)
+function glyphs:small_tunnel_right_wall(x, y, l)
   graphics:mls(x+4, y-1, x+4, y+6, l)
 end
 
@@ -392,6 +427,11 @@ end
 
 function glyphs:small_roof(x, y, l)
   graphics:mls(x-1, y, x+6, y, l)
+end
+
+function glyphs:small_outer_partial_roof(x, y, l)
+  graphics:mls(x-1, y, x+1, y, l)
+  graphics:mls(x+4, y, x+7, y, l)
 end
 
 function glyphs:small_partial_roof(x, y, l)
@@ -408,6 +448,10 @@ end
 
 function glyphs:small_floor(x, y, l)
   graphics:mls(x-1, y+6, x+6, y+6, l)
+end
+
+function glyphs:small_partial_floor(x, y, l)
+  graphics:mls(x, y+6, x+5, y+6, l)
 end
 
 function glyphs:small_basement(x, y, l)

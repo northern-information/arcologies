@@ -131,7 +131,7 @@ end
 
 function popup:done()
   self.active = false
-  if self.current_attribute == "seed" then 
+  if self.current_attribute == "seed" then
     fn.seed_cells()
     if params:get("seed") == 0 then
       self:title_message(self.messages.seed.abort)

@@ -20,7 +20,7 @@ config["page_titles"] = {
   "ARCOLOGIES",
   "DESIGNER",
   "ANALYSIS",
-  "DEV"
+  -- "DEV"
 }
 
 config["home_items"] = {
@@ -40,7 +40,8 @@ config["analysis_items"] = {
   "RAVE",
   "TOPIARY",
   "DOME",
-  "MAZE"
+  "MAZE",
+  "CRYPT"
 }
 
 config["structures"] = {
@@ -62,14 +63,7 @@ config["attributes"] = {
   "DOCS",
   "PULSES",
   "INDEX",
-  "NOTE 1",
-  "NOTE 2",
-  "NOTE 3",
-  "NOTE 4",
-  "NOTE 5",
-  "NOTE 6",
-  "NOTE 7",
-  "NOTE 8"
+  "NOTES"
 }
 
 config["structure_attribute_map"] = {
@@ -80,7 +74,7 @@ config["structure_attribute_map"] = {
     "DOCS"
   },
   ["SHRINE"] = {
-    "NOTE 1",
+    "NOTES",
     "VELOCITY",
     "STRUCTURE",
     "DOCS"
@@ -97,14 +91,7 @@ config["structure_attribute_map"] = {
   },
   ["TOPIARY"] = {
     "INDEX",
-    "NOTE 1",
-    "NOTE 2",
-    "NOTE 3",
-    "NOTE 4",
-    "NOTE 5",
-    "NOTE 6",
-    "NOTE 7",
-    "NOTE 8",
+    "NOTES",
     "VELOCITY",
     "STRUCTURE",
     "DOCS"
@@ -132,7 +119,7 @@ config["structure_attribute_map"] = {
   }
 }
 
-local note_message = { 
+local note_message = {
   ["start"] = "NOTE...",
   ["abort"] = "ABORTED",
   ["done"] = "CHOSE"
@@ -165,3 +152,11 @@ config["popup_messages"] = {
 }
 
 return config
+
+
+
+
+
+
+
+  

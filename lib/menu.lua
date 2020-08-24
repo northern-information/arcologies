@@ -73,27 +73,29 @@ function menu:scroll_value(d)
     elseif s == "LEVEL" then
       keeper.selected_cell:set_level(keeper.selected_cell.level + d)
     elseif s == "DOCS" then
-      print("DOCS...")
-    elseif s == "NOTE 1" then
+      -- selecting docs automatically toggles them on
+    elseif s == "NOTE" then
       popup:launch("note1", d, "enc", 3)
-    elseif s == "NOTE 2" then
+    elseif s == "NOTE #1" then
+      popup:launch("note1", d, "enc", 3)
+    elseif s == "NOTE #2" then
       popup:launch("note2", d, "enc", 3)
-    elseif s == "NOTE 3" then
+    elseif s == "NOTE #3" then
       popup:launch("note3", d, "enc", 3)
-    elseif s == "NOTE 4" then
+    elseif s == "NOTE #4" then
       popup:launch("note4", d, "enc", 3)
-    elseif s == "NOTE 5" then
+    elseif s == "NOTE #5" then
       popup:launch("note5", d, "enc", 3)
-    elseif s == "NOTE 6" then
+    elseif s == "NOTE #6" then
       popup:launch("note6", d, "enc", 3)
-    elseif s == "NOTE 7" then
+    elseif s == "NOTE #7" then
       popup:launch("note7", d, "enc", 3)
-    elseif s == "NOTE 8" then
+    elseif s == "NOTE #8" then
       popup:launch("note8", d, "enc", 3)
     else
       print("Error: No match for " .. s)
     end
-  
+
   -- analysis
   elseif page.active_page == 3 then
     -- nothing to change here
@@ -103,7 +105,7 @@ end
 
 function menu:render(bool)
   local render_values = (bool == nil) and true or bool
-  local item_level = 15  
+  local item_level = 15
   -- rectangular highlight
   graphics:rect(0, ((self.selected_item - 1) * 8) + 12 - (self.offset * 8), 51, 7, 2)
   -- iterate through items
@@ -111,36 +113,41 @@ function menu:render(bool)
     local offset = 10 + (i * 8) - (self.offset * 8)
     -- menu item
     graphics:text(2, offset, self.items[i], item_level)
-    
+
     -- panel value for cell designer
     if page.active_page == 2 and render_values then
-      if keeper.selected_cell:is("TOPIARY") 
-        and string.find(self.items[i], "NOTE") 
-        and string.find(self.items[i], keeper.selected_cell.state_index)
-        and not string.find(self.items[i], "INDEX") then
-        graphics:text(56, offset, "> " .. keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
-      elseif self.items[i] == "PROBABILITY" or self.items[i] == "LEVEL" then
-        graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]) .. "%", 0)
-      elseif self.items[i] ~= "STRUCTURE" then
-        graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(self.items[i]), 0)
+      local item = self.items[i]
+      if item ~= nil then
+        local value = keeper.selected_cell:get_menu_value_by_attribute(item)
+        if value ~= nil then
+          if keeper.selected_cell:is("TOPIARY")
+            and string.find(self.items[i], "NOTE")
+            and string.find(self.items[i], keeper.selected_cell.state_index) then
+            graphics:text(56, offset, "> " .. value, 0)
+          elseif self.items[i] == "PROBABILITY" or self.items[i] == "LEVEL" then
+            graphics:text(56, offset, value .. "%", 0)
+          elseif self.items[i] ~= "STRUCTURE" then
+            graphics:text(56, offset, value, 0)
+          end
+        end
       end
     end
   end
   -- indicate when more menu items are available above
   if self.offset > 0 then
     -- pop the ellipses once we start to scroll down
-    graphics:rect(0, 7, 51, 14, 0) 
+    graphics:rect(0, 7, 51, 14, 0)
     graphics:text(2, 18, "...", 15)
-    graphics:rect(54, 11, 40, 8, 15) 
+    graphics:rect(54, 11, 40, 8, 15)
   else
     -- top mask to stop the text from running over the title bar
     graphics:rect(0, 7, 51, 5, 0)
   end
   -- indicate when menu items are available below
   if #self.items > self.threshold and self.selected_item ~= #self.items then
-    graphics:rect(0, 59, 51, 14, 0) 
+    graphics:rect(0, 59, 51, 14, 0)
     graphics:text(2, 64, "...", 15)
-    graphics:rect(54, 59, 40, 5, 15) 
+    graphics:rect(54, 59, 40, 5, 15)
   end
 end
 

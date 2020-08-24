@@ -12,7 +12,7 @@ function graphics.init()
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
-  graphics.cell_attributes = Cell:new().attributes
+  graphics.cell_attributes = config.attributes
 end
 
 function graphics:structure_and_title(s)
@@ -57,7 +57,7 @@ end
 function graphics:render_docs()
   local sheet = page.active_page == 1 and "HOME" or keeper.structure_value
   if docs.sheets[sheet] == nil then
-    glyphs:random(81, self.structure_y, 13) 
+    glyphs:random(81, self.structure_y, 13)
     self:text_center(91, 33, "NO DOCS", 0)
     self:text_center(91, 43, "FOUND", 0)
   else
@@ -79,31 +79,37 @@ function graphics:time(x, y)
   for i = 1, l do
     self:ps((i * o) + x, y, (b == i) and 5 or 0)
   end
-  -- no metabolism, no soup
-  if meta == 0 or not keeper.is_cell_selected then return end
+
+  -- no metabolism or offset, no soup
+  if not keeper.is_cell_selected then return end
+  if keeper.selected_cell:is("HIVE") or
+     keeper.selected_cell:is("RAVE") or
+     keeper.selected_cell:is("DOME") or
+     keeper.selected_cell:is("MAZE") then
 
     local steps = {}
         if keeper.selected_cell:is("DOME") then steps = keeper.selected_cell.er
     elseif keeper.selected_cell:is("MAZE") then steps = keeper.selected_cell.turing
     end
-  
-  if #steps > 0 then
-    for k,v in pairs(steps) do
-      local step = ((fn.cycle(b % meta, 1, meta)) == k)
-      local level = 0
-      if step and v then
-        level = 5
-      elseif not step and v then
-        level = 0
-      else 
-        level = 15
+
+    if #steps > 0 and meta > 0 then
+      for k,v in pairs(steps) do
+        local step = ((fn.cycle(b % meta, 1, meta)) == k)
+        local level = 0
+        if step and v then
+          level = 5
+        elseif not step and v then
+          level = 0
+        else
+          level = 15
+        end
+        self:ps((self:wrap_offset(k, off, l) * o) + x2, y2, level)
       end
-      self:ps((self:wrap_offset(k, off, l) * o) + x2, y2, level)
-    end
-  -- anything with an offset
-  elseif keeper.selected_cell:has("OFFSET") then
-    for i = 1, meta do
-      self:ps((self:wrap_offset(i, off, l) * o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
+    -- anything with an offset
+    elseif keeper.selected_cell:has("OFFSET") then
+      for i = 1, meta do
+        self:ps((self:wrap_offset(i, off, l) * o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
+      end
     end
   end
 end
@@ -493,7 +499,7 @@ end
 
 function graphics:select_a_cell()
   self:panel()
-  glyphs:random(81, self.structure_y, 13) 
+  glyphs:random(81, self.structure_y, 13)
   self:text_center(92, 33, "SELECT", 0)
   self:text_center(92, 43, "A CELL", 0)
 end
@@ -533,15 +539,17 @@ function graphics:grid_connect_error()
 end
 
 function graphics:splash()
-  local col_x = 123
-  local row_x = -59
+  local end_col = 34 -- starts at 68
+  local end_row = 34 -- starts at 0
+  local col_x = end_col + 95
+  local row_x = end_row - 95
   local y = 45
-  local l = counters.ui.frame >= 89 and 0 or 15  
-  col_x = col_x - self.ni_frame
-  row_x = row_x + self.ni_frame
+  local l = counters.ui.frame >= 89 and 0 or 15
   if counters.ui.frame >= 89 then
     self:rect(0, 0, 128, 50, 15)
   end
+  col_x = col_x - self.ni_frame
+  row_x = row_x + self.ni_frame
   self:n_col(col_x, y, l)
   self:n_col(col_x+20, y, l)
   self:n_col(col_x+40, y, l)
@@ -554,7 +562,7 @@ function graphics:splash()
     self:text_center(64, 60, "NORTHERN INFORMATION")
   end
   if counters.ui.frame < 90 then
-    self.ni_frame = self.ni_frame + 1  
+    self.ni_frame = self.ni_frame + 1
     fn.dirty_screen(true)
   end
   if counters.ui.frame == 160 or fn.break_splash() then
@@ -582,7 +590,7 @@ end
 function graphics:n_row_bottom(x, y, l)
   self:mls(x+21, y-40, x+29, y-40, l)
   self:mls(x+20, y-39, x+28, y-39, l)
-  self:mls(x+20, y-38, x+28, y-38, l)  
+  self:mls(x+20, y-38, x+28, y-38, l)
   self:mls(x+19, y-37, x+27, y-37, l)
 end
 

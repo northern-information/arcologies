@@ -42,15 +42,15 @@ end
 function keeper:collide_signals()
   for ka, signal_from_set_a in pairs(self.signals) do
     for kb, signal_from_set_b in pairs(self.signals) do
-      if signal_from_set_a.index == signal_from_set_b.index 
-      and signal_from_set_a.id ~= signal_from_set_b.id then 
+      if signal_from_set_a.index == signal_from_set_b.index
+      and signal_from_set_a.id ~= signal_from_set_b.id then
         self:register_delete_signal(signal_from_set_a.id)
         self:register_delete_signal(signal_from_set_b.id)
         g:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)
       end
     end
   end
-end 
+end
 
 function keeper:collide_signals_and_cells()
   for k, signal in pairs(self.signals) do
@@ -65,7 +65,7 @@ end
 function keeper:collision(signal, cell)
 
   -- all collisions result in signal deaths
-  self:register_delete_signal(signal.id)    
+  self:register_delete_signal(signal.id)
   g:register_signal_death_at(cell.x, cell.y)
 
   -- bang a closed port and gates redirect invert ports
@@ -75,7 +75,7 @@ function keeper:collision(signal, cell)
   -- cells below this only interact with open ports
   elseif not self:are_signal_and_port_compatible(signal, cell) then
     -- empty
-  
+
   -- hives and raves don't allow signals in
   elseif cell:is("HIVE") or cell:is("RAVE") then
     -- empty
@@ -94,7 +94,7 @@ function keeper:collision(signal, cell)
     s:one_shot(cell.state_index, cell.level / 100)
 
   end
-  
+
   --[[ gates and shrines reroute & split
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
@@ -110,9 +110,9 @@ function keeper:collision(signal, cell)
 end
 
 function keeper:are_signal_and_port_compatible(signal, cell)
-  if (signal.heading == "n" and cell:is_port_open("s"))  
-  or (signal.heading == "e" and cell:is_port_open("w"))  
-  or (signal.heading == "s" and cell:is_port_open("n"))  
+  if (signal.heading == "n" and cell:is_port_open("s"))
+  or (signal.heading == "e" and cell:is_port_open("w"))
+  or (signal.heading == "s" and cell:is_port_open("n"))
   or (signal.heading == "w" and cell:is_port_open("e"))
   then
     return true
@@ -226,9 +226,11 @@ end
 -- happens when the user changes the root note or the scale
 function keeper:update_all_notes()
   for k,cell in pairs(self.cells) do
-    for i=1,8 do
-      -- delta of zero just jiggles the handle
-      cell:browse_notes(0, i)
+    if cell:has("NOTES") then
+      for i=1, #cell.notes do
+        -- delta of zero just jiggles the handle
+        cell:browse_notes(0, i)
+      end
     end
   end
 end

@@ -3,7 +3,6 @@ m = {}
 function m.init()
   -- midi initialization
   if config.outputs.midi == 1 then
-    print("midi on")
   --   sound.midi_out = midi.connect(1)
   end
 end

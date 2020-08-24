@@ -13,23 +13,23 @@
 include("arcologies/lib/includes")
 
 function init()
-  parameters.init() 
-  fn.init()      
-  c.init()
-  docs.init()
-  counters.init()
+  audio:pitch_off()
+  parameters.init()
   filesystem.init()
+  fn.init()
+  m.init()
   g.init()
-  glyphs.init()
-  graphics.init()   
-  keeper.init()
-  menu.init()  
-  m.init()     
-  page.init()     
-  popup.init()
+  c.init()
   s.init()
   sound.init()
-  audio:pitch_off()
+  counters.init()
+  glyphs.init()
+  graphics.init()
+  docs.init()
+  page.init()
+  menu.init()
+  popup.init()
+  keeper.init()
   grid_dirty, screen_dirty, splash_break = false, false, false
   keys, key_counter, enc_counter = {}, {{},{},{}}, {{},{},{}}
   for i = 1, 3 do
@@ -42,9 +42,8 @@ function init()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
-  -- fn.seed_cells()
   sound:toggle_playback()
-  dev:scene(2)
+  -- dev:scene(3)
   redraw()
 end
 
@@ -57,7 +56,7 @@ end
 function enc(e, d)
   fn.break_splash(true)
   if e == 1 then  -- e1 only ever scrolls between pages
-    page:scroll(d)  
+    page:scroll(d)
   elseif e == 2 then -- e2 only ever scrolls the page menu
     menu:scroll(d)
   elseif e == 3 then
@@ -73,7 +72,7 @@ function key(k, z)
   elseif z == 0 then -- detect short press
     fn.break_splash(true)
     if key_counter[k] then -- cancel long press counter
-      clock.cancel(key_counter[k]) 
+      clock.cancel(key_counter[k])
       if k == 1 then -- short k1 is the default exit to norns
         -- empty
       elseif k == 2 then -- short k2 only ever toggles playback

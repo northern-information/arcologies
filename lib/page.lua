@@ -30,7 +30,6 @@ function page:render()
   elseif self.active_page == 4 then
     graphics:title_bar_and_tabs()
     glyphs:test()
-    -- graphics:time(27, 32)
   elseif self.active_page == 0 then
     graphics:splash()
   end

@@ -13,7 +13,7 @@ function parameters.init()
     min = 0, max = 32, default = 16
   }
   params:hide("seed")
-  
+
   parameters.is_splash_screen_on = true
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})
   params:set_action("splash_screen", function(x) parameters.is_splash_screen_on = x == 1 and true or false end)
