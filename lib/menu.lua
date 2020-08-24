@@ -14,99 +14,6 @@ function menu:reset()
   docs:set_active(false)
 end
 
-function menu:scroll(d)
-  self:select_item(util.clamp(self.selected_item + d, 1, #self.items))
-end
-
-function menu:select_item(i)
-  self.selected_item = i == nil and self.selected_item or i
-  self.selected_item_string  = self.items[self.selected_item]
-  self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
-  docs:set_active(self.selected_item_string == "DOCS")
-end
-
-function menu:select_item_by_name(name)
-  menu:select_item(fn.table_find(self.items, name) or 1)
-end
-
-function menu:set_items(items)
-  self.items = items
-end
-
-function menu:scroll_value(d)
-  local s = self.selected_item_string
-
-  -- home
-  if page.active_page == 1 then
-    if s == fn.playback() then
-      sound:set_playback(d)
-    elseif s == "SEED" then
-      popup:launch("seed", d, "enc", 3)
-    elseif s == "BPM" then
-      params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-    elseif s == "LENGTH" then
-      sound:cycle_length(d)
-    elseif s == "ROOT" then
-      sound:cycle_root(d)
-      keeper:update_all_notes()
-    elseif s == "SCALE" then
-      sound:set_scale(sound.scale + d)
-      keeper:update_all_notes()
-    end
-
-  -- cell designer
-  elseif page.active_page == 2 then
-    if s == "STRUCTURE" then
-      popup:launch("structure", d, "enc", 3)
-    elseif s == "OFFSET" then
-      keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
-    elseif s == "VELOCITY" then
-      keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
-    elseif s == "METABOLISM" then
-      keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
-    elseif s == "INDEX" then
-      keeper.selected_cell:cycle_state_index(d)
-    elseif s == "PROBABILITY" then
-      keeper.selected_cell:set_probability(keeper.selected_cell.probability + d)
-    elseif s == "PULSES" then
-      keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
-    elseif s == "LEVEL" then
-      keeper.selected_cell:set_level(keeper.selected_cell.level + d)
-    elseif s == "RANGE MIN" then
-      keeper.selected_cell:set_range_min(keeper.selected_cell.range_min + d)
-    elseif s == "RANGE MAX" then
-      keeper.selected_cell:set_range_max(keeper.selected_cell.range_max + d)
-    elseif s == "DOCS" then
-      -- selecting docs automatically toggles them on
-    elseif s == "NOTE" then
-      popup:launch("note1", d, "enc", 3)
-    elseif s == "NOTE #1" then
-      popup:launch("note1", d, "enc", 3)
-    elseif s == "NOTE #2" then
-      popup:launch("note2", d, "enc", 3)
-    elseif s == "NOTE #3" then
-      popup:launch("note3", d, "enc", 3)
-    elseif s == "NOTE #4" then
-      popup:launch("note4", d, "enc", 3)
-    elseif s == "NOTE #5" then
-      popup:launch("note5", d, "enc", 3)
-    elseif s == "NOTE #6" then
-      popup:launch("note6", d, "enc", 3)
-    elseif s == "NOTE #7" then
-      popup:launch("note7", d, "enc", 3)
-    elseif s == "NOTE #8" then
-      popup:launch("note8", d, "enc", 3)
-    else
-      print("Error: No match for " .. s)
-    end
-
-  -- analysis
-  elseif page.active_page == 3 then
-    -- nothing to change here
-  end
-
-end
-
 function menu:render(bool)
   local render_values = (bool == nil) and true or bool
   local item_level = 15
@@ -156,6 +63,82 @@ function menu:render(bool)
     graphics:text(2, 64, "...", 15)
     graphics:rect(54, 59, 40, 5, 15)
   end
+end
+
+function menu:scroll_value(d)
+  local s = self.selected_item_string
+
+  -- home
+  if page.active_page == 1 then
+    if s == fn.playback() then
+      sound:set_playback(d)
+    elseif s == "SEED" then
+      popup:launch("seed", d, "enc", 3)
+    elseif s == "BPM" then
+      params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
+    elseif s == "LENGTH" then
+      sound:cycle_length(d)
+    elseif s == "ROOT" then
+      sound:cycle_root(d)
+      keeper:update_all_notes()
+    elseif s == "SCALE" then
+      sound:set_scale(sound.scale + d)
+      keeper:update_all_notes()
+    end
+
+  -- cell designer
+  elseif page.active_page == 2 then
+        if s == "CAPACITY"    then keeper.selected_cell:set_capacity(keeper.selected_cell.capacity + d)
+    elseif s == "CHARGE"      then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
+    elseif s == "DOCS"        then -- selecting docs automatically toggles them on
+    elseif s == "INDEX"       then keeper.selected_cell:cycle_state_index(d)
+    elseif s == "LEVEL"       then keeper.selected_cell:set_level(keeper.selected_cell.level + d)
+    elseif s == "METABOLISM"  then keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
+    elseif s == "NOTE"        then popup:launch("note1", d, "enc", 3) -- i'm the same as #1!?!
+    elseif s == "NOTE #1"     then popup:launch("note1", d, "enc", 3) -- always have been.
+    elseif s == "NOTE #2"     then popup:launch("note2", d, "enc", 3)
+    elseif s == "NOTE #3"     then popup:launch("note3", d, "enc", 3)
+    elseif s == "NOTE #4"     then popup:launch("note4", d, "enc", 3)
+    elseif s == "NOTE #5"     then popup:launch("note5", d, "enc", 3)
+    elseif s == "NOTE #6"     then popup:launch("note6", d, "enc", 3)
+    elseif s == "NOTE #7"     then popup:launch("note7", d, "enc", 3)
+    elseif s == "NOTE #8"     then popup:launch("note8", d, "enc", 3)
+    elseif s == "OFFSET"      then keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
+    elseif s == "PROBABILITY" then keeper.selected_cell:set_probability(keeper.selected_cell.probability + d)
+    elseif s == "PULSES"      then keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
+    elseif s == "RANGE MAX"   then keeper.selected_cell:set_range_max(keeper.selected_cell.range_max + d)
+    elseif s == "RANGE MIN"   then keeper.selected_cell:set_range_min(keeper.selected_cell.range_min + d)
+    elseif s == "STRUCTURE"   then popup:launch("structure", d, "enc", 3)
+    elseif s == "VELOCITY"    then keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
+    else print("Error: No match for " .. s)
+    end
+
+  -- analysis
+  elseif page.active_page == 3 then
+    -- nothing to change here
+  end
+
+end
+
+
+
+function menu:scroll(d)
+  self:select_item(util.clamp(self.selected_item + d, 1, #self.items))
+end
+
+function menu:select_item(i)
+  self.selected_item = i == nil and self.selected_item or i
+  self.selected_item_string  = self.items[self.selected_item]
+  self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
+  docs:set_active(self.selected_item_string == "DOCS")
+end
+
+function menu:select_item_by_name(name)
+  menu:select_item(fn.table_find(self.items, name) or 1)
+end
+
+function menu:set_items(items)
+  self.items = items
 end
 
 return menu

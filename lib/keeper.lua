@@ -1,5 +1,7 @@
 local keeper = {}
 
+-- see counters.conductor() for how things are orchestrated
+
 function keeper.init()
   keeper.is_cell_selected = false
   keeper.selected_cell_id = ""
@@ -13,54 +15,6 @@ function keeper.init()
 end
 
 -- spawning, propagation, and collision
-
-function keeper:setup()
-  for k,v in pairs(keeper.new_signals) do table.insert(keeper.signals, v) end
-  keeper.new_signals = {}
-  for k,v in pairs(self.cells) do v:setup() end
-end
-
-function keeper:spawn_signals()
-  for k,cell in pairs(self.cells) do
-    if cell:is_spawning() and #cell.ports > 0 then
-      if cell:is_port_open("n") then self:create_signal(cell.x, cell.y - 1, "n", "now") end
-      if cell:is_port_open("e") then self:create_signal(cell.x + 1, cell.y, "e", "now") end
-      if cell:is_port_open("s") then self:create_signal(cell.x, cell.y + 1, "s", "now") end
-      if cell:is_port_open("w") then self:create_signal(cell.x - 1, cell.y, "w", "now") end
-    end
-  end
-end
-
-function keeper:propagate_signals()
-  for k,signal in pairs(self.signals) do
-    signal:propagate()
-  end
-  fn.dirty_grid(true)
-  fn.dirty_screen(true)
-end
-
-function keeper:collide_signals()
-  for ka, signal_from_set_a in pairs(self.signals) do
-    for kb, signal_from_set_b in pairs(self.signals) do
-      if signal_from_set_a.index == signal_from_set_b.index
-      and signal_from_set_a.id ~= signal_from_set_b.id then
-        self:register_delete_signal(signal_from_set_a.id)
-        self:register_delete_signal(signal_from_set_b.id)
-        g:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)
-      end
-    end
-  end
-end
-
-function keeper:collide_signals_and_cells()
-  for k, signal in pairs(self.signals) do
-    for kk, cell in pairs(self.cells) do
-      if signal.index == cell.index then
-        self:collision(signal, cell)
-      end
-    end
-  end
-end
 
 function keeper:collision(signal, cell)
 
@@ -97,12 +51,20 @@ function keeper:collision(signal, cell)
   elseif cell:is("VALE") then
     sound:play(sound:get_random_note(cell.range_min / 100, cell.range_max / 100), cell.velocity)
 
+  -- stores signals as charge
+  elseif cell:is("SOLARIUM") then
+    cell:set_charge(cell.charge + 1)
+
   end
 
-  --[[ gates and shrines reroute & split
+  --[[ the below structures reroute & split
     look at all the ports to see if this signal made it in
     then split the signal to all the other ports ]]
-  if cell:is("SHRINE") or cell:is("GATE") or cell:is("TOPIARY") or cell:is("CRYPT") or cell:is("VALE") then
+  if cell:is("SHRINE")
+  or cell:is("GATE")
+  or cell:is("TOPIARY")
+  or cell:is("CRYPT")
+  or cell:is("VALE") then
     for k, port in pairs(cell.ports) do
           if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
       elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")
@@ -117,11 +79,62 @@ function keeper:are_signal_and_port_compatible(signal, cell)
   if (signal.heading == "n" and cell:is_port_open("s"))
   or (signal.heading == "e" and cell:is_port_open("w"))
   or (signal.heading == "s" and cell:is_port_open("n"))
-  or (signal.heading == "w" and cell:is_port_open("e"))
-  then
+  or (signal.heading == "w" and cell:is_port_open("e")) then
     return true
   else
     return false
+  end
+end
+
+function keeper:spawn_signals()
+  for k,cell in pairs(self.cells) do
+    if cell:is_spawning() and #cell.ports > 0 then
+      if cell:is_port_open("n") then self:create_signal(cell.x, cell.y - 1, "n", "now") end
+      if cell:is_port_open("e") then self:create_signal(cell.x + 1, cell.y, "e", "now") end
+      if cell:is_port_open("s") then self:create_signal(cell.x, cell.y + 1, "s", "now") end
+      if cell:is_port_open("w") then self:create_signal(cell.x - 1, cell.y, "w", "now") end
+    end
+  end
+end
+
+function keeper:setup()
+  for k, signal in pairs(keeper.new_signals) do table.insert(keeper.signals, signal) end
+  keeper.new_signals = {}
+  for k, cell in pairs(self.cells) do cell:setup() end
+end
+
+function keeper:teardown()
+  for k, cell in pairs(self.cells) do cell:teardown() end
+end
+
+function keeper:propagate_signals()
+  for k,signal in pairs(self.signals) do
+    signal:propagate()
+  end
+  fn.dirty_grid(true)
+  fn.dirty_screen(true)
+end
+
+function keeper:collide_signals()
+  for ka, signal_from_set_a in pairs(self.signals) do
+    for kb, signal_from_set_b in pairs(self.signals) do
+      if signal_from_set_a.index == signal_from_set_b.index
+      and signal_from_set_a.id ~= signal_from_set_b.id then
+        self:register_delete_signal(signal_from_set_a.id)
+        self:register_delete_signal(signal_from_set_b.id)
+        g:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)
+      end
+    end
+  end
+end
+
+function keeper:collide_signals_and_cells()
+  for k, signal in pairs(self.signals) do
+    for kk, cell in pairs(self.cells) do
+      if signal.index == cell.index then
+        self:collision(signal, cell)
+      end
+    end
   end
 end
 

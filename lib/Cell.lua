@@ -12,6 +12,9 @@ function Cell:new(x, y, g)
   c.structure_value = c.structures[c.structure_key]
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
+  c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
+  capacity_trait.init(self)
+  charge_trait.init(self)
   er_trait.init(self)
   level_trait.init(self)
   metabolism_trait.init(self)
@@ -28,6 +31,8 @@ function Cell:new(x, y, g)
        aka measure twice cut once
        aka shit got spookey when i had params
       floating the init()s ]]
+  c.setup_capacity(c)
+  c.setup_charge(c)
   c.setup_er(c)
   c.setup_level(c)
   c.setup_metabolism(c)
@@ -80,25 +85,41 @@ end
 
 -- all signals are "spawned" but only under certain conditions
 function Cell:is_spawning()
-  if self.metabolism == 0 then
-    return false
-  elseif self:is("DOME") then
+  if self:is("DOME") and self.metabolism ~= 0 then
     return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
-  elseif self:is("MAZE") then
+  elseif self:is("MAZE") and self.metabolism ~= 0 then
     return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
-  elseif ((counters.this_beat() - self.offset) % self.metabolism) == 1 or self.metabolism == 1 then
-        if self:is("HIVE") then return true
-    elseif self:is("RAVE") then return true
-       end
+  elseif (((counters.this_beat() - self.offset) % self.metabolism) == 1 and self.metabolism ~= 0)or self.metabolism == 1 then
+    if self:is("HIVE") or self:is("RAVE") then return true end
+  elseif self:is("SOLARIUM") and self.flag then
+    return true
   end
   return false
 end
 
 -- does this cell need to do anything to boot up this beat?
 function Cell:setup()
-  if self:is("RAVE") and self:is_spawning() then self:drugs() end
-  if self:is("DOME") then self:set_er() end
-  if self:is("MAZE") then self:set_turing() end
+      if self:is("RAVE") and self:is_spawning() then self:drugs()
+  elseif self:is("DOME") then self:set_er()
+  elseif self:is("MAZE") then self:set_turing()
+  elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
+  end
+end
+
+function Cell:teardown()
+  if self:is("SOLARIUM") and self.flag == true then
+    self.flag = false
+    self:invert_ports()
+  end
+end
+
+-- turn on, tune in, drop out... close all the ports, then flip coins to open them
+function Cell:compare_capacity_and_charge()
+  if self.charge >= self.capacity then
+    self.flag = true
+    self.charge = 0
+    self:invert_ports()
+  end
 end
 
 -- turn on, tune in, drop out... close all the ports, then flip coins to open them
@@ -145,18 +166,13 @@ end
 
 -- todo: shame. there's gotta be a better way to do this
 function Cell:get_menu_value_by_attribute(a)
-      if a == "INDEX"       then return self.state_index
+      if a == "CAPACITY"    then return self.capacity
+  elseif a == "CHARGE"      then return self.charge
+  elseif a == "INDEX"       then return self.state_index
   elseif a == "LEVEL"       then return self.level
   elseif a == "METABOLISM"  then return self.metabolism
-  elseif a == "OFFSET"      then return self.offset
-  elseif a == "PROBABILITY" then return self.probability
-  elseif a == "PULSES"      then return self.pulses
-  elseif a == "STRUCTURE"   then return self.structure_value
-  elseif a == "VELOCITY"    then return self.velocity
-  elseif a == "RANGE MIN"   then return self.range_min
-  elseif a == "RANGE MAX"   then return self.range_max
-  elseif a == "NOTE"        then return self:get_note_name(1)
-  elseif a == "NOTE #1"     then return self:get_note_name(1)
+  elseif a == "NOTE"        then return self:get_note_name(1) -- i'm the same as #1!?!
+  elseif a == "NOTE #1"     then return self:get_note_name(1) -- always have been.
   elseif a == "NOTE #2"     then return self:get_note_name(2)
   elseif a == "NOTE #3"     then return self:get_note_name(3)
   elseif a == "NOTE #4"     then return self:get_note_name(4)
@@ -164,6 +180,13 @@ function Cell:get_menu_value_by_attribute(a)
   elseif a == "NOTE #6"     then return self:get_note_name(6)
   elseif a == "NOTE #7"     then return self:get_note_name(7)
   elseif a == "NOTE #8"     then return self:get_note_name(8)
+  elseif a == "OFFSET"      then return self.offset
+  elseif a == "PROBABILITY" then return self.probability
+  elseif a == "PULSES"      then return self.pulses
+  elseif a == "RANGE MAX"   then return self.range_max
+  elseif a == "RANGE MIN"   then return self.range_min
+  elseif a == "STRUCTURE"   then return self.structure_value
+  elseif a == "VELOCITY"    then return self.velocity
   end
 end
  

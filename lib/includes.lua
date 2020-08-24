@@ -11,7 +11,17 @@ config = include("arcologies/lib/config")
 -- the core concept of arcologies, interact with Signals
 include("arcologies/lib/Cell")
 
--- the non-universal traits of cells
+--[[
+traits of cells. adding more minimallly requires:
+ - configruration in in config.lua
+ - contstructor code in Cell.lua
+ - probably some logic in keeper:collision()
+ - and i'm not happy about it but work in menu:scroll_value()
+   along with Cell:get_menu_value_by_attribute() 
+todo: break up get_menu_value_by_attribute into traits...
+]]
+include("arcologies/lib/traits/capacity_trait")
+include("arcologies/lib/traits/charge_trait")
 include("arcologies/lib/traits/er_trait")
 include("arcologies/lib/traits/level_trait")
 include("arcologies/lib/traits/metabolism_trait")
@@ -52,7 +62,24 @@ glyphs = include("arcologies/lib/glyphs")
 -- all norns screen rendering
 graphics = include("arcologies/lib/graphics")
 
--- state machine for Cells and Signals
+--[[
+state machine for Cells and Signals
+
+a lot of the "higher order" logic happens here
+for example, solariums absorb signals to increase
+their charge, then invert their ports and release
+once capacity is met.
+
+solariums have charge and capacity, but don't
+know exactly what to do with them.
+
+Signals know nothing about Cells.
+
+Cells know nothing about Signals.
+
+all that stuff happens in keeper:collide()
+
+]]
 keeper = include("arcologies/lib/keeper")
 
 -- build the side menus for norns pages

@@ -71,7 +71,7 @@ config["attributes"] = {
   "RANGE MIN",
   "RANGE MAX",
   "CHARGE",
-  "PAYLOAD"
+  "CAPACITY"
 }
 
 config["structure_attribute_map"] = {
@@ -133,7 +133,7 @@ config["structure_attribute_map"] = {
   },
   ["SOLARIUM"] = {
     "CHARGE",
-    "PAYLOAD",
+    "CAPACITY",
     "STRUCTURE",
     "DOCS"
   }

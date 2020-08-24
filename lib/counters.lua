@@ -50,6 +50,7 @@ function counters.conductor()
   keeper:collide_signals()
   keeper:collide_signals_and_cells()
   keeper:delete_signals()
+  keeper:teardown()
   redraw()
 end
 

@@ -43,7 +43,7 @@ function init()
   clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
   sound:toggle_playback()
-  dev:scene(4)
+  dev:scene(2)
   redraw()
 end
 
