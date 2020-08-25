@@ -7,7 +7,8 @@ config["settings"] = {
   ["scale"] = 1,
   ["octaves"] = 11,
   ["save_path"] = _path.audio .. "arcologies/",
-  ["crypt_path"] =  _path.audio .. "arcologies/crypt/"
+  ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
+  ["crypts_path"] =  _path.audio .. "crypts/"
 }
 
 config["outputs"] = {
