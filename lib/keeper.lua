@@ -40,13 +40,11 @@ function keeper:collision(signal, cell)
 
   -- topiaries cylce through notes
   elseif cell:is("TOPIARY") then
-    print("TOPIARY :" .. cell.state_index)
     sound:play(cell.notes[cell.state_index], cell.velocity)
     cell:cycle_state_index(1)
 
   -- crypts play samples
   elseif cell:is("CRYPT") then
-    print("CRYPT :" .. cell.state_index)
     s:one_shot(cell.state_index, cell.level / 100)
 
   -- vales play random notes
