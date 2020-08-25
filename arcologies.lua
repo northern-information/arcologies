@@ -45,7 +45,6 @@ function init()
   sound:toggle_playback()
   init_done = true
   if config.settings.dev_mode then dev:scene(config.settings.dev_scene) end
-  -- testing git
   redraw()
 end
 
