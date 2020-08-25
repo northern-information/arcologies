@@ -74,9 +74,8 @@ function key(k, z)
     fn.break_splash(true)
     if key_counter[k] then -- cancel long press counter
       clock.cancel(key_counter[k])
-      if k == 1 then -- short k1 is the default exit to norns
-        -- empty
-      elseif k == 2 then -- short k2 only ever toggles playback
+       -- short k1 is the default exit to norns
+      if k == 2 then -- short k2 only ever toggles playback
         sound:toggle_playback()
       elseif k == 3 then -- short k3 only ever deletes the selected cell
         keeper:delete_cell()
