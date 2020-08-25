@@ -5,16 +5,19 @@ function filesystem.init()
   filesystem.paths["save_path"] = config.settings.save_path
   filesystem.paths["crypt_path"] = config.settings.crypt_path
   filesystem.paths["crypts_path"] = config.settings.crypts_path
-  filesystem.crypts_names = {}
-  filesystem.default = filesystem.paths.crypt_path
-  filesystem.current = filesystem.default
   for k,path in pairs(filesystem.paths) do
     if util.file_exists(path) == false then
       util.make_dir(path)
     end
   end
+  -- crypt(s)
+  filesystem.crypts_names = { config.settings.crypt_default_name }
+  filesystem.default = filesystem.paths.crypt_path
+  filesystem.current = filesystem.default
   filesystem:scan_crypts()
 end
+
+
 
 function filesystem:scan_crypts()
   local delete = {"LICENSE", "README.md"}
@@ -29,11 +32,15 @@ function filesystem:scan_crypts()
   end
 end
 
-function filesystem:set_crypt(name)
-  if name == "default" then
+
+function filesystem:set_crypt(index)
+  if index == 1 then
     self.current = self.default
   else
-    self.current = self.paths.crypts_path .. name .. "/"
+    self.current = self.paths.crypts_path .. self.crypts_names[index] .. "/"
+  end
+  if init_done then
+    keeper:update_all_crypts()
   end
 end
 

@@ -17,6 +17,9 @@ function sound:set_scale(i)
   self.scale = util.clamp(i, 1, #self.scale_names)
   self.scale_name = sound.scale_names[sound.scale]
   self:build_scale()
+  if init_done then
+    keeper:update_all_notes()
+  end
 end
 
 function sound:build_scale()
@@ -47,6 +50,9 @@ end
 function sound:cycle_root(i)
   self.root = fn.cycle(self.root + i, 0, 12)
   self:build_scale()
+  if init_done then
+    keeper:update_all_notes()
+  end
 end
 
 function sound:set_random_root()

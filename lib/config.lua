@@ -8,7 +8,10 @@ config["settings"] = {
   ["octaves"] = 11,
   ["save_path"] = _path.audio .. "arcologies/",
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
-  ["crypts_path"] =  _path.audio .. "crypts/"
+  ["crypt_default_name"] = "DEFAULT",
+  ["crypts_path"] =  _path.audio .. "crypts/",
+  ["dev_mode"] = true,
+  ["dev_scene"] = 3
 }
 
 config["outputs"] = {
@@ -20,9 +23,11 @@ config["outputs"] = {
 config["page_titles"] = {
   "ARCOLOGIES",
   "DESIGNER",
-  "ANALYSIS",
-  "DEV"
+  "ANALYSIS"
 }
+if config.settings.dev_mode then
+  table.insert(config.page_titles, "DEV")
+end
 
 config["home_items"] = {
   "SEED",
@@ -77,8 +82,8 @@ config["attributes"] = {
 
 config["structure_attribute_map"] = {
   ["HIVE"] = {
-    "OFFSET",
     "METABOLISM",
+    "OFFSET",
     "STRUCTURE",
     "DOCS"
   },
@@ -93,8 +98,8 @@ config["structure_attribute_map"] = {
     "DOCS"
   },
   ["RAVE"] = {
-    "OFFSET",
     "METABOLISM",
+    "OFFSET",
     "STRUCTURE",
     "DOCS"
   },
@@ -106,15 +111,15 @@ config["structure_attribute_map"] = {
     "DOCS"
     },
   ["DOME"] = {
-    "OFFSET",
     "METABOLISM",
+    "OFFSET",
     "PULSES",
     "STRUCTURE",
     "DOCS"
   },
   ["MAZE"] = {
-    "OFFSET",
     "METABOLISM",
+    "OFFSET",
     "PROBABILITY",
     "STRUCTURE",
     "DOCS"

@@ -29,8 +29,7 @@ function Cell:new(x, y, g)
   velocity_trait.init(self)
   --[[ walk softly and carry a big stick
        aka measure twice cut once
-       aka shit got spookey when i had params
-      floating the init()s ]]
+       aka shit got spooky when i had params floating the init()s ]]
   c.setup_capacity(c)
   c.setup_charge(c)
   c.setup_er(c)

@@ -70,20 +70,12 @@ function menu:scroll_value(d)
 
   -- home
   if page.active_page == 1 then
-    if s == fn.playback() then
-      sound:set_playback(d)
-    elseif s == "SEED" then
-      popup:launch("seed", d, "enc", 3)
-    elseif s == "BPM" then
-      params:set("bpm", util.clamp(params:get("bpm") + d, 20, 240))
-    elseif s == "LENGTH" then
-      sound:cycle_length(d)
-    elseif s == "ROOT" then
-      sound:cycle_root(d)
-      keeper:update_all_notes()
-    elseif s == "SCALE" then
-      sound:set_scale(sound.scale + d)
-      keeper:update_all_notes()
+        if s == fn.playback() then sound:set_playback(d)
+    elseif s == "SEED"        then popup:launch("seed", d, "enc", 3)
+    elseif s == "BPM"         then params:set("bpm", params:get("bpm") + d)
+    elseif s == "LENGTH"      then sound:cycle_length(d)
+    elseif s == "ROOT"        then sound:cycle_root(d)
+    elseif s == "SCALE"       then sound:set_scale(sound.scale + d)
     end
 
   -- cell designer
@@ -110,7 +102,7 @@ function menu:scroll_value(d)
     elseif s == "RANGE MIN"   then keeper.selected_cell:set_range_min(keeper.selected_cell.range_min + d)
     elseif s == "STRUCTURE"   then popup:launch("structure", d, "enc", 3)
     elseif s == "VELOCITY"    then keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
-    else print("Error: No match for " .. s)
+    else print("Error: No match for cell attribute " .. s)
     end
 
   -- analysis

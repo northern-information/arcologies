@@ -30,8 +30,8 @@ function keeper:collision(signal, cell)
   elseif not self:are_signal_and_port_compatible(signal, cell) then
     -- empty
 
-  -- hives and raves don't allow signals in
-  elseif cell:is("HIVE") or cell:is("RAVE") then
+  -- these don't allow signlas in
+  elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") or cell:is("RAVE") then
     -- empty
 
   -- shrines play single notes
@@ -40,11 +40,13 @@ function keeper:collision(signal, cell)
 
   -- topiaries cylce through notes
   elseif cell:is("TOPIARY") then
+    print("TOPIARY :" .. cell.state_index)
     sound:play(cell.notes[cell.state_index], cell.velocity)
-    keeper.selected_cell:cycle_state_index(1)
+    cell:cycle_state_index(1)
 
   -- crypts play samples
   elseif cell:is("CRYPT") then
+    print("CRYPT :" .. cell.state_index)
     s:one_shot(cell.state_index, cell.level / 100)
 
   -- vales play random notes
@@ -248,6 +250,14 @@ function keeper:update_all_notes()
         -- delta of zero just jiggles the handle
         cell:browse_notes(0, i)
       end
+    end
+  end
+end
+
+function keeper:update_all_crypts()
+  for k,cell in pairs(self.cells) do
+    if cell:is("CRYPT") then
+      cell:cycle_state_index(0, i)
     end
   end
 end

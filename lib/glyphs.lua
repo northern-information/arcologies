@@ -7,6 +7,7 @@ end
 -- full-size glyphs (22 x 26)
 
 function glyphs:test()
+  graphics:title_bar_and_tabs() 
   local x = 32
   local y = 20
   local l = 15

@@ -19,19 +19,12 @@ end
 
 function page:render()
   graphics:setup()
-  if page.error then
-    self:error_message()
-  elseif self.active_page == 1 then
-    self:home()
-  elseif self.active_page == 2 then
-    self:cell_designer()
-  elseif self.active_page == 3 then
-    self:analysis()
-  elseif self.active_page == 4 then
-    graphics:title_bar_and_tabs()
-    glyphs:test()
-  elseif self.active_page == 0 then
-    graphics:splash()
+      if page.error            then self:error_message()
+  elseif self.active_page == 1 then self:home()
+  elseif self.active_page == 2 then self:cell_designer()
+  elseif self.active_page == 3 then self:analysis()
+  elseif self.active_page == 4 then glyphs:test()
+  elseif self.active_page == 0 then graphics:splash()
   end
   fn.dirty_screen(true)
   graphics:teardown()

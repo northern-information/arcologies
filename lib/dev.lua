@@ -47,6 +47,12 @@ function dev:scene(i)
     keeper.selected_cell:set_metabolism(8)
     keeper.selected_cell:set_offset(01)
     keeper:select_cell(4, 4)
+    keeper.selected_cell:change("CRYPT")
+    keeper.selected_cell:open_port("n")
+    keeper.selected_cell:open_port("e")
+    keeper.selected_cell:open_port("s")
+    keeper.selected_cell:open_port("w")
+    keeper:select_cell(2, 4)
     keeper.selected_cell:change("TOPIARY")
     keeper.selected_cell:open_port("n")
     keeper.selected_cell:open_port("e")
@@ -197,6 +203,5 @@ function print_scale()
     print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
   end
 end
-
 
 return dev

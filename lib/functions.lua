@@ -154,10 +154,17 @@ end
 function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
   keeper.selected_cell:set_structure_by_key(math.random(1, #config.structures))
-  local ports = { "n", "e", "s", "w" }
-  for i = 1, #ports do
-    if fn.coin() == 1 then
-      keeper.selected_cell:open_port(ports[i])
+  if keeper.selected_cell:is("SHRINE")
+  or keeper.selected_cell:is("TOPIARY")
+  or keeper.selected_cell:is("VALE")
+  or keeper.selected_cell:is("CRYPT") then
+    keeper.selected_cell:invert_ports()
+  else
+    local ports = { "n", "e", "s", "w" }
+    for i = 1, #ports do
+      if fn.coin() == 1 then
+        keeper.selected_cell:open_port(ports[i])
+      end
     end
   end
   if keeper.selected_cell:has("OFFSET") then

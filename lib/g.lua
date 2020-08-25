@@ -34,16 +34,21 @@ end
 function g.key(x, y, z)
   if z == 0 then return end
   fn.break_splash(true)
+  -- no cell is selected, so select one
   if not keeper.is_cell_selected then
     keeper:select_cell(x, y)
     graphics:top_message_cell_structure()
   else
+    -- pressing the selected cell deselects it
     if keeper.selected_cell.index == fn.index(x, y) then
       keeper:deselect_cell()
+    -- toggle a port
     elseif keeper.selected_cell:find_port(x, y) then
       keeper.selected_cell:toggle_port(x, y)
+    -- select another cell
     elseif keeper:get_cell(fn.index(x, y)) then
       keeper:select_cell(x, y)
+      menu:reset()
       graphics:top_message_cell_structure()
     else
       keeper:deselect_cell()
