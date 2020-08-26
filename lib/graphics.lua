@@ -1,7 +1,6 @@
 local graphics = {}
 
 function graphics.init()
-  graphics.ni_frame = 0
   graphics.temporary_message_on = false
   graphics.temporary_message = ""
   graphics.tab_width = 5
@@ -13,6 +12,11 @@ function graphics.init()
   graphics.analysis_pixels = {}
   graphics.ui_wait_threshold = 0.5
   graphics.cell_attributes = config.attributes
+  graphics.splash_lines_open = {}
+  graphics.splash_lines_close = {}
+  graphics.splash_lines_close_available = {}
+  for i=1,45 do graphics.splash_lines_open[i] = i end
+  for i=1,64 do graphics.splash_lines_close_available[i] = i end
 end
 
 function graphics:structure_and_title(s)
@@ -551,17 +555,48 @@ function graphics:grid_connect_error()
 end
 
 function graphics:splash()
-  local end_col = 34 -- starts at 68
-  local end_row = 34 -- starts at 0
-  local col_x = end_col + 95
-  local row_x = end_row - 95
+  local col_x = 34
+  local row_x = 34
   local y = 45
-  local l = counters.ui.frame >= 89 and 0 or 15
-  if counters.ui.frame >= 89 then
+  local l = counters.ui.frame >= 49 and 0 or 15
+  if counters.ui.frame >= 49 then
     self:rect(0, 0, 128, 50, 15)
   end
-  col_x = col_x - self.ni_frame
-  row_x = row_x + self.ni_frame
+
+  self:ni(col_x, row_x, y, l)
+
+  if #self.splash_lines_open > 1 then 
+    local delete = math.random(1, #self.splash_lines_open)
+    table.remove(self.splash_lines_open, delete)
+    for i = 1, #self.splash_lines_open do
+      self:mlrs(1, self.splash_lines_open[i] + 4, 128, 1, 0)
+    end
+  end
+
+
+  if counters.ui.frame >= 49 then
+    self:text_center(64, 60, "NORTHERN INFORMATION")
+  end
+
+  if counters.ui.frame > 100 then
+    if #self.splash_lines_close_available > 0 then 
+      local add = math.random(1, #self.splash_lines_close_available)
+      table.insert(self.splash_lines_close, self.splash_lines_close_available[add])
+      table.remove(self.splash_lines_close_available, add)
+    end
+    for i = 1, #self.splash_lines_close do
+      self:mlrs(1, self.splash_lines_close[i], 128, 1, 0)
+    end
+  end
+
+
+  if #self.splash_lines_close_available == 0 or fn.break_splash() then
+    fn.break_splash(true)
+    page:select(1)
+  end
+end
+
+function graphics:ni(col_x, row_x, y, l)
   self:n_col(col_x, y, l)
   self:n_col(col_x+20, y, l)
   self:n_col(col_x+40, y, l)
@@ -570,17 +605,6 @@ function graphics:splash()
   self:n_row_top(row_x+40, y, l)
   self:n_row_bottom(row_x+9, y+37, l)
   self:n_row_bottom(row_x+29, y+37, l)
-  if counters.ui.frame >= 89 then
-    self:text_center(64, 60, "NORTHERN INFORMATION")
-  end
-  if counters.ui.frame < 90 then
-    self.ni_frame = self.ni_frame + 1
-    fn.dirty_screen(true)
-  end
-  if counters.ui.frame == 160 or fn.break_splash() then
-    fn.break_splash(true)
-    page:select(1)
-  end
 end
 
 function graphics:n_col(x, y, l)
@@ -601,9 +625,9 @@ end
 
 function graphics:n_row_bottom(x, y, l)
   self:mls(x+21, y-40, x+29, y-40, l)
-  self:mls(x+20, y-39, x+28, y-39, l)
+  self:mls(x+21, y-39, x+29, y-39, l)
   self:mls(x+20, y-38, x+28, y-38, l)
-  self:mls(x+19, y-37, x+27, y-37, l)
+  self:mls(x+20, y-37, x+28, y-37, l)
 end
 
 
