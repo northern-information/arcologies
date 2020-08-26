@@ -65,6 +65,16 @@ function Cell:set_structure_by_key(key)
   self:change_checks()
 end
 
+function Cell:prepare_for_paste(x, y, g)
+  self.x = x
+  self.y = y
+  self.generation = g
+  self.id = "cell-" .. fn.id()
+  self.index = fn.index(self.x, self.y)
+  self.flag = false
+  self:set_available_ports()
+end
+
 --[[
 from here out we get into what is essentially "descendent class behaviors"
 since all cells can change structures at any time, it makes no sense to

@@ -42,7 +42,6 @@ function init()
   clock.run(counters.redraw_clock)
   clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
-  sound:toggle_playback()
   init_done = true
   if config.settings.dev_mode then dev:scene(config.settings.dev_scene) end
   redraw()

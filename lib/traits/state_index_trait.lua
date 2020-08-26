@@ -18,7 +18,6 @@ state_index_trait.init = function(self)
   end
 
   self.cycle_state_index = function(self, i)
-    print("cycle_state_index for: " .. self.structure_value)
     self:set_state_index(fn.cycle(self.state_index + i, 1, self.max_state_index))
   end
 

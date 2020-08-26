@@ -28,7 +28,7 @@ function popup:attribute(s)
 end
 
 function popup:title_message(s)
-  graphics:set_message(s, counters.default_message_length)
+  graphics:set_message(s)
 end
 
 function popup:start()

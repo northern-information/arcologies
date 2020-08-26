@@ -145,6 +145,7 @@ function graphics:title_bar_and_tabs()
 end
 
 function graphics:set_message(string, time)
+  time = time == nil and counters.default_message_length or time
   self.temporary_message_on = true
   self.temporary_message = string
   counters.message = counters.ui.frame + time

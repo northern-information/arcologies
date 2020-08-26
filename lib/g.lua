@@ -1,8 +1,19 @@
 local g = grid.connect()
 
 function g.init()
+  g.counter = {}
+  g.toggled = {}
   g.signal_deaths = {}
   g.signal_and_cell_collisions = {}
+  g.first_in_x = nil
+  g.first_in_y = nil
+  g.is_copying = false
+  for x = 1, fn.grid_width() do
+    g.counter[x] = {}
+    for y = 1, fn.grid_height() do
+      g.counter[x][y] = nil
+    end
+  end
 end
 
 function g.grid_redraw_clock()
@@ -32,30 +43,78 @@ function g:grid_redraw()
 end
 
 function g.key(x, y, z)
-  if z == 0 then return end
   fn.break_splash(true)
-  -- no cell is selected, so select one
-  if not keeper.is_cell_selected then
-    keeper:select_cell(x, y)
-    graphics:top_message_cell_structure()
+  if z == 1 then
+    g.counter[x][y] = clock.run(g.grid_long_press, x, y)
+  elseif z == 0 then -- otherwise, if a grid key is released...
+    if g.counter[x][y] then -- and the long press is still waiting...
+      clock.cancel(g.counter[x][y]) -- then cancel the long press clock,
+      g.short_press(x,y) -- and execute a short press instead.
+    end
+    -- release the copy
+    if g.first_in_x == x and g.first_in_y == y then
+      g.first_in_x = nil
+      g.first_in_y = nil
+      keeper.copied_cell = {}
+      g.is_copying = false
+      graphics:set_message("CLIPBOARD CLEARED")
+    end
+  end
+end
+
+
+function g.short_press(x, y)
+  if g.is_copying then
+    local tmp = fn.deep_copy(keeper.copied_cell)
+    tmp:prepare_for_paste(x, y, counters.music_generation())
+    table.insert(keeper.cells, tmp)
+    graphics:set_message("PASTED " .. tmp.structure_value)
   else
-    -- pressing the selected cell deselects it
-    if keeper.selected_cell.index == fn.index(x, y) then
-      keeper:deselect_cell()
-    -- toggle a port
-    elseif keeper.selected_cell:find_port(x, y) then
-      keeper.selected_cell:toggle_port(x, y)
-    -- select another cell
-    elseif keeper:get_cell(fn.index(x, y)) then
+
+    -- no cell is selected, so select one
+    if not keeper.is_cell_selected then
       keeper:select_cell(x, y)
-      menu:reset()
       graphics:top_message_cell_structure()
     else
-      keeper:deselect_cell()
+      -- pressing the selected cell deselects it
+      if keeper.selected_cell.index == fn.index(x, y) then
+        keeper:deselect_cell()
+      -- toggle a port
+      elseif keeper.selected_cell:find_port(x, y) then
+        keeper.selected_cell:toggle_port(x, y)
+        local port = keeper.selected_cell:find_port(x, y)
+        graphics:set_message("TOGGLED " .. string.upper(port[3]) .. " PORT")
+
+      -- select another cell
+      elseif keeper:get_cell(fn.index(x, y)) then
+        keeper:select_cell(x, y)
+        menu:reset()
+        graphics:top_message_cell_structure()
+      else
+        keeper:deselect_cell()
+      end
     end
   end
   fn.dirty_grid(true)
   fn.dirty_screen(true)
+end
+
+
+
+
+function g.grid_long_press(x, y)
+  clock.sleep(.5)
+  if not g.is_copying then
+    keeper:select_cell(x, y)
+    graphics:top_message_cell_structure()
+    g.first_in_x = x
+    g.first_in_y = y
+    keeper.copied_cell = fn.deep_copy(keeper.selected_cell)
+    g.is_copying = true
+    graphics:set_message("COPIED " .. keeper.selected_cell.structure_value)
+  end
+  g.counter[x][y] = nil
+  fn.dirty_grid(true)
 end
 
 function g:led_signals()

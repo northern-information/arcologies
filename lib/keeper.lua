@@ -8,6 +8,7 @@ function keeper.init()
   keeper.selected_cell_x = ""
   keeper.selected_cell_y = ""
   keeper.selected_cell = {}
+  keeper.copied_cell = {}
   keeper.cells = {}
   keeper.signals = {}
   keeper.new_signals = {}
@@ -193,10 +194,14 @@ function keeper:create_cell(x, y)
 end
 
 function keeper:delete_cell(id)
+  if id == nil and not self.is_cell_selected then
+    graphics:set_message("SELECT A CELL TO DELETE")
+  end
   id = id == nil and self.selected_cell_id or id
   for k,cell in pairs(self.cells) do
     if cell.id == id then
       table.remove(self.cells, k)
+      graphics:set_message("DELETED " .. cell.structure_value)
       self:deselect_cell()
     end
   end

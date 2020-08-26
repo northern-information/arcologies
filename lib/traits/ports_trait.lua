@@ -5,6 +5,10 @@ ports_trait.init = function(self, x, y)
   self.setup_ports = function(self)
     self.ports = {}
     self.cardinals = { "n", "e", "s", "w" }
+    self:set_available_ports()
+  end
+
+  self.set_available_ports = function(self)
     self.available_ports = {
       { self.x, self.y - 1, "n" },
       { self.x + 1, self.y, "e" },
