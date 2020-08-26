@@ -4,6 +4,46 @@ function glyphs.init()
   glyphs.available = config.structures
 end
 
+function glyphs:random(x, y, l, jitter)
+  local r = math.random(1, #config.structures)
+  if jitter then
+    x = x + math.random(-1, 1)
+    y = y + math.random(-1, 1)
+  end
+      if r == 1  then self:cell(x, y, l)
+  elseif r == 2  then self:hive(x, y, l)
+  elseif r == 3  then self:shrine(x, y, l)
+  elseif r == 4  then self:gate(x, y, l)
+  elseif r == 5  then self:rave(x, y, l)
+  elseif r == 6  then self:topiary(x, y, l)
+  elseif r == 7  then self:dome(x, y, l)
+  elseif r == 8  then self:maze(x, y, l)
+  elseif r == 9  then self:crypt(x, y, l)
+  elseif r == 10 then self:vale(x, y, l)
+  elseif r == 11 then self:tunnel(x, y, l)
+  end
+end
+
+function glyphs:small_random(x, y, l, jitter)
+  local r = math.random(1, #config.structures)
+  if jitter then
+    x = x + math.random(-1, 1)
+    y = y + math.random(-1, 1)
+  end
+      if r == 1  then self:small_cell(x, y, l)
+  elseif r == 2  then self:small_hive(x, y, l)
+  elseif r == 3  then self:small_shrine(x, y, l)
+  elseif r == 4  then self:small_gate(x, y, l)
+  elseif r == 5  then self:small_rave(x, y, l)
+  elseif r == 6  then self:small_topiary(x, y, l)
+  elseif r == 7  then self:small_dome(x, y, l)
+  elseif r == 8  then self:small_maze(x, y, l)
+  elseif r == 9  then self:small_crypt(x, y, l)
+  elseif r == 10 then self:small_vale(x, y, l)
+  elseif r == 11  then self:small_tunnel(x, y, l)
+  end
+end
+
 -- full-size glyphs (22 x 26)
 
 function glyphs:test()
@@ -22,8 +62,8 @@ function glyphs:test()
   -- self:maze(x, y, l)
   -- self:crypt(x, y, 5)
   -- self:vale(x, y, l)
-  self:solarium(x, y, l)
-  -- self:tunnel(x, y, l)
+  -- self:solarium(x, y, l)
+  self:tunnel(x, y, l)
   
 
   -- self:small_hive(x+60, y, 5)
@@ -33,8 +73,9 @@ function glyphs:test()
   -- self:small_topiary(x+60, y, 15)
   -- self:small_maze(x+60, y, l)
   -- self:small_crypt(x+60, y, l)
-  self:small_solarium(x+60, y, l)
+  -- self:small_solarium(x+60, y, l)
   -- self:small_vale(x+60, y, l)
+  self:small_tunnel(x+60, y, l)
 
   -- self:left_wall(x, y, l)
   -- self:right_wall(x, y, l)
@@ -58,26 +99,6 @@ function glyphs:bounding_box(x, y, l)
   graphics:mlrs(x, y+29, 22, 0, 5)
   graphics:mlrs(x-2, y, 0, 26, 5)
   graphics:mlrs(x+25, y, 0, 26, 5)
-end
-
-
-function glyphs:random(x, y, l, jitter)
-  local r = math.random(1, #config.structures)
-  if jitter then
-    x = x + math.random(-1, 1)
-    y = y + math.random(-1, 1)
-  end
-      if r == 1 then self:cell(x, y, l)
-  elseif r == 2 then self:hive(x, y, l)
-  elseif r == 3 then self:shrine(x, y, l)
-  elseif r == 4 then self:gate(x, y, l)
-  elseif r == 5 then self:rave(x, y, l)
-  elseif r == 6 then self:topiary(x, y, l)
-  elseif r == 7 then self:dome(x, y, l)
-  elseif r == 8 then self:maze(x, y, l)
-  elseif r == 9 then self:crypt(x, y, l)
-  elseif r == 10 then self:vale(x, y, l)
-  end
 end
 
 function glyphs:cell(x, y, l)
@@ -300,25 +321,6 @@ end
 
 -- small glyphs
 
-function glyphs:small_random(x, y, l, jitter)
-  local r = math.random(1, #config.structures)
-  if jitter then
-    x = x + math.random(-1, 1)
-    y = y + math.random(-1, 1)
-  end
-      if r == 1 then self:small_cell(x, y, l)
-  elseif r == 2 then self:small_hive(x, y, l)
-  elseif r == 3 then self:small_shrine(x, y, l)
-  elseif r == 4 then self:small_gate(x, y, l)
-  elseif r == 5 then self:small_rave(x, y, l)
-  elseif r == 6 then self:small_topiary(x, y, l)
-  elseif r == 7 then self:small_dome(x, y, l)
-  elseif r == 8 then self:small_maze(x, y, l)
-  elseif r == 9 then self:small_crypt(x, y, l)
-  elseif r == 10 then self:small_vale(x, y, l)
-  end
-end
-
 function glyphs:small_signal(x, y, l)
   graphics:mlrs(x-1, y-1, 3, 3, l)
   graphics:mlrs(x+2, y+3, 4, -4, l)
@@ -417,11 +419,12 @@ function glyphs:small_solarium(x, y, l)
 end
 
 function glyphs:small_tunnel(x, y, l)
-  self:small_left_wall(x, y, l)
-  self:small_tunnel_left_wall(x, y, l)
-  self:small_right_wall(x, y, l)
-  self:small_tunnel_right_wall(x, y, l)
-  self:small_partial_roof(x, y, l)
+  self:small_left_wall(x-1, y, l)
+  self:small_tunnel_left_wall(x-1, y, l)
+  self:small_right_wall(x+1, y, l)
+  self:small_tunnel_right_wall(x+1, y, l)
+  graphics:mls(x+1, y, x+4, y, l)
+  graphics:mlrs(x+2, y+3, 1, 2, l)
 end
 
 -- small components

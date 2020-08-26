@@ -10,7 +10,7 @@ config["settings"] = {
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
   ["crypt_default_name"] = "DEFAULT",
   ["crypts_path"] =  _path.audio .. "crypts/",
-  ["dev_mode"] = false,
+  ["dev_mode"] = true,
   ["dev_scene"] = 3
 }
 
@@ -38,20 +38,6 @@ config["home_items"] = {
   "DOCS"
 }
 
-config["analysis_items"] = {
-  "SIGNALS",
-  "HIVE",
-  "SHRINE",
-  "GATE",
-  "RAVE",
-  "TOPIARY",
-  "DOME",
-  "MAZE",
-  "CRYPT",
-  "VALE",
-  "SOLARIUM"
-}
-
 config["structures"] = {
   "HIVE",
   "SHRINE",
@@ -62,22 +48,31 @@ config["structures"] = {
   "MAZE",
   "CRYPT",
   "VALE",
-  "SOLARIUM"
+  "SOLARIUM",
+  "TUNNEL"
 }
 
+config["analysis_items"] = {
+  "SIGNALS"
+}
+for k,v in pairs(config["structures"]) do
+  table.insert(config["analysis_items"], v)
+end
+
 config["attributes"] = {
-  "STRUCTURE",
-  "OFFSET",
-  "VELOCITY",
-  "METABOLISM",
-  "DOCS",
-  "PULSES",
-  "INDEX",
-  "NOTES",
-  "RANGE MIN",
-  "RANGE MAX",
+  "CAPACITY",
   "CHARGE",
-  "CAPACITY"
+  "DOCS",
+  "INDEX",
+  "METABOLISM",
+  "NETWORK",
+  "NOTES",
+  "OFFSET",
+  "PULSES",
+  "RANGE MAX",
+  "RANGE MIN",
+  "STRUCTURE",
+  "VELOCITY"
 }
 
 config["structure_attribute_map"] = {
@@ -140,6 +135,11 @@ config["structure_attribute_map"] = {
   ["SOLARIUM"] = {
     "CHARGE",
     "CAPACITY",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["TUNNEL"] = {
+    "NETWORK",
     "STRUCTURE",
     "DOCS"
   }

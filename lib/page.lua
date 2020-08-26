@@ -81,7 +81,7 @@ function page:analysis()
   else
     menu:set_items(config.analysis_items)
     menu:select_item()
-    graphics:analysis(menu.items, menu.selected_item_string)
+    graphics:analysis(menu.items, menu.selected_item)
   end
   graphics:title_bar_and_tabs()
 end

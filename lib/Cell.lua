@@ -18,6 +18,7 @@ function Cell:new(x, y, g)
   er_trait.init(self)
   level_trait.init(self)
   metabolism_trait.init(self)
+  network_trait.init(self)
   notes_trait.init(self)
   offset_trait.init(self)
   ports_trait.init(self)
@@ -35,6 +36,7 @@ function Cell:new(x, y, g)
   c.setup_er(c)
   c.setup_level(c)
   c.setup_metabolism(c)
+  c.setup_network(c)
   c.setup_notes(c)
   c.setup_offset(c)
   c.setup_ports(c)
@@ -180,8 +182,9 @@ function Cell:get_menu_value_by_attribute(a)
   elseif a == "INDEX"       then return self.state_index
   elseif a == "LEVEL"       then return self.level
   elseif a == "METABOLISM"  then return self.metabolism
-  elseif a == "NOTE"        then return self:get_note_name(1) -- i'm the same as #1!?!
-  elseif a == "NOTE #1"     then return self:get_note_name(1) -- always have been.
+  elseif a == "NETWORK"     then return self.network_value
+  elseif a == "NOTE"        then return self:get_note_name(1) -- "i'm the same as #1!?!"
+  elseif a == "NOTE #1"     then return self:get_note_name(1) -- "always have been."
   elseif a == "NOTE #2"     then return self:get_note_name(2)
   elseif a == "NOTE #3"     then return self:get_note_name(3)
   elseif a == "NOTE #4"     then return self:get_note_name(4)

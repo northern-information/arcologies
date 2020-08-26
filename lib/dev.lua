@@ -26,8 +26,11 @@ function dev:scene(i)
     sound:set_random_scale()
     keeper:select_cell(4, 1)
     keeper.selected_cell:open_port("s")
+    keeper:select_cell(12, 4)
+    keeper.selected_cell:change("TUNNEL")
+    keeper.selected_cell:open_port("s")
     keeper:select_cell(4, 4)
-    keeper.selected_cell:change("SOLARIUM")
+    keeper.selected_cell:change("TUNNEL")
     keeper.selected_cell:open_port("n")
     -- keeper.selected_cell:open_port("e")
     -- keeper.selected_cell:open_port("s")
@@ -35,36 +38,19 @@ function dev:scene(i)
     -- keeper.selected_cell:set_state_index(1)
     page:select(2)
     menu:select_item(1)
-    -- keeper:deselect_cell()
+    keeper:deselect_cell()
     params:set("bpm", 120)
+    sound:toggle_playback()
 
   elseif i == 3 then
-    keeper:select_cell(4, 2)
-    keeper.selected_cell:open_port("n")
-    keeper.selected_cell:open_port("e")
-    keeper.selected_cell:open_port("s")
-    keeper.selected_cell:open_port("w")
-    keeper.selected_cell:set_metabolism(8)
-    keeper.selected_cell:set_offset(01)
-    keeper:select_cell(4, 4)
-    keeper.selected_cell:change("CRYPT")
-    keeper.selected_cell:open_port("n")
-    keeper.selected_cell:open_port("e")
-    keeper.selected_cell:open_port("s")
-    keeper.selected_cell:open_port("w")
-    keeper:select_cell(2, 4)
-    keeper.selected_cell:change("TOPIARY")
-    keeper.selected_cell:open_port("n")
-    keeper.selected_cell:open_port("e")
-    keeper.selected_cell:open_port("s")
-    keeper.selected_cell:open_port("w")
-    keeper:deselect_cell()
-    page:select(2)
+    fn.seed_cells()
+
+    page:select(3)
 
   elseif i == 4 then
     -- fn.seed_cells()
-    params:set("seed", 4)
-    fn.seed_cells()
+    -- params:set("seed", 4)
+    -- fn.seed_cells()
     page:select(4)
 
   elseif i == 10 then
@@ -195,13 +181,17 @@ end
 function screenshot()
   --_norns.screen_export_png("/home/we/"..menu.."-"..os.time()..".png")
   local which_screen = string.match(string.match(string.match(norns.state.script,"/home/we/dust/code/(.*)"),"/(.*)"),"(.+).lua")
-  _norns.screen_export_png("/home/we/"..which_screen.."-"..os.time()..".png")
+  _norns.screen_export_png("/home/we/dust/"..which_screen.."-"..os.time()..".png")
 end
 
 function print_scale()
   for i = 1, #sound.scale_notes do
     print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
   end
+end
+
+function kc()
+    return keeper.selected_cell
 end
 
 return dev

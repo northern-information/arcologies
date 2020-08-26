@@ -86,8 +86,9 @@ function menu:scroll_value(d)
     elseif s == "INDEX"       then keeper.selected_cell:cycle_state_index(d)
     elseif s == "LEVEL"       then keeper.selected_cell:set_level(keeper.selected_cell.level + d)
     elseif s == "METABOLISM"  then keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
-    elseif s == "NOTE"        then popup:launch("note1", d, "enc", 3) -- i'm the same as #1!?!
-    elseif s == "NOTE #1"     then popup:launch("note1", d, "enc", 3) -- always have been.
+    elseif s == "NETWORK"     then keeper.selected_cell:set_network(keeper.selected_cell.network_key + d) 
+    elseif s == "NOTE"        then popup:launch("note1", d, "enc", 3) -- "i'm the same as #1!?!"
+    elseif s == "NOTE #1"     then popup:launch("note1", d, "enc", 3) -- "always have been."
     elseif s == "NOTE #2"     then popup:launch("note2", d, "enc", 3)
     elseif s == "NOTE #3"     then popup:launch("note3", d, "enc", 3)
     elseif s == "NOTE #4"     then popup:launch("note4", d, "enc", 3)

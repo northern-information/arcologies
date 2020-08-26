@@ -35,26 +35,30 @@ function keeper:collision(signal, cell)
   elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") or cell:is("RAVE") then
     -- empty
 
+  -- crypts play samples
+  elseif cell:is("CRYPT") then
+    s:one_shot(cell.state_index, cell.level / 100)
+
   -- shrines play single notes
   elseif cell:is("SHRINE") then
     sound:play(cell.notes[1], cell.velocity)
+
+  -- stores signals as charge
+  elseif cell:is("SOLARIUM") then
+    cell:set_charge(cell.charge + 1)
 
   -- topiaries cylce through notes
   elseif cell:is("TOPIARY") then
     sound:play(cell.notes[cell.state_index], cell.velocity)
     cell:cycle_state_index(1)
 
-  -- crypts play samples
-  elseif cell:is("CRYPT") then
-    s:one_shot(cell.state_index, cell.level / 100)
+  -- send signals to other tunnels
+  elseif cell:is("TUNNEL") then
+    self:broadcast(cell)
 
   -- vales play random notes
   elseif cell:is("VALE") then
     sound:play(sound:get_random_note(cell.range_min / 100, cell.range_max / 100), cell.velocity)
-
-  -- stores signals as charge
-  elseif cell:is("SOLARIUM") then
-    cell:set_charge(cell.charge + 1)
 
   end
 
@@ -73,6 +77,20 @@ function keeper:collision(signal, cell)
       elseif (port == "w" and signal.heading ~= "e") then self:create_signal(cell.x - 1, cell.y, "w", "tomorrow")
       end
     end
+  end
+end
+
+function keeper:broadcast(cell)
+  for k, other_cell in pairs(self.cells) do
+    if other_cell:is("TUNNEL") and other_cell.id ~= cell.id and other_cell.network_key == cell.network_key then
+      for k, port in pairs(other_cell.ports) do
+            if port == "n" then self:create_signal(other_cell.x, other_cell.y - 1, "n", "tomorrow")
+        elseif port == "e" then self:create_signal(other_cell.x + 1, other_cell.y, "e", "tomorrow")
+        elseif port == "s" then self:create_signal(other_cell.x, other_cell.y + 1, "s", "tomorrow")
+        elseif port == "w" then self:create_signal(other_cell.x - 1, other_cell.y, "w", "tomorrow")
+        end
+      end
+    end 
   end
 end
 
@@ -257,6 +275,7 @@ function keeper:update_all_notes()
   end
 end
 
+-- happens when a new crypt directory is selected
 function keeper:update_all_crypts()
   for k,cell in pairs(self.cells) do
     if cell:is("CRYPT") then

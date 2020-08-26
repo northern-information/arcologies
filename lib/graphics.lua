@@ -23,16 +23,17 @@ function graphics:structure_and_title(s)
     local x = self.structure_x
     local y = self.structure_y
     local l = 0
-        if s == "HIVE"     then glyphs:hive(x, y, l)
-    elseif s == "SHRINE"   then glyphs:shrine(x, y, l)
-    elseif s == "GATE"     then glyphs:gate(x, y, l)
-    elseif s == "RAVE"     then glyphs:rave(x, y, l)
-    elseif s == "TOPIARY"  then glyphs:topiary(x, y, l)
+        if s == "CRYPT"    then glyphs:crypt(x, y, l)
     elseif s == "DOME"     then glyphs:dome(x, y, l)
+    elseif s == "GATE"     then glyphs:gate(x, y, l)
+    elseif s == "HIVE"     then glyphs:hive(x, y, l)
     elseif s == "MAZE"     then glyphs:maze(x, y, l)
-    elseif s == "CRYPT"    then glyphs:crypt(x, y, l)
-    elseif s == "VALE"     then glyphs:vale(x, y, l)
+    elseif s == "RAVE"     then glyphs:rave(x, y, l)
+    elseif s == "SHRINE"   then glyphs:shrine(x, y, l)
     elseif s == "SOLARIUM" then glyphs:solarium(x, y, l)
+    elseif s == "TOPIARY"  then glyphs:topiary(x, y, l)
+    elseif s == "TUNNEL"   then glyphs:tunnel(x, y, l)
+    elseif s == "VALE"     then glyphs:vale(x, y, l)
     end
 end
 
@@ -53,20 +54,57 @@ function graphics:structure_palette(i)
   -- row 2
   glyphs:small_vale(     5, 30, (i == 1 and row == 15) and 0 or 15)
   glyphs:small_solarium(20, 30, (i == 2 and row == 15) and 0 or 15)
+  glyphs:small_tunnel(  35, 30, (i == 3 and row == 15) and 0 or 15)
 end
 
-function graphics:structure_palette_analysis(x, y, o, name)
-  glyphs:small_signal(  x + (o * 0),  y, name == "SIGNALS" and 15 or 5)
-  glyphs:small_hive(    x + (o * 3),  y, name == "HIVE" and 15 or 5)
-  glyphs:small_shrine(  x + (o * 6),  y, name == "SHRINE" and 15 or 5)
-  glyphs:small_gate(    x + (o * 9),  y, name == "GATE" and 15 or 5)
-  glyphs:small_rave(    x + (o * 12), y, name == "RAVE" and 15 or 5)
-  glyphs:small_topiary( x + (o * 15), y, name == "TOPIARY" and 15 or 5)
-  glyphs:small_dome(    x + (o * 18), y, name == "DOME" and 15 or 5)
-  glyphs:small_maze(    x + (o * 21), y, name == "MAZE" and 15 or 5)
-  glyphs:small_crypt(   x + (o * 24), y, name == "CRYPT" and 15 or 5)
-  glyphs:small_vale(    x + (o * 27), y, name == "VALE" and 15 or 5)
-  glyphs:small_solarium(x + (o * 30), y, name == "SOLARIUM" and 15 or 5)
+function graphics:structure_palette_analysis(selected_item)
+  local y = 56
+  local o = 4
+  local offset = {}
+  local threshold = 10
+  local s = selected_item -- int
+
+  for i = 1, #config.analysis_items do
+    local adjust = 0
+    if selected_item > threshold then
+      adjust = -11
+    end
+    offset[i] = (o * ((i - 1) * 3)) + 1 + adjust
+  end
+
+  glyphs:small_signal(   offset[1],   y, s == 1 and 15 or 5)
+  glyphs:small_hive(     offset[2],   y, s == 2 and 15 or 5)
+  glyphs:small_shrine(   offset[3],   y, s == 3 and 15 or 5)
+  glyphs:small_gate(     offset[4],   y, s == 4 and 15 or 5)
+  glyphs:small_rave(     offset[5],   y, s == 5 and 15 or 5)
+  glyphs:small_topiary(  offset[6],   y, s == 6 and 15 or 5)
+  glyphs:small_dome(     offset[7],   y, s == 7 and 15 or 5)
+  glyphs:small_maze(     offset[8],   y, s == 8 and 15 or 5)
+  glyphs:small_crypt(    offset[9],   y, s == 9 and 15 or 5)
+  glyphs:small_vale(     offset[10],  y, s == 10 and 15 or 5)
+  glyphs:small_solarium( offset[11],  y, s == 11 and 15 or 5)
+  glyphs:small_tunnel(   offset[12],  y, s == 12 and 15 or 5)
+
+
+  -- pop ellipses to the left
+  if s > threshold then
+    graphics:analysis_ellipses(1, y)
+
+  -- pop ellipses to the right
+  elseif s < threshold then
+    graphics:analysis_ellipses(121, y)
+
+  end
+
+
+
+ 
+
+end
+
+function graphics:analysis_ellipses(x, y)
+  graphics:rect(x-2, y-1, 11, 11, 0)
+  graphics:text_left(x+1, y+8, "...", 5)
 end
 
 function graphics:render_docs()
@@ -322,11 +360,9 @@ function graphics:draw_ports()
   end
 end
 
-function graphics:analysis(items, selected_item_string)
-  local selected_item_key = fn.table_find(items, selected_item_string)
-
+function graphics:analysis(items, selected_item_key)
   -- menu
-  self:structure_palette_analysis(1, 56, 4, selected_item_string)
+  self:structure_palette_analysis(selected_item_key)
 
   -- values
   local chart = {}
