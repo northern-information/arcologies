@@ -82,6 +82,8 @@ function menu:scroll_value(d)
   elseif page.active_page == 2 then
         if s == "CAPACITY"    then keeper.selected_cell:set_capacity(keeper.selected_cell.capacity + d)
     elseif s == "CHARGE"      then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
+    elseif s == "CROW OUT"    then -- print("todo")
+    elseif s == "DESTINATION" then -- print("todo")
     elseif s == "DOCS"        then -- selecting docs automatically toggles them on
     elseif s == "INDEX"       then keeper.selected_cell:cycle_state_index(d)
     elseif s == "LEVEL"       then keeper.selected_cell:set_level(keeper.selected_cell.level + d)

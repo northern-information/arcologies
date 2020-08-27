@@ -23,8 +23,11 @@ function graphics:structure_and_title(s)
     local x = self.structure_x
     local y = self.structure_y
     local l = 0
-        if s == "CRYPT"    then glyphs:crypt(x, y, l)
+        if s == "AVIARY"   then glyphs:aviary(x, y, l)
+    elseif s == "CASINO"   then glyphs:casino(x, y, l)    
+    elseif s == "CRYPT"    then glyphs:crypt(x, y, l)
     elseif s == "DOME"     then glyphs:dome(x, y, l)
+    elseif s == "FOREST"   then glyphs:forest(x, y, l)
     elseif s == "GATE"     then glyphs:gate(x, y, l)
     elseif s == "HIVE"     then glyphs:hive(x, y, l)
     elseif s == "MAZE"     then glyphs:maze(x, y, l)
@@ -33,78 +36,111 @@ function graphics:structure_and_title(s)
     elseif s == "SOLARIUM" then glyphs:solarium(x, y, l)
     elseif s == "TOPIARY"  then glyphs:topiary(x, y, l)
     elseif s == "TUNNEL"   then glyphs:tunnel(x, y, l)
+    elseif s == "UXB"      then glyphs:uxb(x, y, l)
     elseif s == "VALE"     then glyphs:vale(x, y, l)
     end
 end
 
 function graphics:structure_palette(i)
-  -- todo refactor
-  local row = i > 8 and 15 or 0
-  local i = i > 8 and i - 8 or i
-  self:rect(((i - 1) * 15) + 1, 12 + row, 13, 13, 15)
+  local start_x = 31
+  local start_y = 18
+  local margin_x = 15
+  local margin_y = 15
+  local p = {}
+  for setup = 1, 15 do
+      p[setup] = {
+        selected = false,
+        x = 0,
+        y = 0
+      }
+  end
+  p[i].selected = true
+
+  for k,v in pairs(p) do
+    local row, col = 1,1
+    -- call me hardcode kassidy
+    if k >= 6 and k <= 10 then row = 2 end
+    if k >= 11 and k <= 15 then row = 3 end
+    p[k].y = start_y + (margin_y * (row - 1))
+    col = k % 5
+    col = col == 0 and 5 or col
+    p[k].x = start_x + (margin_x * (col - 1))
+    if p[k].selected then
+      self:rect(p[k].x - 4, p[k].y - 3, 13, 13, 15)
+    end
+  end
+  
   -- row 1
-  glyphs:small_hive(     5, 15, (i == 1 and row == 0) and 0 or 15)
-  glyphs:small_shrine(  20, 15, (i == 2 and row == 0) and 0 or 15)
-  glyphs:small_gate(    35, 15, (i == 3 and row == 0) and 0 or 15)
-  glyphs:small_rave(    50, 15, (i == 4 and row == 0) and 0 or 15)
-  glyphs:small_topiary( 65, 15, (i == 5 and row == 0) and 0 or 15)
-  glyphs:small_dome(    80, 15, (i == 6 and row == 0) and 0 or 15)
-  glyphs:small_maze(    95, 15, (i == 7 and row == 0) and 0 or 15)
-  glyphs:small_crypt(  110, 15, (i == 8 and row == 0) and 0 or 15)
-  -- row 2
-  glyphs:small_vale(     5, 30, (i == 1 and row == 15) and 0 or 15)
-  glyphs:small_solarium(20, 30, (i == 2 and row == 15) and 0 or 15)
-  glyphs:small_tunnel(  35, 30, (i == 3 and row == 15) and 0 or 15)
+  glyphs:small_hive(      p[1].x,  p[1].y, p[1].selected  and 0 or 15)
+  glyphs:small_shrine(    p[2].x,  p[2].y, p[2].selected  and 0 or 15)
+  glyphs:small_gate(      p[3].x,  p[3].y, p[3].selected  and 0 or 15)
+  glyphs:small_rave(      p[4].x,  p[4].y, p[4].selected  and 0 or 15)
+  glyphs:small_topiary(   p[5].x,  p[5].y, p[5].selected  and 0 or 15)
+  -- row 2 
+  glyphs:small_dome(      p[6].x,  p[6].y,  p[6].selected  and 0 or 15)
+  glyphs:small_maze(      p[7].x,  p[7].y,  p[7].selected  and 0 or 15)
+  glyphs:small_crypt(     p[8].x,  p[8].y,  p[8].selected  and 0 or 15)
+  glyphs:small_vale(      p[9].x,  p[9].y,  p[9].selected  and 0 or 15)
+  glyphs:small_solarium(  p[10].x, p[10].y, p[10].selected and 0 or 15)
+  -- row 3
+  glyphs:small_uxb(       p[11].x, p[11].y, p[11].selected and 0 or 15)
+  glyphs:small_casino(    p[12].x, p[12].y, p[12].selected and 0 or 15)
+  glyphs:small_tunnel(    p[13].x, p[13].y, p[13].selected and 0 or 15)
+  glyphs:small_aviary(    p[14].x, p[14].y, p[14].selected and 0 or 15)
+  glyphs:small_forest(    p[15].x, p[15].y, p[15].selected and 0 or 15)
 end
 
-function graphics:structure_palette_analysis(selected_item)
+function graphics:structure_palette_analysis(s)
+  local x = 10
   local y = 56
-  local o = 4
-  local offset = {}
-  local threshold = 10
-  local s = selected_item -- int
+  local margin = 1
+  local threshold = 9
+  local offset = s > threshold and s - threshold or 0
+  local items = {}
 
   for i = 1, #config.analysis_items do
     local adjust = 0
-    if selected_item > threshold then
-      adjust = -11
+    if s > threshold then
+      adjust = -12 * offset
     end
-    offset[i] = (o * ((i - 1) * 3)) + 1 + adjust
+    items[i] = x + ((i - 1) * 12) + 3 + adjust
   end
 
-  glyphs:small_signal(   offset[1],   y, s == 1 and 15 or 5)
-  glyphs:small_hive(     offset[2],   y, s == 2 and 15 or 5)
-  glyphs:small_shrine(   offset[3],   y, s == 3 and 15 or 5)
-  glyphs:small_gate(     offset[4],   y, s == 4 and 15 or 5)
-  glyphs:small_rave(     offset[5],   y, s == 5 and 15 or 5)
-  glyphs:small_topiary(  offset[6],   y, s == 6 and 15 or 5)
-  glyphs:small_dome(     offset[7],   y, s == 7 and 15 or 5)
-  glyphs:small_maze(     offset[8],   y, s == 8 and 15 or 5)
-  glyphs:small_crypt(    offset[9],   y, s == 9 and 15 or 5)
-  glyphs:small_vale(     offset[10],  y, s == 10 and 15 or 5)
-  glyphs:small_solarium( offset[11],  y, s == 11 and 15 or 5)
-  glyphs:small_tunnel(   offset[12],  y, s == 12 and 15 or 5)
+  glyphs:small_signal(   items[1],   y, s == 1 and 15 or 5)
+  glyphs:small_hive(     items[2],   y, s == 2 and 15 or 5)
+  glyphs:small_shrine(   items[3],   y, s == 3 and 15 or 5)
+  glyphs:small_gate(     items[4],   y, s == 4 and 15 or 5)
+  glyphs:small_rave(     items[5],   y, s == 5 and 15 or 5)
+  glyphs:small_topiary(  items[6],   y, s == 6 and 15 or 5)
+  glyphs:small_dome(     items[7],   y, s == 7 and 15 or 5)
+  glyphs:small_maze(     items[8],   y, s == 8 and 15 or 5)
+  glyphs:small_crypt(    items[9],   y, s == 9 and 15 or 5)
+  glyphs:small_vale(     items[10],  y, s == 10 and 15 or 5)
+  glyphs:small_solarium( items[11],  y, s == 11 and 15 or 5)
+  glyphs:small_uxb(      items[12],  y, s == 12 and 15 or 5)
+  glyphs:small_casino(   items[13],  y, s == 13 and 15 or 5)
+  glyphs:small_tunnel(   items[14],  y, s == 14 and 15 or 5)
+  glyphs:small_aviary(   items[15],  y, s == 15 and 15 or 5)
+  glyphs:small_forest(   items[16],  y, s == 16 and 15 or 5)
 
+  -- cover the scroll
+  graphics:rect(0, y-1, 10, 9, 0)
+  graphics:rect(118, y-1, 10, 9, 0)
 
   -- pop ellipses to the left
   if s > threshold then
-    graphics:analysis_ellipses(1, y)
-
-  -- pop ellipses to the right
-  elseif s < threshold then
-    graphics:analysis_ellipses(121, y)
-
+    graphics:analysis_ellipses(3, y)
   end
 
-
-
- 
+  -- pop ellipses to the right
+  if s < #items then
+    graphics:analysis_ellipses(119, y)
+  end
 
 end
 
 function graphics:analysis_ellipses(x, y)
-  graphics:rect(x-2, y-1, 11, 11, 0)
-  graphics:text_left(x+1, y+8, "...", 5)
+  graphics:text_left(x, y+8, "...", 5)
 end
 
 function graphics:render_docs()
@@ -410,28 +446,30 @@ function graphics:analysis(items, selected_item_key)
 
   -- line graph
   local line_graph_start_x = 54
-  local line_graph_start_y = 36
-  local line_graph_spacing = 2
-  local line_graph_y = 0
+  local line_graph_start_y = 35
+  local line_graph_spacing = 3
+  local line_graph_x = 0
   local line_highlight = 0
-  for i = 1, #config.structures do
+  for i = 1, #chart.values do
     if chart.values[i] ~= 0 then
       line_highlight = (i == selected_item_key) and 15 or 1
-      line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
-      self:mls(line_graph_start_x, line_graph_y, line_graph_start_x + chart.percentages[i] * 100, line_graph_y, line_highlight)
+      line_graph_x = line_graph_start_x + ((i - 1) * line_graph_spacing)
+      local this_line_percentage = chart.percentages[i] * 100
+      local this_height = util.round_up(math.floor(util.linlin(0, 100, 0, 30, this_line_percentage)), 1)
+      self:mlrs(line_graph_x, line_graph_start_y, 1, this_height, line_highlight)
     end
   end
 
   -- grid (thank you @okyeron)
   for i = 1, fn.grid_width() * fn.grid_height() do
     self.analysis_pixels[i] = 0
-    if selected_item_string ~= "SIGNALS" then
+    if selected_item_key ~= 1 then -- 1 is signals
       for k,v in pairs(keeper.cells) do
-        if v.structure_value == selected_item_string and v.index == i then
+        if v.structure_key == selected_item_key - 1 and v.index == i then
           self.analysis_pixels[i] = 15
         end
       end
-    elseif selected_item_string == "SIGNALS" then
+    elseif selected_item_key == 1 then
       for k,v in pairs(keeper.signals) do
         if v.index == i then
           self.analysis_pixels[i] = 15
@@ -451,6 +489,7 @@ function graphics:analysis(items, selected_item_key)
 
   -- more data
   self:text(105, 16, counters.music.generation, 1)
+  self:icon(105, 34, chart.values[selected_item_key], 1)
   self:playback_icon(105, 17)
   fn.dirty_grid(true)
 end
@@ -624,7 +663,6 @@ function graphics:splash()
       self:mlrs(1, self.splash_lines_close[i], 128, 1, 0)
     end
   end
-
 
   if #self.splash_lines_close_available == 0 or fn.break_splash() then
     fn.break_splash(true)

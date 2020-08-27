@@ -49,7 +49,11 @@ config["structures"] = {
   "CRYPT",
   "VALE",
   "SOLARIUM",
-  "TUNNEL"
+  "UXB",
+  "CASINO",
+  "TUNNEL",
+  "AVIARY",
+  "FOREST"
 }
 
 config["analysis_items"] = {
@@ -138,8 +142,37 @@ config["structure_attribute_map"] = {
     "STRUCTURE",
     "DOCS"
   },
+  ["UXB"] = {
+    "NOTES",
+    "VELOCITY",
+    "DESTINATION",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["CASINO"] = {
+    "INDEX",
+    "NOTES",
+    "VELOCITY",
+    "DESTINATION",
+    "STRUCTURE",
+    "DOCS"
+  },
   ["TUNNEL"] = {
     "NETWORK",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["AVIARY"] = {
+    "NOTES",
+    "VELOCITY",
+    "CROW OUT",
+    "STRUCTURE",
+    "DOCS"
+  },
+  ["FOREST"] = {
+    "INDEX",
+    "NOTES",
+    "CROW OUT",
     "STRUCTURE",
     "DOCS"
   }

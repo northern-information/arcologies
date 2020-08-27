@@ -179,6 +179,8 @@ end
 function Cell:get_menu_value_by_attribute(a)
       if a == "CAPACITY"    then return self.capacity
   elseif a == "CHARGE"      then return self.charge
+  elseif a == "CROW OUT"    then return --print("todo")
+  elseif a == "DESTINATION" then return --print("todo")
   elseif a == "INDEX"       then return self.state_index
   elseif a == "LEVEL"       then return self.level
   elseif a == "METABOLISM"  then return self.metabolism
