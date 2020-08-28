@@ -16,8 +16,7 @@ config["settings"] = {
 
 config["outputs"] = {
   ["midi"] = true,
-  ["crow"] = false,
-  ["jf"] = false
+  ["crow"] = true
 }
 
 config["page_titles"] = {

@@ -15,6 +15,7 @@ function Cell:new(x, y, g)
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
   capacity_trait.init(self)
   charge_trait.init(self)
+  crow_out_trait.init(self)
   device_trait.init(self)
   er_trait.init(self)
   level_trait.init(self)
@@ -34,6 +35,7 @@ function Cell:new(x, y, g)
        aka shit got spooky when i had params floating the init()s ]]
   c.setup_capacity(c)
   c.setup_charge(c)
+  c.setup_crow_out(c)
   c.setup_device(c)
   c.setup_er(c)
   c.setup_level(c)
@@ -55,7 +57,7 @@ end
 function Cell:get_menu_value_by_attribute(a)
       if a == "CAPACITY"    then return self.capacity
   elseif a == "CHARGE"      then return self.charge
-  elseif a == "CROW OUT"    then return --print("todo")
+  elseif a == "CROW OUT"    then return self.crow_out
   elseif a == "DEVICE"      then return self.device
   elseif a == "INDEX"       then return self.state_index
   elseif a == "LEVEL"       then return self.level

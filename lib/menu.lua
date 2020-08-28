@@ -31,7 +31,7 @@ function menu:render(bool)
       if item ~= nil then
         local value = keeper.selected_cell:get_menu_value_by_attribute(item)
         if value ~= nil then
-          if (keeper.selected_cell:is("TOPIARY") or keeper.selected_cell:is("CASINO"))
+          if (keeper.selected_cell:is("TOPIARY") or keeper.selected_cell:is("CASINO") or keeper.selected_cell:is("FOREST"))
             and string.find(self.items[i], "NOTE")
             and string.find(self.items[i], keeper.selected_cell.state_index) then
             graphics:text(56, offset, "> " .. value, 0)
@@ -40,6 +40,8 @@ function menu:render(bool)
               or self.items[i] == "RANGE MIN"
               or self.items[i] == "RANGE MAX" then
             graphics:text(56, offset, value .. "%", 0)
+          elseif self.items[i] == "CROW OUT"  then
+            graphics:text(56, offset, (value == 1 and "1/2" or "3/4"), 0)
           elseif self.items[i] ~= "STRUCTURE" then
             graphics:text(56, offset, value, 0)
           end
@@ -82,7 +84,7 @@ function menu:scroll_value(d)
   elseif page.active_page == 2 then
         if s == "CAPACITY"    then keeper.selected_cell:set_capacity(keeper.selected_cell.capacity + d)
     elseif s == "CHARGE"      then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
-    elseif s == "CROW OUT"    then -- print("todo")
+    elseif s == "CROW OUT"    then keeper.selected_cell:set_crow_out(keeper.selected_cell.crow_out + d)
     elseif s == "DEVICE"      then keeper.selected_cell:set_device(keeper.selected_cell.device + d)
     elseif s == "DOCS"        then -- selecting docs automatically toggles them on
     elseif s == "INDEX"       then keeper.selected_cell:cycle_state_index(d)
@@ -114,8 +116,6 @@ function menu:scroll_value(d)
   end
 
 end
-
-
 
 function menu:scroll(d)
   self:select_item(util.clamp(self.selected_item + d, 1, #self.items))

@@ -1,7 +1,6 @@
 c = {}
 
 function c.init()
-  -- crow initialization
   if config.outputs.crow then
     crow.init()
     crow.clear()
@@ -11,9 +10,10 @@ function c.init()
   end
 end
 
-function c.play(note)
-  crow.output[1].volts = note % 12
-  crow.output[2].execute()
+function c:play(note, pair)
+  local output_pairs = {{1,2},{3,4}}
+  crow.output[output_pairs[pair][1]].volts = (note - 60) / 12
+  crow.output[output_pairs[pair][2]].execute()
 end
 
 return c
