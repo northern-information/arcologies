@@ -11,7 +11,7 @@ config["settings"] = {
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
   ["crypt_default_name"] = "DEFAULT",
   ["crypts_path"] =  _path.audio .. "crypts/",
-  ["dev_mode"] = true,
+  ["dev_mode"] = false,
   ["dev_scene"] = 3
 }
 

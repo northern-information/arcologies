@@ -184,7 +184,7 @@ function screenshot()
   order = order + 1
 end
 
-function print_scale()
+function wtfscale()
   for i = 1, #sound.scale_notes do
     print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
   end
