@@ -15,6 +15,7 @@ function Cell:new(x, y, g)
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
   capacity_trait.init(self)
   charge_trait.init(self)
+  device_trait.init(self)
   er_trait.init(self)
   level_trait.init(self)
   metabolism_trait.init(self)
@@ -33,6 +34,7 @@ function Cell:new(x, y, g)
        aka shit got spooky when i had params floating the init()s ]]
   c.setup_capacity(c)
   c.setup_charge(c)
+  c.setup_device(c)
   c.setup_er(c)
   c.setup_level(c)
   c.setup_metabolism(c)
@@ -47,6 +49,35 @@ function Cell:new(x, y, g)
   c.setup_turing(c)
   c.setup_velocity(c)
   return c
+end
+
+-- todo: shame. there's gotta be a better way to do this
+function Cell:get_menu_value_by_attribute(a)
+      if a == "CAPACITY"    then return self.capacity
+  elseif a == "CHARGE"      then return self.charge
+  elseif a == "CROW OUT"    then return --print("todo")
+  elseif a == "DEVICE"      then return self.device
+  elseif a == "INDEX"       then return self.state_index
+  elseif a == "LEVEL"       then return self.level
+  elseif a == "METABOLISM"  then return self.metabolism
+  elseif a == "NETWORK"     then return self.network_value
+  elseif a == "NOTE"        then return self:get_note_name(1) -- "i'm the same as #1!?!"
+  elseif a == "NOTE #1"     then return self:get_note_name(1) -- "always have been."
+  elseif a == "NOTE #2"     then return self:get_note_name(2)
+  elseif a == "NOTE #3"     then return self:get_note_name(3)
+  elseif a == "NOTE #4"     then return self:get_note_name(4)
+  elseif a == "NOTE #5"     then return self:get_note_name(5)
+  elseif a == "NOTE #6"     then return self:get_note_name(6)
+  elseif a == "NOTE #7"     then return self:get_note_name(7)
+  elseif a == "NOTE #8"     then return self:get_note_name(8)
+  elseif a == "OFFSET"      then return self.offset
+  elseif a == "PROBABILITY" then return self.probability
+  elseif a == "PULSES"      then return self.pulses
+  elseif a == "RANGE MAX"   then return self.range_max
+  elseif a == "RANGE MIN"   then return self.range_min
+  elseif a == "STRUCTURE"   then return self.structure_value
+  elseif a == "VELOCITY"    then return self.velocity
+  end
 end
 
 function Cell:is(name)
@@ -90,6 +121,8 @@ theres  only ~40 lines of code below...
 function Cell:change_checks()
   if self:is("SHRINE") then self:setup_notes(1) end
   if self:is("TOPIARY") then self:setup_notes(8) end
+  if self:is("CASINO") then self:setup_notes(8) end
+  if self:is("FOREST") then self:setup_notes(8) end
   self:set_max_state_index(self:is("CRYPT") and 6 or 8)
   self:cycle_state_index(0)
 end
@@ -173,34 +206,5 @@ function Cell:menu_items()
     end
   end
   return items
-end
-
--- todo: shame. there's gotta be a better way to do this
-function Cell:get_menu_value_by_attribute(a)
-      if a == "CAPACITY"    then return self.capacity
-  elseif a == "CHARGE"      then return self.charge
-  elseif a == "CROW OUT"    then return --print("todo")
-  elseif a == "DESTINATION" then return --print("todo")
-  elseif a == "INDEX"       then return self.state_index
-  elseif a == "LEVEL"       then return self.level
-  elseif a == "METABOLISM"  then return self.metabolism
-  elseif a == "NETWORK"     then return self.network_value
-  elseif a == "NOTE"        then return self:get_note_name(1) -- "i'm the same as #1!?!"
-  elseif a == "NOTE #1"     then return self:get_note_name(1) -- "always have been."
-  elseif a == "NOTE #2"     then return self:get_note_name(2)
-  elseif a == "NOTE #3"     then return self:get_note_name(3)
-  elseif a == "NOTE #4"     then return self:get_note_name(4)
-  elseif a == "NOTE #5"     then return self:get_note_name(5)
-  elseif a == "NOTE #6"     then return self:get_note_name(6)
-  elseif a == "NOTE #7"     then return self:get_note_name(7)
-  elseif a == "NOTE #8"     then return self:get_note_name(8)
-  elseif a == "OFFSET"      then return self.offset
-  elseif a == "PROBABILITY" then return self.probability
-  elseif a == "PULSES"      then return self.pulses
-  elseif a == "RANGE MAX"   then return self.range_max
-  elseif a == "RANGE MIN"   then return self.range_min
-  elseif a == "STRUCTURE"   then return self.structure_value
-  elseif a == "VELOCITY"    then return self.velocity
-  end
 end
  

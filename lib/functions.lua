@@ -150,6 +150,8 @@ function fn.cleanup()
   -- crow.clear()
   -- crow.reset()
   -- crow.ii.jf.mode(0)
+  m:cleanup()
+  for i = 1, 4 do m.devices[i]:disconnect() end
   poll:clear_all()
 end
 

@@ -39,9 +39,13 @@ function keeper:collision(signal, cell)
   elseif cell:is("CRYPT") then
     s:one_shot(cell.state_index, cell.level / 100)
 
-  -- shrines play single notes
+  -- shrines play single notes via sc
   elseif cell:is("SHRINE") then
     sound:play(cell.notes[1], cell.velocity)
+
+  -- uxbs play single noes via midi
+  elseif cell:is("UXB") then
+    m:play(cell.notes[1], cell.velocity, cell.device)
 
   -- stores signals as charge
   elseif cell:is("SOLARIUM") then
@@ -50,6 +54,11 @@ function keeper:collision(signal, cell)
   -- topiaries cylce through notes
   elseif cell:is("TOPIARY") then
     sound:play(cell.notes[cell.state_index], cell.velocity)
+    cell:cycle_state_index(1)
+
+  -- topiaries cylce through notes
+  elseif cell:is("CASINO") then
+    m:play(cell.notes[cell.state_index], cell.velocity, cell.device)
     cell:cycle_state_index(1)
 
   -- send signals to other tunnels
@@ -69,7 +78,11 @@ function keeper:collision(signal, cell)
   or cell:is("GATE")
   or cell:is("TOPIARY")
   or cell:is("CRYPT")
-  or cell:is("VALE") then
+  or cell:is("VALE")
+  or cell:is("UXB")
+  or cell:is("CASINO")
+  or cell:is("AVIARY")
+  or cell:is("FOREST") then
     for k, port in pairs(cell.ports) do
           if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
       elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")
@@ -220,6 +233,9 @@ function keeper:delete_cell(id)
     if cell.id == id then
       table.remove(self.cells, k)
       graphics:set_message("DELETED " .. cell.structure_value)
+      if page.active_page == 2 then
+        menu:reset()
+      end
       self:deselect_cell()
     end
   end

@@ -22,6 +22,7 @@ todo: break up get_menu_value_by_attribute into traits...
 ]]
 include("arcologies/lib/traits/capacity_trait")
 include("arcologies/lib/traits/charge_trait")
+include("arcologies/lib/traits/device_trait")
 include("arcologies/lib/traits/er_trait")
 include("arcologies/lib/traits/level_trait")
 include("arcologies/lib/traits/network_trait")

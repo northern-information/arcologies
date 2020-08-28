@@ -11,11 +11,11 @@ config["settings"] = {
   ["crypt_default_name"] = "DEFAULT",
   ["crypts_path"] =  _path.audio .. "crypts/",
   ["dev_mode"] = false,
-  ["dev_scene"] = 3
+  ["dev_scene"] = 2
 }
 
 config["outputs"] = {
-  ["midi"] = false,
+  ["midi"] = true,
   ["crow"] = false,
   ["jf"] = false
 }
@@ -145,7 +145,7 @@ config["structure_attribute_map"] = {
   ["UXB"] = {
     "NOTES",
     "VELOCITY",
-    "DESTINATION",
+    "DEVICE",
     "STRUCTURE",
     "DOCS"
   },
@@ -153,7 +153,7 @@ config["structure_attribute_map"] = {
     "INDEX",
     "NOTES",
     "VELOCITY",
-    "DESTINATION",
+    "DEVICE",
     "STRUCTURE",
     "DOCS"
   },
