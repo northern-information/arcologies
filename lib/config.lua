@@ -6,12 +6,13 @@ config["settings"] = {
   ["root"] = 0,
   ["scale"] = 1,
   ["octaves"] = 11,
+  ["delete_all_length"] = 3,
   ["save_path"] = _path.audio .. "arcologies/",
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
   ["crypt_default_name"] = "DEFAULT",
   ["crypts_path"] =  _path.audio .. "crypts/",
-  ["dev_mode"] = false,
-  ["dev_scene"] = 2
+  ["dev_mode"] = true,
+  ["dev_scene"] = 3
 }
 
 config["outputs"] = {

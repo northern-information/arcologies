@@ -17,6 +17,33 @@ function filesystem.init()
   filesystem:scan_crypts()
 end
 
+function filesystem.load(path)
+   if string.find(path, 'arcology') ~= nil then
+    print("loading...")
+    local data = tab.load(path)
+    if data ~= nil then
+      print("data found")
+      fn.load(data)
+      params:read(norns.state.data .. data.arcology_name ..".pset")
+      print ('loaded ' .. norns.state.data .. data.arcology_name)
+    else
+      print("no data")
+    end
+  end
+end
+
+function filesystem.save(text)
+  if text then
+    print("saving...")
+    local save_path = norns.state.data .. text
+    tab.save(fn.collect_data_for_save(text), save_path ..".arcology")
+    params:write(save_path .. ".pset")
+    print("saved!")
+  else
+    print("save cancel")
+  end
+end
+
 
 
 function filesystem:scan_crypts()

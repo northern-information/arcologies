@@ -9,7 +9,6 @@ end
 
 function dev:scene(i)
 
-  -- hive test
   if i == 1 then
     page:select(3)
     menu:select_item(4)

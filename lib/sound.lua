@@ -79,18 +79,12 @@ end
 function sound:get_reasonable_note()
   local root_notes = {}
   for i = 1, 12 do root_notes[i] = self.root + (i * 12) end
-  return root_notes[math.floor(#root_notes/2)]
+  return root_notes[math.floor(#root_notes / 2)]
 end
 
-function sound:play(note, velocity, out)
-  if out == "crow" then
-    -- crow things
-  elseif out =="midi" then
-    -- midi things
-  else
-    engine.amp(velocity / 127)
-    engine.hz(mu.note_num_to_freq(self:snap_note(note)))
-  end
+function sound:play(note, velocity)
+  engine.amp(velocity / 127)
+  engine.hz(mu.note_num_to_freq(self:snap_note(note)))
 end
 
 return sound

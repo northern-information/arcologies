@@ -1,9 +1,12 @@
 -- ships with norns
 crow = require("crow")
-mu = require("musicutil")
-tu = require("tabutil")
 er = require("er")
+fs = require("fileselect")
+mu = require("musicutil")
+te = require("textentry")
+tu = require("tabutil")
 engine.name = "PolyPerc"
+
 
 -- stores application configuration and cell composition data
 config = include("arcologies/lib/config")
@@ -18,6 +21,7 @@ traits of cells. adding more minimallly requires:
  - probably some logic in keeper:collision()
  - and i'm not happy about it but work in menu:scroll_value()
    along with Cell:get_menu_value_by_attribute() 
+   and fn.load()!
 todo: break up get_menu_value_by_attribute into traits...
 ]]
 include("arcologies/lib/traits/capacity_trait")

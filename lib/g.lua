@@ -7,7 +7,11 @@ function g.init()
   g.signal_and_cell_collisions = {}
   g.first_in_x = nil
   g.first_in_y = nil
+  g.paste_x = nil
+  g.paste_y = nil
   g.is_copying = false
+  g.is_pasting = false
+  g.paste_counter = 15
   for x = 1, fn.grid_width() do
     g.counter[x] = {}
     for y = 1, fn.grid_height() do
@@ -39,17 +43,18 @@ function g:grid_redraw()
   self:led_selected_cell()
   self:led_cell_ports()
   self:led_cell_analysis()
+  self:led_paste_animation()
   self:refresh()
 end
 
 function g.key(x, y, z)
   fn.break_splash(true)
   if z == 1 then
-    g.counter[x][y] = clock.run(g.grid_long_press, x, y)
+    g.counter[x][y] = clock.run(g.grid_long_press, g, x, y)
   elseif z == 0 then -- otherwise, if a grid key is released...
     if g.counter[x][y] then -- and the long press is still waiting...
       clock.cancel(g.counter[x][y]) -- then cancel the long press clock,
-      g.short_press(x,y) -- and execute a short press instead.
+      g:short_press(x,y) -- and execute a short press instead.
     end
     -- release the copy
     if g.first_in_x == x and g.first_in_y == y then
@@ -63,12 +68,15 @@ function g.key(x, y, z)
 end
 
 
-function g.short_press(x, y)
-  if g.is_copying then
+function g:short_press(x, y)
+  if self.is_copying then
     local tmp = fn.deep_copy(keeper.copied_cell)
     tmp:prepare_for_paste(x, y, counters.music_generation())
     table.insert(keeper.cells, tmp)
     graphics:set_message("PASTED " .. tmp.structure_value)
+    self.is_pasting = true
+    self.paste_x = x
+    self.paste_y = y
   else
 
     -- no cell is selected, so select one
@@ -99,21 +107,18 @@ function g.short_press(x, y)
   fn.dirty_screen(true)
 end
 
-
-
-
-function g.grid_long_press(x, y)
+function g:grid_long_press(x, y)
   clock.sleep(.5)
-  if not g.is_copying then
+  if not self.is_copying then
     keeper:select_cell(x, y)
     graphics:top_message_cell_structure()
-    g.first_in_x = x
-    g.first_in_y = y
+    self.first_in_x = x
+    self.first_in_y = y
     keeper.copied_cell = fn.deep_copy(keeper.selected_cell)
-    g.is_copying = true
+    self.is_copying = true
     graphics:set_message("COPIED " .. keeper.selected_cell.structure_value)
   end
-  g.counter[x][y] = nil
+  self.counter[x][y] = nil
   fn.dirty_grid(true)
 end
 
@@ -191,6 +196,19 @@ end
 
 function g:highlight_cell(cell)
   self:led(cell.x, cell.y, util.clamp(counters.grid_frame() % 15, 5, 15))
+end
+
+function g:led_paste_animation()
+  if self.paste_counter == 0 then
+    self.paste_counter = 15
+    self.is_pasting = false
+    self.paste_x = nil
+    self.paste_y = nil
+  end
+  if self.is_pasting then
+    self:led(self.paste_x, self.paste_y, self.paste_counter)
+    self.paste_counter = self.paste_counter - 1
+  end
 end
 
 function g:led_cell_ports()

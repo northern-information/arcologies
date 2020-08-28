@@ -3,11 +3,12 @@ local parameters = {}
 function parameters.init()
   params:add_separator("A R C O L O G I E S")
 
-  params:add_trigger("save", "< SAVE" )
-  params:set_action("save", function(x) te.enter(filesystem.save) end)
-
-  params:add_trigger("load", "> LOAD" )
-  params:set_action("load", function(x) fs.enter(norns.state.data, filesystem.load) end)
+  params:add_trigger('save_p', "< SAVE" )
+  params:set_action('save_p', function(x) textentry.enter(orca.save_project,  orca.project) end)
+  params:add_trigger('load_p', "> LOAD" )
+  params:set_action('load_p', function(x) fileselect.enter(norns.state.data, orca.load_project) end)
+  params:add_trigger('new', "+ NEW" )
+  params:set_action('new', function(x) init() end)
 
   parameters.bpm_to_seconds = 0
   params:add{ type = "number", id = "bpm", name = "BPM",

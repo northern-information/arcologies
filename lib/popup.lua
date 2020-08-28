@@ -54,7 +54,7 @@ end
 
 function popup:key_wait()
   if popup.current_attribute == "delete_all" then
-    popup.key_timer = 40
+    popup.key_timer = config.settings.delete_all_length * 10
     while popup.key_timer > 0 and keys[3] == 1 do
       popup:title_message(popup.messages[popup.current_attribute]["start"])
       popup.key_timer = popup.key_timer - 1
