@@ -75,22 +75,18 @@ glyphs = include("arcologies/lib/glyphs")
 graphics = include("arcologies/lib/graphics")
 
 --[[
-state machine for Cells and Signals
+"keeper" is state machine for Cells and Signals
 
 a lot of the "higher order" logic happens here
 for example, solariums absorb signals to increase
 their charge, then invert their ports and release
-once capacity is met.
+once capacity is met. - solariums have charge and
+capacity, but don't know exactly what to do with
+them. this is where keeper comes in.
 
-solariums have charge and capacity, but don't
-know exactly what to do with them.
-
-Signals know nothing about Cells.
-
-Cells know nothing about Signals.
-
-all that stuff happens in keeper:collide()
-
+furthermore, Signals know nothing about Cells. Cells
+know nothing about Signals. keeper:collide() is
+the great atom smasher.
 ]]
 keeper = include("arcologies/lib/keeper")
 
