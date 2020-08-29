@@ -197,9 +197,9 @@ function Cell:menu_items()
     local note_position = fn.table_find(items, "NOTES")
     if type(note_position) == "number" then
       table.remove(items, note_position)
-      if self.note_count == 1 then
+      if self:is("SHRINE") or self:is("UXB") or self:is("AVIARY")  or self:is("VALE") then
         table.insert(items, note_position, "NOTE")
-      elseif  self.note_count > 1 then
+      elseif  self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") then
         local notes_submenu_items = self:get_notes_submenu_items()
         for i = 1, self.note_count do
           table.insert(items, note_position + (i - 1), notes_submenu_items[i]["menu_item"])
