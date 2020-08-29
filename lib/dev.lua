@@ -41,13 +41,17 @@ function dev:scene(i)
   elseif i == 3 then
     -- fn.seed_cells()
     sound:toggle_playback()
-    keeper:select_cell(7, 4)
+    keeper:select_cell(1, 1)
     keeper.selected_cell:open_port("e")
     keeper.selected_cell:open_port("w")
     keeper:deselect_cell()
+    keeper:select_cell(4, 1)
     keeper.selected_cell:set_metabolism(1)
-    -- keeper.selected_cell:change("CASINO")
-    page:select(1)
+    keeper.selected_cell:change("SOLARIUM")
+    keeper.selected_cell:open_port("e")
+    keeper.selected_cell:open_port("w")
+    
+    page:select(2)
     
     
 

@@ -135,10 +135,12 @@ function Cell:is_spawning()
     return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("MAZE") and self.metabolism ~= 0 then
     return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
-  elseif (((counters.this_beat() - self.offset) % self.metabolism) == 1 and self.metabolism ~= 0)or self.metabolism == 1 then
-    if self:is("HIVE") or self:is("RAVE") then return true end
   elseif self:is("SOLARIUM") and self.flag then
     return true
+  elseif (((counters.this_beat() - self.offset) % self.metabolism) == 1 and self.metabolism ~= 0) or self.metabolism == 1 then
+    if self:is("HIVE") or self:is("RAVE") then
+      return true
+    end
   end
   return false
 end
@@ -159,11 +161,10 @@ function Cell:teardown()
   end
 end
 
--- turn on, tune in, drop out... close all the ports, then flip coins to open them
 function Cell:compare_capacity_and_charge()
   if self.charge >= self.capacity then
     self.flag = true
-    self.charge = 0
+    self:set_charge(0)
     self:invert_ports()
   end
 end
