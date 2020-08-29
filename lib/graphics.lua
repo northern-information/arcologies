@@ -144,7 +144,7 @@ function graphics:analysis_ellipses(x, y)
 end
 
 function graphics:render_docs()
-  local sheet = page.active_page == 1 and "HOME" or keeper.structure_value
+  local sheet = page.active_page == 1 and "HOME" or keeper.selected_cell.structure_value
   if docs.sheets[sheet] == nil then
     glyphs:random(81, self.structure_y, 13)
     self:text_center(91, 33, "NO DOCS", 0)

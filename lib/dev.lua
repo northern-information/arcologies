@@ -39,9 +39,14 @@ function dev:scene(i)
     sound:toggle_playback()
 
   elseif i == 3 then
-    fn.seed_cells()
+    -- fn.seed_cells()
     sound:toggle_playback()
-    page:select(3)
+    keeper:select_cell(1, 1)
+    keeper.selected_cell:change("CASINO")
+    page:select(2)
+    menu:select_item(13)
+    
+
 
   elseif i == 4 then
     -- fn.seed_cells()
@@ -201,6 +206,7 @@ function arcdebug()
   print("start arcologies debug -------------------------------")
   print(" ")
   print("generated at: " .. os.date("%Y_%m_%d_%H_%M_%S") .. " / " .. os.time())
+  print("version: " .. fn.get_arcology_version())
   print("bpm: " .. params:get("bpm"))
   print("root: " .. sound.root)
   print("scale: " .. sound.scale_name)

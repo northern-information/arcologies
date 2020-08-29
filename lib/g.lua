@@ -132,6 +132,7 @@ function g:led_signals()
 end
 
 function g:register_signal_death_at(x, y)
+  print("register signal death at ", x, y)
   local signal = {}
   signal.x = x
   signal.y = y

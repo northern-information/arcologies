@@ -7,10 +7,18 @@ function fn.init()
   fn.id_counter = 1000
 end
 
+function fn.get_arcology_version()
+  return config.settings.version_major .. "." ..
+         config.settings.version_minor .. "." ..
+         config.settings.version_patch
+end
+
 function fn.collect_data_for_save(name)
   data = {
     arcology_name = name or arcology_name,
-    save_format = 1,
+    version_major = config.settings.version_major,
+    version_minor = config.settings.version_minor,
+    version_patch = config.settings.version_patch,
     bpm = params:get("bpm"),
     length = sound.length,
     root = sound.root,
@@ -29,12 +37,12 @@ function fn.collect_data_for_save(name)
 end
 
 function fn.load(data)
-  if data.save_format == 1 then
+  if data.version_major == 1 then
     arcology_name = data.arcology_name
     params:set("bpm", data.bpm)
     sound.length = data.length
     sound.root = data.root
-    sound.scale = data.scale
+    sound:set_scale(data.scale)
     counters.music.generation = data.counters_music_generation
     keeper.init()
     for k, load_cell in pairs(data.keeper_cells) do

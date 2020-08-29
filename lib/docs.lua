@@ -24,12 +24,123 @@ docs.sheets["HOME"] = {
 }
 
 docs.sheets["HIVE"] = {
-  "github.com/",
-  " tyleretters/",
-  " arcologies-docs",
+  "Emit signals at",
+  "regular intervals.",
   "",
-  "l.llllllll.co/",
-  " arcologies"
+  "Metabolism cont-",
+  "rols rate of signal",
+  "creation."
+}
+
+docs.sheets["SHRINE"] = {
+  "Plays notes via",
+  "onboard synth.",
+  "",
+  "Routes the flow",
+  "of signals to",
+  "open ports."
+}
+
+docs.sheets["GATE"] = {
+  "Routes the flow",
+  "of signals to",
+  "open ports.",
+  "Signal collisions",
+  "on closed ports",
+  "invert all ports."
+}
+
+docs.sheets["RAVE"] = {
+  "Emits signals like",
+  "a hive, but on",
+  "spawn all ports",
+  "are randomly",
+  "toggled."
+}
+
+docs.sheets["TOPIARY"] = {
+  "Plays 8 note",
+  "melodies. Each",
+  "note increments",
+  "the index.",
+  "Routes signals",
+  "to open ports."
+}
+
+docs.sheets["DOME"] = {
+  "Emits signals in",
+  "Euclidian rhythms",
+  "Metabolism=steps",
+  "Pulses = beats."
+}
+
+docs.sheets["MAZE"] = {
+  "Emits signals like",
+  "a hive but via",
+  "an analog shift",
+  "register algo."
+}
+
+docs.sheets["CRYPT"] = {
+  "One-shot mono",
+  "sampler. Put six",
+  "{1,2,3,4,5,6}.wavs",
+  "in",
+  "dust.audio.crypt",
+  "(docs online)"
+}
+
+docs.sheets["VALE"] = {
+  "Randomly plays",
+  "a synth within",
+  "a range.",
+  "",
+  "Routes signals",
+  "to open ports."
+}
+
+docs.sheets["SOLARIUM"] = {
+  "Stores signals",
+  "as charge.",
+  "Once capacity is",
+  "met invert ports",
+  "to burst next",
+  "beat."
+}
+docs.sheets["UXB"] = {
+  "Send notes to",
+  "MIDI devices.",
+  "",
+  "Routes signals",
+  "to open ports."
+}
+
+docs.sheets["CASINO"] = {
+  "Is to uxbs what",
+  "topiaries are",
+  "to shrines."
+}
+
+docs.sheets["TUNNEL"] = {
+  "Routes incoming",
+  "singles to each",
+  "other tunnel",
+  "on the same",
+  "network."
+}
+
+docs.sheets["AVIARY"] = {
+  "Send voltates &",
+  "triggers to crow.",
+  "",
+  "Routes signals",
+  "to open ports."
+}
+
+docs.sheets["FOREST"] = {
+  "Is to aviaries",
+  "what topiaries",
+  "are to shrines."
 }
 
 return docs

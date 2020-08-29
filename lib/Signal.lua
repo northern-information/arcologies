@@ -17,17 +17,14 @@ end
 
 function Signal:propagate()
   if self.generation < counters.music_generation() then
-    if self.heading == "n" then
-      self.y = self.y - 1
-    elseif self.heading == "e" then
-      self.x = self.x + 1
-    elseif self.heading == "s" then
-      self.y = self.y + 1
-    elseif self.heading == "w" then
-      self.x = self.x - 1
+        if self.heading == "n" then self.y = self.y - 1
+    elseif self.heading == "e" then self.x = self.x + 1
+    elseif self.heading == "s" then self.y = self.y + 1
+    elseif self.heading == "w" then self.x = self.x - 1
     end
     self.index = self.x + ((self.y - 1) * fn.grid_width())
     if not fn.in_bounds(self.x, self.y) then
+      self.index = nil
       keeper:register_delete_signal(self.id)
     end
   end
