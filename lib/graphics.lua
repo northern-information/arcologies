@@ -627,6 +627,7 @@ function graphics:grid_connect_error()
   self:text_left(79, 42, "G", fn.cycle(l-7, 0, 15))
   self:text_left(84, 42, "H", fn.cycle(l-8, 0, 15))
   self:text_left(89, 42, "T", fn.cycle(l-9, 0, 15))
+  self:text_center(64, 60, "(Any encoder to dismiss.)", 5)
 end
 
 function graphics:splash()

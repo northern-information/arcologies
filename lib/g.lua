@@ -12,12 +12,30 @@ function g.init()
   g.is_copying = false
   g.is_pasting = false
   g.paste_counter = 15
+  g.disconnect_dismissed = true
   for x = 1, fn.grid_width() do
     g.counter[x] = {}
     for y = 1, fn.grid_height() do
       g.counter[x][y] = nil
     end
   end
+end
+
+function grid.add()
+  g.init()
+  fn.dirty_grid(true)
+end
+
+function grid.remove()
+  g:alert_disconnect()
+end
+
+function g:alert_disconnect()
+  g.disconnect_dismissed = false
+end
+
+function g:dismiss_disconnect()
+  g.disconnect_dismissed = true
 end
 
 function g.grid_redraw_clock()
@@ -70,6 +88,10 @@ end
 
 function g:short_press(x, y)
   if self.is_copying then
+    local paste_over_cell = keeper:get_cell(fn.index(x, y))
+    if paste_over_cell then
+      keeper:delete_cell(paste_over_cell.id)
+    end
     local tmp = fn.deep_copy(keeper.copied_cell)
     tmp:prepare_for_paste(x, y, counters.music_generation())
     table.insert(keeper.cells, tmp)
@@ -132,7 +154,6 @@ function g:led_signals()
 end
 
 function g:register_signal_death_at(x, y)
-  print("register signal death at ", x, y)
   local signal = {}
   signal.x = x
   signal.y = y

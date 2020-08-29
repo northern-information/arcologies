@@ -14,19 +14,20 @@ function parameters.init()
     min = 20, max = 240, default = 120,
     action = function(i) parameters.bpm_to_seconds = 60 / i end
   }
+  params:hide("bpm")
+
 
   params:add{ type = "number", id = "seed", name = "SEED",
     min = 0, max = 32, default = 16
   }
   params:hide("seed")
 
+  params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
+  params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
+
   parameters.is_splash_screen_on = true
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})
   params:set_action("splash_screen", function(index) parameters.is_splash_screen_on = index == 1 and true or false end)
-
-
-  params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
-  params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
 
   params:default()
   params:bang()

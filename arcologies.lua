@@ -55,7 +55,7 @@ function redraw()
 end
 
 function enc(e, d)
-  fn.break_splash(true)
+  fn.dismiss_messages()
   if e == 1 then  -- e1 only ever scrolls between pages
     page:scroll(d)
   elseif e == 2 then -- e2 only ever scrolls the page menu

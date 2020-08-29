@@ -160,7 +160,9 @@ function keeper:collide_signals()
   for ka, signal_from_set_a in pairs(self.signals) do
     for kb, signal_from_set_b in pairs(self.signals) do
       if signal_from_set_a.index == signal_from_set_b.index
-      and signal_from_set_a.id ~= signal_from_set_b.id then
+      and signal_from_set_a.id ~= signal_from_set_b.id 
+      and fn.in_bounds(signal_from_set_a.x, signal_from_set_a.y) 
+      and fn.in_bounds(signal_from_set_b.x, signal_from_set_b.y) then
         self:register_delete_signal(signal_from_set_a.id)
         self:register_delete_signal(signal_from_set_b.id)
         g:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)

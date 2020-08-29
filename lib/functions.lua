@@ -173,11 +173,7 @@ function fn.in_bounds(x, y)
 end
 
 function fn.no_grid()
-  if fn.grid_width() == 0 then
-    return true
-  else
-    return false
-  end
+  return fn.grid_width() == 0 and true or false
 end
 
 function fn.cycle(value, min, max)
@@ -218,6 +214,11 @@ function fn.break_splash(bool)
   if bool == nil then return splash_break end
   splash_break = bool
   return splash_break
+end
+
+function fn.dismiss_messages()
+  fn.break_splash(true)
+  g:dismiss_disconnect()
 end
 
 -- the lost souls
