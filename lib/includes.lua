@@ -10,6 +10,11 @@ engine.name = "PolyPerc"
 
 -- stores application configuration and cell composition data
 config = include("arcologies/lib/config")
+config_ = io.open(_path["code"] .. "arcologies/lib/config_.lua", "r")
+if config_ ~= nil then
+  io.close(config_)
+  include("arcologies/lib/config_")
+end
 
 -- the core concept of arcologies, interact with Signals
 include("arcologies/lib/Cell")
