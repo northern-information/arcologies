@@ -10,7 +10,7 @@ This README is for developers looking to contribute in building **arcologies**.
 
 ## Changlog
 
-- [The changelog is located here.](https://tyleretters.github.io/arcologies-docs#changelog)
+[The changelog is located here.](https://tyleretters.github.io/arcologies-docs#changelog)
 
 ## Technical
 
