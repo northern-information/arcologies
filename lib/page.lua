@@ -3,6 +3,7 @@ local page = {}
 function page.init()
   page.titles = config.page_titles
   page.active_page = 0
+  page.then_select_item = nil
   page.error = false
   page.error_code = 0
 end
@@ -11,8 +12,9 @@ function page:scroll(d)
   self:select(util.clamp(page.active_page + d, 1, #page.titles))
 end
 
-function page:select(i)
+function page:select(i, then_select_item)
   self.active_page = i
+  self.then_select_item = then_select_item or nil
   menu:reset()
   fn.dirty_screen(true)
 end
@@ -66,7 +68,12 @@ function page:cell_designer()
     else
       graphics:panel()
       menu:set_items(keeper.selected_cell:menu_items())
-      menu:select_item()
+      if self.then_select_item ~= nil then
+        menu:select_item_by_name(self.then_select_item)
+        self.then_select_item = nil  
+      else 
+        menu:select_item()
+      end
       menu:render()
       graphics:draw_ports()
       graphics:structure_and_title(keeper.selected_cell.structure_value)
