@@ -7,7 +7,9 @@
 --
 --
 -- ........................................
--- l.llllllll.co/arcologies
+-- v1.0.2
+-- <3 @tyleretters
+-- nor.the-rn.info
 -- GNU GPL v3.0
 
 include("arcologies/lib/includes")

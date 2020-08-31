@@ -4,9 +4,13 @@ _an interactive environment for designing 2d sound arcologies with norns and gri
 
 ![arcologies](https://tyleretters.github.io/arcologies-docs/assets/images/arcologies-landscape.jpg)
 
-If you are an artist, musician, or arcologist here to use this tool, [everything you need to know is in the docs](https://tyleretters.github.io/arcologies-docs).
+If you are an artist, musician, or arcologist here to use this tool, [everything you need to know is in the docs](https://tyleretters.github.io/arcologies-docs). Join the discussion on [lines](https://l.llllllll.co/arcologies).
 
 This README is for developers looking to contribute in building **arcologies**.
+
+## Changlog
+
+- [The changelog is located here.](https://tyleretters.github.io/arcologies-docs#changelog)
 
 ## Technical
 
