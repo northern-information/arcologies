@@ -8,7 +8,7 @@ If you are an artist, musician, or arcologist here to use this tool, [everything
 
 This README is for developers looking to contribute in building **arcologies**.
 
-## Changlog
+## Changelog
 
 [The changelog is located here.](https://tyleretters.github.io/arcologies-docs#changelog)
 
