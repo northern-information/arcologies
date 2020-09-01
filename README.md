@@ -26,3 +26,10 @@ This README is for developers looking to contribute in building **arcologies**.
 ## Contributing
 
 Contributions are welcome, however I have some pretty firm boundaries about what **arcologies** is and is not. I recommend watching [all the videos in this playlist](https://www.youtube.com/playlist?list=PLe1BFUbUceS2N5GLgORKQrw1bsz2ZLwJ3) to get inside my head a bit more. If you have an idea for a significant undertaking that you'd like to contribute, please consider talking with me first. I'd hate to see you pour a bunch of energy into a feature that doesn't align with the vision. That said, I'll consider all feature requests! Thank you.
+
+## Credits
+
+Software design by [Tyler Etters](https://nor.the-rn.info).
+
+
+<a href="https://nor.the-rn.info"><img src="https://tyleretters.github.io/arcologies-docs/assets/images/northern-information.svg" alt="Northern Information" width="100"/></a>
