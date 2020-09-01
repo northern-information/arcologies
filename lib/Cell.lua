@@ -87,7 +87,7 @@ function Cell:is(name)
 end
 
 function Cell:has(name)
-  return fn.table_find(self.structure_attribute_map[self.structure_value], name) ~= nil or false
+  return tonumber(fn.table_find(self.structure_attribute_map[self.structure_value], name)) ~= nil and true or false
 end
 
 function Cell:change(name)
@@ -119,13 +119,14 @@ behaviors encapsulated in their own classes. and as of writing this
 theres  only ~40 lines of code below...
 ]]
 
--- somtimes when a cell changes, attributes need to be cleaned up
+-- sometimes when a cell changes, attributes need to be cleaned up
 function Cell:change_checks()
   if self:is("SHRINE") then self:setup_notes(1) end
   if self:is("TOPIARY") then self:setup_notes(8) end
   if self:is("CASINO") then self:setup_notes(8) end
   if self:is("FOREST") then self:setup_notes(8) end
   self:set_max_state_index(self:is("CRYPT") and 6 or 8)
+  if self:is("CRYPT") then self:set_state_index(1) end
   self:cycle_state_index(0)
 end
 
@@ -137,8 +138,10 @@ function Cell:is_spawning()
     return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
     return true
-  elseif (((counters.this_beat() - self.offset) % self.metabolism) == 1 and self.metabolism ~= 0) or self.metabolism == 1 then
-    if self:is("HIVE") or self:is("RAVE") then
+  elseif self:is("HIVE") or self:is("RAVE") then
+    if self.metabolism == 0 then
+      return false
+    elseif (((counters.this_beat() - self.offset) % self.metabolism) == 1 and self.metabolism ~= 0) or self.metabolism == 1 then
       return true
     end
   end
@@ -161,6 +164,7 @@ function Cell:teardown()
   end
 end
 
+-- for solariums
 function Cell:compare_capacity_and_charge()
   if self.charge >= self.capacity then
     self.flag = true

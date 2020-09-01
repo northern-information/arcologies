@@ -73,7 +73,7 @@ function counters.optician()
   if counters.ui.frame % 4 == 0 then
     counters.ui.quarter_frame = counters.ui.quarter_frame +1
   end
-  if fn.no_grid() and not g.disconnect_dismissed then page:set_error(1) else page:clear_error() end
+  if not g.disconnect_dismissed then page:set_error(1) else page:clear_error() end
   fn.dirty_screen(true)
   redraw()
 end

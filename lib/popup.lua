@@ -74,7 +74,7 @@ end
 
 function popup:enc_wait()
   enc_counter[popup.number]["waiting"] = true
-  clock.sleep(graphics.ui_wait_threshold)
+  clock.sleep(params:get("popup_patience"))
   enc_counter[popup.number]["waiting"] = false
   enc_counter[popup.number]["this_clock"] = nil
   popup:done()

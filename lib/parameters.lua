@@ -11,7 +11,7 @@ function parameters.init()
 
   parameters.bpm_to_seconds = 0
   params:add{ type = "number", id = "bpm", name = "BPM",
-    min = 20, max = 240, default = 120,
+    min = 20, max = 480, default = 120,
     action = function(i) parameters.bpm_to_seconds = 60 / i end
   }
   params:hide("bpm")
@@ -24,6 +24,12 @@ function parameters.init()
 
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
+
+  
+  params:add{ type = "number", id = "popup_patience", name = "POPUP PATIENCE",
+    min = 0.5, max = 4.0, default = 0.5,
+  }
+
 
   parameters.is_splash_screen_on = true
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})

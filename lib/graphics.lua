@@ -10,7 +10,6 @@ function graphics.init()
   graphics.structure_y = 24
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
-  graphics.ui_wait_threshold = 0.5
   graphics.cell_attributes = config.attributes
   graphics.splash_lines_open = {}
   graphics.splash_lines_close = {}

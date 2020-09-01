@@ -13,6 +13,8 @@ function g.init()
   g.is_pasting = false
   g.paste_counter = 15
   g.disconnect_dismissed = true
+  g.last_known_width = g.cols
+  g.last_known_height = g.rows
   for x = 1, fn.grid_width() do
     g.counter[x] = {}
     for y = 1, fn.grid_height() do
@@ -23,6 +25,8 @@ end
 
 function grid.add()
   g.init()
+  g.last_known_width = g.cols
+  g.last_known_height = g.rows
   fn.dirty_grid(true)
 end
 

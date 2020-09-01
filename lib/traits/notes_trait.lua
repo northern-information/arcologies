@@ -19,7 +19,8 @@ notes_trait.init = function(self)
   end
 
   self.set_note = function(self, note, index)
-    self.notes[index] = note
+    local i = index ~= nil and index or 1
+    self.notes[i] = note
     self.callback('set_note')
   end
 

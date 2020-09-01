@@ -92,11 +92,11 @@ function fn.id()
 end
 
 function fn.grid_width()
-  return g.cols
+  return g.last_known_width
 end
 
 function fn.grid_height()
-  return g.rows
+  return g.last_known_height
 end
 
 function fn.index(x, y)

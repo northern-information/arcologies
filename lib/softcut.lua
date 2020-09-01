@@ -68,14 +68,16 @@ end
 
 function s:one_shot(index, level)
   local voice = index -- voices are hard-coupled for now
-  softcut.buffer(voice, 2)
-  softcut.play(voice, 0)
-  softcut.level(voice, level)
-  softcut.position(voice, s.clip[index].min)
-  softcut.loop_start(voice, s.clip[index].min)
-  softcut.loop_end(voice, s.clip[index].max)
-  softcut.loop(voice, 0)
-  softcut.play(voice, 1)
+  if tonumber(index) then -- some edge cases were happening where nil indexes were coming in
+    softcut.buffer(voice, 2)
+    softcut.play(voice, 0)
+    softcut.level(voice, level)
+    softcut.position(voice, s.clip[index].min)
+    softcut.loop_start(voice, s.clip[index].min)
+    softcut.loop_end(voice, s.clip[index].max)
+    softcut.loop(voice, 0)
+    softcut.play(voice, 1)
+  end
 end
 
 return s
