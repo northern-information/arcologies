@@ -15,7 +15,7 @@ This README is for developers looking to contribute in building **arcologies**.
 ## Technical
 
 
-- The [developer manual video](https://www.youtube.com/watch?v=NJlO2jajM6k) is the fastest way to learn arcologies. It includes a walkthrough of the architecture and deep dives into the most complex parts of the software.
+- The [developer manual video](https://www.youtube.com/watch?v=NJlO2jajM6k) is the fastest way to learn **arcologies**. It includes a walkthrough of the architecture and deep dives into the most complex parts of the software.
 - To learn the codebase, read [arcologies.lua](https://github.com/tyleretters/arcologies/blob/main/arcologies.lua) and [lib/includes.lua](https://github.com/tyleretters/arcologies/blob/main/lib/includes.lua).
 - Next, skim through [keeper.lua](https://github.com/tyleretters/arcologies/blob/main/lib/keeper.lua), [Cell.lua](https://github.com/tyleretters/arcologies/blob/main/lib/Cell.lua), [Signal.lua](https://github.com/tyleretters/arcologies/blob/main/lib/Signal.lua), and [counters.lua](https://github.com/tyleretters/arcologies/blob/main/lib/counters.lua).
 - `Cell` and `Signal` are the only [classes](https://www.lua.org/pil/16.1.html). Signals are primitive. Cells are complex.
