@@ -73,7 +73,6 @@ function menu:scroll_value(d)
   -- home
   if page.active_page == 1 then
         if s == fn.playback() then sound:set_playback(d)
-    elseif s == "SEED"        then popup:launch("seed", d, "enc", 3)
     elseif s == "BPM"         then params:set("bpm", params:get("bpm") + d)
     elseif s == "LENGTH"      then sound:cycle_length(d)
     elseif s == "ROOT"        then sound:cycle_root(d)

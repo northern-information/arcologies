@@ -563,18 +563,6 @@ function graphics:piano(i)
   self:reset_font()
 end
 
-function graphics:seed()
-  local seed = params:get("seed")
-  if seed == 0 then
-    screen.font_size(42)
-    self:text_center(64, 50, "ABORT", 15)
-  else
-    screen.font_size(42)
-    self:text_center(64, 50, params:get("seed"), 15)
-  end
-  self:reset_font()
-end
-
 function graphics:deleting_all(timer)
   screen.font_size(64)
   self:text_center(64, 60, math.floor(timer / 10))

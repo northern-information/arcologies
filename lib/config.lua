@@ -31,7 +31,6 @@ if config.settings.dev_mode then
 end
 
 config["home_items"] = {
-  "SEED",
   "BPM",
   "LENGTH",
   "ROOT",
@@ -186,11 +185,6 @@ local note_message = {
 }
 
 config["popup_messages"] = {
-  ["seed"] = {
-    ["start"] = "SEEDING...",
-    ["abort"] = "ABORTED SEED",
-    ["done"] = "SEEDED"
-  },
   ["delete_all"] = {
     ["start"] = "DELETING ALL IN...",
     ["abort"] = "ABORTED",

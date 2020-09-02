@@ -82,9 +82,7 @@ function popup:enc_wait()
 end
 
 function popup:change()
-  if self.current_attribute == "seed" then
-    params:set("seed", params:get("seed") + self.current_value)
-  elseif self.current_attribute == "structure" then
+  if self.current_attribute == "structure" then
     keeper.selected_cell:set_structure_by_key(keeper.selected_cell.structure_key + self.current_value)
     self:title_message(keeper.selected_cell.structure_value)
   elseif self.current_attribute == "note1" then
@@ -115,8 +113,7 @@ function popup:change()
 end
 
 function popup:render()
-      if self.current_attribute == "seed" then graphics:seed()
-  elseif self.current_attribute == "note1" then graphics:piano(1)
+      if self.current_attribute == "note1" then graphics:piano(1)
   elseif self.current_attribute == "note2" then graphics:piano(2)
   elseif self.current_attribute == "note3" then graphics:piano(3)
   elseif self.current_attribute == "note4" then graphics:piano(4)
@@ -131,14 +128,7 @@ end
 
 function popup:done()
   self.active = false
-  if self.current_attribute == "seed" then
-    fn.seed_cells()
-    if params:get("seed") == 0 then
-      self:title_message(self.messages.seed.abort)
-    else
-      self:title_message(self.messages.seed.done .. " " .. params:get("seed"))
-    end
-  elseif self.current_attribute == "note1" then
+      if self.current_attribute == "note1" then
     self:title_message(self.messages.note1.done .. " " .. keeper.selected_cell:get_note_name(1))
   elseif self.current_attribute == "note2" then
     self:title_message(self.messages.note2.done .. " " .. keeper.selected_cell:get_note_name(2))

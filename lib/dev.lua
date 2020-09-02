@@ -55,7 +55,7 @@ function dev:scene(i)
     page:select(2)
 
   elseif i == 4 then
-    -- params:set("seed", 4)
+    -- params:set("seed_cell_count", 4)
     fn.seed_cells()
     page:select(3)
     sound:toggle_playback()

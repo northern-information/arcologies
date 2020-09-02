@@ -233,12 +233,12 @@ function fn.cleanup()
 end
 
 function fn.seed_cells()
-  if params:get("seed") ~= 0 and not fn.no_grid() then
+  if params:get("seed_cell_count") ~= 0 and not fn.no_grid() then
     keeper:delete_all_cells()
     sound:set_random_root()
     sound:set_random_scale()
     params:set("bpm", math.random(100, 160))
-    for i = 1, params:get("seed") do
+    for i = 1, params:get("seed_cell_count") do
       fn.random_cell()
     end
     keeper:deselect_cell()
@@ -247,18 +247,13 @@ end
 
 function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
-  local yes = {
-    "HIVE",
-    "SHRINE",
-    "GATE",
-    "RAVE",
-    "TOPIARY",
-    "DOME",
-    "MAZE",
-    "CRYPT",
-    "VALE",
-    "SOLARIUM"
-  }
+  local yes = {}
+  for k, v in pairs(parameters.seed_structures) do
+    if v then
+      local structure = string.gsub(k, "seed_structure_", "")
+      table.insert(yes, structure)
+    end
+  end
   keeper.selected_cell:change(yes[math.random(1, #yes)])
   if keeper.selected_cell:is("SHRINE")
   or keeper.selected_cell:is("TOPIARY")
