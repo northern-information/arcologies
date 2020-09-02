@@ -456,7 +456,7 @@ function graphics:analysis(items, selected_item_key)
       line_highlight = (i == selected_item_key) and 15 or 1
       line_graph_x = line_graph_start_x + ((i - 1) * line_graph_spacing)
       local this_line_percentage = chart.percentages[i] * 100
-      local this_height = util.round_up(math.floor(util.linlin(0, 100, 0, 30, this_line_percentage)), 1)
+      local this_height = util.round_up(math.floor(util.linlin(0, 100, 0, 20, this_line_percentage)), 1)
       self:mlrs(line_graph_x, line_graph_start_y, 1, this_height, line_highlight)
     end
   end
@@ -489,9 +489,11 @@ function graphics:analysis(items, selected_item_key)
 
 
   -- more data
-  self:text(105, 16, counters.music.generation, 1)
-  self:icon(105, 34, chart.values[selected_item_key], 1)
-  self:playback_icon(105, 17)
+  self:playback_icon(105, 10)
+  self:rect(105, 30, 23, 10, 1)
+  self:text_center(116, 38, counters.music.generation, 0)
+  self:rect(105, 42, 23, 10, 15)
+  self:text_center(116, 50, chart.values[selected_item_key], 0)
   fn.dirty_grid(true)
 end
 
