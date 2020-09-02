@@ -51,8 +51,7 @@ function dev:scene(i)
     keeper.selected_cell:change("SOLARIUM")
     keeper.selected_cell:open_port("e")
     keeper.selected_cell:open_port("w")
-    
-    page:select(2)
+    page:select(3)
 
   elseif i == 4 then
     -- params:set("seed_cell_count", 4)
