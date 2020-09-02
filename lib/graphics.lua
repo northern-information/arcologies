@@ -263,6 +263,8 @@ function graphics:page_name()
     -- empty
   elseif docs:is_active() then
     self:text_right(127, 6, "DOCUMENTATION", 0)
+  elseif page.active_page == 1 and arcology_loaded then
+    self:text_right(127, 6, arcology_name, 0)
   elseif page.active_page == 2 and keeper.is_cell_selected then
     self:text_right(127, 6, keeper.selected_cell.structure_value, 0)
   else

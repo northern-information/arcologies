@@ -40,7 +40,7 @@ function dev:scene(i)
     sound:toggle_playback()
 
   elseif i == 3 then
-    -- fn.seed_cells()
+    fn.seed_cells()
     sound:toggle_playback()
     keeper:select_cell(1, 1)
     keeper.selected_cell:open_port("e")

@@ -79,6 +79,7 @@ function fn.load(data)
       tmp.x           = load_signal.x
       table.insert(keeper.signals, tmp)
     end
+    arcology_loaded = true
   else 
     print("Error: arcology data is not in an acceptable format.")
   end
@@ -242,6 +243,7 @@ function fn.seed_cells()
       fn.random_cell()
     end
     keeper:deselect_cell()
+    arcology_loaded = false
   end
 end
 

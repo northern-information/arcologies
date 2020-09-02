@@ -33,7 +33,7 @@ function init()
   popup.init()
   keeper.init()
   arcology_name = "arcology" .. os.time(os.date("!*t"))
-  grid_dirty, screen_dirty, splash_break = false, false, false
+  grid_dirty, screen_dirty, splash_break, arcology_loaded = false, false, false, false
   keys, key_counter, enc_counter = {}, {{},{},{}}, {{},{},{}}
   for i = 1, 3 do
     norns.encoders.set_sens(i, 16)
