@@ -83,98 +83,98 @@ config["structure_attribute_map"] = {
   ["HIVE"] = {
     "METABOLISM",
     "OFFSET",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["SHRINE"] = {
     "NOTES",
     "VELOCITY",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["GATE"] = {
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["RAVE"] = {
     "METABOLISM",
     "OFFSET",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["TOPIARY"] = {
     "INDEX",
     "NOTES",
     "VELOCITY",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
     },
   ["DOME"] = {
     "METABOLISM",
     "OFFSET",
     "PULSES",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["MAZE"] = {
     "METABOLISM",
     "OFFSET",
     "PROBABILITY",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["CRYPT"] = {
     "INDEX",
     "LEVEL",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["VALE"] = {
     "RANGE MIN",
     "RANGE MAX",
     "VELOCITY",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["SOLARIUM"] = {
     "CHARGE",
     "CAPACITY",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["UXB"] = {
     "NOTES",
     "VELOCITY",
     "DEVICE",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["CASINO"] = {
     "INDEX",
     "NOTES",
     "VELOCITY",
     "DEVICE",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["TUNNEL"] = {
     "NETWORK",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["AVIARY"] = {
     "NOTES",
     "VELOCITY",
     "CROW OUT",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   },
   ["FOREST"] = {
     "INDEX",
     "NOTES",
     "CROW OUT",
-    "STRUCTURE",
-    "DOCS"
+    "DOCS",
+    "STRUCTURE"
   }
 }
 
