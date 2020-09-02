@@ -1,2 +1,3 @@
 .DS_Store
+.fuse*
 lib/config_.lua
