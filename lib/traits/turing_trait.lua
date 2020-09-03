@@ -34,9 +34,9 @@ turing_trait.init = function(self)
     -- check against the probability
     if (math.random(0, 99) < self.probability) then
       -- flip a coin to get our new value
-      table.insert(self.turing, 1, fn.coin() == 1)
+      table.insert(self.turing, #self.turing, fn.coin() == 1)
       -- remove the old value
-      table.remove(self.turing, #self.turing)
+      table.remove(self.turing, 1)
     end
 
     self.callback(self, 'set_turing')
