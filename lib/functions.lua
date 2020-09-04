@@ -135,6 +135,14 @@ function fn.nearest_value(table, number)
     return table[nearest_index]
 end
 
+function fn.wrap(t, l)
+  for i = 1, l do
+    table.insert(t, 1, t[#t])
+    table.remove(t, #t)
+  end
+  return t
+end
+
 function fn.table_find(t, element)
   for i,v in pairs(t) do
     if v == element then

@@ -157,48 +157,37 @@ end
 
 function graphics:time(x, y)
   local o = 3
-  local x2 = x
-  local y2 = y + o
+  local beat = counters.this_beat()
   local meta = keeper.selected_cell.metabolism
-  local off =  keeper.selected_cell.offset or 0
-  local b = counters.this_beat()
   local l = sound.length
-  -- global transport
+
+  -- always draw global transport
   for i = 1, l do
-    self:ps((i * o) + x, y, (b == i) and 5 or 0)
+    self:ps((i * o) + x, y, (beat == i) and 5 or 0)
   end
 
-  -- no metabolism or offset, no soup
+  -- no selected cell, no soup
   if not keeper.is_cell_selected then return end
-  if keeper.selected_cell:is("HIVE") or
-     keeper.selected_cell:is("RAVE") or
-     keeper.selected_cell:is("DOME") or
-     keeper.selected_cell:is("MAZE") then
 
-    local steps = {}
-        if keeper.selected_cell:is("DOME") then steps = keeper.selected_cell.er
-    elseif keeper.selected_cell:is("MAZE") then steps = keeper.selected_cell.turing
-    end
+  local steps = {}
+      if keeper.selected_cell:is("HIVE") then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("RAVE") then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("DOME") then steps = fn.deep_copy(keeper.selected_cell.er)
+  elseif keeper.selected_cell:is("MAZE") then steps = fn.deep_copy(keeper.selected_cell.turing)
+  end
 
-    if #steps > 0 and meta > 0 then
-      for k,v in pairs(steps) do
-        local step = ((fn.cycle(b % meta, 1, meta)) == k)
-        local level = 0
-        if step and v then
-          level = 5
-        elseif not step and v then
-          level = 0
-        else
-          level = 15
-        end
-        self:ps((self:wrap_offset(k, off, l) * o) + x2, y2, level)
-      end
-    -- anything with an offset
-    elseif keeper.selected_cell:has("OFFSET") then
-      for i = 1, meta do
-        self:ps((self:wrap_offset(i, off, l) * o) + x2, y2, ((fn.cycle(b % meta, 1, meta)) == i) and 5 or 0)
-      end
-    end
+  -- no steps, no soup
+  if #steps == 0 then return end
+
+  local cell_offset =  keeper.selected_cell.offset or 0
+  local adjusted_steps = fn.wrap(steps, cell_offset)
+
+  for k, v in pairs(adjusted_steps) do 
+    local this_step_pointer = ((fn.cycle(beat % meta, 1, meta)) == k)
+    local this_step_level = self:get_this_step_level(this_step_pointer, v)
+    local this_step_x = (k * o) + x
+    local this_step_y =  y + o
+    self:ps(this_step_x, this_step_y, this_step_level)
   end
 end
 
@@ -206,6 +195,17 @@ function graphics:wrap_offset(i, off, l)
   return ((i + off) > l) and ((i + off) - l) or (i + off)
 end
 
+function graphics:get_this_step_level(this_step_pointer, this_step_boolean_value)
+  local level = 15 -- non-existent step, so it is invisible
+  if this_step_pointer and this_step_boolean_value then -- current step is grey
+    level = 5
+  elseif not this_step_pointer and this_step_boolean_value then -- possible step is black
+    level = 0
+  else 
+    level = 15
+  end
+  return level
+end
 
 function graphics:get_tab_x(i)
   return (((self.tab_width + self.tab_padding) * i) - self.tab_width)

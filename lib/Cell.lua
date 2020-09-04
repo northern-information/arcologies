@@ -121,13 +121,15 @@ theres  only ~40 lines of code below...
 
 -- sometimes when a cell changes, attributes need to be cleaned up
 function Cell:change_checks()
-  if self:is("SHRINE") then self:setup_notes(1) end
-  if self:is("TOPIARY") then self:setup_notes(8) end
-  if self:is("CASINO") then self:setup_notes(8) end
-  if self:is("FOREST") then self:setup_notes(8) end
-  self:set_max_state_index(self:is("CRYPT") and 6 or 8)
-  if self:is("CRYPT") then self:set_state_index(1) end
-  self:cycle_state_index(0)
+  local max_state_index = self:is("CRYPT") and 6 or 8
+  self:set_max_state_index(max_state_index)
+      if self:is("DOME") then self:set_er()
+  elseif self:is("SHRINE") then self:setup_notes(1)
+  elseif self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") then self:setup_notes(8)
+  elseif self:is("CRYPT") then
+    self:set_state_index(1) 
+    self:cycle_state_index(0)
+  end
 end
 
 -- all signals are "spawned" but only under certain conditions
@@ -141,17 +143,15 @@ function Cell:is_spawning()
   elseif self:is("HIVE") or self:is("RAVE") then
     if self.metabolism == 0 then
       return false
-    elseif (((counters.this_beat() - self.offset) % self.metabolism) == 1 and self.metabolism ~= 0) or self.metabolism == 1 then
-      return true
+    else
+      return (((counters.this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
     end
   end
-  return false
 end
 
 -- does this cell need to do anything to boot up this beat?
 function Cell:setup()
       if self:is("RAVE") and self:is_spawning() then self:drugs()
-  elseif self:is("DOME") then self:set_er()
   elseif self:is("MAZE") then self:set_turing()
   elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
   end

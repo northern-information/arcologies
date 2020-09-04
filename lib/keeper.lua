@@ -31,7 +31,7 @@ function keeper:collision(signal, cell)
   elseif not self:are_signal_and_port_compatible(signal, cell) then
     -- empty
 
-  -- these don't allow signlas in
+  -- these don't allow signals in
   elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") or cell:is("RAVE") then
     -- empty
 

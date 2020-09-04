@@ -71,14 +71,18 @@ docs.sheets["DOME"] = {
   "Emits signals in",
   "Euclidian rhythms",
   "Metabolism=steps",
-  "Pulses = beats."
+  "Pulses = beats.",
+  "Loops to fill",
+  "total length."
 }
 
 docs.sheets["MAZE"] = {
   "Emits signals like",
   "a hive but via",
   "an analog shift",
-  "register algo."
+  "register algo.",
+  "Loops to fill",
+  "total length."
 }
 
 docs.sheets["CRYPT"] = {
