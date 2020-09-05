@@ -247,6 +247,7 @@ function fn.seed_cells()
     sound:set_random_root()
     sound:set_random_scale()
     params:set("bpm", math.random(100, 160))
+    counters.music.generation = 0
     for i = 1, params:get("seed_cell_count") do
       fn.random_cell()
     end
