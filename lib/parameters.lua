@@ -16,6 +16,15 @@ function parameters.init()
   }
   params:hide("bpm")
 
+  -- params:add_option("clock", "CLOCK SOURCE", {"INTERNAL", "EXTERNAL"}, clk.external or 2 and 1)
+  -- params:set_action("clock", function(x) clk:clock_source_change(x) end)
+
+  -- params:add_number("bpm", "BPM", 20, 480, clk.bpm)
+  -- params:set_action("bpm", function(x) clk:bpm_change(x) parameters.bpm_to_seconds = 60 / x end)
+
+  -- params:add_option("clock_out", "CLOCK OUT", { "DISALBED", "ENABLED" }, clk.send or 2 and 1)
+  -- params:set_action("clock_out", function(x) if x == 1 then clk.send = false else clk.send = true end end)
+
 
 
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
