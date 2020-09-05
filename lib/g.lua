@@ -115,7 +115,7 @@ function g:short_press(x, y)
       if keeper.selected_cell.index == fn.index(x, y) then
         keeper:deselect_cell()
       -- toggle a port
-      elseif keeper.selected_cell:find_port(x, y) then
+      elseif keeper.selected_cell:find_port(x, y) and not self.is_copying then
         keeper.selected_cell:toggle_port(x, y)
         local port = keeper.selected_cell:find_port(x, y)
         graphics:set_message("TOGGLED " .. string.upper(port[3]) .. " PORT")
@@ -239,7 +239,7 @@ function g:led_paste_animation()
 end
 
 function g:led_cell_ports()
-  if not keeper.is_cell_selected then return end
+  if not keeper.is_cell_selected or self.is_copying then return end
   local x = keeper.selected_cell_x
   local y = keeper.selected_cell_y
   local high = util.clamp(counters.grid_frame() % 15, 10, 15)
