@@ -12,8 +12,8 @@ function filesystem.init()
   end
   -- crypt(s)
   filesystem.crypts_names = { config.settings.crypt_default_name }
-  filesystem.default = filesystem.paths.crypt_path
-  filesystem.current = filesystem.default
+  filesystem.crypt_default_path = filesystem.paths.crypt_path
+  filesystem.current = filesystem.crypt_default_path
   filesystem:scan_crypts()
 end
 
@@ -59,16 +59,22 @@ function filesystem:scan_crypts()
   end
 end
 
-
 function filesystem:set_crypt(index)
   if index == 1 then
-    self.current = self.default
+    self.current = self.crypt_default_path
+    self.crypt_name = "DEFAULT"
   else
     self.current = self.paths.crypts_path .. self.crypts_names[index] .. "/"
+    self.crypt_name = self.crypts_names[index]
   end
   if init_done then
     keeper:update_all_crypts()
   end
+end
+
+function filesystem:load_crypt_by_name(name)
+  local result = fn.table_find(self.crypts_names, name)
+  params:set("crypts_directory", result or 1)
 end
 
 function filesystem:get_crypt()

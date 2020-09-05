@@ -24,6 +24,7 @@ function fn.collect_data_for_save(name)
     root = sound.root,
     scale = sound.scale,
     counters_music_generation = counters.music.generation,
+    crypt_name = filesystem.crypt_name,
     keeper_cells = {},
     keeper_signals = {}
   }
@@ -44,6 +45,7 @@ function fn.load(data)
     sound.root = data.root
     sound:set_scale(data.scale)
     counters.music.generation = data.counters_music_generation
+    filesystem:load_crypt_by_name(data.crypt_name)
     keeper.init()
     for k, load_cell in pairs(data.keeper_cells) do
       local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
