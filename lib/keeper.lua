@@ -1,4 +1,4 @@
-local keeper = {}
+keeper = {}
 
 -- see counters.conductor() for how things are orchestrated
 

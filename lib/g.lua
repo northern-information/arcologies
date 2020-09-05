@@ -1,4 +1,4 @@
-local g = grid.connect()
+g = grid.connect()
 
 function g.init()
   g.counter = {}

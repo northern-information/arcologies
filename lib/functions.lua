@@ -1,4 +1,4 @@
-local fn = {}
+fn = {}
 
 -- state checks, utilities, and formatters
 

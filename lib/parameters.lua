@@ -1,4 +1,4 @@
-local parameters = {}
+parameters = {}
 
 function parameters.init()
   params:add_separator("- A R C O L O G I E S -")

@@ -1,4 +1,4 @@
-local graphics = {}
+graphics = {}
 
 function graphics.init()
   graphics.temporary_message_on = false

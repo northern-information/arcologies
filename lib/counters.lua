@@ -1,4 +1,4 @@
-local counters = {}
+counters = {}
 
 function counters.init()
   counters.message = 0

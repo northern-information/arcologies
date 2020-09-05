@@ -1,4 +1,4 @@
-local menu = {}
+menu = {}
 
 function menu.init()
   menu.threshold = 6

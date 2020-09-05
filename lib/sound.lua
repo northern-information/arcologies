@@ -1,4 +1,4 @@
-local sound = {}
+sound = {}
 
 function sound.init()
   sound.length = config.settings.length

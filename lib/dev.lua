@@ -1,4 +1,4 @@
-local dev = {}
+dev = {}
 
 function rerun(option)
   if option == 1 then
