@@ -167,7 +167,7 @@ function graphics:time(x, y)
   end
 
   -- no selected cell, no soup
-  if not keeper.is_cell_selected then return end
+  if not keeper.is_cell_selected or meta == 0 then return end
 
   local steps = {}
       if keeper.selected_cell:is("HIVE") then steps = keeper.selected_cell:get_metabolism_steps()
