@@ -16,6 +16,7 @@ include("arcologies/lib/includes")
 
 function init()
   audio:pitch_off()
+  dev.init()
   filesystem.init()
   parameters.init()
   fn.init()

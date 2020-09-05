@@ -1,5 +1,55 @@
 dev = {}
 
+-- local osc_vel  = nil
+-- local osc_note = nil 
+
+-- clk = bc.new()
+-- clk_midi = midi.connect()
+-- clk_midi.event = clk.process_midi
+
+-- function dev.init()
+--   -- osc.event = osc_in
+
+--   clk.on_step = function() print("step") end
+--   clk.on_select_internal = function() clk:start() end
+--   clk.on_select_external = function() print("external") end
+--   -- clk:add_clock_params()
+--   clk:start()
+-- end
+
+
+-- function osc_in(path, args, from)
+  
+--   if string.find(path, 'Velocity') ~= nil then
+--     osc_vel  = args[1]    -- Ableton Connection Kit sends velocity before note, so we
+--     osc_note = nil        -- 1. Erase previous note upon receiving new velocity.
+  
+--   elseif string.find(path, 'Note') ~= nil then
+--     osc_note = args[1]    -- 2. Update note value upon receiving it.
+  
+--   end
+
+--   if osc_note ~= nil then -- 3. Trigger a complete note.
+    
+--     -- Note on
+--     if osc_vel > 0 then
+--       note_on(osc_vel, osc_note / 127)
+    
+--     -- Note off
+--     else                    
+--       note_off(osc_note) -- Note off
+
+--     end
+
+--   end
+
+-- end
+
+
+
+
+
+
 function rerun(option)
   if option == 1 then
     print("option 1")
