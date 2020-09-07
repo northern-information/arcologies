@@ -37,4 +37,15 @@ function m:register_note(note, device, duration)
   table.insert(self.notes, n)
 end
 
+function m:cleanup()
+  for i = 1, 127 do
+    for d = 1, 4 do
+      m.devices[d]:note_off(i)
+    end
+  end
+  for i = 1, 4 do
+    m.devices[i]:disconnect()
+  end
+end
+
 return m

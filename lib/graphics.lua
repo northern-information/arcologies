@@ -187,10 +187,11 @@ function graphics:time(x, y)
   if not keeper.is_cell_selected or meta == 0 then return end
 
   local steps = {}
-      if keeper.selected_cell:is("HIVE") then steps = keeper.selected_cell:get_metabolism_steps()
-  elseif keeper.selected_cell:is("RAVE") then steps = keeper.selected_cell:get_metabolism_steps()
-  elseif keeper.selected_cell:is("DOME") then steps = fn.deep_copy(keeper.selected_cell.er)
-  elseif keeper.selected_cell:is("MAZE") then steps = fn.deep_copy(keeper.selected_cell.turing)
+      if keeper.selected_cell:is("HIVE")   then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("RAVE")   then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("MIRAGE") then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("DOME")   then steps = fn.deep_copy(keeper.selected_cell.er)
+  elseif keeper.selected_cell:is("MAZE")   then steps = fn.deep_copy(keeper.selected_cell.turing)
   end
 
   -- no steps, no soup

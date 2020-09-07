@@ -78,6 +78,11 @@ function keeper:collision(signal, cell)
   elseif cell:is("VALE") then
     sound:play(sound:get_random_note(cell.range_min / 100, cell.range_max / 100), cell.velocity)
 
+  -- autons cycle through notes on jf
+  elseif cell:is("AUTON") then
+    c:jf(cell.notes[cell.state_index], cell.duration)
+    cell:cycle_state_index(1)
+
   end
 
   --[[ the below structures reroute & split
@@ -91,7 +96,10 @@ function keeper:collision(signal, cell)
   or cell:is("UXB")
   or cell:is("CASINO")
   or cell:is("AVIARY")
-  or cell:is("FOREST") then
+  or cell:is("FOREST")
+  or cell:is("HYDROPONICS")
+  or cell:is("MIRAGE")
+  or cell:is("AUTON") then
     for k, port in pairs(cell.ports) do
           if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
       elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")

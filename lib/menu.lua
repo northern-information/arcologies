@@ -31,7 +31,7 @@ function menu:render(bool)
       if item ~= nil then
         local value = keeper.selected_cell:get_menu_value_by_attribute(item)
         if value ~= nil then
-          if (keeper.selected_cell:is("TOPIARY") or keeper.selected_cell:is("CASINO") or keeper.selected_cell:is("FOREST"))
+          if (keeper.selected_cell:is("TOPIARY") or keeper.selected_cell:is("CASINO") or keeper.selected_cell:is("FOREST") or keeper.selected_cell:is("AUTON"))
             and string.find(self.items[i], "NOTE")
             and string.find(self.items[i], keeper.selected_cell.state_index) then
             graphics:text(56, offset, "> " .. value, 0)
@@ -42,6 +42,8 @@ function menu:render(bool)
             graphics:text(56, offset, value .. "%", 0)
           elseif self.items[i] == "CROW OUT"  then
             graphics:text(56, offset, (value == 1 and "1/2" or "3/4"), 0)
+          elseif self.items[i] == "DRIFT"  then
+            graphics:text(56, offset, keeper.selected_cell:get_drift_value(), 0)
           elseif self.items[i] ~= "STRUCTURE" then
             graphics:text(56, offset, value, 0)
           end
@@ -85,12 +87,12 @@ function menu:scroll_value(d)
     elseif s == "CAPACITY"     then keeper.selected_cell:set_capacity(keeper.selected_cell.capacity + d)
     elseif s == "CHARGE"       then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
     elseif s == "CROW OUT"     then keeper.selected_cell:set_crow_out(keeper.selected_cell.crow_out + d)
-    elseif s == "CRUMBLE"      then keeper.selected_cell:set_crumble(keeper.selected_cell.set_crumble + d)
-    elseif s == "DEFLECT"      then keeper.selected_cell:set_deflect(keeper.selected_cell.set_deflect + d)
-    elseif s == "DEPRECIATE" then keeper.selected_cell:set_depreciate(keeper.selected_cell.set_depreciate + d)
+    elseif s == "CRUMBLE"      then keeper.selected_cell:set_crumble(keeper.selected_cell.crumble + d)
+    elseif s == "DEFLECT"      then keeper.selected_cell:set_deflect(keeper.selected_cell.deflect + d)
+    elseif s == "DEPRECIATE" then keeper.selected_cell:set_depreciate(keeper.selected_cell.depreciate + d)
     elseif s == "DEVICE"       then keeper.selected_cell:set_device(keeper.selected_cell.device + d)
     elseif s == "DOCS"         then -- selecting docs automatically toggles them on
-    elseif s == "DRFIT"        then keeper.selected_cell:set_drift(keeper.selected_cell.set_drift + d)
+    elseif s == "DRIFT"        then keeper.selected_cell:set_drift(keeper.selected_cell.drift + d)
     elseif s == "DURATION"     then keeper.selected_cell:set_duration(keeper.selected_cell.duration + d)
     elseif s == "INDEX"        then keeper.selected_cell:cycle_state_index(d)
     elseif s == "INTEREST"     then keeper.selected_cell:set_interest(keeper.selected_cell.interest + d)

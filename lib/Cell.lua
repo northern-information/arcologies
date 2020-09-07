@@ -158,7 +158,7 @@ function Cell:change_checks()
   self:set_max_state_index(max_state_index)
       if self:is("DOME") then self:set_er()
   elseif self:is("SHRINE") then self:setup_notes(1)
-  elseif self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") then self:setup_notes(8)
+  elseif self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") or self:is("AUTON") then self:setup_notes(8)
   elseif self:is("CRYPT") then
     self:set_state_index(1) 
     self:cycle_state_index(0)
@@ -174,11 +174,15 @@ function Cell:is_spawning()
   elseif self:is("SOLARIUM") and self.flag then
     return true
   elseif self:is("HIVE") or self:is("RAVE") then
-    if self.metabolism == 0 then
-      return false
-    else
-      return (((counters.this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
-    end
+    return self:inverted_metabolism_check()
+  end
+end
+
+function Cell:inverted_metabolism_check()
+  if self.metabolism == 0 then
+    return false
+  else
+    return (((counters.this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
   end
 end
 
@@ -187,6 +191,7 @@ function Cell:setup()
       if self:is("RAVE") and self:is_spawning() then self:drugs()
   elseif self:is("MAZE") then self:set_turing()
   elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
+  elseif self:is("MIRAGE") then self:shall_we_drift_today()
   end
 end
 
@@ -196,6 +201,30 @@ function Cell:teardown()
     self:invert_ports()
   end
 end
+
+-- for mirages
+function Cell:shall_we_drift_today()
+  if not self:inverted_metabolism_check() then return end
+      if self.drift == 1 then self:move(fn.coin() == 0 and "n" or "s")
+  elseif self.drift == 2 then self:move(fn.coin() == 0 and "e" or "w")
+  elseif self.drift == 3 then self:move(self.cardinals[math.random(1, 4)])
+  end
+end
+
+function Cell:move(direction)
+  if not fn.table_find(self.cardinals, direction) then return end
+      if direction == "n" and fn.is_cell_vacant(self.x, self.y - 1) then self.y = self.y - 1
+  elseif direction == "s" and fn.is_cell_vacant(self.x, self.y + 1) then self.y = self.y + 1
+  elseif direction == "e"  and fn.is_cell_vacant(self.x + 1, self.y) then self.x = self.x + 1
+  elseif direction == "w"  and fn.is_cell_vacant(self.x - 1, self.y) then self.x = self.x - 1
+  end
+  self.index = fn.index(self.x, self.y)
+  self:set_available_ports()
+  if keeper.selected_cell_id == self.id then
+    keeper:select_cell(self.x, self.y)
+  end
+end
+
 
 -- for solariums
 function Cell:compare_capacity_and_charge()
@@ -237,7 +266,7 @@ function Cell:menu_items()
       table.remove(items, note_position)
       if self:is("SHRINE") or self:is("UXB") or self:is("AVIARY")  or self:is("VALE") then
         table.insert(items, note_position, "NOTE")
-      elseif  self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") then
+      elseif  self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") or self:is("AUTON") then
         local notes_submenu_items = self:get_notes_submenu_items()
         for i = 1, self.note_count do
           table.insert(items, note_position + (i - 1), notes_submenu_items[i]["menu_item"])

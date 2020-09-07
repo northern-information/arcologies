@@ -234,13 +234,32 @@ end
 
 -- the lost souls
 
+function fn.is_cell_vacant(x, y)
+  if not fn.in_bounds(x, y) then
+    return false
+  end
+  local check_index = fn.index(x, y)
+  for k, cell in pairs(keeper.cells) do
+    if check_index == cell.index then
+      return false
+    end
+  end
+  return true
+end
+
 function fn.cleanup()
   g.all(0)
-  crow.clear()
-  crow.reset()
-  m:cleanup()
-  for i = 1, 4 do m.devices[i]:disconnect() end
   poll:clear_all()
+  if config.outputs.midi then
+    m:cleanup()
+  end
+  if config.outputs.crow then
+    crow.clear()
+    crow.reset()
+  end
+  if config.outputs.jf then
+    crow.ii.jf.mode(0)
+  end
 end
 
 function fn.seed_cells()
