@@ -24,6 +24,11 @@ function parameters.init()
     min = 0.5, max = 4.0, default = 0.5,
   }
 
+  parameters.is_designer_jump_on = true
+  params:add_option("designer_jump", "DESIGNER JUMP", {"ENABLED", "DISABLED"})
+  params:set_action("designer_jump", function(index) parameters.is_designer_jump_on = index == 1 and true or false end)
+
+
   parameters.is_splash_screen_on = true
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})
   params:set_action("splash_screen", function(index) parameters.is_splash_screen_on = index == 1 and true or false end)

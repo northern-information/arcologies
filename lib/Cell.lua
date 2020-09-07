@@ -13,43 +13,63 @@ function Cell:new(x, y, g)
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
+  amortize_trait.init(self)
   capacity_trait.init(self)
   charge_trait.init(self)
+  crumble_trait.init(self)
   crow_out_trait.init(self)
+  deflect_trait.init(self)
+  depreciate_trait.init(self)
   device_trait.init(self)
+  drift_trait.init(self)
   duration_trait.init(self)
+  interest_trait.init(self)
   er_trait.init(self)
   level_trait.init(self)
   metabolism_trait.init(self)
+  net_income_trait.init(self)
   network_trait.init(self)
   notes_trait.init(self)
   offset_trait.init(self)
+  operator_trait.init(self)
   ports_trait.init(self)
   probability_trait.init(self)
   pulses_trait.init(self)
   range_trait.init(self)
   state_index_trait.init(self)
+  taxes_trait.init(self)
+  territory_trait.init(self)
   turing_trait.init(self)
   velocity_trait.init(self)
   --[[ walk softly and carry a big stick
        aka measure twice cut once
        aka shit got spooky when i had params floating the init()s ]]
+  c.setup_amortize(c)
   c.setup_capacity(c)
   c.setup_charge(c)
   c.setup_crow_out(c)
+  c.setup_crumble(c)
+  c.setup_deflect(c)
+  c.setup_depreciate(c)
   c.setup_device(c)
+  c.setup_drift(c)
   c.setup_duration(c)
   c.setup_er(c)
+  c.setup_interest(c)
   c.setup_level(c)
   c.setup_metabolism(c)
+  c.setup_net_income(c)
   c.setup_network(c)
   c.setup_notes(c)
   c.setup_offset(c)
+  c.setup_operator(c)
   c.setup_ports(c)
   c.setup_probability(c)
   c.setup_pulses(c)
   c.setup_range(c)
   c.setup_state_index(c)
+  c.setup_taxes(c)
+  c.setup_territory(c)
   c.setup_turing(c)
   c.setup_velocity(c)
   return c
@@ -57,31 +77,41 @@ end
 
 -- todo: shame. there's gotta be a better way to do this
 function Cell:get_menu_value_by_attribute(a)
-      if a == "CAPACITY"    then return self.capacity
-  elseif a == "CHARGE"      then return self.charge
-  elseif a == "CROW OUT"    then return self.crow_out
-  elseif a == "DEVICE"      then return self.device
-  elseif a == "DURATION"    then return self.duration
-  elseif a == "INDEX"       then return self.state_index
-  elseif a == "LEVEL"       then return self.level
-  elseif a == "METABOLISM"  then return self.metabolism
-  elseif a == "NETWORK"     then return self.network_value
-  elseif a == "NOTE"        then return self:get_note_name(1) -- "i'm the same as #1!?!"
-  elseif a == "NOTE #1"     then return self:get_note_name(1) -- "always have been."
-  elseif a == "NOTE #2"     then return self:get_note_name(2)
-  elseif a == "NOTE #3"     then return self:get_note_name(3)
-  elseif a == "NOTE #4"     then return self:get_note_name(4)
-  elseif a == "NOTE #5"     then return self:get_note_name(5)
-  elseif a == "NOTE #6"     then return self:get_note_name(6)
-  elseif a == "NOTE #7"     then return self:get_note_name(7)
-  elseif a == "NOTE #8"     then return self:get_note_name(8)
-  elseif a == "OFFSET"      then return self.offset
-  elseif a == "PROBABILITY" then return self.probability
-  elseif a == "PULSES"      then return self.pulses
-  elseif a == "RANGE MAX"   then return self.range_max
-  elseif a == "RANGE MIN"   then return self.range_min
-  elseif a == "STRUCTURE"   then return self.structure_value
-  elseif a == "VELOCITY"    then return self.velocity
+      if a == "AMORTIZE" then return self.amortize
+  elseif a == "CAPACITY"     then return self.capacity
+  elseif a == "CHARGE"       then return self.charge
+  elseif a == "CRUMBLE"      then return self.crumble
+  elseif a == "CROW OUT"     then return self.crow_out
+  elseif a == "DEFLECT"      then return self.deflect
+  elseif a == "DEPRECIATE" then return self.depreciate
+  elseif a == "DEVICE"       then return self.device
+  elseif a == "DRIFT"        then return self.drift
+  elseif a == "DURATION"     then return self.duration
+  elseif a == "INDEX"        then return self.state_index
+  elseif a == "INTEREST"     then return self.interest
+  elseif a == "LEVEL"        then return self.level
+  elseif a == "METABOLISM"   then return self.metabolism
+  elseif a == "NETWORK"      then return self.network_value
+  elseif a == "NET INCOME"   then return self.net_income
+  elseif a == "NOTE"         then return self:get_note_name(1) -- "i'm the same as #1!?!"
+  elseif a == "NOTE #1"      then return self:get_note_name(1) -- "always have been."
+  elseif a == "NOTE #2"      then return self:get_note_name(2)
+  elseif a == "NOTE #3"      then return self:get_note_name(3)
+  elseif a == "NOTE #4"      then return self:get_note_name(4)
+  elseif a == "NOTE #5"      then return self:get_note_name(5)
+  elseif a == "NOTE #6"      then return self:get_note_name(6)
+  elseif a == "NOTE #7"      then return self:get_note_name(7)
+  elseif a == "NOTE #8"      then return self:get_note_name(8)
+  elseif a == "OFFSET"       then return self.offset
+  elseif a == "OPERATOR"     then return self.operator
+  elseif a == "PROBABILITY"  then return self.probability
+  elseif a == "PULSES"       then return self.pulses
+  elseif a == "RANGE MAX"    then return self.range_max
+  elseif a == "RANGE MIN"    then return self.range_min
+  elseif a == "STRUCTURE"    then return self.structure_value
+  elseif a == "TAXES"        then return self.taxes
+  elseif a == "TERRITORY"    then return self.territory
+  elseif a == "VELOCITY"     then return self.velocity
   end
 end
 

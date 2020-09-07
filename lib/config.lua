@@ -53,7 +53,12 @@ config["structures"] = {
   "CASINO",
   "TUNNEL",
   "AVIARY",
-  "FOREST"
+  "FOREST",
+  "HYDROPONICS",
+  "INSTITUTION",
+  "MIRAGE",
+  "BANK",
+  "AUTON"
 }
 
 config["analysis_items"] = {
@@ -64,19 +69,31 @@ for k,v in pairs(config["structures"]) do
 end
 
 config["attributes"] = {
+  "AMORTIZE", -- new
   "CAPACITY",
   "CHARGE",
+  "CROW OUT",
+  "CRUMBLE", -- new
+  "DEFLECT", -- new
+  "DEPRECIATE", -- new
   "DOCS",
+  "DRIFT", --new
   "DURATION",
   "INDEX",
+  "INTEREST", -- new
+  "LEVEL",
   "METABOLISM",
+  "NET INCOME", -- new
   "NETWORK",
   "NOTES",
   "OFFSET",
+  "OPERATOR", -- new
   "PULSES",
   "RANGE MAX",
   "RANGE MIN",
   "STRUCTURE",
+  "TAXES", -- new
+  "TERRITORY", -- new
   "VELOCITY"
 }
 
@@ -176,6 +193,40 @@ config["structure_attribute_map"] = {
     "INDEX",
     "NOTES",
     "CROW OUT",
+    "DOCS",
+    "STRUCTURE"
+  },
+  ["HYDROPONICS"] = {
+    "METABOLISM",
+    "OPERATOR",
+    "TERRITORY",
+    "DOCS",
+    "STRUCTURE"
+  },
+  ["INSTITUTION"] = {
+    "CRUMBLE",
+    "DEFLECT",
+    "DOCS",
+    "STRUCTURE"
+  },
+  ["MIRAGE"] = {
+    "METABOLISM",
+    "DRIFT",
+    "DOCS",
+    "STRUCTURE"
+  },
+  ["BANK"] = {
+    "NET INCOME",
+    "INTEREST",
+    "TAXES",
+    "DEPRECIATE",
+    "AMORTIZE",
+    "DOCS",
+    "STRUCTURE"
+  },
+  ["AUTON"] = {
+    "INDEX",
+    "NOTES",
     "DOCS",
     "STRUCTURE"
   }

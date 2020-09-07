@@ -108,7 +108,9 @@ function g:short_press(x, y)
     -- no cell is selected, so select one
     if not keeper.is_cell_selected then
       keeper:select_cell(x, y)
-      page:select(2, "STRUCTURE")
+      if parameters.is_designer_jump_on then
+        page:select(2, "STRUCTURE")
+      end
       graphics:top_message_cell_structure()
     else
       -- pressing the selected cell deselects it

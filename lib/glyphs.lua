@@ -24,8 +24,13 @@ function glyphs:random(x, y, l, jitter)
   elseif r == 12 then self:uxb(x, y, l)
   elseif r == 13 then self:casino(x, y, l)
   elseif r == 14 then self:tunnel(x, y, l)
-  elseif r == 15 then self:uxb(x, y, l)
-  elseif r == 16 then self:casino(x, y, l)
+  elseif r == 15 then self:aviary(x, y, l)
+  elseif r == 16 then self:forest(x, y, l)
+  elseif r == 17 then self:hydroponics(x, y, l)
+  elseif r == 18 then self:institution(x, y, l)
+  elseif r == 19 then self:mirage(x, y, l)
+  elseif r == 20 then self:bank(x, y, l)
+  elseif r == 21 then self:auton(x, y, l)
   end
 end
 
@@ -49,8 +54,13 @@ function glyphs:small_random(x, y, l, jitter)
   elseif r == 12 then self:small_uxb(x, y, l)
   elseif r == 13 then self:small_casino(x, y, l)
   elseif r == 14 then self:small_tunnel(x, y, l)
-  elseif r == 15 then self:small_uxb(x, y, l)
-  elseif r == 16 then self:small_casino(x, y, l)
+  elseif r == 15 then self:small_aviary(x, y, l)
+  elseif r == 16 then self:small_forest(x, y, l)
+  elseif r == 17 then self:small_hydroponics(x, y, l)
+  elseif r == 18 then self:small_institution(x, y, l)
+  elseif r == 19 then self:small_mirage(x, y, l)
+  elseif r == 20 then self:small_bank(x, y, l)
+  elseif r == 21 then self:small_auton(x, y, l)
   end
 end
 
@@ -78,7 +88,12 @@ function glyphs:test()
   -- self:casino(x, y, l)
   -- self:tunnel(x, y, l)
   -- self:aviary(x, y, l)
-  self:forest(x, y, l)
+  -- self:forest(x, y, l)
+  -- self:hydroponics(x, y, l)
+  -- self:institution(x, y, l)
+  -- self:mirage(x, y, l)
+  -- self:bank(x, y, l)
+self:auton(x, y, l)
   
 
   -- self:small_cell(x+60, y, l)
@@ -96,7 +111,12 @@ function glyphs:test()
   -- self:small_casino(x+60, y, l)
   -- self:small_tunnel(x+60, y, l)
   -- self:small_aviary(x+60, y, l)
-  self:small_forest(x+60, y, l)
+  -- self:small_forest(x+60, y, l)
+  -- self:small_hydrozponics(x+60, y, l)
+  -- self:small_institution(x+60, y, l)
+  -- self:small_mirage(x+60, y, l)
+  -- self:small_bank(x+60, y, l)
+  self:small_auton(x+60, y, l)
 
 end
 
@@ -250,6 +270,58 @@ function glyphs:forest(x, y, l)
   self:three_quarter_right_wall(x, y, l)
 end
 
+function glyphs:hydroponics (x, y, l)
+  self:three_quarter_left_wall(x, y, l)
+  self:three_quarter_right_wall(x, y, l)
+  self:tunnel_left_wall(x, y, l)
+  self:tunnel_right_wall(x, y, l)
+  self:partial_roof(x, y, l)
+  self:partial_third_floor(x, y, l)
+  self:partial_second_floor(x, y, l)
+  self:partial_floor(x, y, l)
+  graphics:rect(x-5, y+12, 2, 14, l)
+  graphics:rect(x+10, y+20, 2, 6, l)
+  graphics:rect(x+25, y+12, 2, 14, l)
+end
+
+function glyphs:institution(x, y, l)
+  self:foundation(x, y, l)
+  graphics:rect(x, y-2, 2, 8, l)
+  graphics:rect(x, y+4, 12, 2, l)
+  graphics:rect(x+10, y+4, 2, 12, l)
+  graphics:rect(x+10, y+14, 12, 2, l)
+  graphics:rect(x+20, y+16, 2, 10, l)
+  graphics:rect(x+20, y-2, 2, 10, l)
+  graphics:rect(x, y+14, 2, 12, l)
+end
+
+
+function glyphs:mirage(x, y, l)
+  graphics:rect(x+12, y, 10, 2, l)
+  graphics:rect(x+8, y+6, 8, 2, l)
+  graphics:rect(x+12, y+12, 13, 2, l)
+  self:floor(x, y, l)
+  self:foundation(x, y, l)
+end
+
+function glyphs:bank(x, y, l)
+  self:cell(x, y, l)
+  graphics:rect(x+6, y+6, 10, 2, l)
+  graphics:rect(x+5, y+18, 2, 8, l)
+  graphics:rect(x+5, y+18, 2, 8, l)
+  graphics:rect(x+10, y+18, 2, 8, l)
+  graphics:rect(x+15, y+18, 2, 8, l)
+end
+
+function glyphs:auton(x, y, l)
+  self:roof(x, y, l)
+  self:left_wall(x, y, l)
+  self:right_wall(x, y, l)
+  graphics:rect(x, y+12, 8, 2, l)
+  graphics:rect(x+14, y+12, 8, 2, l)
+  graphics:rect(x+8, y+18, 6, 2, l)
+end
+
 -- full-size glyph components
 
 function glyphs:left_wall(x, y, l)
@@ -313,8 +385,16 @@ function glyphs:third_floor(x, y, l)
   graphics:rect(x, y+6, 22, 2, l)
 end
 
+function glyphs:partial_third_floor(x, y, l)
+  graphics:rect(x+5, y+6, 12, 2, l)
+end
+
 function glyphs:second_floor(x, y, l)
   graphics:rect(x, y+12, 22, 2, l)
+end
+
+function glyphs:partial_second_floor(x, y, l)
+  graphics:rect(x+5, y+12, 12, 2, l)
 end
 
 function glyphs:floor(x, y, l)
@@ -515,6 +595,55 @@ function glyphs:small_forest(x, y, l)
   graphics:mlrs(x+1, y+6, 1, 2, l)
   graphics:mlrs(x+3, y+4, 1, 3, l)
   self:small_three_quarter_right_wall(x, y, l)
+end
+
+function glyphs:small_hydroponics(x, y, l)
+  self:small_tunnel_left_wall(x-1, y, l)
+  self:small_tunnel_right_wall(x+1, y, l)
+  graphics:mls(x+1, y, x+4, y, l)
+  graphics:mls(x+1, y+2, x+4, y+2, l)
+  graphics:mls(x+1, y+4, x+4, y+4, l)
+  graphics:mls(x+1, y+6, x+4, y+6, l)
+  graphics:mls(x+3, y+6, x+3, y+8, l)
+  graphics:mls(x-1, y+1, x-1, y+8, l)
+  graphics:mls(x+7, y+1, x+7, y+8, l)
+  graphics:mls(x-3, y+4, x-3, y+8, l)
+  graphics:mls(x+9, y+4, x+9, y+8, l)
+end
+
+function glyphs:small_institution(x, y, l)
+  self:small_foundation(x, y, l)
+  graphics:mlrs(x-1, y-1, 1, 3, l)
+  graphics:mlrs(x-1, y+1, 4, 1, l)
+  graphics:mlrs(x+2, y+1, 1, 4, l)
+  graphics:mlrs(x+2, y+4, 4, 1, l)
+  graphics:mlrs(x+5, y+4, 1, 4, l)
+  graphics:mlrs(x+5, y-1, 1, 3, l)
+  graphics:mlrs(x-1, y+4, 1, 3, l)
+end
+
+function glyphs:small_mirage(x, y, l)
+  graphics:mls(x+3, y, x+6, y, l)
+  graphics:mls(x+1, y+2, x+4, y+2, l)
+  graphics:mls(x+3, y+4, x+7, y+4, l)
+  self:small_floor(x, y, l)
+  self:small_foundation(x, y, l)
+end
+
+function glyphs:small_bank(x, y, l)
+  self:small_cell(x, y, l)
+  graphics:mls(x+1, y+2, x+4, y+2, l)
+  graphics:mlrs(x+1, y+6, 1, 2, l)
+  graphics:mlrs(x+3, y+6, 1, 2, l)
+end
+
+function glyphs:small_auton(x, y, l)
+  self:small_roof(x, y, l)
+  self:small_left_wall(x, y, l)
+  self:small_right_wall(x, y, l)
+  graphics:mls(x, y+4, x+2, y+4, l)
+  graphics:mls(x+3, y+4, x+6, y+4, l)
+  graphics:mls(x+1, y+6, x+4, y+6, l)
 end
 
 -- small components

@@ -22,31 +22,36 @@ function graphics:structure_and_title(s)
     local x = self.structure_x
     local y = self.structure_y
     local l = 0
-        if s == "AVIARY"   then glyphs:aviary(x, y, l)
-    elseif s == "CASINO"   then glyphs:casino(x, y, l)    
-    elseif s == "CRYPT"    then glyphs:crypt(x, y, l)
-    elseif s == "DOME"     then glyphs:dome(x, y, l)
-    elseif s == "FOREST"   then glyphs:forest(x, y, l)
-    elseif s == "GATE"     then glyphs:gate(x, y, l)
-    elseif s == "HIVE"     then glyphs:hive(x, y, l)
-    elseif s == "MAZE"     then glyphs:maze(x, y, l)
-    elseif s == "RAVE"     then glyphs:rave(x, y, l)
-    elseif s == "SHRINE"   then glyphs:shrine(x, y, l)
-    elseif s == "SOLARIUM" then glyphs:solarium(x, y, l)
-    elseif s == "TOPIARY"  then glyphs:topiary(x, y, l)
-    elseif s == "TUNNEL"   then glyphs:tunnel(x, y, l)
-    elseif s == "UXB"      then glyphs:uxb(x, y, l)
-    elseif s == "VALE"     then glyphs:vale(x, y, l)
+        if s == "AUTON"          then glyphs:auton(x, y, l)
+    elseif s == "AVIARY"        then glyphs:aviary(x, y, l)
+    elseif s == "BANK"          then glyphs:bank(x, y, l)    
+    elseif s == "CASINO"        then glyphs:casino(x, y, l)    
+    elseif s == "CRYPT"         then glyphs:crypt(x, y, l)
+    elseif s == "DOME"          then glyphs:dome(x, y, l)
+    elseif s == "FOREST"        then glyphs:forest(x, y, l)
+    elseif s == "GATE"          then glyphs:gate(x, y, l)
+    elseif s == "HIVE"          then glyphs:hive(x, y, l)
+    elseif s == "HYDROPONICS"   then glyphs:hydroponics(x, y, l)
+    elseif s == "INSTITUTION"    then glyphs:institution(x, y, l)
+    elseif s == "MAZE"          then glyphs:maze(x, y, l)
+    elseif s == "MIRAGE"        then glyphs:mirage(x, y, l)
+    elseif s == "RAVE"          then glyphs:rave(x, y, l)
+    elseif s == "SHRINE"        then glyphs:shrine(x, y, l)
+    elseif s == "SOLARIUM"      then glyphs:solarium(x, y, l)
+    elseif s == "TOPIARY"       then glyphs:topiary(x, y, l)
+    elseif s == "TUNNEL"        then glyphs:tunnel(x, y, l)
+    elseif s == "UXB"           then glyphs:uxb(x, y, l)
+    elseif s == "VALE"          then glyphs:vale(x, y, l)
     end
 end
 
 function graphics:structure_palette(i)
   local start_x = 31
-  local start_y = 18
+  local start_y = 12
   local margin_x = 15
-  local margin_y = 15
+  local margin_y = 14
   local p = {}
-  for setup = 1, 15 do
+  for setup = 1, #config.structures do
       p[setup] = {
         selected = false,
         x = 0,
@@ -60,6 +65,7 @@ function graphics:structure_palette(i)
     -- call me hardcode kassidy
     if k >= 6 and k <= 10 then row = 2 end
     if k >= 11 and k <= 15 then row = 3 end
+    if k >= 16 and k <= 20 then row = 4 end
     p[k].y = start_y + (margin_y * (row - 1))
     col = k % 5
     col = col == 0 and 5 or col
@@ -70,57 +76,68 @@ function graphics:structure_palette(i)
   end
   
   -- row 1
-  glyphs:small_hive(      p[1].x,  p[1].y, p[1].selected  and 0 or 15)
-  glyphs:small_shrine(    p[2].x,  p[2].y, p[2].selected  and 0 or 15)
-  glyphs:small_gate(      p[3].x,  p[3].y, p[3].selected  and 0 or 15)
-  glyphs:small_rave(      p[4].x,  p[4].y, p[4].selected  and 0 or 15)
-  glyphs:small_topiary(   p[5].x,  p[5].y, p[5].selected  and 0 or 15)
+  glyphs:small_hive(          p[1].x,  p[1].y, p[1].selected  and 0 or 15)
+  glyphs:small_shrine(        p[2].x,  p[2].y, p[2].selected  and 0 or 15)
+  glyphs:small_gate(          p[3].x,  p[3].y, p[3].selected  and 0 or 15)
+  glyphs:small_rave(          p[4].x,  p[4].y, p[4].selected  and 0 or 15)
+  glyphs:small_topiary(       p[5].x,  p[5].y, p[5].selected  and 0 or 15)
   -- row 2 
-  glyphs:small_dome(      p[6].x,  p[6].y,  p[6].selected  and 0 or 15)
-  glyphs:small_maze(      p[7].x,  p[7].y,  p[7].selected  and 0 or 15)
-  glyphs:small_crypt(     p[8].x,  p[8].y,  p[8].selected  and 0 or 15)
-  glyphs:small_vale(      p[9].x,  p[9].y,  p[9].selected  and 0 or 15)
-  glyphs:small_solarium(  p[10].x, p[10].y, p[10].selected and 0 or 15)
+  glyphs:small_dome(          p[6].x,  p[6].y,  p[6].selected  and 0 or 15)
+  glyphs:small_maze(          p[7].x,  p[7].y,  p[7].selected  and 0 or 15)
+  glyphs:small_crypt(         p[8].x,  p[8].y,  p[8].selected  and 0 or 15)
+  glyphs:small_vale(          p[9].x,  p[9].y,  p[9].selected  and 0 or 15)
+  glyphs:small_solarium(      p[10].x, p[10].y, p[10].selected and 0 or 15)
   -- row 3
-  glyphs:small_uxb(       p[11].x, p[11].y, p[11].selected and 0 or 15)
-  glyphs:small_casino(    p[12].x, p[12].y, p[12].selected and 0 or 15)
-  glyphs:small_tunnel(    p[13].x, p[13].y, p[13].selected and 0 or 15)
-  glyphs:small_aviary(    p[14].x, p[14].y, p[14].selected and 0 or 15)
-  glyphs:small_forest(    p[15].x, p[15].y, p[15].selected and 0 or 15)
+  glyphs:small_uxb(           p[11].x, p[11].y, p[11].selected and 0 or 15)
+  glyphs:small_casino(        p[12].x, p[12].y, p[12].selected and 0 or 15)
+  glyphs:small_tunnel(        p[13].x, p[13].y, p[13].selected and 0 or 15)
+  glyphs:small_aviary(        p[14].x, p[14].y, p[14].selected and 0 or 15)
+  glyphs:small_forest(        p[15].x, p[15].y, p[15].selected and 0 or 15)
+  -- row 4
+  glyphs:small_hydroponics(   p[16].x, p[16].y, p[16].selected and 0 or 15)
+  glyphs:small_institution(   p[17].x, p[17].y, p[17].selected and 0 or 15)
+  glyphs:small_mirage(        p[18].x, p[18].y, p[18].selected and 0 or 15)
+  glyphs:small_bank(          p[19].x, p[19].y, p[19].selected and 0 or 15)
+  glyphs:small_auton(         p[20].x, p[20].y, p[20].selected and 0 or 15)
 end
 
 function graphics:structure_palette_analysis(s)
   local x = 10
   local y = 56
-  local margin = 1
-  local threshold = 9
+  local margin = 3
+  local threshold = 8
   local offset = s > threshold and s - threshold or 0
   local items = {}
 
   for i = 1, #config.analysis_items do
     local adjust = 0
     if s > threshold then
-      adjust = -12 * offset
+      adjust = -14 * offset
     end
-    items[i] = x + ((i - 1) * 12) + 3 + adjust
+    items[i] = x + ((i - 1) * 14) + margin + adjust
   end
 
-  glyphs:small_signal(   items[1],   y, s == 1 and 15 or 5)
-  glyphs:small_hive(     items[2],   y, s == 2 and 15 or 5)
-  glyphs:small_shrine(   items[3],   y, s == 3 and 15 or 5)
-  glyphs:small_gate(     items[4],   y, s == 4 and 15 or 5)
-  glyphs:small_rave(     items[5],   y, s == 5 and 15 or 5)
-  glyphs:small_topiary(  items[6],   y, s == 6 and 15 or 5)
-  glyphs:small_dome(     items[7],   y, s == 7 and 15 or 5)
-  glyphs:small_maze(     items[8],   y, s == 8 and 15 or 5)
-  glyphs:small_crypt(    items[9],   y, s == 9 and 15 or 5)
-  glyphs:small_vale(     items[10],  y, s == 10 and 15 or 5)
-  glyphs:small_solarium( items[11],  y, s == 11 and 15 or 5)
-  glyphs:small_uxb(      items[12],  y, s == 12 and 15 or 5)
-  glyphs:small_casino(   items[13],  y, s == 13 and 15 or 5)
-  glyphs:small_tunnel(   items[14],  y, s == 14 and 15 or 5)
-  glyphs:small_aviary(   items[15],  y, s == 15 and 15 or 5)
-  glyphs:small_forest(   items[16],  y, s == 16 and 15 or 5)
+  glyphs:small_signal(       items[1],   y, s == 1 and 15 or 5)
+  glyphs:small_hive(         items[2],   y, s == 2 and 15 or 5)
+  glyphs:small_shrine(       items[3],   y, s == 3 and 15 or 5)
+  glyphs:small_gate(         items[4],   y, s == 4 and 15 or 5)
+  glyphs:small_rave(         items[5],   y, s == 5 and 15 or 5)
+  glyphs:small_topiary(      items[6],   y, s == 6 and 15 or 5)
+  glyphs:small_dome(         items[7],   y, s == 7 and 15 or 5)
+  glyphs:small_maze(         items[8],   y, s == 8 and 15 or 5)
+  glyphs:small_crypt(        items[9],   y, s == 9 and 15 or 5)
+  glyphs:small_vale(         items[10],  y, s == 10 and 15 or 5)
+  glyphs:small_solarium(     items[11],  y, s == 11 and 15 or 5)
+  glyphs:small_uxb(          items[12],  y, s == 12 and 15 or 5)
+  glyphs:small_casino(       items[13],  y, s == 13 and 15 or 5)
+  glyphs:small_tunnel(       items[14],  y, s == 14 and 15 or 5)
+  glyphs:small_aviary(       items[15],  y, s == 15 and 15 or 5)
+  glyphs:small_forest(       items[16],  y, s == 16 and 15 or 5)
+  glyphs:small_hydroponics(  items[17],  y, s == 17 and 15 or 5)
+  glyphs:small_institution(  items[18],  y, s == 18 and 15 or 5)
+  glyphs:small_mirage(       items[19],  y, s == 19 and 15 or 5)
+  glyphs:small_bank(         items[20],  y, s == 20 and 15 or 5)
+  glyphs:small_auton(        items[21],  y, s == 21 and 15 or 5)
 
   -- cover the scroll
   graphics:rect(0, y-1, 10, 9, 0)
@@ -133,7 +150,7 @@ function graphics:structure_palette_analysis(s)
 
   -- pop ellipses to the right
   if s < #items then
-    graphics:analysis_ellipses(119, y)
+    graphics:analysis_ellipses(121, y)
   end
 
 end
@@ -446,18 +463,20 @@ function graphics:analysis(items, selected_item_key)
   end
 
   -- line graph
-  local line_graph_start_x = 54
-  local line_graph_start_y = 35
-  local line_graph_spacing = 3
+  -- disabled for v1.1.0 -- too many lines
+  local line_graph_start_x = 127
+  local line_graph_start_y = 10
+  local line_graph_spacing = 2
   local line_graph_x = 0
   local line_highlight = 0
+  self:mls(line_graph_start_x+1, line_graph_start_y, line_graph_start_x+1, (line_graph_start_y + (#chart.values * line_graph_spacing)), 1)
   for i = 1, #chart.values do
     if chart.values[i] ~= 0 then
-      line_highlight = (i == selected_item_key) and 15 or 1
-      line_graph_x = line_graph_start_x + ((i - 1) * line_graph_spacing)
+      line_highlight = (i == selected_item_key) and 5 or 1
+      line_graph_y = line_graph_start_y + ((i - 1) * line_graph_spacing)
       local this_line_percentage = chart.percentages[i] * 100
-      local this_height = util.round_up(math.floor(util.linlin(0, 100, 0, 20, this_line_percentage)), 1)
-      self:mlrs(line_graph_x, line_graph_start_y, 1, this_height, line_highlight)
+      local this_width = util.round_up(math.floor(util.linlin(0, 100, 0, 10, this_line_percentage)), 1)
+      self:mlrs(line_graph_start_x, line_graph_y, -this_width, 1, line_highlight)
     end
   end
 
@@ -489,16 +508,14 @@ function graphics:analysis(items, selected_item_key)
 
 
   -- more data
-  self:playback_icon(105, 10)
-  self:rect(105, 30, 23, 10, 1)
-  self:text_center(116, 38, counters.music.generation, 0)
-  self:rect(105, 42, 23, 10, 15)
-  self:text_center(116, 50, chart.values[selected_item_key], 0)
+  self:text(54, 50, chart.values[selected_item_key], 15)
+  self:text(74, 50, counters.this_beat(), 15)
+  self:text(94, 50, counters.music.generation, 15)
   fn.dirty_grid(true)
 end
 
 function graphics:draw_pixel(x, y, b)
-  local offset = { x = 52, y = 9, spacing = 3 }
+  local offset = { x = 50, y = 8, spacing = 4 }
   pidx = x + ((y - 1) * fn.grid_width())
   if self.analysis_pixels[pidx] > 0 then
     screen.stroke()
