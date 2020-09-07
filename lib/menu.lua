@@ -40,6 +40,16 @@ function menu:render(bool)
               or self.items[i] == "RANGE MIN"
               or self.items[i] == "RANGE MAX" then
             graphics:text(56, offset, value .. "%", 0)
+          elseif self.items[i] == "NET INCOME"  then
+            graphics:text(56, offset, ">" .. value .. ".0gDq", 0)
+          elseif self.items[i] == "INTEREST"  then
+            graphics:text(56, offset, "=" .. value .. "%(#7)", 0)
+          elseif self.items[i] == "TAXES"  then
+            graphics:text(56, offset,"<:" ..  value .. ":GdQ", 0)
+          elseif self.items[i] == "DEPRECIATE"  then
+            graphics:text(56, offset, value .. "0kVE", 0)
+          elseif self.items[i] == "AMORTIZE"  then
+            graphics:text(56, offset, value .. "99ll9c", 0)
           elseif self.items[i] == "CROW OUT"  then
             graphics:text(56, offset, (value == 1 and "1/2" or "3/4"), 0)
           elseif self.items[i] == "DRIFT"  then
@@ -89,7 +99,7 @@ function menu:scroll_value(d)
     elseif s == "CROW OUT"     then keeper.selected_cell:set_crow_out(keeper.selected_cell.crow_out + d)
     elseif s == "CRUMBLE"      then keeper.selected_cell:set_crumble(keeper.selected_cell.crumble + d)
     elseif s == "DEFLECT"      then keeper.selected_cell:set_deflect(keeper.selected_cell.deflect + d)
-    elseif s == "DEPRECIATE" then keeper.selected_cell:set_depreciate(keeper.selected_cell.depreciate + d)
+    elseif s == "DEPRECIATE"   then keeper.selected_cell:set_depreciate(keeper.selected_cell.depreciate + d)
     elseif s == "DEVICE"       then keeper.selected_cell:set_device(keeper.selected_cell.device + d)
     elseif s == "DOCS"         then -- selecting docs automatically toggles them on
     elseif s == "DRIFT"        then keeper.selected_cell:set_drift(keeper.selected_cell.drift + d)

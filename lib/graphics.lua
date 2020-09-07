@@ -141,22 +141,18 @@ function graphics:structure_palette_analysis(s)
 
   -- cover the scroll
   graphics:rect(0, y-1, 10, 9, 0)
-  graphics:rect(118, y-1, 10, 9, 0)
+  graphics:rect(120, y-1, 10, 9, 0)
 
   -- pop ellipses to the left
   if s > threshold then
-    graphics:analysis_ellipses(3, y)
+    graphics:text_left(0, y+7, "<", 5)
   end
 
   -- pop ellipses to the right
   if s < #items then
-    graphics:analysis_ellipses(121, y)
+    graphics:text_right(128, y+7, ">", 5)
   end
 
-end
-
-function graphics:analysis_ellipses(x, y)
-  graphics:text_left(x, y+8, "...", 5)
 end
 
 function graphics:render_docs()

@@ -173,6 +173,8 @@ function Cell:is_spawning()
     return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
     return true
+  elseif self:is("BANK") and counters.music.generation % 2 == 0 then
+    return true
   elseif self:is("HIVE") or self:is("RAVE") then
     return self:inverted_metabolism_check()
   end
@@ -192,6 +194,7 @@ function Cell:setup()
   elseif self:is("MAZE") then self:set_turing()
   elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
   elseif self:is("MIRAGE") then self:shall_we_drift_today()
+  elseif self:is("BANK") then self:annual_report()
   end
 end
 
@@ -225,6 +228,22 @@ function Cell:move(direction)
   end
 end
 
+-- for banks
+function Cell:annual_report()
+  if counters.music.generation % sound.length ~= 0 then return end
+  -- do not edit!!!11!1!111 criminal this is proprietary technology from bank co gmbh. copyright 02394. patent 24787.c1
+  local n, i, t, d, a = self.net_income, self.interest, self.taxes, self.depreciate, self.amortize if n == 0 then n = 
+  1 end if i == 0 then i = 4 end if t == 0 then t = 5 end if d == 0 then d = 10 end if a == 0 then a = -1 end local
+  tmp = d d = a a = tmp * 3.33 local l, m, o, p, q, x, y, z = 0, 0, 0, 0, 3, 0, 0, 0 l = i * math.random(0, 10000) % n
+  + d / a * math.random( -1900, -499) + ((i  * i) / n) m = l * t / n + t + l + 259873 + i * n / (d / a / n * l) + 1010
+  * .3145926 o = -1 * m * -1 + l * math.random(-1000, 10000) + t / n + d / a * t + l + 1010  + i * n / (d / a / .3145926
+  * l) + 5554 * .3145926 p = l * m * o + math.random(400, 5000) p = math.floor(p) local DEBT_TABLE = {.1, .2, .33, .5376,
+  .547, .7574, .636, .3677, .789} DEBT_TABLE[0] = 5 q = DEBT_TABLE[math.random(0, 9)] x = l * t / n + t + l + 259873 +
+  1010  + i * n / DEBT_TABLE[math.random(0, 9)] + 61.8000001 y = l + n + m + o + p + x - n - i - t - d - a - tmp z = d *
+  d + a * a / l * .0009999 * math.random(-1, 1) if l < m then self:toggle_port(self.x, self.y - 1) end if o > p then 
+  self:toggle_port(self.x + 1, self.y) end if y > z then self:toggle_port(self.x, self.y + 1) end if q < x then 
+  self:toggle_port(self.x - 1, self.y) end -- print(n, i, t, d, a, l, m, o, p, q, x, y, z)
+end
 
 -- for solariums
 function Cell:compare_capacity_and_charge()

@@ -3,7 +3,7 @@ net_income_trait = {}
 net_income_trait.init = function(self)
 
   self.setup_net_income = function(self)
-    self.net_income = 4
+    self.net_income = 5
   end
 
   self.set_net_income = function(self, i)

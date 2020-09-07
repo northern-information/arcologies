@@ -70,21 +70,21 @@ for k,v in pairs(config["structures"]) do
 end
 
 config["attributes"] = {
-  "AMORTIZE", -- new
+  "AMORTIZE",
   "CAPACITY",
   "CHARGE",
   "CROW OUT",
   "CRUMBLE", -- new
   "DEFLECT", -- new
-  "DEPRECIATE", -- new
+  "DEPRECIATE",
   "DOCS",
-  "DRIFT", --new
+  "DRIFT",
   "DURATION",
   "INDEX",
-  "INTEREST", -- new
+  "INTEREST",
   "LEVEL",
   "METABOLISM",
-  "NET INCOME", -- new
+  "NET INCOME",
   "NETWORK",
   "NOTES",
   "OFFSET",
@@ -93,7 +93,7 @@ config["attributes"] = {
   "RANGE MAX",
   "RANGE MIN",
   "STRUCTURE",
-  "TAXES", -- new
+  "TAXES",
   "TERRITORY", -- new
   "VELOCITY"
 }

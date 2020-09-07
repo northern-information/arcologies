@@ -35,7 +35,7 @@ function dev:scene(i)
     -- keeper:select_cell(4, 8)
     -- kc():open_port("n")
     keeper:select_cell(4, 4)
-    kc():change("MIRAGE")    
+    kc():change("BANK")    
     -- kc():open_port("s")
 
     -- kc():open_port("e")
