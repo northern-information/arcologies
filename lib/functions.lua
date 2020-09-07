@@ -287,6 +287,9 @@ function fn.random_cell()
   if keeper.selected_cell:has("METABOLISM") then
     keeper.selected_cell:set_metabolism(math.random(1, sound.length or 16))
   end
+  if keeper.selected_cell:has("DURATION") then
+    keeper.selected_cell:set_duration(math.random(1, sound.length or 16))
+  end
   if keeper.selected_cell:is("SHRINE") then
     keeper.selected_cell:set_note(sound:get_random_note(.6, .7), 1)
   end

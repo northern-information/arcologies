@@ -44,6 +44,7 @@ function counters.conductor()
   counters.music.time = parameters.bpm_to_seconds
   if sound.playback == 0 then return end
   counters.music.generation = counters.music.generation + 1
+  m:setup()
   keeper:setup()
   keeper:spawn_signals()
   keeper:propagate_signals()

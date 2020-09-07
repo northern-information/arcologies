@@ -3,7 +3,7 @@ config = {}
 config["settings"] = {
   ["version_major"] = 1,
   ["version_minor"] = 0,
-  ["version_patch"] = 5,
+  ["version_patch"] = 6,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -67,6 +67,7 @@ config["attributes"] = {
   "CAPACITY",
   "CHARGE",
   "DOCS",
+  "DURATION",
   "INDEX",
   "METABOLISM",
   "NETWORK",
@@ -145,6 +146,7 @@ config["structure_attribute_map"] = {
   ["UXB"] = {
     "NOTES",
     "VELOCITY",
+    "DURATION",
     "DEVICE",
     "DOCS",
     "STRUCTURE"
@@ -152,6 +154,7 @@ config["structure_attribute_map"] = {
   ["CASINO"] = {
     "INDEX",
     "NOTES",
+    "DURATION",
     "VELOCITY",
     "DEVICE",
     "DOCS",

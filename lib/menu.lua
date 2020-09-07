@@ -85,6 +85,7 @@ function menu:scroll_value(d)
     elseif s == "CHARGE"      then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
     elseif s == "CROW OUT"    then keeper.selected_cell:set_crow_out(keeper.selected_cell.crow_out + d)
     elseif s == "DEVICE"      then keeper.selected_cell:set_device(keeper.selected_cell.device + d)
+    elseif s == "DURATION"    then keeper.selected_cell:set_duration(keeper.selected_cell.duration + d)
     elseif s == "DOCS"        then -- selecting docs automatically toggles them on
     elseif s == "INDEX"       then keeper.selected_cell:cycle_state_index(d)
     elseif s == "LEVEL"       then keeper.selected_cell:set_level(keeper.selected_cell.level + d)

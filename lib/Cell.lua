@@ -17,6 +17,7 @@ function Cell:new(x, y, g)
   charge_trait.init(self)
   crow_out_trait.init(self)
   device_trait.init(self)
+  duration_trait.init(self)
   er_trait.init(self)
   level_trait.init(self)
   metabolism_trait.init(self)
@@ -37,6 +38,7 @@ function Cell:new(x, y, g)
   c.setup_charge(c)
   c.setup_crow_out(c)
   c.setup_device(c)
+  c.setup_duration(c)
   c.setup_er(c)
   c.setup_level(c)
   c.setup_metabolism(c)
@@ -59,6 +61,7 @@ function Cell:get_menu_value_by_attribute(a)
   elseif a == "CHARGE"      then return self.charge
   elseif a == "CROW OUT"    then return self.crow_out
   elseif a == "DEVICE"      then return self.device
+  elseif a == "DURATION"    then return self.duration
   elseif a == "INDEX"       then return self.state_index
   elseif a == "LEVEL"       then return self.level
   elseif a == "METABOLISM"  then return self.metabolism

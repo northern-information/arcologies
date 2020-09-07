@@ -45,7 +45,7 @@ function keeper:collision(signal, cell)
 
   -- uxbs play single notes via midi
   elseif cell:is("UXB") then
-    m:play(cell.notes[1], cell.velocity, cell.device)
+    m:play(cell.notes[1], cell.velocity, cell.duration, cell.device)
 
   -- aviaries play single notes via crow
   elseif cell:is("AVIARY") then
@@ -62,7 +62,7 @@ function keeper:collision(signal, cell)
 
   -- topiaries cylce through notes
   elseif cell:is("CASINO") then
-    m:play(cell.notes[cell.state_index], cell.velocity, cell.device)
+    m:play(cell.notes[cell.state_index], cell.velocity, cell.duration, cell.device)
     cell:cycle_state_index(1)
 
   -- forests cylce through notes
