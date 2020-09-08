@@ -9,7 +9,7 @@ drift_trait.init = function(self)
 
   self.set_drift = function(self, i)
     self.drift = util.clamp(i, 1, 3)
-    self.callback(self, 'set_drift')
+    self.callback(self, "set_drift")
   end
 
   self.get_drift_value = function(self)

@@ -147,4 +147,32 @@ docs.sheets["FOREST"] = {
   "are to shrines."
 }
 
+docs.sheets["HYDROPONICS"] = {
+  "Modulate the",
+  "metabolism of",
+  "other cells at",
+  "a distance.",
+  "Routes signals",
+  "to open ports."
+}
+
+docs.sheets["INSTITUTION"] = {
+  "Crumbles and",
+  "deflects signals."
+}
+
+docs.sheets["MIRAGE"] = {
+  "Drifts.",
+  "",
+  "Routes the flow",
+  "of signals to",
+  "open ports."
+}
+
+docs.sheets["AUTON"] = {
+  "Plays Just",
+  "Friends via",
+  "crow i2c."
+}
+
 return docs

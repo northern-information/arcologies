@@ -15,7 +15,7 @@ network_trait.init = function(self)
   self.set_network = function(self, key)
     self.network_key = util.clamp(key, 1, 26)
     self.network_value = self.networks[self.network_key]
-    self.callback(self, 'set_network')
+    self.callback(self, "set_network")
   end
 
   self.get_network_value = function(self, key)

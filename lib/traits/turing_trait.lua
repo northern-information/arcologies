@@ -47,7 +47,7 @@ turing_trait.init = function(self)
     end
     
     self.turing = t
-    self.callback(self, 'set_turing')
+    self.callback(self, "set_turing")
   end
 
 end

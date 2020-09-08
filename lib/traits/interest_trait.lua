@@ -8,7 +8,7 @@ interest_trait.init = function(self)
 
   self.set_interest = function(self, i)
     self.interest = util.clamp(i, 0, 100)
-    self.callback(self, 'set_interest')
+    self.callback(self, "set_interest")
   end
 
 end

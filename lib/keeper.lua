@@ -18,45 +18,6 @@ end
 -- spawning, propagation, and collision
 
 
-function keeper:deflect_signals()
-  for k, signal in pairs(self.signals) do
-    for kk, cell in pairs(self.cells) do
-      if signal.index == cell.index then
-        if cell:has("DEFLECT") and not self:are_signal_and_port_compatible(signal, cell) then
-          self:deflection(signal, cell)
-        end
-      end
-    end
-  end
-end
-
-function keeper:deflection(signal, cell)
-  local d = cell.cardinals[cell.deflect]
-  local x = signal.x
-  local y = signal.y
-  local h = signal.heading
-  -- matching headings and deflections result in the signal being sent "counter clockwise" away
-  -- north signals
-      if h == "n" and  d == "e"              then signal:reroute(x + 1, y + 1, "e")
-  elseif h == "n" and  d == "s"              then signal:reroute(x + 0, y + 1, "s")
-  elseif h == "n" and (d == "w" or d == "n") then signal:reroute(x - 1, y + 1, "w")
-  -- east signals
-  elseif h == "e" and  d == "n"              then signal:reroute(x - 1, y - 1, "n")
-  elseif h == "e" and (d == "s" or d == "e") then signal:reroute(x - 1, y + 1, "s")
-  elseif h == "e" and  d == "w"              then signal:reroute(x - 1, y + 0, "w")
-  -- south signals
-  elseif h == "s" and  d == "n"              then signal:reroute(x + 0, y - 1, "n")
-  elseif h == "s" and (d == "e" or d == "s") then signal:reroute(x + 1, y - 1, "e")
-  elseif h == "s" and  d == "w"              then signal:reroute(x - 1, y - 1, "w")
-  -- west signals
-  elseif h == "w" and (d == "n" or d == "w") then signal:reroute(x + 1, y - 1, "n")
-  elseif h == "w" and  d == "e"              then signal:reroute(x + 1, y + 0, "e")
-  elseif h == "w" and  d == "s"              then signal:reroute(x + 1, y + 1, "s")
-  -- quantum signals
-  else print("Error: Some quantum signal shit just happened.")
-  end
-end
-
 function keeper:collision(signal, cell)
 
   -- all collisions result in signal deaths
@@ -127,6 +88,10 @@ function keeper:collision(signal, cell)
     c:jf(cell.notes[cell.state_index], cell.duration)
     cell:cycle_state_index(1)
 
+  -- hydroponics operate at a distance
+  elseif cell:is("HYDROPONICS") then
+    keeper:hydroponics(cell)
+
   end
 
   --[[ the below structures reroute & split
@@ -150,6 +115,56 @@ function keeper:collision(signal, cell)
       elseif (port == "s" and signal.heading ~= "n") then self:create_signal(cell.x, cell.y + 1, "s", "tomorrow")
       elseif (port == "w" and signal.heading ~= "e") then self:create_signal(cell.x - 1, cell.y, "w", "tomorrow")
       end
+    end
+  end
+end
+
+
+function keeper:deflect_signals()
+  for k, signal in pairs(self.signals) do
+    for kk, cell in pairs(self.cells) do
+      if signal.index == cell.index then
+        if cell:has("DEFLECT") and not self:are_signal_and_port_compatible(signal, cell) then
+          self:deflection(signal, cell)
+        end
+      end
+    end
+  end
+end
+
+function keeper:deflection(signal, cell)
+  local d = cell.cardinals[cell.deflect]
+  local x = signal.x
+  local y = signal.y
+  local h = signal.heading
+  -- matching headings and deflections result in the signal being sent "counter clockwise" away
+  -- north signals
+      if h == "n" and  d == "e"              then signal:reroute(x + 1, y + 1, "e")
+  elseif h == "n" and  d == "s"              then signal:reroute(x + 0, y + 1, "s")
+  elseif h == "n" and (d == "w" or d == "n") then signal:reroute(x - 1, y + 1, "w")
+  -- east signals
+  elseif h == "e" and  d == "n"              then signal:reroute(x - 1, y - 1, "n")
+  elseif h == "e" and (d == "s" or d == "e") then signal:reroute(x - 1, y + 1, "s")
+  elseif h == "e" and  d == "w"              then signal:reroute(x - 1, y + 0, "w")
+  -- south signals
+  elseif h == "s" and  d == "n"              then signal:reroute(x + 0, y - 1, "n")
+  elseif h == "s" and (d == "e" or d == "s") then signal:reroute(x + 1, y - 1, "e")
+  elseif h == "s" and  d == "w"              then signal:reroute(x - 1, y - 1, "w")
+  -- west signals
+  elseif h == "w" and (d == "n" or d == "w") then signal:reroute(x + 1, y - 1, "n")
+  elseif h == "w" and  d == "e"              then signal:reroute(x + 1, y + 0, "e")
+  elseif h == "w" and  d == "s"              then signal:reroute(x + 1, y + 1, "s")
+  -- quantum signals
+  else print("Error: Some quantum signal shit just happened.")
+  end
+end
+
+function keeper:hydroponics(cell)
+  for k, other_cell in pairs(self.cells) do
+      if cell:has_other_cell_in_territory(other_cell)
+    and other_cell:has("METABOLISM")
+    and other_cell.id ~= cell.id then
+      other_cell:set_metabolism(math.floor(cell:run_operation(other_cell.metabolism, cell.metabolism)))
     end
   end
 end

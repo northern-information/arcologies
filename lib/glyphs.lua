@@ -279,9 +279,9 @@ function glyphs:hydroponics (x, y, l)
   self:partial_third_floor(x, y, l)
   self:partial_second_floor(x, y, l)
   self:partial_floor(x, y, l)
-  graphics:rect(x-5, y+12, 2, 14, l)
+  graphics:rect(x-5, y+18, 2, 8, l)
   graphics:rect(x+10, y+20, 2, 6, l)
-  graphics:rect(x+25, y+12, 2, 14, l)
+  graphics:rect(x+25, y+18, 2, 8, l)
 end
 
 function glyphs:institution(x, y, l)
@@ -607,8 +607,6 @@ function glyphs:small_hydroponics(x, y, l)
   graphics:mls(x+3, y+6, x+3, y+8, l)
   graphics:mls(x-1, y+1, x-1, y+8, l)
   graphics:mls(x+7, y+1, x+7, y+8, l)
-  graphics:mls(x-3, y+4, x-3, y+8, l)
-  graphics:mls(x+9, y+4, x+9, y+8, l)
 end
 
 function glyphs:small_institution(x, y, l)

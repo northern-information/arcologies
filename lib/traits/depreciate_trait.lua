@@ -8,7 +8,7 @@ depreciate_trait.init = function(self)
 
   self.set_depreciate = function(self, i)
     self.depreciate = util.clamp(i, -50, 100)
-    self.callback(self, 'set_depreciate')
+    self.callback(self, "set_depreciate")
   end
 
 end

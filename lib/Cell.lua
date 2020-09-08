@@ -210,10 +210,10 @@ end
 function Cell:has_crumbled()
   if self.crumble <= 0 then
     keeper:delete_cell(self.id, true)
-    keeper:create_signal(self.x, self.y - 1, 'n', 'now')
-    keeper:create_signal(self.x + 1, self.y, 'e', 'now')
-    keeper:create_signal(self.x, self.y + 1, 's', 'now')
-    keeper:create_signal(self.x - 1, self.y, 'w', 'now')
+    keeper:create_signal(self.x, self.y - 1, "n", "now")
+    keeper:create_signal(self.x + 1, self.y, "e", "now")
+    keeper:create_signal(self.x, self.y + 1, "s", "now")
+    keeper:create_signal(self.x - 1, self.y, "w", "now")
   end
 end
 

@@ -8,7 +8,7 @@ level_trait.init = function(self)
 
   self.set_level = function(self, i)
       self.level = util.clamp(i, 0, 100)
-      self.callback(self, 'set_level')
+      self.callback(self, "set_level")
   end
 
 end

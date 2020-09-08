@@ -56,6 +56,10 @@ function menu:render(bool)
             graphics:text(56, offset, keeper.selected_cell:get_deflect_value(), 0)
           elseif self.items[i] == "DRIFT"  then
             graphics:text(56, offset, keeper.selected_cell:get_drift_value(), 0)
+          elseif self.items[i] == "TERRITORY"  then
+            graphics:text(56, offset, keeper.selected_cell:get_territory_value(), 0)
+          elseif self.items[i] == "OPERATOR"  then
+            graphics:text(56, offset, keeper.selected_cell:get_operator_value(), 0)
           elseif self.items[i] ~= "STRUCTURE" then
             graphics:text(56, offset, value, 0)
           end

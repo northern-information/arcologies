@@ -21,7 +21,7 @@ notes_trait.init = function(self)
   self.set_note = function(self, note, index)
     local i = index ~= nil and index or 1
     self.notes[i] = note
-    self.callback('set_note')
+    self.callback("set_note")
   end
 
   self.browse_notes = function(self, delta, index)

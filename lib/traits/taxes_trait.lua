@@ -8,7 +8,7 @@ taxes_trait.init = function(self)
 
   self.set_taxes = function(self, i)
     self.taxes = util.clamp(i, -100, 100)
-    self.callback(self, 'set_taxes')
+    self.callback(self, "set_taxes")
   end
 
 end

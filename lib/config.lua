@@ -2,8 +2,8 @@ config = {}
 
 config["settings"] = {
   ["version_major"] = 1,
-  ["version_minor"] = 0,
-  ["version_patch"] = 6,
+  ["version_minor"] = 1,
+  ["version_patch"] = 0,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -75,7 +75,7 @@ config["attributes"] = {
   "CHARGE",
   "CROW OUT",
   "CRUMBLE",
-  "DEFLECT", -- new
+  "DEFLECT",
   "DEPRECIATE",
   "DOCS",
   "DRIFT",
@@ -88,13 +88,13 @@ config["attributes"] = {
   "NETWORK",
   "NOTES",
   "OFFSET",
-  "OPERATOR", -- new
+  "OPERATOR",
   "PULSES",
   "RANGE MAX",
   "RANGE MIN",
   "STRUCTURE",
   "TAXES",
-  "TERRITORY", -- new
+  "TERRITORY",
   "VELOCITY"
 }
 

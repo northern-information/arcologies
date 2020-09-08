@@ -18,7 +18,7 @@ function filesystem.init()
 end
 
 function filesystem.load(path)
-   if string.find(path, 'arcology') ~= nil then
+   if string.find(path, "arcology") ~= nil then
     print("loading...")
     local data = tab.load(path)
     if data ~= nil then

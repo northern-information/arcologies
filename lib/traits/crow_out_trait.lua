@@ -8,7 +8,7 @@ crow_out_trait.init = function(self)
 
   self.set_crow_out = function(self, i)
     self.crow_out = util.clamp(i, 1, 2)
-    self.callback(self, 'set_crow_out')
+    self.callback(self, "set_crow_out")
   end
 
 end

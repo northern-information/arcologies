@@ -8,7 +8,7 @@ crumble_trait.init = function(self)
 
   self.set_crumble = function(self, i)
     self.crumble = util.clamp(i, 0, 100)
-    self.callback(self, 'set_crumble')
+    self.callback(self, "set_crumble")
   end
 
 end

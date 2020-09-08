@@ -8,7 +8,7 @@ net_income_trait.init = function(self)
 
   self.set_net_income = function(self, i)
     self.net_income = util.clamp(i, 0, 100)
-    self.callback(self, 'set_net_income')
+    self.callback(self, "set_net_income")
   end
 
 end

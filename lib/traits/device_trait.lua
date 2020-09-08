@@ -8,7 +8,7 @@ device_trait.init = function(self)
 
   self.set_device = function(self, i)
     self.device = util.clamp(i, 1, 4)
-    self.callback(self, 'set_device')
+    self.callback(self, "set_device")
   end
 
 end

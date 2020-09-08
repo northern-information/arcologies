@@ -8,7 +8,7 @@ capacity_trait.init = function(self)
 
   self.set_capacity = function(self, i)
     self.capacity = util.clamp(i, 0, 100)
-    self.callback(self, 'set_capacity')
+    self.callback(self, "set_capacity")
   end
 
 end

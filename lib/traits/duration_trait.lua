@@ -8,7 +8,7 @@ duration_trait.init = function(self)
 
   self.set_duration = function(self, i)
      self.duration = util.clamp(i, 1, 16)
-     self.callback(self, 'set_duration')
+     self.callback(self, "set_duration")
   end
 
 end
