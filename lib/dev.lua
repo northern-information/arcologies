@@ -32,12 +32,14 @@ function dev:scene(i)
   elseif i == 2 then
     -- sound:set_random_root()
     -- sound:set_random_scale()
-    -- keeper:select_cell(4, 8)
-    -- kc():open_port("n")
-    keeper:select_cell(4, 4)
-    kc():change("BANK")    
-    -- kc():open_port("s")
 
+    
+    keeper:select_cell(8, 4)
+    kc():open_port("w")
+
+    keeper:select_cell(4, 4)
+    kc():change("INSTITUTION")    
+    kc():set_deflect(2)
     -- kc():open_port("e")
     -- kc():open_port("s")
     -- kc():open_port("w")

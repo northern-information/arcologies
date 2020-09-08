@@ -309,6 +309,15 @@ function fn.random_cell()
   if keeper.selected_cell:has("DURATION") then
     keeper.selected_cell:set_duration(math.random(1, sound.length or 16))
   end
+  if keeper.selected_cell:has("DEFLECT") then
+    keeper.selected_cell:set_deflect(math.random(1, 4))
+  end
+  if keeper.selected_cell:has("CRUMBLE") then
+    keeper.selected_cell:set_crumble(math.random(1, 100))
+  end
+  if keeper.selected_cell:has("DRIFT") then
+    keeper.selected_cell:set_crumble(math.random(1, 3))
+  end
   if keeper.selected_cell:is("SHRINE") then
     keeper.selected_cell:set_note(sound:get_random_note(.6, .7), 1)
   end

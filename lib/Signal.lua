@@ -29,3 +29,10 @@ function Signal:propagate()
     end
   end
 end
+
+function Signal:reroute(x, y, h)
+  self.x = x
+  self.y = y
+  self.heading = h
+  self.index = fn.index(x, y)
+end

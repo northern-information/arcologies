@@ -77,13 +77,13 @@ end
 
 -- todo: shame. there's gotta be a better way to do this
 function Cell:get_menu_value_by_attribute(a)
-      if a == "AMORTIZE" then return self.amortize
+      if a == "AMORTIZE"     then return self.amortize
   elseif a == "CAPACITY"     then return self.capacity
   elseif a == "CHARGE"       then return self.charge
   elseif a == "CRUMBLE"      then return self.crumble
   elseif a == "CROW OUT"     then return self.crow_out
   elseif a == "DEFLECT"      then return self.deflect
-  elseif a == "DEPRECIATE" then return self.depreciate
+  elseif a == "DEPRECIATE"   then return self.depreciate
   elseif a == "DEVICE"       then return self.device
   elseif a == "DRIFT"        then return self.drift
   elseif a == "DURATION"     then return self.duration
@@ -195,6 +195,7 @@ function Cell:setup()
   elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
   elseif self:is("MIRAGE") then self:shall_we_drift_today()
   elseif self:is("BANK") then self:annual_report()
+  elseif self:is("INSTITUTION") then self:has_crumbled()
   end
 end
 
@@ -202,6 +203,17 @@ function Cell:teardown()
   if self:is("SOLARIUM") and self.flag == true then
     self.flag = false
     self:invert_ports()
+  end
+end
+
+-- for institutions
+function Cell:has_crumbled()
+  if self.crumble <= 0 then
+    keeper:delete_cell(self.id, true)
+    keeper:create_signal(self.x, self.y - 1, 'n', 'now')
+    keeper:create_signal(self.x + 1, self.y, 'e', 'now')
+    keeper:create_signal(self.x, self.y + 1, 's', 'now')
+    keeper:create_signal(self.x - 1, self.y, 'w', 'now')
   end
 end
 

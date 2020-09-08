@@ -52,6 +52,8 @@ function menu:render(bool)
             graphics:text(56, offset, value .. "99ll9c", 0)
           elseif self.items[i] == "CROW OUT"  then
             graphics:text(56, offset, (value == 1 and "1/2" or "3/4"), 0)
+          elseif self.items[i] == "DEFLECT"  then
+            graphics:text(56, offset, keeper.selected_cell:get_deflect_value(), 0)
           elseif self.items[i] == "DRIFT"  then
             graphics:text(56, offset, keeper.selected_cell:get_drift_value(), 0)
           elseif self.items[i] ~= "STRUCTURE" then

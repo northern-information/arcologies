@@ -17,6 +17,46 @@ end
 
 -- spawning, propagation, and collision
 
+
+function keeper:deflect_signals()
+  for k, signal in pairs(self.signals) do
+    for kk, cell in pairs(self.cells) do
+      if signal.index == cell.index then
+        if cell:has("DEFLECT") and not self:are_signal_and_port_compatible(signal, cell) then
+          self:deflection(signal, cell)
+        end
+      end
+    end
+  end
+end
+
+function keeper:deflection(signal, cell)
+  local d = cell.cardinals[cell.deflect]
+  local x = signal.x
+  local y = signal.y
+  local h = signal.heading
+  -- matching headings and deflections result in the signal being sent "counter clockwise" away
+  -- north signals
+      if h == "n" and  d == "e"              then signal:reroute(x + 1, y + 1, "e")
+  elseif h == "n" and  d == "s"              then signal:reroute(x + 0, y + 1, "s")
+  elseif h == "n" and (d == "w" or d == "n") then signal:reroute(x - 1, y + 1, "w")
+  -- east signals
+  elseif h == "e" and  d == "n"              then signal:reroute(x - 1, y - 1, "n")
+  elseif h == "e" and (d == "s" or d == "e") then signal:reroute(x - 1, y + 1, "s")
+  elseif h == "e" and  d == "w"              then signal:reroute(x - 1, y + 0, "w")
+  -- south signals
+  elseif h == "s" and  d == "n"              then signal:reroute(x + 0, y - 1, "n")
+  elseif h == "s" and (d == "e" or d == "s") then signal:reroute(x + 1, y - 1, "e")
+  elseif h == "s" and  d == "w"              then signal:reroute(x - 1, y - 1, "w")
+  -- west signals
+  elseif h == "w" and (d == "n" or d == "w") then signal:reroute(x + 1, y - 1, "n")
+  elseif h == "w" and  d == "e"              then signal:reroute(x + 1, y + 0, "e")
+  elseif h == "w" and  d == "s"              then signal:reroute(x + 1, y + 1, "s")
+  -- quantum signals
+  else print("Error: Some quantum signal shit just happened.")
+  end
+end
+
 function keeper:collision(signal, cell)
 
   -- all collisions result in signal deaths
@@ -54,6 +94,10 @@ function keeper:collision(signal, cell)
   -- stores signals as charge
   elseif cell:is("SOLARIUM") then
     cell:set_charge(cell.charge + 1)
+
+  -- crumble the institutions
+  elseif cell:is("INSTITUTION") then
+    cell:set_crumble(cell.crumble - 1)
 
   -- topiaries cylce through notes
   elseif cell:is("TOPIARY") then
@@ -243,15 +287,20 @@ function keeper:create_cell(x, y)
   return new_cell
 end
 
-function keeper:delete_cell(id)
+function keeper:delete_cell(id, s)
+  local silent = s == nil and false or true
   if id == nil and not self.is_cell_selected then
-    graphics:set_message("SELECT A CELL TO DELETE")
+    if not silent then
+      graphics:set_message("SELECT A CELL TO DELETE")
+    end
   end
   id = id == nil and self.selected_cell_id or id
   for k,cell in pairs(self.cells) do
     if cell.id == id then
       table.remove(self.cells, k)
-      graphics:set_message("DELETED " .. cell.structure_value)
+      if not silent then
+        graphics:set_message("DELETED " .. cell.structure_value)
+      end
       if page.active_page == 2 then
         menu:reset()
       end

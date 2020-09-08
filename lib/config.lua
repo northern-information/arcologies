@@ -74,7 +74,7 @@ config["attributes"] = {
   "CAPACITY",
   "CHARGE",
   "CROW OUT",
-  "CRUMBLE", -- new
+  "CRUMBLE",
   "DEFLECT", -- new
   "DEPRECIATE",
   "DOCS",
