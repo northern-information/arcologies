@@ -185,7 +185,6 @@ config["structure_attribute_map"] = {
   },
   ["AVIARY"] = {
     "NOTES",
-    "VELOCITY",
     "CROW OUT",
     "DOCS",
     "STRUCTURE"
