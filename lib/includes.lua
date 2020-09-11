@@ -123,4 +123,8 @@ s = include("arcologies/lib/softcut")
 sound = include("arcologies/lib/sound")
 
 -- dev only stuff
-dev = include("arcologies/lib/dev") 
+dev = io.open(_path["code"] .. "arcologies/lib/dev.lua", "r")
+if dev ~= nil then
+  io.close(dev)
+  include("arcologies/lib/dev")
+end
