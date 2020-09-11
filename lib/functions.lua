@@ -364,9 +364,7 @@ function fn.random_cell()
     end
   end
   keeper.selected_cell:change(yes[math.random(1, #yes)])
-  if keeper.selected_cell:is("SHRINE")
-  or keeper.selected_cell:is("TOPIARY")
-  or keeper.selected_cell:is("VALE")
+  if keeper.selected_cell:has("NOTES")
   or keeper.selected_cell:is("CRYPT") then
     keeper.selected_cell:invert_ports()
   else

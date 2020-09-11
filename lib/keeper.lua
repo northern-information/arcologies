@@ -365,9 +365,7 @@ end
 -- happens when the user changes the root note or the scale
 function keeper:update_all_notes()
   for k,cell in pairs(self.cells) do
-  print(cell.id)
-    if cell:has("NOTES") or cell:has("NOTE") then
-    print(cell.id .. 'has notes')
+    if cell:has("NOTES") then
       for i=1, #cell.notes do
         -- delta of zero just jiggles the handle
         cell:browse_notes(0, i)

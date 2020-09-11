@@ -35,12 +35,22 @@ function parameters.init()
 
   params:add_separator("- S E E D -")
 
-  params:add_trigger("destroy_and_seed", "> DESTORY & SEED NEW" )
+  params:add_trigger("destroy_and_seed", "> DESTROY & SEED NEW" )
   params:set_action("destroy_and_seed", function() fn.seed_cells() end)
 
   params:add{ type = "number", id = "seed_cell_count", name = "CELL POPULATION",
     min = 0, max = 32, default = 16
   }
+
+  params:add{ type = "number", id = "note_range_min", name = "NOTE RANGE MIN",
+    min = 0, max = 100, default = 40
+  }
+  params:set_action("note_range_min", function(x) params:set("note_range_max", util.clamp(params:get("note_range_max"), x, 100)) end)
+
+  params:add{ type = "number", id = "note_range_max", name = "NOTE RANGE MAX",
+    min = 0, max = 100, default = 60
+  }
+ params:set_action("note_range_max", function(x) params:set("note_range_min", util.clamp(params:get("note_range_min"), 0, x)) end)
 
   parameters.seed_structures = {}
   for k,v in pairs(config.structures) do

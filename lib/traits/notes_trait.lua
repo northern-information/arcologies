@@ -12,7 +12,7 @@ notes_trait.init = function(self)
       self.notes[1] = sound:get_reasonable_note()
     else
       for i = 1, self.note_count do
-        local note = sound:get_random_note(.4, .6)
+        local note = sound:get_random_note(params:get("note_range_min") / 100, params:get("note_range_max") / 100)
         self:set_note(note, i)
       end
     end
