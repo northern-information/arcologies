@@ -151,6 +151,10 @@ function fn.load_10n(data)
   arcology_loaded = true
 end
 
+function fn.get_structure_attributes(name)
+  return config.structure_attribute_map[name]
+end
+
 function fn.id()
   -- a servicable attempt creating unique ids
   -- i (tried a md5 library but it tanked performance)
@@ -213,6 +217,15 @@ function fn.table_find(t, element)
   for i,v in pairs(t) do
     if v == element then
       return i
+    end
+  end
+  return false
+end
+
+function fn.table_has(tab, val)
+  for index, value in ipairs(tab) do
+    if value == val then
+      return true
     end
   end
   return false

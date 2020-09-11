@@ -6,10 +6,7 @@ function Cell:new(x, y, g)
   c.y = y ~= nil and y or 0
   c.generation = g ~= nil and g or 0
   c.structure_key = 1 -- new cells default to hives
-  c.structures = config.structures
-  c.attributes = config.attributes
-  c.structure_attribute_map = config.structure_attribute_map
-  c.structure_value = c.structures[c.structure_key]
+  c.structure_value = config.structures[c.structure_key]
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
@@ -120,16 +117,20 @@ function Cell:is(name)
 end
 
 function Cell:has(name)
-  return tonumber(fn.table_find(self.structure_attribute_map[self.structure_value], name)) ~= nil and true or false
+  return fn.table_has(self:get_attributes(), name)
+end
+
+function Cell:get_attributes()
+  return fn.get_structure_attributes(self.structure_value)
 end
 
 function Cell:change(name)
-  self:set_structure_by_key(fn.table_find(self.structures, name))
+  self:set_structure_by_key(fn.table_find(config.structures, name))
 end
 
 function Cell:set_structure_by_key(key)
-  self.structure_key = util.clamp(key, 1, #self.structures)
-  self.structure_value = self.structures[self.structure_key]
+  self.structure_key = util.clamp(key, 1, #config.structures)
+  self.structure_value = config.structures[self.structure_key]
   self:change_checks()
 end
 
@@ -156,9 +157,15 @@ theres  only ~40 lines of code below...
 function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
-      if self:is("DOME") then self:set_er()
-  elseif self:is("SHRINE") then self:setup_notes(1)
-  elseif self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") or self:is("AUTON") then self:setup_notes(8)
+      if self:is("DOME")    then self:set_er()
+
+  elseif self:is("SHRINE")  then self:setup_notes(1)
+
+  elseif self:is("TOPIARY") 
+      or self:is("CASINO") 
+      or self:is("FOREST") 
+      or self:is("AUTON")   then self:setup_notes(8)
+
   elseif self:is("CRYPT") then
     self:set_state_index(1) 
     self:cycle_state_index(0)
@@ -290,7 +297,7 @@ end
 
 -- menu and submenu junk. gross.
 function Cell:menu_items()
-  local items = self.structure_attribute_map[self.structure_value]
+  local items = fn.deep_copy(self:get_attributes())
   if self:has("NOTES") then
     local note_position = fn.table_find(items, "NOTES")
     if type(note_position) == "number" then
