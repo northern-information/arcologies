@@ -311,6 +311,14 @@ end
 
 -- the lost souls
 
+function clock.transport.start()
+  sound:toggle_playback()
+end
+
+function clock.transport.stop()
+  sound:toggle_playback()
+end
+
 function fn.is_cell_vacant(x, y)
   if not fn.in_bounds(x, y) then
     return false
