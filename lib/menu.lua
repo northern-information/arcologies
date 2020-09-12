@@ -146,6 +146,7 @@ function menu:scroll_value(d)
 end
 
 function menu:scroll(d)
+  if page.active_page == 3 then keeper:deselect_cell() end
   self:select_item(util.clamp(self.selected_item + d, 1, #self.items))
 end
 

@@ -357,11 +357,19 @@ function graphics:analysis(items, selected_item_key)
   self:structure_palette_analysis(selected_item_key)
 
   -- values
+  local analysis_items = keeper:get_analysis_items()
   local chart = {}
 
   chart.values = {}
-  chart.values[1] = #keeper.signals
-  for i = 1, #config.structures do chart.values[i+1] = keeper:count_cells(config.structures[i]) end
+  for i = 1, #analysis_items do
+    if analysis_items[i] == "SIGNALS" then
+      table.insert(chart.values, keeper:count_signals())
+    else
+      table.insert(chart.values, keeper:count_cells(analysis_items[i]))
+    end
+  end
+
+  self.test = chart.values
 
   chart.values_total = 0
   for i = 1, #chart.values do chart.values_total = chart.values_total + chart.values[i] end
@@ -401,13 +409,11 @@ function graphics:analysis(items, selected_item_key)
   end
 
   -- line graph
-  -- disabled for v1.1.0 -- too many lines
   local line_graph_start_x = 127
   local line_graph_start_y = 10
   local line_graph_spacing = 2
   local line_graph_x = 0
   local line_highlight = 0
-  self:mls(line_graph_start_x+1, line_graph_start_y, line_graph_start_x+1, (line_graph_start_y + (#chart.values * line_graph_spacing)), 1)
   for i = 1, #chart.values do
     if chart.values[i] ~= 0 then
       line_highlight = (i == selected_item_key) and 5 or 1
@@ -415,21 +421,22 @@ function graphics:analysis(items, selected_item_key)
       local this_line_percentage = chart.percentages[i] * 100
       local this_width = util.round_up(math.floor(util.linlin(0, 100, 0, 10, this_line_percentage)), 1)
       self:mlrs(line_graph_start_x, line_graph_y, -this_width, 1, line_highlight)
+      self:mls(128, line_graph_start_y, 128, (line_graph_start_y + (i * line_graph_spacing)), 1)
     end
   end
 
   -- grid (thank you @okyeron)
   for i = 1, fn.grid_width() * fn.grid_height() do
     self.analysis_pixels[i] = 0
-    if selected_item_key ~= 1 then -- 1 is signals
-      for k,v in pairs(keeper.cells) do
-        if v.structure_key == selected_item_key - 1 and v.index == i then
+    if selected_item_key== 1 then -- 1 is signals
+      for k,v in pairs(keeper.signals) do
+        if v.index == i then
           self.analysis_pixels[i] = 15
         end
       end
-    elseif selected_item_key == 1 then
-      for k,v in pairs(keeper.signals) do
-        if v.index == i then
+    else
+      for k,v in pairs(keeper.cells) do
+        if v.structure_value == analysis_items[selected_item_key] and v.index == i then
           self.analysis_pixels[i] = 15
         end
       end

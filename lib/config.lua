@@ -3,7 +3,7 @@ config = {}
 config["settings"] = {
   ["version_major"] = 1,
   ["version_minor"] = 1,
-  ["version_patch"] = 2,
+  ["version_patch"] = 3,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -40,6 +40,7 @@ to add new structures, minimally:
  - config.structures
  - config.structure_attribute_map
  - keepper:collision()
+ - new glyphs
 
 structure names must be a single word
 

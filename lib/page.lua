@@ -87,7 +87,11 @@ function page:analysis()
     popup:render()
   else
     menu:set_items(keeper:get_analysis_items())
-    menu:select_item()
+    if keeper.is_cell_selected then
+      menu:select_item_by_name(keeper.selected_cell.structure_value)
+    else
+      menu:select_item()
+    end
     graphics:analysis(menu.items, menu.selected_item)
   end
   graphics:title_bar_and_tabs()

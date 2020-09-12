@@ -366,6 +366,10 @@ function keeper:count_cells(name)
   return count
 end
 
+function keeper:count_signals()
+  return #self.signals
+end
+
 function keeper:get_analysis_items()
   local analysis_items = {}
   table.insert(analysis_items, "SIGNALS")
