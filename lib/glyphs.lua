@@ -2,6 +2,11 @@ glyphs = {}
 
 function glyphs.init()
   glyphs.available = config.structures
+  glyphs.shimmer_index = 1
+  glyphs.shimmer_1 = { 0, 1, 2, 3, 4, 3, 2, 1 }
+  glyphs.shimmer_2 = { 1, 2, 3, 4, 3, 2, 1, 0 }
+  glyphs.shimmer_3 = { 2, 3, 4, 3, 2, 1, 0, 1 }
+  glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
 end
 
 function glyphs:random(x, y, l, jitter)
@@ -93,9 +98,9 @@ function glyphs:test()
   -- self:forest(x, y, l)
   -- self:hydroponics(x, y, l)
   -- self:institution(x, y, l)
-  -- self:mirage(x, y, l)
+  self:mirage(x, y, l)
   -- self:bank(x, y, l)
-self:spomenik(x, y, l)
+-- self:spomenik(x, y, l)
   -- self:auton(x, y, l)
   
 
@@ -301,10 +306,11 @@ end
 
 
 function glyphs:mirage(x, y, l)
-  graphics:rect(x+12, y, 10, 2, l)
-  graphics:rect(x+8, y+6, 8, 2, l)
-  graphics:rect(x+12, y+12, 13, 2, l)
-  self:floor(x, y, l)
+  self.shimmer_index = fn.cycle(counters.ui.quarter_frame % 8 + 1, 1, 8)
+  graphics:rect(x+12 + self.shimmer_1[self.shimmer_index], y, 10 - self.shimmer_3[self.shimmer_index], 2, l)
+  graphics:rect(x+8  + self.shimmer_2[self.shimmer_index], y+6, 8 - self.shimmer_4[self.shimmer_index], 2, l)
+  graphics:rect(x+6 + self.shimmer_3[self.shimmer_index], y+12, 13 - self.shimmer_2[self.shimmer_index], 2, l)
+  graphics:rect(x   + self.shimmer_4[self.shimmer_index], y+18, 22 - self.shimmer_1[self.shimmer_index], 2, l)
   self:foundation(x, y, l)
 end
 

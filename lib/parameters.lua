@@ -19,16 +19,11 @@ function parameters.init()
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
 
-  params:add{ type = "number", id = "jf_i2c_mode", name = "JF I2C MODE",
-    min = 0, max = 1, default = 1,
-    action = function(i) crow.ii.jf.mode(i) end
-  }
+  params:add_trigger("jf_i2c_mode", "JF I2C INIT (MODE 1)")
+  params:set_action("jf_i2c_mode", function(x) crow.ii.jf.mode(1) end)
 
-  params:add{ type = "number", id = "jf_i2c_god_note", name = "JF I2C GOD NOTE",
-    min = 0, max = 1, default = 0,
-    action = function(i) crow.ii.jf.god_mode(i) end
-  }
-  
+  params:add_option("jf_i2c_tuning", "JF I2C TUNING", {"440 Hz", "432 Hz"})
+  params:set_action("jf_i2c_tuning", function(index) crow.ii.jf.god_mode(index == 2 and 1 or 0) end)
 
   params:add{ type = "number", id = "popup_patience", name = "POPUP PATIENCE",
     min = 0.5, max = 4.0, default = 0.5,
@@ -37,7 +32,6 @@ function parameters.init()
   parameters.is_designer_jump_on = true
   params:add_option("designer_jump", "DESIGNER JUMP", {"ENABLED", "DISABLED"})
   params:set_action("designer_jump", function(index) parameters.is_designer_jump_on = index == 1 and true or false end)
-
 
   parameters.is_splash_screen_on = true
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})

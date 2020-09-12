@@ -137,7 +137,8 @@ function graphics:structure_palette_analysis(s)
   glyphs:small_institution(  items[18],  y, s == 18 and 15 or 5)
   glyphs:small_mirage(       items[19],  y, s == 19 and 15 or 5)
   glyphs:small_bank(         items[20],  y, s == 20 and 15 or 5)
-  glyphs:small_auton(        items[21],  y, s == 21 and 15 or 5)
+  glyphs:small_spomenik(     items[21],  y, s == 21 and 15 or 5)
+  glyphs:small_auton(        items[22],  y, s == 22 and 15 or 5)
 
   -- cover the scroll
   graphics:rect(0, y-1, 10, 9, 0)

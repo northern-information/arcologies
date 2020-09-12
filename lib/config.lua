@@ -3,7 +3,7 @@ config = {}
 config["settings"] = {
   ["version_major"] = 1,
   ["version_minor"] = 1,
-  ["version_patch"] = 1,
+  ["version_patch"] = 2,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -32,6 +32,22 @@ config["home_items"] = {
   "SCALE",
   "DOCS"
 }
+
+--[[
+
+to add new structures, minimally:
+
+ - config.structures
+ - config.structure_attribute_map
+ - keepper:collision()
+ - graphics:structure_and_title()
+ - graphics:structure_palette()
+ - graphics:structure_palette_analysis()
+ - glyphs:<NAME>()
+ - glyphs:small_<NAME>()
+
+
+]]
 
 config["structures"] = {
   "HIVE",
