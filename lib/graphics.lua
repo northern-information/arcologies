@@ -84,13 +84,13 @@ function graphics:structure_palette_analysis(s)
   graphics:rect(0, y-1, 10, 9, 0)
   graphics:rect(120, y-1, 10, 9, 0)
 
-  -- pop ellipses to the left
+  -- pop arrow to the left
   if s > threshold then
     graphics:text_left(0, y+7, "<", 5)
   end
 
-  -- pop ellipses to the right
-  if s < #items then
+  -- pop arrow to the right
+  if s < #items and #items > threshold then
     graphics:text_right(128, y+7, ">", 5)
   end
 
