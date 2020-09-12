@@ -76,7 +76,7 @@ function page:cell_designer()
       end
       menu:render()
       graphics:draw_ports()
-      graphics:structure_and_title(keeper.selected_cell.structure_value)
+      graphics:structure(keeper.selected_cell.structure_value)
     end
   end
   graphics:title_bar_and_tabs()
@@ -86,7 +86,7 @@ function page:analysis()
   if popup:is_active() then
     popup:render()
   else
-    menu:set_items(config.analysis_items)
+    menu:set_items(keeper:get_analysis_items())
     menu:select_item()
     graphics:analysis(menu.items, menu.selected_item)
   end

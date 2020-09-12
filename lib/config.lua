@@ -40,12 +40,8 @@ to add new structures, minimally:
  - config.structures
  - config.structure_attribute_map
  - keepper:collision()
- - graphics:structure_and_title()
- - graphics:structure_palette()
- - graphics:structure_palette_analysis()
- - glyphs:<NAME>()
- - glyphs:small_<NAME>()
 
+structure names must be a single word
 
 ]]
 
@@ -72,13 +68,6 @@ config["structures"] = {
   "SPOMENIK",
   "AUTON"
 }
-
-config["analysis_items"] = {
-  "SIGNALS"
-}
-for k,v in pairs(config["structures"]) do
-  table.insert(config["analysis_items"], v)
-end
 
 config["attributes"] = {
   "AMORTIZE",

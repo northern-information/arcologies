@@ -9,35 +9,21 @@ function glyphs.init()
   glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
 end
 
+function glyphs:draw_glyph(s, x, y, l)
+  assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)
+end
+
+function glyphs:draw_small_glyph(s, x, y, l)
+  assert(load("glyphs:" .. "small_" .. string.lower(s) .. "(...)"))(x, y, l)
+end
+
 function glyphs:random(x, y, l, jitter)
   local r = math.random(1, #config.structures)
   if jitter then
     x = x + math.random(-1, 1)
     y = y + math.random(-1, 1)
   end
-      if r == 1  then self:cell(x, y, l)
-  elseif r == 2  then self:hive(x, y, l)
-  elseif r == 3  then self:shrine(x, y, l)
-  elseif r == 4  then self:gate(x, y, l)
-  elseif r == 5  then self:rave(x, y, l)
-  elseif r == 6  then self:topiary(x, y, l)
-  elseif r == 7  then self:dome(x, y, l)
-  elseif r == 8  then self:maze(x, y, l)
-  elseif r == 9  then self:crypt(x, y, l)
-  elseif r == 10 then self:vale(x, y, l)
-  elseif r == 11 then self:solarium(x, y, l)
-  elseif r == 12 then self:uxb(x, y, l)
-  elseif r == 13 then self:casino(x, y, l)
-  elseif r == 14 then self:tunnel(x, y, l)
-  elseif r == 15 then self:aviary(x, y, l)
-  elseif r == 16 then self:forest(x, y, l)
-  elseif r == 17 then self:hydroponics(x, y, l)
-  elseif r == 18 then self:institution(x, y, l)
-  elseif r == 19 then self:mirage(x, y, l)
-  elseif r == 20 then self:bank(x, y, l)
-  elseif r == 21 then self:spomenik(x, y, l)
-  elseif r == 22 then self:auton(x, y, l)
-  end
+  self:draw_glyph(config.structures[r], x, y, l)
 end
 
 function glyphs:small_random(x, y, l, jitter)
@@ -46,32 +32,8 @@ function glyphs:small_random(x, y, l, jitter)
     x = x + math.random(-1, 1)
     y = y + math.random(-1, 1)
   end
-      if r == 1  then self:small_cell(x, y, l)
-  elseif r == 2  then self:small_hive(x, y, l)
-  elseif r == 3  then self:small_shrine(x, y, l)
-  elseif r == 4  then self:small_gate(x, y, l)
-  elseif r == 5  then self:small_rave(x, y, l)
-  elseif r == 6  then self:small_topiary(x, y, l)
-  elseif r == 7  then self:small_dome(x, y, l)
-  elseif r == 8  then self:small_maze(x, y, l)
-  elseif r == 9  then self:small_crypt(x, y, l)
-  elseif r == 10 then self:small_vale(x, y, l)
-  elseif r == 11 then self:small_solarium(x, y, l)
-  elseif r == 12 then self:small_uxb(x, y, l)
-  elseif r == 13 then self:small_casino(x, y, l)
-  elseif r == 14 then self:small_tunnel(x, y, l)
-  elseif r == 15 then self:small_aviary(x, y, l)
-  elseif r == 16 then self:small_forest(x, y, l)
-  elseif r == 17 then self:small_hydroponics(x, y, l)
-  elseif r == 18 then self:small_institution(x, y, l)
-  elseif r == 19 then self:small_mirage(x, y, l)
-  elseif r == 20 then self:small_bank(x, y, l)
-  elseif r == 21 then self:small_spomenik(x, y, l)
-  elseif r == 22 then self:small_auton(x, y, l)
-  end
+  self:draw_small_glyph(config.structures[r], x, y, l)
 end
-
--- full-size glyphs (22 x 26)
 
 function glyphs:test()
   graphics:title_bar_and_tabs() 
@@ -79,54 +41,7 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-
-  -- self:cell(x, y, l)
-  -- self:hive(x, y, l)
-  -- self:shrine(x, y, l)
-  -- self:gate(x, y, l)
-  -- self:rave(x, y, l)
-  -- self:topiary(x, y, l)
-  -- self:dome(x, y, l)
-  -- self:maze(x, y, l)
-  -- self:crypt(x, y, l)
-  -- self:vale(x, y, l)
-  -- self:solarium(x, y, l)
-  -- self:uxb(x, y, l)
-  -- self:casino(x, y, l)
-  -- self:tunnel(x, y, l)
-  -- self:aviary(x, y, l)
-  -- self:forest(x, y, l)
-  -- self:hydroponics(x, y, l)
-  -- self:institution(x, y, l)
-  self:mirage(x, y, l)
-  -- self:bank(x, y, l)
--- self:spomenik(x, y, l)
-  -- self:auton(x, y, l)
-  
-
-  -- self:small_cell(x+60, y, l)
-  -- self:small_hive(x+60, y, l)
-  -- self:small_shrine(x+60, y, l)
-  -- self:small_gate(x+60, y, l)
-  -- self:small_rave(x+60, y, l)
-  -- self:small_topiary(x+60, y, l)
-  -- self:small_dome(x+60, y, l)
-  -- self:small_maze(x+60, y, l)
-  -- self:small_crypt(x+60, y, l)
-  -- self:small_vale(x+60, y, l)
-  -- self:small_solarium(x+60, y, l)
-  -- self:small_uxb(x+60, y, l)
-  -- self:small_casino(x+60, y, l)
-  -- self:small_tunnel(x+60, y, l)
-  -- self:small_aviary(x+60, y, l)
-  -- self:small_forest(x+60, y, l)
-  -- self:small_hydrozponics(x+60, y, l)
-  -- self:small_institution(x+60, y, l)
-  -- self:small_mirage(x+60, y, l)
-  -- self:small_bank(x+60, y, l)
-  self:small_spomenik(x+60, y, l)
-  -- self:small_auton(x+60, y, l)
-
+  self:spomenik(x, y, l)
 end
 
 function glyphs:bounding_box(x, y, l)
@@ -345,8 +260,6 @@ function glyphs:auton(x, y, l)
   graphics:rect(x+8, y+18, 6, 2, l)
 end
 
--- full-size glyph components
-
 function glyphs:left_wall(x, y, l)
   graphics:rect(x, y, 2, 26, l)
 end
@@ -471,9 +384,7 @@ function glyphs:west_port(x, y, l)
   graphics:rect(x-4, y+12, 2, 4, l)
 end
 
--- small glyphs
-
-function glyphs:small_signal(x, y, l)
+function glyphs:small_signals(x, y, l)
   graphics:mlrs(x-1, y-1, 3, 3, l)
   graphics:mlrs(x+2, y+3, 4, -4, l)
   graphics:mlrs(x+3, y+3, 0, 5, l)
@@ -679,8 +590,6 @@ function glyphs:small_auton(x, y, l)
   graphics:mls(x+3, y+4, x+6, y+4, l)
   graphics:mls(x+1, y+6, x+4, y+6, l)
 end
-
--- small components
 
 function glyphs:small_left_wall(x, y, l)
   graphics:mls(x, y-1, x, y+8, l)

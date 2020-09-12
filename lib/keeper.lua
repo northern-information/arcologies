@@ -366,6 +366,17 @@ function keeper:count_cells(name)
   return count
 end
 
+function keeper:get_analysis_items()
+  local analysis_items = {}
+  table.insert(analysis_items, "SIGNALS")
+  for k,v in pairs(config["structures"]) do
+    if self:count_cells(v) > 0 then
+      table.insert(analysis_items, v)
+    end
+  end
+  return analysis_items
+end
+
 -- happens when the user changes the root note or the scale
 function keeper:update_all_notes()
   for k,cell in pairs(self.cells) do
