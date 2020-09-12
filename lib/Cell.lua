@@ -157,18 +157,19 @@ theres  only ~40 lines of code below...
 function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
-      if self:is("DOME")    then self:set_er()
+      if self:is("DOME")      then self:set_er()
 
-  elseif self:is("SHRINE")  then self:setup_notes(1)
+  elseif self:is("SHRINE") 
+      or self:is("AVIARY")
+      or self:is("SPOMENIK")  then self:setup_notes(1)
 
   elseif self:is("TOPIARY") 
       or self:is("CASINO") 
       or self:is("FOREST") 
-      or self:is("AUTON")   then self:setup_notes(8)
+      or self:is("AUTON")     then self:setup_notes(8)
 
-  elseif self:is("CRYPT") then
-    self:set_state_index(1) 
-    self:cycle_state_index(0)
+  elseif self:is("CRYPT")     then self:set_state_index(1) 
+                                   self:cycle_state_index(0)
   end
 end
 
@@ -302,7 +303,7 @@ function Cell:menu_items()
     local note_position = fn.table_find(items, "NOTES")
     if type(note_position) == "number" then
       table.remove(items, note_position)
-      if self:is("SHRINE") or self:is("UXB") or self:is("AVIARY")  or self:is("VALE") then
+      if self:is("SHRINE") or self:is("UXB") or self:is("AVIARY") or self:is("VALE") or self:is("SPOMENIK") then
         table.insert(items, note_position, "NOTE")
       elseif  self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") or self:is("AUTON") then
         local notes_submenu_items = self:get_notes_submenu_items()

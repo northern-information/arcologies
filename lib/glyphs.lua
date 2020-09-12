@@ -30,7 +30,8 @@ function glyphs:random(x, y, l, jitter)
   elseif r == 18 then self:institution(x, y, l)
   elseif r == 19 then self:mirage(x, y, l)
   elseif r == 20 then self:bank(x, y, l)
-  elseif r == 21 then self:auton(x, y, l)
+  elseif r == 21 then self:spomenik(x, y, l)
+  elseif r == 22 then self:auton(x, y, l)
   end
 end
 
@@ -60,7 +61,8 @@ function glyphs:small_random(x, y, l, jitter)
   elseif r == 18 then self:small_institution(x, y, l)
   elseif r == 19 then self:small_mirage(x, y, l)
   elseif r == 20 then self:small_bank(x, y, l)
-  elseif r == 21 then self:small_auton(x, y, l)
+  elseif r == 21 then self:small_spomenik(x, y, l)
+  elseif r == 22 then self:small_auton(x, y, l)
   end
 end
 
@@ -93,7 +95,8 @@ function glyphs:test()
   -- self:institution(x, y, l)
   -- self:mirage(x, y, l)
   -- self:bank(x, y, l)
-self:auton(x, y, l)
+self:spomenik(x, y, l)
+  -- self:auton(x, y, l)
   
 
   -- self:small_cell(x+60, y, l)
@@ -116,7 +119,8 @@ self:auton(x, y, l)
   -- self:small_institution(x+60, y, l)
   -- self:small_mirage(x+60, y, l)
   -- self:small_bank(x+60, y, l)
-  self:small_auton(x+60, y, l)
+  self:small_spomenik(x+60, y, l)
+  -- self:small_auton(x+60, y, l)
 
 end
 
@@ -311,6 +315,19 @@ function glyphs:bank(x, y, l)
   graphics:rect(x+5, y+18, 2, 8, l)
   graphics:rect(x+10, y+18, 2, 8, l)
   graphics:rect(x+15, y+18, 2, 8, l)
+end
+
+function glyphs:spomenik(x, y, l)
+  self:basement(x, y, l)
+  self:floor(x, y, l)
+  self:second_floor(x, y, l)
+  graphics:rect(x+10, y+18, 2, 8, l)
+  graphics:rect(x, y+12, 2, 8, l)
+  graphics:rect(x+20, y+12, 2, 8, l)
+  graphics:rect(x+6, y, 2, 14, l)
+  graphics:rect(x+14, y, 2, 14, l)
+  graphics:rect(x, y, 8, 2, l)
+  graphics:rect(x+14, y, 8, 2, l)
 end
 
 function glyphs:auton(x, y, l)
@@ -633,6 +650,19 @@ function glyphs:small_bank(x, y, l)
   graphics:mls(x+1, y+2, x+4, y+2, l)
   graphics:mlrs(x+1, y+6, 1, 2, l)
   graphics:mlrs(x+3, y+6, 1, 2, l)
+end
+
+function glyphs:small_spomenik(x, y, l)
+  self:small_basement(x, y, l)
+  self:small_floor(x, y, l)
+  self:small_second_floor(x, y, l)
+  graphics:mls(x-1, y, x+2, y, l)
+  graphics:mls(x+2, y-1, x+2, y+4, l)
+  graphics:mls(x+3, y, x+6, y, l)
+  graphics:mls(x+4, y-1, x+4, y+4, l)
+  graphics:mls(x, y+3, x, y+6, l)
+  graphics:mls(x+6, y+3, x+6, y+6, l)
+  graphics:mls(x+3, y+5, x+3, y+8, l)
 end
 
 function glyphs:small_auton(x, y, l)

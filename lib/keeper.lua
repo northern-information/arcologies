@@ -83,9 +83,13 @@ function keeper:collision(signal, cell)
   elseif cell:is("VALE") then
     sound:play(sound:get_random_note(cell.range_min / 100, cell.range_max / 100), cell.velocity)
 
+  -- spomeniks play single notes on jf
+  elseif cell:is("SPOMENIK") then
+    c:jf(cell.notes[1])
+
   -- autons cycle through notes on jf
   elseif cell:is("AUTON") then
-    c:jf(cell.notes[cell.state_index], cell.duration)
+    c:jf(cell.notes[cell.state_index])
     cell:cycle_state_index(1)
 
   -- hydroponics operate at a distance

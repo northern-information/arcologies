@@ -16,12 +16,6 @@ config["settings"] = {
   ["crypts_path"] =  _path.audio .. "crypts/"
 }
 
-config["outputs"] = {
-  ["midi"] = true,
-  ["crow"] = true,
-  ["jf"] = true
-}
-
 config["page_titles"] = {
   "ARCOLOGIES",
   "DESIGNER",
@@ -59,6 +53,7 @@ config["structures"] = {
   "INSTITUTION",
   "MIRAGE",
   "BANK",
+  "SPOMENIK",
   "AUTON"
 }
 
@@ -221,6 +216,12 @@ config["structure_attribute_map"] = {
     "TAXES",
     "DEPRECIATE",
     "AMORTIZE",
+    "DOCS",
+    "STRUCTURE"
+  },
+  ["SPOMENIK"] = {
+    "INDEX",
+    "NOTES",
     "DOCS",
     "STRUCTURE"
   },

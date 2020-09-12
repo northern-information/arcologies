@@ -169,6 +169,12 @@ docs.sheets["MIRAGE"] = {
   "open ports."
 }
 
+docs.sheets["SPOMENIK"] = {
+  "Plays Just",
+  "Friends via",
+  "crow i2c."
+}
+
 docs.sheets["AUTON"] = {
   "Plays Just",
   "Friends via",

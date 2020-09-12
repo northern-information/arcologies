@@ -327,16 +327,10 @@ end
 function fn.cleanup()
   g.all(0)
   poll:clear_all()
-  if config.outputs.midi then
-    m:cleanup()
-  end
-  if config.outputs.crow then
-    crow.clear()
-    crow.reset()
-  end
-  if config.outputs.jf then
-    crow.ii.jf.mode(0)
-  end
+  m:cleanup()
+  crow.clear()
+  crow.reset()
+  crow.ii.jf.mode(0)
 end
 
 function fn.seed_cells()

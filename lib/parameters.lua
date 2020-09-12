@@ -19,7 +19,17 @@ function parameters.init()
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
 
+  params:add{ type = "number", id = "jf_i2c_mode", name = "JF I2C MODE",
+    min = 0, max = 1, default = 1,
+    action = function(i) crow.ii.jf.mode(i) end
+  }
+
+  params:add{ type = "number", id = "jf_i2c_god_note", name = "JF I2C GOD NOTE",
+    min = 0, max = 1, default = 0,
+    action = function(i) crow.ii.jf.god_mode(i) end
+  }
   
+
   params:add{ type = "number", id = "popup_patience", name = "POPUP PATIENCE",
     min = 0.5, max = 4.0, default = 0.5,
   }

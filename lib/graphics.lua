@@ -22,7 +22,7 @@ function graphics:structure_and_title(s)
     local x = self.structure_x
     local y = self.structure_y
     local l = 0
-        if s == "AUTON"          then glyphs:auton(x, y, l)
+        if s == "AUTON"         then glyphs:auton(x, y, l)
     elseif s == "AVIARY"        then glyphs:aviary(x, y, l)
     elseif s == "BANK"          then glyphs:bank(x, y, l)    
     elseif s == "CASINO"        then glyphs:casino(x, y, l)    
@@ -32,12 +32,13 @@ function graphics:structure_and_title(s)
     elseif s == "GATE"          then glyphs:gate(x, y, l)
     elseif s == "HIVE"          then glyphs:hive(x, y, l)
     elseif s == "HYDROPONICS"   then glyphs:hydroponics(x, y, l)
-    elseif s == "INSTITUTION"    then glyphs:institution(x, y, l)
+    elseif s == "INSTITUTION"   then glyphs:institution(x, y, l)
     elseif s == "MAZE"          then glyphs:maze(x, y, l)
     elseif s == "MIRAGE"        then glyphs:mirage(x, y, l)
     elseif s == "RAVE"          then glyphs:rave(x, y, l)
     elseif s == "SHRINE"        then glyphs:shrine(x, y, l)
     elseif s == "SOLARIUM"      then glyphs:solarium(x, y, l)
+    elseif s == "SPOMENIK"      then glyphs:spomenik(x, y, l)
     elseif s == "TOPIARY"       then glyphs:topiary(x, y, l)
     elseif s == "TUNNEL"        then glyphs:tunnel(x, y, l)
     elseif s == "UXB"           then glyphs:uxb(x, y, l)
@@ -46,8 +47,8 @@ function graphics:structure_and_title(s)
 end
 
 function graphics:structure_palette(i)
-  local start_x = 31
-  local start_y = 12
+  local start_x = 18
+  local start_y = 20
   local margin_x = 15
   local margin_y = 14
   local p = {}
@@ -63,12 +64,11 @@ function graphics:structure_palette(i)
   for k,v in pairs(p) do
     local row, col = 1,1
     -- call me hardcode kassidy
-    if k >= 6 and k <= 10 then row = 2 end
-    if k >= 11 and k <= 15 then row = 3 end
-    if k >= 16 and k <= 20 then row = 4 end
+    if k >= 8 and k <= 14 then row = 2 end
+    if k >= 15 and k <= 21 then row = 3 end
     p[k].y = start_y + (margin_y * (row - 1))
-    col = k % 5
-    col = col == 0 and 5 or col
+    col = k % 7
+    col = col == 0 and 7 or col
     p[k].x = start_x + (margin_x * (col - 1))
     if p[k].selected then
       self:rect(p[k].x - 4, p[k].y - 3, 13, 13, 15)
@@ -81,24 +81,24 @@ function graphics:structure_palette(i)
   glyphs:small_gate(          p[3].x,  p[3].y, p[3].selected  and 0 or 15)
   glyphs:small_rave(          p[4].x,  p[4].y, p[4].selected  and 0 or 15)
   glyphs:small_topiary(       p[5].x,  p[5].y, p[5].selected  and 0 or 15)
-  -- row 2 
   glyphs:small_dome(          p[6].x,  p[6].y,  p[6].selected  and 0 or 15)
   glyphs:small_maze(          p[7].x,  p[7].y,  p[7].selected  and 0 or 15)
+  -- row 2 
   glyphs:small_crypt(         p[8].x,  p[8].y,  p[8].selected  and 0 or 15)
   glyphs:small_vale(          p[9].x,  p[9].y,  p[9].selected  and 0 or 15)
   glyphs:small_solarium(      p[10].x, p[10].y, p[10].selected and 0 or 15)
-  -- row 3
   glyphs:small_uxb(           p[11].x, p[11].y, p[11].selected and 0 or 15)
   glyphs:small_casino(        p[12].x, p[12].y, p[12].selected and 0 or 15)
   glyphs:small_tunnel(        p[13].x, p[13].y, p[13].selected and 0 or 15)
   glyphs:small_aviary(        p[14].x, p[14].y, p[14].selected and 0 or 15)
+  -- row 3
   glyphs:small_forest(        p[15].x, p[15].y, p[15].selected and 0 or 15)
-  -- row 4
   glyphs:small_hydroponics(   p[16].x, p[16].y, p[16].selected and 0 or 15)
   glyphs:small_institution(   p[17].x, p[17].y, p[17].selected and 0 or 15)
   glyphs:small_mirage(        p[18].x, p[18].y, p[18].selected and 0 or 15)
   glyphs:small_bank(          p[19].x, p[19].y, p[19].selected and 0 or 15)
-  glyphs:small_auton(         p[20].x, p[20].y, p[20].selected and 0 or 15)
+  glyphs:small_spomenik(      p[20].x, p[20].y, p[20].selected and 0 or 15)
+  glyphs:small_auton(         p[21].x, p[21].y, p[21].selected and 0 or 15)
 end
 
 function graphics:structure_palette_analysis(s)
