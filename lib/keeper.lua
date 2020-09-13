@@ -46,7 +46,7 @@ function keeper:collision(signal, cell)
 
   -- uxbs play single notes via midi
   elseif cell:is("UXB") then
-    m:play(cell.notes[1], cell.velocity, cell.duration, cell.device)
+    m:play(cell.notes[1], cell.velocity, cell.channel, cell.duration, cell.device)
 
   -- aviaries play single notes via crow
   elseif cell:is("AVIARY") then
@@ -67,7 +67,7 @@ function keeper:collision(signal, cell)
 
   -- topiaries cylce through notes
   elseif cell:is("CASINO") then
-    m:play(cell.notes[cell.state_index], cell.velocity, cell.duration, cell.device)
+    m:play(cell.notes[cell.state_index], cell.velocity, cell.channel, cell.duration, cell.device)
     cell:cycle_state_index(1)
 
   -- forests cylce through notes
@@ -259,7 +259,7 @@ function keeper:create_signal(x, y, h, when)
   if when == "now" then
     table.insert(self.signals, Signal:new(x, y, h))
   elseif when =="tomorrow" then
-    table.insert(self.new_signals, Signal:new(x, y, h, counters.music_generation() + 1))
+    table.insert(self.new_signals, Signal:new(x, y, h, counters.music_generation + 1))
   end
   fn.dirty_grid(true)
   fn.dirty_screen(true)
@@ -301,7 +301,7 @@ function keeper:get_cell(index)
 end
 
 function keeper:create_cell(x, y)
-  local new_cell = Cell:new(x, y, counters.music_generation())
+  local new_cell = Cell:new(x, y, counters.music_generation)
   table.insert(self.cells, new_cell)
   return new_cell
 end
@@ -395,6 +395,7 @@ end
 
 -- happens when a new crypt directory is selected
 function keeper:update_all_crypts()
+  s:crypt_table()
   for k,cell in pairs(self.cells) do
     if cell:is("CRYPT") then
       cell:cycle_state_index(0, i)

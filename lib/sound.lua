@@ -2,7 +2,6 @@ sound = {}
 
 function sound.init()
   sound.length = config.settings.length
-  sound.playback = config.settings.playback
   sound.root = config.settings.root
   sound.scale = config.settings.scale
   sound.octaves = config.settings.octaves
@@ -32,21 +31,6 @@ end
 
 function sound:cycle_length(i)
   self.length = util.clamp(self.length + i, 1, 16)
-end
-
-function sound:set_playback(i)
-  self.playback = util.clamp(i, 0, 1)
-end
-
-function sound:toggle_playback()
-  if self.playback == 0 then
-    self:set_playback(1)
-    graphics:set_message("PLAYING", counters.default_message_length)
-  else
-    self:set_playback(0)
-    graphics:set_message("PAUSED", counters.default_message_length)
-  end
-  fn.dirty_screen(true)
 end
 
 function sound:cycle_root(i)

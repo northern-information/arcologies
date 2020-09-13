@@ -111,7 +111,7 @@ end
 
 function graphics:time(x, y)
   local o = 3
-  local beat = counters.this_beat()
+  local beat = counters:this_beat()
   local meta = keeper.selected_cell.metabolism
   local l = sound.length
 
@@ -189,7 +189,7 @@ function graphics:top_message()
     message = self.temporary_message
   else
     self.temporary_message_on = false
-    if sound.playback == 0 then
+    if counters.playback == 0 then
       message = self:ready_animation(math.fmod(counters.ui.quarter_frame, 10) + 1)
     elseif not docs:is_active() then
       self:time(#page.titles * (self.tab_padding + self.tab_width), 2)
@@ -290,10 +290,10 @@ function graphics:bpm(x, y, string, level)
 end
 
 function graphics:playback_icon(x, y)
-  if sound.playback == 0 then
+  if counters.playback == 0 then
     self:icon(x, y, "||", 1)
   else
-    self:icon(x, y, counters.this_beat(), (counters.this_beat() == 1) and 1 or 0)
+    self:icon(x, y, counters:this_beat(), (counters:this_beat() == 1) and 1 or 0)
   end
 end
 
@@ -454,8 +454,8 @@ function graphics:analysis(items, selected_item_key)
 
   -- more data
   self:text(54, 50, chart.values[selected_item_key], 15)
-  self:text(74, 50, counters.this_beat(), 15)
-  self:text(94, 50, counters.music.generation, 15)
+  self:text(74, 50, counters:this_beat(), 15)
+  self:text(94, 50, counters.music_generation, 15)
   fn.dirty_grid(true)
 end
 

@@ -7,7 +7,7 @@
 --
 --
 -- ........................................
--- v1.1.3 "eternal september"
+-- v1.1.4 "eternal september"
 -- <3 @tyleretters
 -- nor.the-rn.info
 -- GNU GPL v3.0
@@ -16,7 +16,6 @@ include("arcologies/lib/includes")
 
 function init()
   audio:pitch_off()
-  dev.init()
   filesystem.init()
   parameters.init()
   fn.init()
@@ -40,11 +39,11 @@ function init()
     norns.encoders.set_sens(i, 16)
     counters:reset_enc(i)
   end
+  music_clock_id = clock.run(counters.conductor)
+  redraw_clock_id = clock.run(counters.redraw_clock)
+  grid_clock_id = clock.run(g.grid_redraw_clock)
   counters.ui:start()
-  counters.music:start()
   counters.grid:start()
-  clock.run(counters.redraw_clock)
-  clock.run(g.grid_redraw_clock)
   page:select(parameters.is_splash_screen_on and 0 or 1)
   init_done = true
   if config.settings.dev_mode then dev:scene(config.settings.dev_scene) end
@@ -79,7 +78,7 @@ function key(k, z)
       clock.cancel(key_counter[k])
        -- short k1 is the default exit to norns
       if k == 2 then -- short k2 only ever toggles playback
-        sound:toggle_playback()
+        counters:toggle_playback()
       elseif k == 3 then -- short k3 only ever deletes the selected cell
         keeper:delete_cell()
       end

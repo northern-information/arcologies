@@ -23,7 +23,7 @@ function filesystem.load(path)
     local data = tab.load(path)
     if data ~= nil then
       print("data found")
-      fn.load(data)
+      saveload:load(data)
       params:read(norns.state.data .. data.arcology_name ..".pset")
       print ('loaded ' .. norns.state.data .. data.arcology_name)
     else
@@ -36,15 +36,13 @@ function filesystem.save(text)
   if text then
     print("saving...")
     local save_path = norns.state.data .. text
-    tab.save(fn.collect_data_for_save(text), save_path ..".arcology")
+    tab.save(saveload:collect_data_for_save(text), save_path ..".arcology")
     params:write(save_path .. ".pset")
     print("saved!")
   else
     print("save cancel")
   end
 end
-
-
 
 function filesystem:scan_crypts()
   local delete = {"LICENSE", "README.md"}

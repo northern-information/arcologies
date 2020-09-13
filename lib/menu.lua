@@ -16,14 +16,17 @@ end
 
 function menu:render(bool)
   local render_values = (bool == nil) and true or bool
-  local item_level = 15
   -- rectangular highlight
   graphics:rect(0, ((self.selected_item - 1) * 8) + 12 - (self.offset * 8), 51, 7, 2)
   -- iterate through items
   for i = 1, #self.items do
     local offset = 10 + (i * 8) - (self.offset * 8)
     -- menu item
-    graphics:text(2, offset, self.items[i], item_level)
+    graphics:text(2, offset, self.items[i], 15)
+    if not fn.is_clock_internal() and self.items[i] == "BPM" then
+      graphics:text(2, offset, self.items[i], 5)
+      graphics:mls(2, offset - 2, 40, offset - 2, 15)
+    end
 
     -- panel value for cell designer
     if page.active_page == 2 and render_values then
@@ -85,13 +88,21 @@ function menu:render(bool)
   end
 end
 
+function menu:handle_scroll_bpm(d)
+  if fn.is_clock_internal() then
+    params:set("clock_tempo", params:get("clock_tempo") + d)
+  else
+    graphics:set_message("EXTERNAL CONTROL ON", counters.default_message_length)
+  end
+end
+
 function menu:scroll_value(d)
   local s = self.selected_item_string
 
   -- home
   if page.active_page == 1 then
-        if s == fn.playback() then sound:set_playback(d)
-    elseif s == "BPM"         then params:set("bpm", params:get("bpm") + d)
+        if s == fn.playback() then counters:set_playback(d)
+    elseif s == "BPM"         then self:handle_scroll_bpm(d)
     elseif s == "LENGTH"      then sound:cycle_length(d)
     elseif s == "ROOT"        then sound:cycle_root(d)
     elseif s == "SCALE"       then sound:set_scale(sound.scale + d)
@@ -99,8 +110,9 @@ function menu:scroll_value(d)
 
   -- cell designer
   elseif page.active_page == 2 then
-        if s == "AMORTIZE" then keeper.selected_cell:set_amortize(keeper.selected_cell.amortize + d)
+        if s == "AMORTIZE"     then keeper.selected_cell:set_amortize(keeper.selected_cell.amortize + d)
     elseif s == "CAPACITY"     then keeper.selected_cell:set_capacity(keeper.selected_cell.capacity + d)
+    elseif s == "CHANNEL"      then keeper.selected_cell:set_channel(keeper.selected_cell.channel + d)
     elseif s == "CHARGE"       then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
     elseif s == "CROW OUT"     then keeper.selected_cell:set_crow_out(keeper.selected_cell.crow_out + d)
     elseif s == "CRUMBLE"      then keeper.selected_cell:set_crumble(keeper.selected_cell.crumble + d)

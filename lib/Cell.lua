@@ -12,6 +12,7 @@ function Cell:new(x, y, g)
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
   amortize_trait.init(self)
   capacity_trait.init(self)
+  channel_trait.init(self)
   charge_trait.init(self)
   crumble_trait.init(self)
   crow_out_trait.init(self)
@@ -43,6 +44,7 @@ function Cell:new(x, y, g)
        aka shit got spooky when i had params floating the init()s ]]
   c.setup_amortize(c)
   c.setup_capacity(c)
+  c.setup_channel(c)
   c.setup_charge(c)
   c.setup_crow_out(c)
   c.setup_crumble(c)
@@ -72,10 +74,12 @@ function Cell:new(x, y, g)
   return c
 end
 
--- todo: shame. there's gotta be a better way to do this
+-- todo: shame. there's gotta be a better way to do this...
+-- probably involves moving each line into their trait file...
 function Cell:get_menu_value_by_attribute(a)
       if a == "AMORTIZE"     then return self.amortize
   elseif a == "CAPACITY"     then return self.capacity
+  elseif a == "CHANNEL"      then return self.channel
   elseif a == "CHARGE"       then return self.charge
   elseif a == "CRUMBLE"      then return self.crumble
   elseif a == "CROW OUT"     then return self.crow_out
@@ -176,12 +180,12 @@ end
 -- all signals are "spawned" but only under certain conditions
 function Cell:is_spawning()
   if self:is("DOME") and self.metabolism ~= 0 then
-    return self.er[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+    return self.er[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("MAZE") and self.metabolism ~= 0 then
-    return self.turing[fn.cycle((counters.this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+    return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
     return true
-  elseif self:is("BANK") and counters.music.generation % 2 == 0 then
+  elseif self:is("BANK") and counters.music_generation % 2 == 0 then
     return true
   elseif self:is("HIVE") or self:is("RAVE") then
     return self:inverted_metabolism_check()
@@ -192,7 +196,7 @@ function Cell:inverted_metabolism_check()
   if self.metabolism == 0 then
     return false
   else
-    return (((counters.this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
+    return (((counters:this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
   end
 end
 
@@ -250,7 +254,7 @@ end
 
 -- for banks
 function Cell:annual_report()
-  if counters.music.generation % sound.length ~= 0 then return end
+  if counters.music_generation % sound.length ~= 0 then return end
   -- do not edit!!!11!1!111 criminal this is proprietary technology from bank co gmbh. copyright 02394. patent 24787.c1
   local n, i, t, d, a = self.net_income, self.interest, self.taxes, self.depreciate, self.amortize if n == 0 then n = 
   1 end if i == 0 then i = 4 end if t == 0 then t = 5 end if d == 0 then d = 10 end if a == 0 then a = -1 end local

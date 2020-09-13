@@ -13,146 +13,12 @@ function fn.get_arcology_version()
          config.settings.version_patch
 end
 
-function fn.collect_data_for_save(name)
-  data = {
-    arcology_name = name or arcology_name,
-    version_major = config.settings.version_major,
-    version_minor = config.settings.version_minor,
-    version_patch = config.settings.version_patch,
-    bpm = params:get("bpm"),
-    length = sound.length,
-    root = sound.root,
-    scale = sound.scale,
-    counters_music_generation = counters.music.generation,
-    crypt_name = filesystem.crypt_name,
-    keeper_cells = {},
-    keeper_signals = {}
-  }
-  for k, cell in pairs(keeper.cells) do
-    table.insert(data.keeper_cells, fn.deep_copy(cell))
-  end
-  for k, signal in pairs(keeper.signals) do
-    table.insert(data.keeper_signals, fn.deep_copy(signal))
-  end
-  return data
-end
-
-function fn.load(data)
-  if data.version_major == 1 and data.version_minor == 0 then
-    fn.load_10n(data)
-  elseif data.version_major == 1 and data.version_minor == 1 then
-    fn.load_11n(data)
-  else 
-    print("Error: arcology data is not in an acceptable format.")
-  end
-end
-
-function fn.load_11n(data)
-  arcology_name = data.arcology_name
-  params:set("bpm", data.bpm)
-  sound.length = data.length
-  sound.root = data.root
-  sound:set_scale(data.scale)
-  counters.music.generation = data.counters_music_generation
-  filesystem:load_crypt_by_name(data.crypt_name)
-  keeper.init()
-  for k, load_cell in pairs(data.keeper_cells) do
-    local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
-    tmp.amortize         = load_cell.amortize
-    tmp.capacity         = load_cell.capacity
-    tmp.charge           = load_cell.charge
-    tmp.crow_out         = load_cell.crow_out
-    tmp.crumble          = load_cell.crumble
-    tmp.deflect          = load_cell.deflect
-    tmp.depreciate       = load_cell.depreciate
-    tmp.device           = load_cell.device
-    tmp.drift            = load_cell.drift
-    tmp.duration         = load_cell.duration
-    tmp.interest         = load_cell.interest
-    tmp.level            = load_cell.level
-    tmp.metabolism       = load_cell.metabolism
-    tmp.network_value    = load_cell.network_value
-    tmp.net_income       = load_cell.net_income
-    tmp.note_count       = load_cell.note_count
-    tmp.notes            = load_cell.notes
-    tmp.offset           = load_cell.offset
-    tmp.operator         = load_cell.operator
-    tmp.ports            = load_cell.ports
-    tmp.probability      = load_cell.probability
-    tmp.pulses           = load_cell.pulses
-    tmp.range_max        = load_cell.range_max
-    tmp.range_min        = load_cell.range_min
-    tmp.state_index      = load_cell.state_index
-    tmp.structure_value  = load_cell.structure_value
-    tmp.sub_menu_items   = load_cell.sub_menu_items
-    tmp.taxes            = load_cell.taxes
-    tmp.territory        = load_cell.territory
-    tmp.velocity         = load_cell.velocity
-    tmp:set_available_ports()
-    table.insert(keeper.cells, tmp)
-  end
-  for k, load_signal in pairs(data.keeper_signals) do
-    local tmp = Signal:new(load_signal.x, load_signal.y, load_signal.h, load_signal.generation)
-    tmp.heading     = load_signal.heading
-    tmp.index       = load_signal.index
-    tmp.generation  = load_signal.generation
-    tmp.y           = load_signal.y
-    tmp.id          = load_signal.id
-    tmp.x           = load_signal.x
-    table.insert(keeper.signals, tmp)
-  end
-  arcology_loaded = true
-end
-
-function fn.load_10n(data)
-  arcology_name = data.arcology_name
-  params:set("bpm", data.bpm)
-  sound.length = data.length
-  sound.root = data.root
-  sound:set_scale(data.scale)
-  counters.music.generation = data.counters_music_generation
-  filesystem:load_crypt_by_name(data.crypt_name)
-  keeper.init()
-  for k, load_cell in pairs(data.keeper_cells) do
-    local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
-    tmp.capacity         = load_cell.capacity
-    tmp.charge           = load_cell.charge
-    tmp.crow_out         = load_cell.crow_out
-    tmp.device           = load_cell.device
-    tmp.duration         = 16
-    tmp.state_index      = load_cell.state_index
-    tmp.level            = load_cell.level
-    tmp.metabolism       = load_cell.metabolism
-    tmp.network_value    = load_cell.network_value
-    tmp.note_count       = load_cell.note_count
-    tmp.notes            = load_cell.notes
-    tmp.offset           = load_cell.offset
-    tmp.ports            = load_cell.ports
-    tmp.probability      = load_cell.probability
-    tmp.pulses           = load_cell.pulses
-    tmp.range_max        = load_cell.range_max
-    tmp.range_min        = load_cell.range_min
-    tmp.structure_value  = load_cell.structure_value
-    tmp.sub_menu_items   = load_cell.sub_menu_items
-    tmp.velocity         = load_cell.velocity
-    tmp:set_available_ports()
-    table.insert(keeper.cells, tmp)
-  end
-  for k, load_signal in pairs(data.keeper_signals) do
-    local tmp = Signal:new(load_signal.x, load_signal.y, load_signal.h, load_signal.generation)
-    tmp.heading     = load_signal.heading
-    tmp.index       = load_signal.index
-    tmp.generation  = load_signal.generation
-    tmp.y           = load_signal.y
-    tmp.id          = load_signal.id
-    tmp.x           = load_signal.x
-    table.insert(keeper.signals, tmp)
-  end
-  arcology_loaded = true
-end
-
 function fn.get_structure_attributes(name)
   return config.structure_attribute_map[name]
+end
+
+function fn.is_clock_internal()
+  return params:get("clock_source") == 1
 end
 
 function fn.id()
@@ -187,11 +53,16 @@ function fn.ry()
 end
 
 function fn.playback()
-  return sound.playback == 0 and "READY" or "PLAYING"
+  return counters.playback == 0 and "READY" or "PLAYING"
 end
 
 function fn.coin()
   return math.random(0, 1)
+end
+
+function fn.round(num, decimals)
+  local mult = 10 ^ (decimals or 0)
+  return math.floor(num * mult + 0.5) / mult
 end
 
 function fn.nearest_value(table, number)
@@ -275,7 +146,7 @@ function fn.cycle(value, min, max)
 end
 
 function fn.long_press(k)
-  -- anythin greater than half a second is a long press
+  -- anything greater than half a second is a long press
   clock.sleep(.5)
   key_counter[k] = nil
   if k == 3 then
@@ -311,14 +182,6 @@ end
 
 -- the lost souls
 
-function clock.transport.start()
-  sound:toggle_playback()
-end
-
-function clock.transport.stop()
-  sound:toggle_playback()
-end
-
 function fn.is_cell_vacant(x, y)
   if not fn.in_bounds(x, y) then
     return false
@@ -333,12 +196,15 @@ function fn.is_cell_vacant(x, y)
 end
 
 function fn.cleanup()
+  clock.cancel(music_clock_id)
+  clock.cancel(redraw_clock_id)
+  clock.cancel(grid_clock_id)
   g.all(0)
   poll:clear_all()
   m:cleanup()
+  crow.ii.jf.mode(0)
   crow.clear()
   crow.reset()
-  crow.ii.jf.mode(0)
 end
 
 function fn.seed_cells()
@@ -346,8 +212,8 @@ function fn.seed_cells()
     keeper:delete_all_cells()
     sound:set_random_root()
     sound:set_random_scale()
-    params:set("bpm", math.random(100, 160))
-    counters.music.generation = 0
+    params:set("clock_tempo", math.random(100, 160))
+    counters.music_generation = 0
     for i = 1, params:get("seed_cell_count") do
       fn.random_cell()
     end
@@ -410,6 +276,55 @@ function fn.random_cell()
   if keeper.selected_cell:is("CRYPT") then
     keeper.selected_cell:set_state_index(math.random(1, 6))
   end
+end
+
+
+-- thank you @dndrks
+function fn.screenshot()
+  local which_screen = string.match(string.match(string.match(norns.state.script,"/home/we/dust/code/(.*)"),"/(.*)"),"(.+).lua")
+  _norns.screen_export_png("/home/we/dust/".. order .. "-" .. which_screen .. "-" .. os.time() .. ".png")
+  order = order + 1
+end
+
+function fn.wtfscale()
+  for i = 1, #sound.scale_notes do
+    print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
+  end
+end
+
+
+function fn.arcdebug()
+  print(" ")
+  print(" ")
+  print(" ")
+  print("start arcologies debug -------------------------------")
+  print(" ")
+  print("generated at: " .. os.date("%Y_%m_%d_%H_%M_%S") .. " / " .. os.time())
+  print("name: " .. arcology_name)
+  print("version: " .. fn.get_arcology_version())
+  print("bpm: " .. params:get("clock_tempo"))
+  print("root: " .. sound.root)
+  print("scale: " .. sound.scale_name)
+  print("generation: " .. counters.music_generation)
+  print("cell count: " .. #keeper.cells)
+  print("signal count: " .. #keeper.signals)
+  print(" ")
+  print("cell census:")
+  for k,cell in pairs(keeper.cells) do
+    local coords = "x" .. cell.x .. "y" .. cell.y
+    print(coords, cell.id, cell.structure_value)
+  end
+  print(" ")
+  print("signal census:")
+  for k,signal in pairs(keeper.signals) do
+    local coords = "x" .. signal.x .. "y" .. signal.y
+    print(coords, signal.id, signal.heading)
+  end
+  print(" ")
+  print("end arcologies debug -------------------------------")
+  print(" ")
+  print(" ")
+  print(" ")
 end
 
 return fn

@@ -97,7 +97,7 @@ function g:short_press(x, y)
       keeper:delete_cell(paste_over_cell.id)
     end
     local tmp = fn.deep_copy(keeper.copied_cell)
-    tmp:prepare_for_paste(x, y, counters.music_generation())
+    tmp:prepare_for_paste(x, y, counters.music_generation)
     table.insert(keeper.cells, tmp)
     graphics:set_message("PASTED " .. tmp.structure_value)
     self.is_pasting = true
@@ -154,7 +154,7 @@ end
 function g:led_signals()
   local level = page.active_page == 3 and menu.selected_item == 1 and 10 or 2
   for k,v in pairs(keeper.signals) do
-    if v.generation <= counters.music_generation() then
+    if v.generation <= counters.music_generation then
       self:led(v.x, v.y, level)
     end
   end
@@ -164,14 +164,14 @@ function g:register_signal_death_at(x, y)
   local signal = {}
   signal.x = x
   signal.y = y
-  signal.generation = counters.music_generation()
+  signal.generation = counters.music_generation
   signal.level = 10
   table.insert(self.signal_deaths, signal)
 end
 
 function g:led_signal_deaths()
   for k,v in pairs(self.signal_deaths) do
-    if v.level == 0 or v.generation + 2 < counters.music_generation() then
+    if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_deaths, k)
     else
       self:led(v.x, v.y, v.level)
@@ -184,14 +184,14 @@ function g:register_collision_at(x, y)
   local collision = {}
   collision.x = x
   collision.y = y
-  collision.generation = counters.music_generation()
+  collision.generation = counters.music_generation
   collision.level = 15
   table.insert(self.signal_and_cell_collisions, collision)
 end
 
 function g:led_signal_and_cell_collision()
   for k,v in pairs(self.signal_and_cell_collisions) do
-    if v.level == 0 or v.generation + 2 < counters.music_generation() then
+    if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_and_cell_collisions, k)
     else
       self:led(v.x, v.y, v.level)

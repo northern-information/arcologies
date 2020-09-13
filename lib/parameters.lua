@@ -1,6 +1,7 @@
 parameters = {}
 
 function parameters.init()
+
   params:add_separator("- A R C O L O G I E S -")
 
   params:add_trigger("save", "< SAVE" )
@@ -9,18 +10,14 @@ function parameters.init()
   params:add_trigger("load", "> LOAD" )
   params:set_action("load", function(x) fs.enter(norns.state.data, filesystem.load) end)
 
-  parameters.bpm_to_seconds = 0
-  params:add{ type = "number", id = "bpm", name = "BPM",
-    min = 20, max = 480, default = 120,
-    action = function(i) parameters.bpm_to_seconds = 60 / i end
-  }
-  params:hide("bpm")
+  params:add_trigger("midi_panic", "MIDI PANIC!" )
+  params:set_action("midi_panic", function() m:panic() end)
 
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
 
-  params:add_trigger("jf_i2c_mode", "JF I2C INIT (MODE 1)")
-  params:set_action("jf_i2c_mode", function(x) crow.ii.jf.mode(1) end)
+  params:add_option("jf_i2c_mode", "JF I2C MODE", {"1", "0"})
+  params:set_action("jf_i2c_mode", function(index) crow.ii.jf.mode(index == 1 and 1 or 0) end)
 
   params:add_option("jf_i2c_tuning", "JF I2C TUNING", {"440 Hz", "432 Hz"})
   params:set_action("jf_i2c_tuning", function(index) crow.ii.jf.god_mode(index == 2 and 1 or 0) end)

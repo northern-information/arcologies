@@ -2,7 +2,7 @@ Signal = {}
 
 function Signal:new(x, y, h, g)
   local s = setmetatable({}, { __index = Signal })
-  s.generation = (g or counters.music_generation())
+  s.generation = (g or counters.music_generation)
   s.x = x
   s.y = y
   s.id = "signal-" .. fn.id()  -- unique identifier for this signal
@@ -16,7 +16,7 @@ function Signal:set_heading(h)
 end
 
 function Signal:propagate()
-  if self.generation < counters.music_generation() then
+  if self.generation < counters.music_generation then
         if self.heading == "n" then self.y = self.y - 1
     elseif self.heading == "e" then self.x = self.x + 1
     elseif self.heading == "s" then self.y = self.y + 1

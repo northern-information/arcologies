@@ -8,8 +8,8 @@ function s.init()
   audio.level_cut(1)
   audio.level_adc_cut(1)
   audio.level_eng_cut(1)
-  for i=1, 6 do
-    softcut.level(i,1)
+  for i = 1, 6 do
+    softcut.level(i, 1)
     softcut.level_input_cut(1, i, 1.0)
     softcut.level_input_cut(2, i, 1.0)
     softcut.pan(i, 0.5)

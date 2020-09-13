@@ -1,15 +1,11 @@
 counters = {}
 
+
 function counters.init()
+  counters.playback = config.settings.playback
   counters.message = 0
   counters.default_message_length = 40
-
-  counters.music = metro.init()
-  counters.music.time = 60 / params:get("bpm")
-  counters.music.count = -1
-  counters.music.play = 1
-  counters.music.generation = 0
-  counters.music.event = counters.conductor
+  counters.music_generation = 0
 
   counters.ui = metro.init()
   counters.ui.time = 1 / 30
@@ -27,6 +23,55 @@ function counters.init()
   counters.grid.event = counters.gridmeister
 end
 
+function counters.conductor()
+  while true do
+    clock.sync(1)
+    if counters.playback == 1 then
+      counters.music_generation = counters.music_generation + 1
+      m:setup()
+      keeper:setup()
+      keeper:spawn_signals()
+      keeper:propagate_signals()
+      keeper:deflect_signals()
+      keeper:collide_signals()
+      keeper:collide_signals_and_cells()
+      keeper:delete_signals()
+      keeper:teardown()
+      redraw()
+    end
+  end
+end
+
+function counters:set_playback(i)
+  self.playback = util.clamp(i, 0, 1)
+end
+
+function clock.transport.start()
+  counters:start()
+end
+
+function counters:start()
+  self:set_playback(1)
+  graphics:set_message("PLAYING", self.default_message_length)
+end
+
+function clock.transport.stop()
+  counters:stop()
+end
+
+function counters:stop()
+  self:set_playback(0)
+  graphics:set_message("PAUSED", self.default_message_length)
+end
+
+function counters:toggle_playback()
+    if self.playback == 0 then
+      self:start()
+    else
+      self:stop()
+    end
+end
+
 function counters.redraw_clock()
   while true do
     if fn.dirty_screen() then
@@ -40,33 +85,13 @@ function counters.redraw_clock()
   end
 end
 
-function counters.conductor()
-  counters.music.time = parameters.bpm_to_seconds
-  if sound.playback == 0 then return end
-  counters.music.generation = counters.music.generation + 1
-  m:setup()
-  keeper:setup()
-  keeper:spawn_signals()
-  keeper:propagate_signals()
-  keeper:deflect_signals()
-  keeper:collide_signals()
-  keeper:collide_signals_and_cells()
-  keeper:delete_signals()
-  keeper:teardown()
-  redraw()
-end
-
-function counters.music_generation()
-  return counters.music.generation
-end
-
-function counters.this_beat()
-  if counters.music_generation() == 0 then
+function counters:this_beat()
+  if self.music_generation == 0 then
     return 0
-  elseif counters.music_generation() % sound.length == 0 then
+  elseif self.music_generation % sound.length == 0 then
     return sound.length
   else
-    return (counters.music_generation() % sound.length)
+    return (self.music_generation % sound.length)
   end
 end
 

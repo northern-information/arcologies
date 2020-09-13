@@ -3,7 +3,7 @@ config = {}
 config["settings"] = {
   ["version_major"] = 1,
   ["version_minor"] = 1,
-  ["version_patch"] = 3,
+  ["version_patch"] = 4,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -166,6 +166,7 @@ config["structure_attribute_map"] = {
     "NOTES",
     "VELOCITY",
     "DURATION",
+    "CHANNEL",
     "DEVICE",
     "DOCS",
     "STRUCTURE"
@@ -174,6 +175,7 @@ config["structure_attribute_map"] = {
     "INDEX",
     "NOTES",
     "DURATION",
+    "CHANNEL",
     "VELOCITY",
     "DEVICE",
     "DOCS",

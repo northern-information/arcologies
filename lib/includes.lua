@@ -31,6 +31,7 @@ todo: break up get_menu_value_by_attribute into traits...
 ]]
 include("arcologies/lib/traits/amortize_trait")
 include("arcologies/lib/traits/capacity_trait")
+include("arcologies/lib/traits/channel_trait")
 include("arcologies/lib/traits/charge_trait")
 include("arcologies/lib/traits/crow_out_trait")
 include("arcologies/lib/traits/crumble_trait")
@@ -63,6 +64,9 @@ include("arcologies/lib/Signal")
 
 -- global functions
 fn = include("arcologies/lib/functions")
+
+-- all the save and load routines
+saveload = include("arcologies/lib/saveload")
 
 -- the whole murder of them
 c = include("arcologies/lib/crow")
