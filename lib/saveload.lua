@@ -85,6 +85,7 @@ function saveload:load_114(data)
     tmp.territory        = load_cell.territory
     tmp.velocity         = load_cell.velocity
     tmp:set_available_ports()
+    tmp:set_er()
     table.insert(keeper.cells, tmp)
   end
   for k, load_signal in pairs(data.keeper_signals) do
@@ -143,6 +144,7 @@ function saveload:load_110(data)
     tmp.territory        = load_cell.territory
     tmp.velocity         = load_cell.velocity
     tmp:set_available_ports()
+    tmp:set_er()
     table.insert(keeper.cells, tmp)
   end
   for k, load_signal in pairs(data.keeper_signals) do
@@ -191,6 +193,7 @@ function saveload:load_100(data)
     tmp.sub_menu_items   = load_cell.sub_menu_items
     tmp.velocity         = load_cell.velocity
     tmp:set_available_ports()
+    tmp:set_er()
     table.insert(keeper.cells, tmp)
   end
   for k, load_signal in pairs(data.keeper_signals) do
