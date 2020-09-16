@@ -5,11 +5,20 @@ function sound.init()
   sound.root = config.settings.root
   sound.scale = config.settings.scale
   sound.octaves = config.settings.octaves
+  sound.transpose = 0
   sound.scale_name = ""
   sound.scale_names = {}
   for k,v in pairs(mu.SCALES) do sound.scale_names[k] = mu.SCALES[k].name end
   sound.scale_notes = {}
   sound:set_scale(sound.scale)
+end
+
+function sound:cycle_transpose(i)
+  self.transpose = util.clamp(self.transpose + i, -6, 6)
+end
+
+function sound:transpose_note(note)
+  return note + (self.transpose * 12)
 end
 
 function sound:set_scale(i)
@@ -68,7 +77,7 @@ end
 
 function sound:play(note, velocity)
   engine.amp(velocity / 127)
-  engine.hz(mu.note_num_to_freq(self:snap_note(note)))
+  engine.hz(mu.note_num_to_freq(self:snap_note(self:transpose_note(note))))
 end
 
 return sound

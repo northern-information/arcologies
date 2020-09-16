@@ -96,17 +96,21 @@ function counters:this_beat()
 end
 
 function counters.optician()
-  counters.ui.frame = counters.ui.frame + 1
-  if counters.ui.frame % 4 == 0 then
-    counters.ui.quarter_frame = counters.ui.quarter_frame +1
+  if counters.ui ~= nil then
+    counters.ui.frame = counters.ui.frame + 1
+    if counters.ui.frame % 4 == 0 then
+      counters.ui.quarter_frame = counters.ui.quarter_frame +1
+    end
+    if not g.disconnect_dismissed then page:set_error(1) else page:clear_error() end
+    fn.dirty_screen(true)
+    redraw()
   end
-  if not g.disconnect_dismissed then page:set_error(1) else page:clear_error() end
-  fn.dirty_screen(true)
-  redraw()
 end
 
 function counters.gridmeister()
-  counters.grid.frame = counters.grid.frame + 1
+  if counters.grid ~= nil then
+    counters.grid.frame = counters.grid.frame + 1
+  end
 end
 
 function counters.grid_frame()

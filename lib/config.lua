@@ -30,6 +30,7 @@ config["home_items"] = {
   "LENGTH",
   "ROOT",
   "SCALE",
+  "TRANSPOSE",
   "DOCS"
 }
 

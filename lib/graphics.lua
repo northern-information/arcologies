@@ -296,6 +296,11 @@ function graphics:playback_icon(x, y)
   end
 end
 
+function graphics:format_transpose(i)
+  if i == 0 then return "" end
+  return (i > 0) and "+" .. i  .. " "  or i .. " " 
+end
+
 function graphics:status(x, y, string, level)
   screen.level(level or 15)
   screen.move(x, y)

@@ -9,12 +9,34 @@ function glyphs.init()
   glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
 end
 
+function callIfCallable(f)
+    return function(...)
+        error, result = pcall(f, ...)
+        if error then -- f exists and is callable
+            print('ok')
+            return result
+        end
+        -- nothing to do, as though not called, or print('error', result)
+        print("doesn't exist")
+    end
+end
+
+
+
 function glyphs:draw_glyph(s, x, y, l)
-  assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)
+  if self[string.lower(s)] ~= nil then
+    assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)
+  else
+   glyphs:cell(x, y, l)
+  end
 end
 
 function glyphs:draw_small_glyph(s, x, y, l)
-  assert(load("glyphs:" .. "small_" .. string.lower(s) .. "(...)"))(x, y, l)
+  if self["small_" .. string.lower(s)] ~= nil then
+    assert(load("glyphs:" .. "small_" .. string.lower(s) .. "(...)"))(x, y, l)
+  else
+   glyphs:small_cell(x, y, l)
+  end
 end
 
 function glyphs:random(x, y, l, jitter)

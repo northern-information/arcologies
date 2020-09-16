@@ -49,7 +49,7 @@ function page:home()
     graphics:bpm(55, 32, math.floor(fn.round(params:get("clock_tempo"), 0)), 0)
     graphics:playback_icon(56, 35)
     graphics:icon(76, 35, sound.length, menu.selected_item_string == "LENGTH" and 1 or 0)
-    graphics:text(56, 61, mu.note_num_to_name(sound.root) .. " " .. sound.scale_name, 0)
+    graphics:text(56, 61, graphics:format_transpose(sound.transpose) .. mu.note_num_to_name(sound.root) .. " " .. sound.scale_name, 0)
     graphics:rect(126, 55, 2, 7, 15)
   end
   graphics:title_bar_and_tabs()

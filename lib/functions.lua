@@ -81,8 +81,11 @@ function fn.init()
 end
 
 function fn.cleanup()
-  m:cleanup()
   crow.ii.jf.mode(0)
+  m:cleanup()
+  clock.cancel(music_clock_id)
+  clock.cancel(redraw_clock_id)
+  clock.cancel(grid_clock_id)
 end
 
 function fn.get_arcology_version()

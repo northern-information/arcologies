@@ -20,14 +20,15 @@ function m:setup()
 end
 
 function m:play(note, velocity, channel, duration, device)
-    self:register_note(note, velocity, channel, duration, device)
-    self.devices[device]:note_off(note, velocity, channel)
-    self.devices[device]:note_on(note, velocity, channel)
+    local transposed_note = sound:transpose_note(note)
+    self:register_note(transposed_note, velocity, channel, duration, device)
+    self.devices[device]:note_off(transposed_note, velocity, channel)
+    self.devices[device]:note_on(transposed_note, velocity, channel)
 end
 
-function m:register_note(note, velocity, channel, duration, device)
+function m:register_note(tranposed_note, velocity, channel, duration, device)
   local new = {
-    note = note,
+    note = tranposed_note,
     velocity = velocity,
     channel = channel,
     duration = duration,

@@ -106,6 +106,7 @@ function menu:scroll_value(d)
     elseif s == "LENGTH"      then sound:cycle_length(d)
     elseif s == "ROOT"        then sound:cycle_root(d)
     elseif s == "SCALE"       then sound:set_scale(sound.scale + d)
+    elseif s == "TRANSPOSE"   then sound:cycle_transpose(d)
     end
 
   -- cell designer
