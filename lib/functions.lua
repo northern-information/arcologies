@@ -196,15 +196,8 @@ function fn.is_cell_vacant(x, y)
 end
 
 function fn.cleanup()
-  clock.cancel(music_clock_id)
-  clock.cancel(redraw_clock_id)
-  clock.cancel(grid_clock_id)
-  g.all(0)
-  poll:clear_all()
   m:cleanup()
   crow.ii.jf.mode(0)
-  crow.clear()
-  crow.reset()
 end
 
 function fn.seed_cells()

@@ -49,9 +49,11 @@ function m:panic()
 end
 
 function m:all_off()
-  for i = 1, 127 do
-    for d = 1, 4 do
-      m.devices[d]:note_off(i)
+  for note = 1, 127 do
+    for channel = 1, 16 do
+      for device = 1, 4 do
+        m.devices[device]:note_off(note, 0, channel)
+      end
     end
   end
 end
