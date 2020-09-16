@@ -10,7 +10,6 @@ function graphics.init()
   graphics.structure_y = 24
   graphics.total_cells = fn.grid_height() * fn.grid_width()
   graphics.analysis_pixels = {}
-  graphics.cell_attributes = config.attributes
   graphics.splash_lines_open = {}
   graphics.splash_lines_close = {}
   graphics.splash_lines_close_available = {}
@@ -28,7 +27,7 @@ function graphics:structure_palette(i)
   local margin_x = 15
   local margin_y = 14
   local p = {}
-  for setup = 1, #config.structures do
+  for setup = 1, #structures:all() do
       p[setup] = {
         selected = false,
         x = 0,
@@ -51,8 +50,8 @@ function graphics:structure_palette(i)
     end
   end
 
-  for i = 1, #config.structures do
-    glyphs:draw_small_glyph(config.structures[i], p[i].x, p[i].y, p[i].selected and 0 or 15)
+  for i = 1, #structures:all() do
+    glyphs:draw_small_glyph(structures:all()[i], p[i].x, p[i].y, p[i].selected and 0 or 15)
   end
   
 end
@@ -66,7 +65,7 @@ function graphics:structure_palette_analysis(s)
   local items = {}
 
   local signal_count = #keeper.signals
-  local cell_count = keeper:count_cells(config.structures[i])
+  local cell_count = keeper:count_cells(structures:all()[i])
 
   for i = 1, #keeper:get_analysis_items() do
     local adjust = 0

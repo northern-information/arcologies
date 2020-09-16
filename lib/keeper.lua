@@ -373,7 +373,7 @@ end
 function keeper:get_analysis_items()
   local analysis_items = {}
   table.insert(analysis_items, "SIGNALS")
-  for k,v in pairs(config["structures"]) do
+  for k,v in pairs(structures:all()) do
     if self:count_cells(v) > 0 then
       table.insert(analysis_items, v)
     end

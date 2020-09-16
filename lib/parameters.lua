@@ -54,7 +54,7 @@ function parameters.init()
  params:set_action("note_range_max", function(x) params:set("note_range_min", util.clamp(params:get("note_range_min"), 0, x)) end)
 
   parameters.seed_structures = {}
-  for k,v in pairs(config.structures) do
+  for k,v in pairs(structures:all()) do
     parameters.seed_structures[v] = false
     local id = "seed_structure_" .. v
     params:add_option(id, v, {"ENABLED", "DISABLED"})

@@ -1,204 +1,6 @@
 fn = {}
 
--- state checks, utilities, and formatters
-
-function fn.init()
-  fn.id_prefix = "arc-"
-  fn.id_counter = 1000
-end
-
-function fn.get_arcology_version()
-  return config.settings.version_major .. "." ..
-         config.settings.version_minor .. "." ..
-         config.settings.version_patch
-end
-
-function fn.get_structure_attributes(name)
-  return config.structure_attribute_map[name]
-end
-
-function fn.is_clock_internal()
-  return params:get("clock_source") == 1
-end
-
-function fn.id()
-  -- a servicable attempt creating unique ids
-  -- i (tried a md5 library but it tanked performance)
-  fn.id_counter = fn.id_counter + 1
-  return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
-end
-
-function fn.grid_width()
-  return g.last_known_width
-end
-
-function fn.grid_height()
-  return g.last_known_height
-end
-
-function fn.index(x, y)
-  return x + ((y - 1) * fn.grid_width())
-end
-
-function fn.xy(cell)
-  return "X" .. cell.x .. "Y" .. cell.y
-end
-
-function fn.rx()
-  return math.random(1, fn.grid_width())
-end
-
-function fn.ry()
-  return math.random(1, fn.grid_height())
-end
-
-function fn.playback()
-  return counters.playback == 0 and "READY" or "PLAYING"
-end
-
-function fn.coin()
-  return math.random(0, 1)
-end
-
-function fn.round(num, decimals)
-  local mult = 10 ^ (decimals or 0)
-  return math.floor(num * mult + 0.5) / mult
-end
-
-function fn.nearest_value(table, number)
-    local nearest_so_far, nearest_index
-    for i, y in ipairs(table) do
-        if not nearest_so_far or (math.abs(number-y) < nearest_so_far) then
-            nearest_so_far = math.abs(number-y)
-            nearest_index = i
-        end
-    end
-    return table[nearest_index]
-end
-
-function fn.wrap(t, l)
-  for i = 1, l do
-    table.insert(t, 1, t[#t])
-    table.remove(t, #t)
-  end
-  return t
-end
-
-function fn.table_find(t, element)
-  for i,v in pairs(t) do
-    if v == element then
-      return i
-    end
-  end
-  return false
-end
-
-function fn.table_has(tab, val)
-  for index, value in ipairs(tab) do
-    if value == val then
-      return true
-    end
-  end
-  return false
-end
-
-function fn.deep_copy(orig)
-  local orig_type = type(orig)
-  local copy
-  if orig_type == "table" then
-    copy = {}
-    for orig_key, orig_value in next, orig, nil do
-        copy[fn.deep_copy(orig_key)] = fn.deep_copy(orig_value)
-    end
-    setmetatable(copy, fn.deep_copy(getmetatable(orig)))
-  else -- number, string, boolean, etc
-    copy = orig
-  end
-  return copy
-end
-
-function fn.in_bounds(x, y)
-  if 1 > y then
-    return false -- north
-  elseif fn.grid_width() < x then
-    return false -- east
-  elseif fn.grid_height() < y then
-    return false -- south
-  elseif 1 > x then
-    return false -- west
-  else
-    return true -- ok
-  end
-end
-
-function fn.no_grid()
-  return fn.grid_width() == 0 and true or false
-end
-
-function fn.cycle(value, min, max)
-  if value > max then
-    return min
-  elseif value < 1 then
-    return max
-  else
-    return value
-  end
-end
-
-function fn.long_press(k)
-  -- anything greater than half a second is a long press
-  clock.sleep(.5)
-  key_counter[k] = nil
-  if k == 3 then
-    popup:launch("delete_all", true, "key", 3)
-  end
-  fn.dirty_screen(true)
-end
-
--- simple boolean getters/setters/checks
-
-function fn.dirty_grid(bool)
-  if bool == nil then return grid_dirty end
-  grid_dirty = bool
-  return grid_dirty
-end
-
-function fn.dirty_screen(bool)
-  if bool == nil then return screen_dirty end
-  screen_dirty = bool
-  return screen_dirty
-end
-
-function fn.break_splash(bool)
-  if bool == nil then return splash_break end
-  splash_break = bool
-  return splash_break
-end
-
-function fn.dismiss_messages()
-  fn.break_splash(true)
-  g:dismiss_disconnect()
-end
-
--- the lost souls
-
-function fn.is_cell_vacant(x, y)
-  if not fn.in_bounds(x, y) then
-    return false
-  end
-  local check_index = fn.index(x, y)
-  for k, cell in pairs(keeper.cells) do
-    if check_index == cell.index then
-      return false
-    end
-  end
-  return true
-end
-
-function fn.cleanup()
-  m:cleanup()
-  crow.ii.jf.mode(0)
-end
+-- seed
 
 function fn.seed_cells()
   if params:get("seed_cell_count") ~= 0 and not fn.no_grid() then
@@ -271,8 +73,206 @@ function fn.random_cell()
   end
 end
 
+-- general
 
--- thank you @dndrks
+function fn.init()
+  fn.id_prefix = "arc-"
+  fn.id_counter = 1000
+end
+
+function fn.cleanup()
+  m:cleanup()
+  crow.ii.jf.mode(0)
+end
+
+function fn.get_arcology_version()
+  return config.settings.version_major .. "." ..
+         config.settings.version_minor .. "." ..
+         config.settings.version_patch
+end
+
+function fn.id()
+  -- a servicable attempt creating unique ids
+  -- i (tried a md5 library but it tanked performance)
+  fn.id_counter = fn.id_counter + 1
+  return fn.id_prefix .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
+end
+
+function fn.dirty_grid(bool)
+  if bool == nil then return grid_dirty end
+  grid_dirty = bool
+  return grid_dirty
+end
+
+function fn.dirty_screen(bool)
+  if bool == nil then return screen_dirty end
+  screen_dirty = bool
+  return screen_dirty
+end
+
+function fn.break_splash(bool)
+  if bool == nil then return splash_break end
+  splash_break = bool
+  return splash_break
+end
+
+function fn.dismiss_messages()
+  fn.break_splash(true)
+  g:dismiss_disconnect()
+end
+
+function fn.long_press(k)
+  -- anything greater than half a second is a long press
+  clock.sleep(.5)
+  key_counter[k] = nil
+  if k == 3 then
+    popup:launch("delete_all", true, "key", 3)
+  end
+  fn.dirty_screen(true)
+end
+
+function fn.is_clock_internal()
+  return params:get("clock_source") == 1
+end
+
+function fn.playback()
+  return counters.playback == 0 and "READY" or "PLAYING"
+end
+
+-- grid
+
+function fn.grid_width()
+  return g.last_known_width
+end
+
+function fn.grid_height()
+  return g.last_known_height
+end
+
+function fn.index(x, y)
+  return x + ((y - 1) * fn.grid_width())
+end
+
+function fn.xy(cell)
+  return "X" .. cell.x .. "Y" .. cell.y
+end
+
+function fn.rx()
+  return math.random(1, fn.grid_width())
+end
+
+function fn.ry()
+  return math.random(1, fn.grid_height())
+end
+
+function fn.in_bounds(x, y)
+  if 1 > y then
+    return false -- north
+  elseif fn.grid_width() < x then
+    return false -- east
+  elseif fn.grid_height() < y then
+    return false -- south
+  elseif 1 > x then
+    return false -- west
+  else
+    return true -- ok
+  end
+end
+
+function fn.no_grid()
+  return fn.grid_width() == 0 and true or false
+end
+
+function fn.is_cell_vacant(x, y)
+  if not fn.in_bounds(x, y) then
+    return false
+  end
+  local check_index = fn.index(x, y)
+  for k, cell in pairs(keeper.cells) do
+    if check_index == cell.index then
+      return false
+    end
+  end
+  return true
+end
+
+-- maths
+
+function fn.coin()
+  return math.random(0, 1)
+end
+
+function fn.round(num, decimals)
+  local mult = 10 ^ (decimals or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+function fn.nearest_value(table, number)
+    local nearest_so_far, nearest_index
+    for i, y in ipairs(table) do
+        if not nearest_so_far or (math.abs(number-y) < nearest_so_far) then
+            nearest_so_far = math.abs(number-y)
+            nearest_index = i
+        end
+    end
+    return table[nearest_index]
+end
+
+function fn.cycle(value, min, max)
+  if value > max then
+    return min
+  elseif value < 1 then
+    return max
+  else
+    return value
+  end
+end
+
+-- tables
+
+function fn.wrap(t, l)
+  for i = 1, l do
+    table.insert(t, 1, t[#t])
+    table.remove(t, #t)
+  end
+  return t
+end
+
+function fn.table_find(t, element)
+  for i,v in pairs(t) do
+    if v == element then
+      return i
+    end
+  end
+  return false
+end
+
+function fn.table_has(tab, val)
+  for index, value in ipairs(tab) do
+    if value == val then
+      return true
+    end
+  end
+  return false
+end
+
+function fn.deep_copy(orig)
+  local orig_type = type(orig)
+  local copy
+  if orig_type == "table" then
+    copy = {}
+    for orig_key, orig_value in next, orig, nil do
+        copy[fn.deep_copy(orig_key)] = fn.deep_copy(orig_value)
+    end
+    setmetatable(copy, fn.deep_copy(getmetatable(orig)))
+  else -- number, string, boolean, etc
+    copy = orig
+  end
+  return copy
+end
+
+-- dev
+
 function fn.screenshot()
   local which_screen = string.match(string.match(string.match(norns.state.script,"/home/we/dust/code/(.*)"),"/(.*)"),"(.+).lua")
   _norns.screen_export_png("/home/we/dust/".. order .. "-" .. which_screen .. "-" .. os.time() .. ".png")
@@ -284,7 +284,6 @@ function fn.wtfscale()
     print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
   end
 end
-
 
 function fn.arcdebug()
   print(" ")

@@ -7,7 +7,7 @@
 --
 --
 -- ........................................
--- v1.1.5 "eternal september"
+-- v1.1.6 "eternal september"
 -- <3 @tyleretters
 -- nor.the-rn.info
 -- GNU GPL v3.0
@@ -16,6 +16,7 @@ include("arcologies/lib/includes")
 
 function init()
   audio:pitch_off()
+  structures.init()
   filesystem.init()
   parameters.init()
   fn.init()

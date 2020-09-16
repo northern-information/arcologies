@@ -16,6 +16,9 @@ if config_ ~= nil then
   include("arcologies/lib/config_")
 end
 
+-- defines cell structures
+include("arcologies/lib/structures")
+
 -- the core concept of arcologies, interact with Signals
 include("arcologies/lib/Cell")
 

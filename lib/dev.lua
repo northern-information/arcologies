@@ -4,10 +4,10 @@ function dev:scene(i)
 
   if i == 1 then
     
-    page:select(1)
-    menu:select_item(2)
+    -- page:select(1)
+    -- menu:select_item(2)
     -- params:set("clock_source", 2)    
-    counters:toggle_playback()
+    -- counters:toggle_playback()
 
   elseif i == 2 then
     -- sound:set_random_root()
