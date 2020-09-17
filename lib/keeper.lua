@@ -211,7 +211,6 @@ function keeper:spawn_signals()
 end
 
 function keeper:setup()
-  self.kudzu_growth = 0
   for k, signal in pairs(self.new_signals) do table.insert(self.signals, signal) end
   self.new_signals = {}
   for k, cell in pairs(self.cells) do cell:setup() end
@@ -219,6 +218,7 @@ function keeper:setup()
 end
 
 function keeper:kudzu()
+  self.kudzu_growth = 0
   local sorted = self:sort_structures_by("KUDZU", "generation")
   for k, cell in pairs(sorted) do
     if cell:inverted_metabolism_check() and self.kudzu_growth < params:get("kudzu_aggression") then
@@ -233,16 +233,19 @@ function keeper:kudzu()
         elseif d == "w" then x = x - 1
         end
         self.kudzu_growth = self.kudzu_growth + 1
-        keeper:create_cell(x, y):change("KUDZU")
+        local growth = keeper:create_cell(x, y)
+        growth:change("KUDZU")
+        growth:set_resilience(cell.resilience)
+        growth:set_metabolism(cell.metabolism)
       end
     end
   end
 end
 
-function keeper:crumble_kudzu()
+function keeper:cropdust()
   for k, cell in pairs(self.cells) do
     if cell:is("KUDZU") then
-      cell.crumble = cell.crumble - params:get("kudzu_crumble_multiple")
+      cell.crumble = cell.crumble - params:get("kudzu_cropdust_potency")
       cell:has_crumbled()
       g:register_flicker_at(cell.x, cell.y)
     end
@@ -355,8 +358,9 @@ function keeper:create_cell(x, y)
   return new_cell
 end
 
-function keeper:delete_cell(id, s)
+function keeper:delete_cell(id, s, d)
   local silent = s == nil and false or true
+  local deselect = d == nil and true or false
   if id == nil and not self.is_cell_selected then
     if not silent then
       graphics:set_message("SELECT A CELL TO DELETE")
@@ -372,7 +376,9 @@ function keeper:delete_cell(id, s)
       if page.active_page == 2 then
         menu:reset()
       end
-      self:deselect_cell()
+      if deselect then 
+        self:deselect_cell()
+      end
     end
   end
 end

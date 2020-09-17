@@ -166,23 +166,30 @@ function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
 
-      if self:is("DOME")      then self:set_er()
+  if self:is("DOME") then
+    self:set_er()
 
   elseif self:is("SHRINE") 
-      or self:is("AVIARY")
-      or self:is("SPOMENIK")  then  self:set_note_count(1)
-                                    self:setup_notes(1)
+    or self:is("AVIARY")
+    or self:is("SPOMENIK") then 
+      self:set_note_count(1)
+      self:setup_notes(1)
 
   elseif self:is("TOPIARY") 
-      or self:is("CASINO") 
-      or self:is("FOREST") 
-      or self:is("AUTON")     then  self:set_note_count(8)
-                                    self:setup_notes(8)
+    or self:is("CASINO") 
+    or self:is("FOREST") 
+    or self:is("AUTON") then
+        self:set_note_count(8)
+        self:setup_notes(8)
 
-  elseif self:is("CRYPT")     then self:set_state_index(1) 
-                                   self:cycle_state_index(0)
+  elseif self:is("CRYPT") then
+    self:set_state_index(1) 
+    self:cycle_state_index(0)
 
-  elseif self:is("KUDZU")      then self:set_crumble(10)
+  elseif self:is("KUDZU") then
+    self:set_metabolism(params:get("kudzu_metabolism"))
+    self:set_resilience(params:get("kudzu_resilience"))
+    self:set_crumble(params:get("kudzu_crumble"))
 
   end
 end
@@ -243,7 +250,10 @@ end
 -- for institutions & kudzu
 function Cell:has_crumbled()
   if self.crumble <= 0 then
-    keeper:delete_cell(self.id, true)
+    keeper:delete_cell(self.id, true, false)
+    if keeper.selected_cell_id == self.id then
+      keeper:deselect_cell()
+    end
     if self:is("INSTITUTION") then self:burst() end
   end
 end
