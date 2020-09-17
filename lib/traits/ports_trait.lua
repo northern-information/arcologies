@@ -49,6 +49,10 @@ ports_trait.init = function(self, x, y)
     table.remove(self.ports, fn.table_find(self.ports, p))
   end
 
+  self.close_all_ports = function(self, p)
+    self.ports = {}
+  end
+
   self.invert_ports = function(self)
     for k,v in pairs(self.available_ports) do
       self:toggle_port(v[1], v[2])

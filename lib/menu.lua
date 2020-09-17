@@ -41,7 +41,8 @@ function menu:render(bool)
           elseif self.items[i] == "PROBABILITY" 
               or self.items[i] == "LEVEL"
               or self.items[i] == "RANGE MIN"
-              or self.items[i] == "RANGE MAX" then
+              or self.items[i] == "RANGE MAX"
+              or self.items[i] == "RESILIENCE" then
             graphics:text(56, offset, value .. "%", 0)
           elseif self.items[i] == "NET INCOME"  then
             graphics:text(56, offset, ">" .. value .. ".0gDq", 0)
@@ -145,6 +146,7 @@ function menu:scroll_value(d)
     elseif s == "PULSES"       then keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
     elseif s == "RANGE MAX"    then keeper.selected_cell:set_range_max(keeper.selected_cell.range_max + d)
     elseif s == "RANGE MIN"    then keeper.selected_cell:set_range_min(keeper.selected_cell.range_min + d)
+    elseif s == "RESILIENCE"   then keeper.selected_cell:set_resilience(keeper.selected_cell.resilience + d)
     elseif s == "STRUCTURE"    then popup:launch("structure", d, "enc", 3)
     elseif s == "TAXES"        then keeper.selected_cell:set_taxes(keeper.selected_cell.taxes + d)
     elseif s == "TERRITORY"    then keeper.selected_cell:set_territory(keeper.selected_cell.territory + d)

@@ -34,6 +34,7 @@ function Cell:new(x, y, g)
   probability_trait.init(self)
   pulses_trait.init(self)
   range_trait.init(self)
+  resilience_trait.init(self)
   state_index_trait.init(self)
   taxes_trait.init(self)
   territory_trait.init(self)
@@ -66,6 +67,7 @@ function Cell:new(x, y, g)
   c.setup_probability(c)
   c.setup_pulses(c)
   c.setup_range(c)
+  c.setup_resilience(c)
   c.setup_state_index(c)
   c.setup_taxes(c)
   c.setup_territory(c)
@@ -110,6 +112,7 @@ function Cell:get_menu_value_by_attribute(a)
   elseif a == "PULSES"       then return self.pulses
   elseif a == "RANGE MAX"    then return self.range_max
   elseif a == "RANGE MIN"    then return self.range_min
+  elseif a == "RESILIENCE"   then return self.resilience
   elseif a == "STRUCTURE"    then return self.structure_value
   elseif a == "TAXES"        then return self.taxes
   elseif a == "TERRITORY"    then return self.territory
@@ -178,6 +181,9 @@ function Cell:change_checks()
 
   elseif self:is("CRYPT")     then self:set_state_index(1) 
                                    self:cycle_state_index(0)
+
+  elseif self:is("KUDZU")      then self:set_crumble(10)
+
   end
 end
 
@@ -212,6 +218,7 @@ function Cell:setup()
   elseif self:is("MIRAGE") then self:shall_we_drift_today()
   elseif self:is("BANK") then self:annual_report()
   elseif self:is("INSTITUTION") then self:has_crumbled()
+  elseif self:is("KUDZU") then self:close_all_ports() self:lifecycle()
   end
 end
 
@@ -222,15 +229,30 @@ function Cell:teardown()
   end
 end
 
--- for institutions
+-- for kudzu
+function Cell:lifecycle()
+  if not self:inverted_metabolism_check() then return end
+  if (math.random(0, 99) > self.resilience) then
+    self.crumble = self.crumble - 1
+    self:has_crumbled()
+  end
+end
+
+
+
+-- for institutions & kudzu
 function Cell:has_crumbled()
   if self.crumble <= 0 then
     keeper:delete_cell(self.id, true)
-    keeper:create_signal(self.x, self.y - 1, "n", "now")
-    keeper:create_signal(self.x + 1, self.y, "e", "now")
-    keeper:create_signal(self.x, self.y + 1, "s", "now")
-    keeper:create_signal(self.x - 1, self.y, "w", "now")
+    if self:is("INSTITUTION") then self:burst() end
   end
+end
+
+function Cell:burst()
+  keeper:create_signal(self.x, self.y - 1, "n", "now")
+  keeper:create_signal(self.x + 1, self.y, "e", "now")
+  keeper:create_signal(self.x, self.y + 1, "s", "now")
+  keeper:create_signal(self.x - 1, self.y, "w", "now")
 end
 
 -- for mirages

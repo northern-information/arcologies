@@ -5,6 +5,7 @@ function g.init()
   g.toggled = {}
   g.signal_deaths = {}
   g.signal_and_cell_collisions = {}
+  g.flickers = {}
   g.first_in_x = nil
   g.first_in_y = nil
   g.paste_x = nil
@@ -49,9 +50,12 @@ function g.grid_redraw_clock()
       g:grid_redraw()
       fn.dirty_grid(false)
     end
-    if keeper.is_cell_selected then fn.dirty_grid(true) end
-    if #g.signal_deaths > 0 then fn.dirty_grid(true) end
-    if #g.signal_and_cell_collisions > 0 then fn.dirty_grid(true) end
+    if keeper.is_cell_selected
+    or #g.signal_deaths > 0
+    or #g.flickers > 0
+    or #g.signal_and_cell_collisions > 0 then 
+      fn.dirty_grid(true)
+    end
   end
 end
 
@@ -61,6 +65,7 @@ function g:grid_redraw()
   self:led_cells()
   self:led_signals()
   self:led_signal_deaths()
+  self:led_flickers()
   self:led_signal_and_cell_collision()
   self:led_selected_cell()
   self:led_cell_ports()
@@ -173,6 +178,26 @@ function g:led_signal_deaths()
   for k,v in pairs(self.signal_deaths) do
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_deaths, k)
+    else
+      self:led(v.x, v.y, v.level)
+      v.level = v.level - 1
+    end
+  end
+end
+
+function g:register_flicker_at(x, y)
+  local flicker = {}
+  flicker.x = x
+  flicker.y = y
+  flicker.generation = counters.music_generation
+  flicker.level = 10
+  table.insert(self.flickers, flicker)
+end
+
+function g:led_flickers()
+  for k, v in pairs(self.flickers) do
+    if v.level == 0 or v.generation + 2 < counters.music_generation then
+      table.remove(self.flickers, k)
     else
       self:led(v.x, v.y, v.level)
       v.level = v.level - 1

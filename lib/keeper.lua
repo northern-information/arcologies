@@ -13,6 +13,7 @@ function keeper.init()
   keeper.signals = {}
   keeper.new_signals = {}
   keeper.signals_to_delete = {}
+  keeper.kudzu_growth = 0
 end
 
 -- spawning, propagation, and collision
@@ -210,9 +211,57 @@ function keeper:spawn_signals()
 end
 
 function keeper:setup()
-  for k, signal in pairs(keeper.new_signals) do table.insert(keeper.signals, signal) end
-  keeper.new_signals = {}
+  self.kudzu_growth = 0
+  for k, signal in pairs(self.new_signals) do table.insert(self.signals, signal) end
+  self.new_signals = {}
   for k, cell in pairs(self.cells) do cell:setup() end
+  self:kudzu()
+end
+
+function keeper:kudzu()
+  local sorted = self:sort_structures_by("KUDZU", "generation")
+  for k, cell in pairs(sorted) do
+    if cell:inverted_metabolism_check() and self.kudzu_growth < params:get("kudzu_aggression") then
+      local x = cell.x
+      local y = cell.y
+      local vacant_neighbors = fn.get_vacant_neighbors(x, y)
+      if #vacant_neighbors > 0 then
+        local d = vacant_neighbors[math.random(1, #vacant_neighbors)]
+            if d == "n" then y = y - 1
+        elseif d == "e" then x = x + 1
+        elseif d == "s" then y = y + 1
+        elseif d == "w" then x = x - 1
+        end
+        self.kudzu_growth = self.kudzu_growth + 1
+        keeper:create_cell(x, y):change("KUDZU")
+      end
+    end
+  end
+end
+
+function keeper:crumble_kudzu()
+  for k, cell in pairs(self.cells) do
+    if cell:is("KUDZU") then
+      cell.crumble = cell.crumble - params:get("kudzu_crumble_multiple")
+      cell:has_crumbled()
+      g:register_flicker_at(cell.x, cell.y)
+    end
+  end
+end
+
+function keeper:sort_structures_by(structure, attribute)
+  local sorted, reversed = {}, {}
+  local i = 1
+  for k, v in pairs(self.cells, function(t, a, b) return t[b][attribute] > t[a][attribute] end) do
+    if v:is(structure) then
+      sorted[i] = v
+      i = i + 1
+    end
+  end
+  for i = 1, #sorted do
+    reversed[#sorted + 1 - i] = sorted[i]
+  end
+  return reversed
 end
 
 function keeper:teardown()

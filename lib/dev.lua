@@ -14,12 +14,13 @@ function dev:scene(i)
     -- sound:set_random_scale()
 
     
-    keeper:select_cell(8, 4)
-    kc():open_port("w")
+    -- keeper:select_cell(8, 4)
+    -- kc():open_port("w")
 
     keeper:select_cell(4, 4)
-    kc():change("CASINO")    
-    kc():open_port("e")
+    kc():change("KUDZU") 
+    -- kc().generation = 1   
+    -- kc():open_port("e")
     -- kc():open_port("s")
     -- kc():open_port("w")
     page:select(2)
@@ -44,9 +45,9 @@ function dev:scene(i)
 
 
   elseif i == 4 then
-    params:set("seed_cell_count", 15)
-    fn.seed_cells()
-    page:select(3)
+    -- params:set("seed_cell_count", 15)
+    -- fn.seed_cells()
+    page:select(4)
    
     -- counters:toggle_playback()
 

@@ -10,11 +10,22 @@ function parameters.init()
   params:add_trigger("load", "> LOAD" )
   params:set_action("load", function(x) fs.enter(norns.state.data, filesystem.load) end)
 
-  params:add_trigger("midi_panic", "MIDI PANIC!" )
+  params:add_trigger("midi_panic", "> MIDI PANIC!" )
   params:set_action("midi_panic", function() m:panic() end)
 
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
+
+  params:add{ type = "number", id = "kudzu_aggression", name = "KUDZU AGGRESSION",
+    min = 0, max = 10, default = 1
+  }
+
+  params:add{ type = "number", id = "kudzu_crumble_multiple", name = "KUDZU CRUMBLE MULTIPLE",
+    min = 1, max = 100, default = 1
+  }
+
+  params:add_trigger("kudzu_crumble", "> KUDZU CRUMBLE" )
+  params:set_action("kudzu_crumble", function() keeper:crumble_kudzu() end)
 
   params:add_option("jf_i2c_mode", "JF I2C MODE", {"1", "0"})
   params:set_action("jf_i2c_mode", function(index) crow.ii.jf.mode(index == 1 and 1 or 0) end)

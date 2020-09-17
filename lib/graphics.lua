@@ -23,9 +23,9 @@ end
 
 function graphics:structure_palette(i)
   local start_x = 18
-  local start_y = 20
+  local start_y = 13
   local margin_x = 15
-  local margin_y = 14
+  local margin_y = 13
   local p = {}
   for setup = 1, #structures:all() do
       p[setup] = {
@@ -41,6 +41,7 @@ function graphics:structure_palette(i)
     -- call me hardcode kassidy
     if k >= 8 and k <= 14 then row = 2 end
     if k >= 15 and k <= 21 then row = 3 end
+    if k >= 22 and k <= 28 then row = 4 end
     p[k].y = start_y + (margin_y * (row - 1))
     col = k % 7
     col = col == 0 and 7 or col
@@ -126,6 +127,7 @@ function graphics:time(x, y)
       if keeper.selected_cell:is("HIVE")   then steps = keeper.selected_cell:get_metabolism_steps()
   elseif keeper.selected_cell:is("RAVE")   then steps = keeper.selected_cell:get_metabolism_steps()
   elseif keeper.selected_cell:is("MIRAGE") then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("KUDZU")  then steps = keeper.selected_cell:get_metabolism_steps()
   elseif keeper.selected_cell:is("DOME")   then steps = fn.deep_copy(keeper.selected_cell.er)
   elseif keeper.selected_cell:is("MAZE")   then steps = fn.deep_copy(keeper.selected_cell.turing)
   end

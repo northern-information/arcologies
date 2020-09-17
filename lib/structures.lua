@@ -35,7 +35,8 @@ function structures.init()
   structures:register("MIRAGE",       { "METABOLISM", "DRIFT" })
   structures:register("BANK",         { "NET INCOME", "INTEREST", "TAXES", "DEPRECIATE", "AMORTIZE" })
   structures:register("SPOMENIK",     { "INDEX", "NOTES" })
-  structures:register("AUTON",        { "INDEX", "NOTE COUNT", "NOTES", })
+  structures:register("AUTON",        { "INDEX", "NOTE COUNT", "NOTES" })
+  structures:register("KUDZU",        { "METABOLISM", "RESILIENCE", "CRUMBLE" })
 end
 
 function structures:register(name, attributes)

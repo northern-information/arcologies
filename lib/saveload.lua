@@ -71,6 +71,7 @@ function saveload:load_cells(data)
     tmp.pulses           = load_cell.pulses          or pulses_trait.pulses
     tmp.range_max        = load_cell.range_max       or range_max_trait.range_max
     tmp.range_min        = load_cell.range_min       or range_min_trait.range_min
+    tmp.resilience       = load_cell.resilience      or resilience_trait.resilience
     tmp.state_index      = load_cell.state_index     or state_index_trait.state_index
     tmp.structure_value  = load_cell.structure_value or structure_value_trait.structure_value
     tmp.sub_menu_items   = load_cell.sub_menu_items  or sub_menu_items_trait.sub_menu_items

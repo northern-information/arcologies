@@ -199,6 +199,15 @@ function fn.is_cell_vacant(x, y)
   return true
 end
 
+function fn.get_vacant_neighbors(x, y)
+  local neighbors = {}
+  if fn.is_cell_vacant(x, y - 1) then table.insert(neighbors, "n") end
+  if fn.is_cell_vacant(x + 1, y) then table.insert(neighbors, "e") end
+  if fn.is_cell_vacant(x, y + 1) then table.insert(neighbors, "s") end
+  if fn.is_cell_vacant(x - 1, y) then table.insert(neighbors, "w") end
+  return neighbors
+end
+
 -- maths
 
 function fn.coin()

@@ -9,20 +9,6 @@ function glyphs.init()
   glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
 end
 
-function callIfCallable(f)
-    return function(...)
-        error, result = pcall(f, ...)
-        if error then -- f exists and is callable
-            print('ok')
-            return result
-        end
-        -- nothing to do, as though not called, or print('error', result)
-        print("doesn't exist")
-    end
-end
-
-
-
 function glyphs:draw_glyph(s, x, y, l)
   if self[string.lower(s)] ~= nil then
     assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)
@@ -63,7 +49,9 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-  self:spomenik(x, y, l)
+  self:kudzu(x, y, l)
+  self:small_kudzu(x+60, y, l)
+  -- self:small_casino(x+69, y, l)
 end
 
 function glyphs:bounding_box(x, y, l)
@@ -280,6 +268,21 @@ function glyphs:auton(x, y, l)
   graphics:rect(x, y+12, 8, 2, l)
   graphics:rect(x+14, y+12, 8, 2, l)
   graphics:rect(x+8, y+18, 6, 2, l)
+end
+
+function glyphs:kudzu(x, y, l)
+  graphics:rect(x+5, y, 2, 8, l)
+  graphics:rect(x+20, y, 2, 8, l)
+  graphics:rect(x+5, y, 17, 2, l)
+  graphics:rect(x, y+6, 17, 2, l)
+  graphics:rect(x, y+6, 2, 8, l)
+  graphics:rect(x+15, y+6, 2, 8, l)
+  graphics:rect(x+5, y+12, 17, 2, l)  
+  graphics:rect(x+20, y+12, 2, 14, l)
+  graphics:rect(x+5, y+12, 2, 8, l)  
+  graphics:rect(x, y+18, 12, 2, l)
+  graphics:rect(x, y+18, 2, 8, l)  
+  graphics:rect(x+10, y+18, 2, 8, l)  
 end
 
 function glyphs:left_wall(x, y, l)
@@ -611,6 +614,21 @@ function glyphs:small_auton(x, y, l)
   graphics:mls(x, y+4, x+2, y+4, l)
   graphics:mls(x+3, y+4, x+6, y+4, l)
   graphics:mls(x+1, y+6, x+4, y+6, l)
+end
+
+function glyphs:small_kudzu(x, y, l)
+  graphics:mlrs(x, y-1, 7, 1, l)  
+  graphics:mlrs(x-2, y+1, 7, 1, l)  
+  graphics:mlrs(x, y+3, 7, 1, l)  
+  graphics:mlrs(x-2, y+5, 5, 1, l)
+  graphics:mlrs(x, y, 1, 2, l)
+  graphics:mlrs(x+6, y, 1, 2, l)
+  graphics:mlrs(x-2, y+2, 1, 2, l)
+  graphics:mlrs(x+4, y+2, 1, 2, l)
+  graphics:mlrs(x, y+3, 1, 2, l)
+  graphics:mlrs(x-2, y+5, 1, 3, l)
+  graphics:mlrs(x+2, y+5, 1, 3, l)  
+  graphics:mlrs(x+6, y+3, 1, 5, l)
 end
 
 function glyphs:small_left_wall(x, y, l)

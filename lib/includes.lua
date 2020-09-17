@@ -24,12 +24,12 @@ include("arcologies/lib/Cell")
 
 --[[
 traits of cells. adding more minimallly requires:
- - configruration in in config.lua
+ - config in in structures.lua
  - contstructor code in Cell.lua
  - probably some logic in keeper:collision()
  - and i'm not happy about it but work in menu:scroll_value()
    along with Cell:get_menu_value_by_attribute() 
-   and fn.load()!
+   and saveload.lua
 todo: break up get_menu_value_by_attribute into traits...
 ]]
 include("arcologies/lib/traits/amortize_trait")
@@ -56,6 +56,7 @@ include("arcologies/lib/traits/ports_trait")
 include("arcologies/lib/traits/probability_trait")
 include("arcologies/lib/traits/pulses_trait")
 include("arcologies/lib/traits/range_trait")
+include("arcologies/lib/traits/resilience_trait")
 include("arcologies/lib/traits/state_index_trait")
 include("arcologies/lib/traits/taxes_trait")
 include("arcologies/lib/traits/territory_trait")
