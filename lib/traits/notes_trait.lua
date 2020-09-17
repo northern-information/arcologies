@@ -4,6 +4,7 @@ notes_trait.init = function(self)
 
   self.setup_notes = function(self, count)
     self.note_count = 1
+    self.max_note_count = 8
     self.notes = {}
     self.sub_menu_items = {}
     count = count == nil and 1 or count
@@ -22,6 +23,11 @@ notes_trait.init = function(self)
     local i = index ~= nil and index or 1
     self.notes[i] = note
     self.callback("set_note")
+  end
+
+  self.set_note_count = function(self, i)
+    self.note_count = util.clamp(i, 1, self.max_note_count)
+    self.callback(self, "set_note_count")
   end
 
   self.browse_notes = function(self, delta, index)

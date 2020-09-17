@@ -48,7 +48,7 @@ function saveload:load_cells(data)
     local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
     tmp.amortize         = load_cell.amortize        or amortize_trait.amortize
     tmp.capacity         = load_cell.capacity        or capacity_trait.capacity
-    tmp.channel          = load_cell.channel         or 1
+    tmp.channel          = load_cell.channel         or channel_trait.channel
     tmp.charge           = load_cell.charge          or charge_trait.charge
     tmp.crow_out         = load_cell.crow_out        or crow_out_trait.crow_out
     tmp.crumble          = load_cell.crumble         or crumble_trait.crumble
@@ -56,7 +56,7 @@ function saveload:load_cells(data)
     tmp.depreciate       = load_cell.depreciate      or depreciate_trait.depreciate
     tmp.device           = load_cell.device          or device_trait.device
     tmp.drift            = load_cell.drift           or drift_trait.drift
-    tmp.duration         = load_cell.duration        or 16
+    tmp.duration         = load_cell.duration        or duration_trait.duration
     tmp.interest         = load_cell.interest        or interest_trait.interest
     tmp.level            = load_cell.level           or level_trait.level
     tmp.metabolism       = load_cell.metabolism      or metabolism_trait.metabolism

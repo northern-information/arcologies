@@ -94,6 +94,7 @@ function Cell:get_menu_value_by_attribute(a)
   elseif a == "METABOLISM"   then return self.metabolism
   elseif a == "NETWORK"      then return self.network_value
   elseif a == "NET INCOME"   then return self.net_income
+  elseif a == "NOTE COUNT"   then return self.note_count
   elseif a == "NOTE"         then return self:get_note_name(1) -- "i'm the same as #1!?!"
   elseif a == "NOTE #1"      then return self:get_note_name(1) -- "always have been."
   elseif a == "NOTE #2"      then return self:get_note_name(2)
@@ -161,16 +162,19 @@ theres  only ~40 lines of code below...
 function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
+
       if self:is("DOME")      then self:set_er()
 
   elseif self:is("SHRINE") 
       or self:is("AVIARY")
-      or self:is("SPOMENIK")  then self:setup_notes(1)
+      or self:is("SPOMENIK")  then  self:set_note_count(1)
+                                    self:setup_notes(1)
 
   elseif self:is("TOPIARY") 
       or self:is("CASINO") 
       or self:is("FOREST") 
-      or self:is("AUTON")     then self:setup_notes(8)
+      or self:is("AUTON")     then  self:set_note_count(8)
+                                    self:setup_notes(8)
 
   elseif self:is("CRYPT")     then self:set_state_index(1) 
                                    self:cycle_state_index(0)

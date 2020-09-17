@@ -129,6 +129,7 @@ function menu:scroll_value(d)
     elseif s == "METABOLISM"   then keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
     elseif s == "NET INCOME"   then keeper.selected_cell:set_net_income(keeper.selected_cell.net_income + d) 
     elseif s == "NETWORK"      then keeper.selected_cell:set_network(keeper.selected_cell.network_key + d) 
+    elseif s == "NOTE COUNT"   then keeper.selected_cell:set_note_count(keeper.selected_cell.note_count + d) 
     elseif s == "NOTE"         then popup:launch("note1", d, "enc", 3) -- "i'm the same as #1!?!"
     elseif s == "NOTE #1"      then popup:launch("note1", d, "enc", 3) -- "always have been."
     elseif s == "NOTE #2"      then popup:launch("note2", d, "enc", 3)
