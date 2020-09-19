@@ -1,14 +1,19 @@
 -- requires metabolism
 -- requires probability
-turing_trait = {}
+turing_mixin = {}
 
-turing_trait.init = function(self)
+turing_mixin.init = function(self)
 
   self.setup_turing = function(self)
+    self.turing_key = "TURING"
     self.turing = {}
   end
 
-  self.set_turing = function(self)
+  self.get_turing = function(self)
+    return self.turing
+  end
+
+  self.set_turing = function(self, i)
     local meta = self.metabolism
     local p = self.probability
     local t = {}
@@ -45,7 +50,7 @@ turing_trait.init = function(self)
       -- remove the old value
       table.remove(t, 1)
     end
-    
+  
     self.turing = t
     self.callback(self, "set_turing")
   end

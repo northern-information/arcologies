@@ -10,23 +10,9 @@ function dev:scene(i)
     -- counters:toggle_playback()
 
   elseif i == 2 then
-    -- sound:set_random_root()
-    -- sound:set_random_scale()
-
-    
-    -- keeper:select_cell(8, 4)
-    -- kc():open_port("w")
-
     keeper:select_cell(4, 4)
-    kc():change("KUDZU") 
-    -- kc().generation = 1   
-    -- kc():open_port("e")
-    -- kc():open_port("s")
-    -- kc():open_port("w")
+    kc():change("MAZE") 
     page:select(2)
-    -- -- menu:select_item(5)
-    -- -- keeper:deselect_cell()
-    -- params:set("clock_tempo", 120)
     counters:toggle_playback()
 
   elseif i == 3 then

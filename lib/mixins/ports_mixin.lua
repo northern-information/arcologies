@@ -1,6 +1,6 @@
-ports_trait = {}
+ports_mixin = {}
 
-ports_trait.init = function(self, x, y)
+ports_mixin.init = function(self, x, y)
 
   self.setup_ports = function(self)
     self.ports = {}
@@ -59,7 +59,3 @@ ports_trait.init = function(self, x, y)
     end
   end
 end
-
-return ports_trait
-
-  

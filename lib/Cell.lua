@@ -10,36 +10,38 @@ function Cell:new(x, y, g)
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
-  amortize_trait.init(self)
-  capacity_trait.init(self)
-  channel_trait.init(self)
-  charge_trait.init(self)
-  crumble_trait.init(self)
-  crow_out_trait.init(self)
-  deflect_trait.init(self)
-  depreciate_trait.init(self)
-  device_trait.init(self)
-  drift_trait.init(self)
-  duration_trait.init(self)
-  interest_trait.init(self)
-  er_trait.init(self)
-  level_trait.init(self)
-  metabolism_trait.init(self)
-  net_income_trait.init(self)
-  network_trait.init(self)
-  notes_trait.init(self)
-  offset_trait.init(self)
-  operator_trait.init(self)
-  ports_trait.init(self)
-  probability_trait.init(self)
-  pulses_trait.init(self)
-  range_trait.init(self)
-  resilience_trait.init(self)
-  state_index_trait.init(self)
-  taxes_trait.init(self)
-  territory_trait.init(self)
-  turing_trait.init(self)
-  velocity_trait.init(self)
+  c.menu_getters = {}
+  c.menu_setters = {}
+  amortize_mixin.init(self)
+  capacity_mixin.init(self)
+  channel_mixin.init(self)
+  charge_mixin.init(self)
+  crow_out_mixin.init(self)
+  crumble_mixin.init(self)
+  deflect_mixin.init(self)
+  depreciate_mixin.init(self)
+  device_mixin.init(self)
+  drift_mixin.init(self)
+  duration_mixin.init(self)
+  interest_mixin.init(self)
+  er_mixin.init(self)
+  level_mixin.init(self)
+  metabolism_mixin.init(self)
+  net_income_mixin.init(self)
+  network_mixin.init(self)
+  notes_mixin.init(self)
+  offset_mixin.init(self)
+  operator_mixin.init(self)
+  ports_mixin.init(self)
+  probability_mixin.init(self)
+  pulses_mixin.init(self)
+  range_mixin.init(self)
+  resilience_mixin.init(self)
+  state_index_mixin.init(self)
+  taxes_mixin.init(self)
+  territory_mixin.init(self)
+  turing_mixin.init(self)
+  velocity_mixin.init(self)
   --[[ walk softly and carry a big stick
        aka measure twice cut once
        aka shit got spooky when i had params floating the init()s ]]
@@ -76,47 +78,25 @@ function Cell:new(x, y, g)
   return c
 end
 
--- todo: shame. there's gotta be a better way to do this...
--- probably involves moving each line into their trait file...
+function Cell:register_menu_setter(key, setter)
+  self.menu_setters[key] = setter
+end
+
+function Cell:register_menu_getter(key, getter)
+  self.menu_getters[key] = getter
+end
+
+function Cell:set_attribute_value(key, value)
+  if self.menu_setters[key] ~= nil then
+    self.menu_setters[key](self, value)
+  else
+    print("Error: No match for cell attribute " .. key)
+  end
+end
+
 function Cell:get_menu_value_by_attribute(a)
-      if a == "AMORTIZE"     then return self.amortize
-  elseif a == "CAPACITY"     then return self.capacity
-  elseif a == "CHANNEL"      then return self.channel
-  elseif a == "CHARGE"       then return self.charge
-  elseif a == "CRUMBLE"      then return self.crumble
-  elseif a == "CROW OUT"     then return self.crow_out
-  elseif a == "DEFLECT"      then return self.deflect
-  elseif a == "DEPRECIATE"   then return self.depreciate
-  elseif a == "DEVICE"       then return self.device
-  elseif a == "DRIFT"        then return self.drift
-  elseif a == "DURATION"     then return self.duration
-  elseif a == "INDEX"        then return self.state_index
-  elseif a == "INTEREST"     then return self.interest
-  elseif a == "LEVEL"        then return self.level
-  elseif a == "METABOLISM"   then return self.metabolism
-  elseif a == "NETWORK"      then return self.network_value
-  elseif a == "NET INCOME"   then return self.net_income
-  elseif a == "NOTE COUNT"   then return self.note_count
-  elseif a == "NOTE"         then return self:get_note_name(1) -- "i'm the same as #1!?!"
-  elseif a == "NOTE #1"      then return self:get_note_name(1) -- "always have been."
-  elseif a == "NOTE #2"      then return self:get_note_name(2)
-  elseif a == "NOTE #3"      then return self:get_note_name(3)
-  elseif a == "NOTE #4"      then return self:get_note_name(4)
-  elseif a == "NOTE #5"      then return self:get_note_name(5)
-  elseif a == "NOTE #6"      then return self:get_note_name(6)
-  elseif a == "NOTE #7"      then return self:get_note_name(7)
-  elseif a == "NOTE #8"      then return self:get_note_name(8)
-  elseif a == "OFFSET"       then return self.offset
-  elseif a == "OPERATOR"     then return self.operator
-  elseif a == "PROBABILITY"  then return self.probability
-  elseif a == "PULSES"       then return self.pulses
-  elseif a == "RANGE MAX"    then return self.range_max
-  elseif a == "RANGE MIN"    then return self.range_min
-  elseif a == "RESILIENCE"   then return self.resilience
-  elseif a == "STRUCTURE"    then return self.structure_value
-  elseif a == "TAXES"        then return self.taxes
-  elseif a == "TERRITORY"    then return self.territory
-  elseif a == "VELOCITY"     then return self.velocity
+  if self.menu_getters[a] ~= nil then
+    return self.menu_getters[a]
   end
 end
 

@@ -9,6 +9,13 @@ function glyphs.init()
   glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
 end
 
+function glyphs:stubby(x, y, l)
+  glyphs:cell(x, y, l)
+  graphics:rect(x+3, y+4, 2, 4, l)
+  graphics:rect(x+9, y+4, 2, 4, l)
+  graphics:rect(x+6, y+12, 2, 4, l)
+end
+
 function glyphs:draw_glyph(s, x, y, l)
   if self[string.lower(s)] ~= nil then
     assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)

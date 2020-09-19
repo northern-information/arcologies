@@ -1,10 +1,17 @@
-territory_trait = {}
+territory_mixin = {}
 
-territory_trait.init = function(self)
+territory_mixin.init = function(self)
 
   self.setup_territory = function(self)
+    self.territory_key = "TERRITORY"
     self.territory = 1
-    self.territory_values = {"N", "E", "S", "W", "N/E", "S/E", "S/W", "N/W", "ALL"}
+    self.territory_menu_values = {"N", "E", "S", "W", "N/E", "S/E", "S/W", "N/W", "ALL"}
+    self:register_menu_getter(self.territory_key, self.territory_menu_getter)
+    self:register_menu_setter(self.territory_key, self.territory_menu_setter)
+  end
+
+  self.get_territory = function(self)
+    return self.territory
   end
 
   self.set_territory = function(self, i)
@@ -12,8 +19,12 @@ territory_trait.init = function(self)
     self.callback(self, "set_territory")
   end
 
-  self.get_territory_value = function(self)
-    return self.territory_values[self.territory]
+  self.territory_menu_getter = function(self)
+    return self.territory_menu_values[self:get_territory()]
+  end
+
+  self.territory_menu_setter = function(self, i)
+    self:set_territory(self.territory + i)
   end
 
   self.has_other_cell_in_territory = function(self, serf_cell)

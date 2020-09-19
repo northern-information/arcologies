@@ -1,14 +1,29 @@
-metabolism_trait = {}
+metabolism_mixin = {}
 
-metabolism_trait.init = function(self)
+metabolism_mixin.init = function(self)
 
   self.setup_metabolism = function(self)
+    self.metabolism_key = "METABOLISM"
     self.metabolism = 13
+    self:register_menu_getter(self.metabolism_key, self.metabolism_menu_getter)
+    self:register_menu_setter(self.metabolism_key, self.metabolism_menu_setter)
+  end
+
+  self.get_metabolism = function(self)
+    return self.metabolism
   end
 
   self.set_metabolism = function(self, i)
     self.metabolism = util.clamp(i, 0, 16)
     self.callback(self, "set_metabolism")
+  end
+
+  self.metabolism_menu_getter = function(self)
+    return self:get_metabolism()
+  end
+
+  self.metabolism_menu_setter = function(self, i)
+    self:set_metabolism(self.metabolism + i)
   end
 
   self.get_metabolism_steps = function(self)
@@ -31,7 +46,7 @@ metabolism_trait.init = function(self)
     steps[15] = {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0}
     steps[16] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1} 
     local to_bools = {}
-    for k,v in pairs(steps[self.metabolism]) do
+    for k,v in pairs(steps[self:get_metabolism()]) do
       table.insert(to_bools, v == 1)
     end
     return to_bools
@@ -57,7 +72,7 @@ metabolism_trait.init = function(self)
     i[14] = 3
     i[15] = 2
     i[16] = 1
-    return i[self.metabolism]
+    return i[self:get_metabolism()]
   end
 
 end

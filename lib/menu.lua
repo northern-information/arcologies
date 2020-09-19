@@ -29,43 +29,15 @@ function menu:render(bool)
     end
 
     -- panel value for cell designer
+    -- left off here friday the 18th night of september...
     if page.active_page == 2 and render_values then
+      local cell = keeper.selected_cell
       local item = self.items[i]
       if item ~= nil then
         local value = keeper.selected_cell:get_menu_value_by_attribute(item)
         if value ~= nil then
-          if (keeper.selected_cell:is("TOPIARY") or keeper.selected_cell:is("CASINO") or keeper.selected_cell:is("FOREST") or keeper.selected_cell:is("AUTON"))
-            and string.find(self.items[i], "NOTE")
-            and string.find(self.items[i], keeper.selected_cell.state_index) then
-            graphics:text(56, offset, "> " .. value, 0)
-          elseif self.items[i] == "PROBABILITY" 
-              or self.items[i] == "LEVEL"
-              or self.items[i] == "RANGE MIN"
-              or self.items[i] == "RANGE MAX"
-              or self.items[i] == "RESILIENCE" then
-            graphics:text(56, offset, value .. "%", 0)
-          elseif self.items[i] == "NET INCOME"  then
-            graphics:text(56, offset, ">" .. value .. ".0gDq", 0)
-          elseif self.items[i] == "INTEREST"  then
-            graphics:text(56, offset, "=" .. value .. "%(#7)", 0)
-          elseif self.items[i] == "TAXES"  then
-            graphics:text(56, offset,"<:" ..  value .. ":GdQ", 0)
-          elseif self.items[i] == "DEPRECIATE"  then
-            graphics:text(56, offset, value .. "0kVE", 0)
-          elseif self.items[i] == "AMORTIZE"  then
-            graphics:text(56, offset, value .. "99ll9c", 0)
-          elseif self.items[i] == "CROW OUT"  then
-            graphics:text(56, offset, (value == 1 and "1/2" or "3/4"), 0)
-          elseif self.items[i] == "DEFLECT"  then
-            graphics:text(56, offset, keeper.selected_cell:get_deflect_value(), 0)
-          elseif self.items[i] == "DRIFT"  then
-            graphics:text(56, offset, keeper.selected_cell:get_drift_value(), 0)
-          elseif self.items[i] == "TERRITORY"  then
-            graphics:text(56, offset, keeper.selected_cell:get_territory_value(), 0)
-          elseif self.items[i] == "OPERATOR"  then
-            graphics:text(56, offset, keeper.selected_cell:get_operator_value(), 0)
-          elseif self.items[i] ~= "STRUCTURE" then
-            graphics:text(56, offset, value, 0)
+          if self.items[i] ~= "STRUCTURE" then
+            graphics:text(56, offset, cell:get_menu_value_by_attribute(item)(cell), 0)
           end
         end
       end
@@ -112,46 +84,11 @@ function menu:scroll_value(d)
 
   -- cell designer
   elseif page.active_page == 2 then
-        if s == "AMORTIZE"     then keeper.selected_cell:set_amortize(keeper.selected_cell.amortize + d)
-    elseif s == "CAPACITY"     then keeper.selected_cell:set_capacity(keeper.selected_cell.capacity + d)
-    elseif s == "CHANNEL"      then keeper.selected_cell:set_channel(keeper.selected_cell.channel + d)
-    elseif s == "CHARGE"       then keeper.selected_cell:set_charge(keeper.selected_cell.charge + d)
-    elseif s == "CROW OUT"     then keeper.selected_cell:set_crow_out(keeper.selected_cell.crow_out + d)
-    elseif s == "CRUMBLE"      then keeper.selected_cell:set_crumble(keeper.selected_cell.crumble + d)
-    elseif s == "DEFLECT"      then keeper.selected_cell:set_deflect(keeper.selected_cell.deflect + d)
-    elseif s == "DEPRECIATE"   then keeper.selected_cell:set_depreciate(keeper.selected_cell.depreciate + d)
-    elseif s == "DEVICE"       then keeper.selected_cell:set_device(keeper.selected_cell.device + d)
-    elseif s == "DOCS"         then -- selecting docs automatically toggles them on
-    elseif s == "DRIFT"        then keeper.selected_cell:set_drift(keeper.selected_cell.drift + d)
-    elseif s == "DURATION"     then keeper.selected_cell:set_duration(keeper.selected_cell.duration + d)
-    elseif s == "INDEX"        then keeper.selected_cell:cycle_state_index(d)
-    elseif s == "INTEREST"     then keeper.selected_cell:set_interest(keeper.selected_cell.interest + d)
-    elseif s == "LEVEL"        then keeper.selected_cell:set_level(keeper.selected_cell.level + d)
-    elseif s == "METABOLISM"   then keeper.selected_cell:set_metabolism(keeper.selected_cell.metabolism + d)
-    elseif s == "NET INCOME"   then keeper.selected_cell:set_net_income(keeper.selected_cell.net_income + d) 
-    elseif s == "NETWORK"      then keeper.selected_cell:set_network(keeper.selected_cell.network_key + d) 
-    elseif s == "NOTE COUNT"   then keeper.selected_cell:set_note_count(keeper.selected_cell.note_count + d) 
-    elseif s == "NOTE"         then popup:launch("note1", d, "enc", 3) -- "i'm the same as #1!?!"
-    elseif s == "NOTE #1"      then popup:launch("note1", d, "enc", 3) -- "always have been."
-    elseif s == "NOTE #2"      then popup:launch("note2", d, "enc", 3)
-    elseif s == "NOTE #3"      then popup:launch("note3", d, "enc", 3)
-    elseif s == "NOTE #4"      then popup:launch("note4", d, "enc", 3)
-    elseif s == "NOTE #5"      then popup:launch("note5", d, "enc", 3)
-    elseif s == "NOTE #6"      then popup:launch("note6", d, "enc", 3)
-    elseif s == "NOTE #7"      then popup:launch("note7", d, "enc", 3)
-    elseif s == "NOTE #8"      then popup:launch("note8", d, "enc", 3)
-    elseif s == "OFFSET"       then keeper.selected_cell:set_offset(keeper.selected_cell.offset + d)
-    elseif s == "OPERATOR"     then keeper.selected_cell:set_operator(keeper.selected_cell.operator + d)
-    elseif s == "PROBABILITY"  then keeper.selected_cell:set_probability(keeper.selected_cell.probability + d)
-    elseif s == "PULSES"       then keeper.selected_cell:set_pulses(keeper.selected_cell.pulses + d)
-    elseif s == "RANGE MAX"    then keeper.selected_cell:set_range_max(keeper.selected_cell.range_max + d)
-    elseif s == "RANGE MIN"    then keeper.selected_cell:set_range_min(keeper.selected_cell.range_min + d)
-    elseif s == "RESILIENCE"   then keeper.selected_cell:set_resilience(keeper.selected_cell.resilience + d)
-    elseif s == "STRUCTURE"    then popup:launch("structure", d, "enc", 3)
-    elseif s == "TAXES"        then keeper.selected_cell:set_taxes(keeper.selected_cell.taxes + d)
-    elseif s == "TERRITORY"    then keeper.selected_cell:set_territory(keeper.selected_cell.territory + d)
-    elseif s == "VELOCITY"     then keeper.selected_cell:set_velocity(keeper.selected_cell.velocity + d)
-    else print("Error: No match for cell attribute " .. s)
+    local cell = keeper.selected_cell
+    if s == "STRUCTURE" then
+      popup:launch("structure", d, "enc", 3)
+    else
+      cell:set_attribute_value(self.selected_item_string, d)
     end
 
   -- analysis
