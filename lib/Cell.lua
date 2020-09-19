@@ -19,6 +19,7 @@ function Cell:new(x, y, g)
   crumble_mixin.init(self)
   deflect_mixin.init(self)
   device_mixin.init(self)
+  docs_stub_mixin.init(self)
   drift_mixin.init(self)
   duration_mixin.init(self)
   er_mixin.init(self)
@@ -34,6 +35,7 @@ function Cell:new(x, y, g)
   range_mixin.init(self)
   resilience_mixin.init(self)
   state_index_mixin.init(self)
+  structure_stub_mixin.init(self)
   territory_mixin.init(self)
   turing_mixin.init(self)
   velocity_mixin.init(self)
@@ -47,6 +49,7 @@ function Cell:new(x, y, g)
   c.setup_crumble(c)
   c.setup_deflect(c)
   c.setup_device(c)
+  c.setup_docs_stub(c)
   c.setup_drift(c)
   c.setup_duration(c)
   c.setup_er(c)
@@ -62,6 +65,7 @@ function Cell:new(x, y, g)
   c.setup_range(c)
   c.setup_resilience(c)
   c.setup_state_index(c)
+  c.setup_structure_stub(c)
   c.setup_territory(c)
   c.setup_turing(c)
   c.setup_velocity(c)
@@ -213,8 +217,6 @@ function Cell:lifecycle()
   end
 end
 
-
-
 -- for institutions & kudzu
 function Cell:has_crumbled()
   if self.crumble <= 0 then
@@ -226,6 +228,7 @@ function Cell:has_crumbled()
   end
 end
 
+-- for institutions
 function Cell:burst()
   keeper:create_signal(self.x, self.y - 1, "n", "now")
   keeper:create_signal(self.x + 1, self.y, "e", "now")
@@ -242,6 +245,7 @@ function Cell:shall_we_drift_today()
   end
 end
 
+-- for mirages
 function Cell:move(direction)
   if not fn.table_find(self.cardinals, direction) then return end
       if direction == "n" and fn.is_cell_vacant(self.x, self.y - 1) then self.y = self.y - 1
@@ -265,6 +269,7 @@ function Cell:compare_capacity_and_charge()
   end
 end
 
+-- for raves
 -- turn on, tune in, drop out... close all the ports, then flip coins to open them
 function Cell:drugs()
   self.ports = {}

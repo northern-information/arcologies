@@ -1,6 +1,6 @@
-foobar_trait = {}
+foobar_mixin = {}
 
-foobar_trait.init = function(self)
+foobar_mixin.init = function(self)
 
   -- configure the key once and only once
   -- the value is the lower case string

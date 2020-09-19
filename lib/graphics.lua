@@ -23,9 +23,9 @@ end
 
 function graphics:structure_palette(i)
   local start_x = 18
-  local start_y = 13
+  local start_y = 18
   local margin_x = 15
-  local margin_y = 13
+  local margin_y = 15
   local p = {}
   for setup = 1, #structures:all() do
       p[setup] = {
