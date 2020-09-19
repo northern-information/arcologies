@@ -225,7 +225,7 @@ function glyphs:hydroponics (x, y, l)
   graphics:rect(x+25, y+18, 2, 8, l)
 end
 
-function glyphs:institution(x, y, l)
+function glyphs:fracture(x, y, l)
   self:foundation(x, y, l)
   graphics:rect(x, y-2, 2, 8, l)
   graphics:rect(x, y+4, 12, 2, l)
@@ -246,7 +246,7 @@ function glyphs:mirage(x, y, l)
   self:foundation(x, y, l)
 end
 
-function glyphs:bank(x, y, l)
+function glyphs:institution(x, y, l)
   self:cell(x, y, l)
   graphics:rect(x+6, y+6, 10, 2, l)
   graphics:rect(x+5, y+18, 2, 8, l)
@@ -575,7 +575,7 @@ function glyphs:small_hydroponics(x, y, l)
   graphics:mls(x+7, y+1, x+7, y+8, l)
 end
 
-function glyphs:small_institution(x, y, l)
+function glyphs:small_fracture(x, y, l)
   self:small_foundation(x, y, l)
   graphics:mlrs(x-1, y-1, 1, 3, l)
   graphics:mlrs(x-1, y+1, 4, 1, l)
@@ -594,7 +594,7 @@ function glyphs:small_mirage(x, y, l)
   self:small_foundation(x, y, l)
 end
 
-function glyphs:small_bank(x, y, l)
+function glyphs:small_institution(x, y, l)
   self:small_cell(x, y, l)
   graphics:mls(x+1, y+2, x+4, y+2, l)
   graphics:mlrs(x+1, y+6, 1, 2, l)

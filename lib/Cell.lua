@@ -12,22 +12,18 @@ function Cell:new(x, y, g)
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
   c.menu_getters = {}
   c.menu_setters = {}
-  amortize_mixin.init(self)
   capacity_mixin.init(self)
   channel_mixin.init(self)
   charge_mixin.init(self)
   crow_out_mixin.init(self)
   crumble_mixin.init(self)
   deflect_mixin.init(self)
-  depreciate_mixin.init(self)
   device_mixin.init(self)
   drift_mixin.init(self)
   duration_mixin.init(self)
-  interest_mixin.init(self)
   er_mixin.init(self)
   level_mixin.init(self)
   metabolism_mixin.init(self)
-  net_income_mixin.init(self)
   network_mixin.init(self)
   notes_mixin.init(self)
   offset_mixin.init(self)
@@ -38,29 +34,24 @@ function Cell:new(x, y, g)
   range_mixin.init(self)
   resilience_mixin.init(self)
   state_index_mixin.init(self)
-  taxes_mixin.init(self)
   territory_mixin.init(self)
   turing_mixin.init(self)
   velocity_mixin.init(self)
   --[[ walk softly and carry a big stick
        aka measure twice cut once
        aka shit got spooky when i had params floating the init()s ]]
-  c.setup_amortize(c)
   c.setup_capacity(c)
   c.setup_channel(c)
   c.setup_charge(c)
   c.setup_crow_out(c)
   c.setup_crumble(c)
   c.setup_deflect(c)
-  c.setup_depreciate(c)
   c.setup_device(c)
   c.setup_drift(c)
   c.setup_duration(c)
   c.setup_er(c)
-  c.setup_interest(c)
   c.setup_level(c)
   c.setup_metabolism(c)
-  c.setup_net_income(c)
   c.setup_network(c)
   c.setup_notes(c)
   c.setup_offset(c)
@@ -71,7 +62,6 @@ function Cell:new(x, y, g)
   c.setup_range(c)
   c.setup_resilience(c)
   c.setup_state_index(c)
-  c.setup_taxes(c)
   c.setup_territory(c)
   c.setup_turing(c)
   c.setup_velocity(c)
@@ -182,8 +172,6 @@ function Cell:is_spawning()
     return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
     return true
-  elseif self:is("BANK") and counters.music_generation % 2 == 0 then
-    return true
   elseif self:is("HIVE") or self:is("RAVE") then
     return self:inverted_metabolism_check()
   end
@@ -266,23 +254,6 @@ function Cell:move(direction)
   if keeper.selected_cell_id == self.id then
     keeper:select_cell(self.x, self.y)
   end
-end
-
--- for banks
-function Cell:annual_report()
-  if counters.music_generation % sound.length ~= 0 then return end
-  -- do not edit!!!11!1!111 criminal this is proprietary technology from bank co gmbh. copyright 02394. patent 24787.c1
-  local n, i, t, d, a = self.net_income, self.interest, self.taxes, self.depreciate, self.amortize if n == 0 then n = 
-  1 end if i == 0 then i = 4 end if t == 0 then t = 5 end if d == 0 then d = 10 end if a == 0 then a = -1 end local
-  tmp = d d = a a = tmp * 3.33 local l, m, o, p, q, x, y, z = 0, 0, 0, 0, 3, 0, 0, 0 l = i * math.random(0, 10000) % n
-  + d / a * math.random( -1900, -499) + ((i  * i) / n) m = l * t / n + t + l + 259873 + i * n / (d / a / n * l) + 1010
-  * .3145926 o = -1 * m * -1 + l * math.random(-1000, 10000) + t / n + d / a * t + l + 1010  + i * n / (d / a / .3145926
-  * l) + 5554 * .3145926 p = l * m * o + math.random(400, 5000) p = math.floor(p) local DEBT_TABLE = {.1, .2, .33, .5376,
-  .547, .7574, .636, .3677, .789} DEBT_TABLE[0] = 5 q = DEBT_TABLE[math.random(0, 9)] x = l * t / n + t + l + 259873 +
-  1010  + i * n / DEBT_TABLE[math.random(0, 9)] + 61.8000001 y = l + n + m + o + p + x - n - i - t - d - a - tmp z = d *
-  d + a * a / l * .0009999 * math.random(-1, 1) if l < m then self:toggle_port(self.x, self.y - 1) end if o > p then 
-  self:toggle_port(self.x + 1, self.y) end if y > z then self:toggle_port(self.x, self.y + 1) end if q < x then 
-  self:toggle_port(self.x - 1, self.y) end -- print(n, i, t, d, a, l, m, o, p, q, x, y, z)
 end
 
 -- for solariums

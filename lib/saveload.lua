@@ -47,22 +47,18 @@ function saveload:load_cells(data)
   for k, load_cell in pairs(data.keeper_cells) do
     local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
     -- cells from older arcologies don't have newer attributes, so...
-    tmp.amortize         = load_cell.amortize        or tmp.amortize
     tmp.capacity         = load_cell.capacity        or tmp.capacity
     tmp.channel          = load_cell.channel         or tmp.channel
     tmp.charge           = load_cell.charge          or tmp.charge
     tmp.crow_out         = load_cell.crow_out        or tmp.crow_out
     tmp.crumble          = load_cell.crumble         or tmp.crumble
     tmp.deflect          = load_cell.deflect         or tmp.deflect
-    tmp.depreciate       = load_cell.depreciate      or tmp.depreciate
     tmp.device           = load_cell.device          or tmp.device
     tmp.drift            = load_cell.drift           or tmp.drift
     tmp.duration         = load_cell.duration        or tmp.duration
-    tmp.interest         = load_cell.interest        or tmp.interest
     tmp.level            = load_cell.level           or tmp.level
     tmp.metabolism       = load_cell.metabolism      or tmp.metabolism
     tmp.network_value    = load_cell.network_value   or tmp.network_value
-    tmp.net_income       = load_cell.net_income      or tmp.net_income
     tmp.note_count       = load_cell.note_count      or tmp.note_count
     tmp.notes            = load_cell.notes           or tmp.notes
     tmp.offset           = load_cell.offset          or tmp.offset
@@ -76,7 +72,6 @@ function saveload:load_cells(data)
     tmp.state_index      = load_cell.state_index     or tmp.state_index
     tmp.structure_value  = load_cell.structure_value or tmp.structure_value
     tmp.sub_menu_items   = load_cell.sub_menu_items  or tmp.sub_menu_items
-    tmp.taxes            = load_cell.taxes           or tmp.taxes
     tmp.territory        = load_cell.territory       or tmp.territory
     tmp.velocity         = load_cell.velocity        or tmp.velocity
     tmp:set_available_ports()
