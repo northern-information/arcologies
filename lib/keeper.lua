@@ -176,7 +176,7 @@ end
 
 function keeper:broadcast(cell)
   for k, other_cell in pairs(self.cells) do
-    if other_cell:is("TUNNEL") and other_cell.id ~= cell.id and other_cell.network_key == cell.network_key then
+    if other_cell:is("TUNNEL") and other_cell.id ~= cell.id and other_cell.network == cell.network then
       for k, port in pairs(other_cell.ports) do
             if port == "n" then self:create_signal(other_cell.x, other_cell.y - 1, "n", "tomorrow")
         elseif port == "e" then self:create_signal(other_cell.x + 1, other_cell.y, "e", "tomorrow")
