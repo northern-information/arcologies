@@ -11,7 +11,15 @@ function dev:scene(i)
 
   elseif i == 2 then
     keeper:select_cell(4, 4)
-    kc():change("MAZE") 
+    kc():change("TOPIARY") 
+    kc():set_note(74, 1)
+    kc():set_note(72, 2)
+    kc():set_note(72, 3)
+    kc():set_note(72, 4)
+    kc():set_note(72, 5)
+    kc():set_note(72, 6)
+    kc():set_note(72, 7)
+    kc():set_note(72, 8)
     page:select(2)
     counters:toggle_playback()
 

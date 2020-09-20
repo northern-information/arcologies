@@ -34,12 +34,6 @@ config["home_items"] = {
   "DOCS"
 }
 
-local note_message = {
-  ["start"] = "NOTE...",
-  ["abort"] = "ABORTED",
-  ["done"] = "CHOSE"
-}
-
 config["popup_messages"] = {
   ["delete_all"] = {
     ["start"] = "DELETING ALL IN...",
@@ -51,14 +45,11 @@ config["popup_messages"] = {
     ["abort"] = "",
     ["done"] = "CHOSE"
   },
-  ["note1"] = note_message,
-  ["note2"] = note_message,
-  ["note3"] = note_message,
-  ["note4"] = note_message,
-  ["note5"] = note_message,
-  ["note6"] = note_message,
-  ["note7"] = note_message,
-  ["note8"] = note_message
+  ["note"] = {
+    ["start"] = "NOTE...",
+    ["abort"] = "ABORTED",
+    ["done"] = "CHOSE"
+  }
 }
 
 return config

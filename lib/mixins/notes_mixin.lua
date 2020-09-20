@@ -5,9 +5,9 @@ notes_mixin.init = function(self)
 
   self.setup_notes = function(self, count)
     self.note_count = (count == nil) and 1 or count
-    self.note_count_key = "NOTE COUNT"
+    self.note_count_key = "NOTE COUNT" -- code key, not music key...
     self.max_note_count = 8
-    self.note_key = "NOTE"
+    self.note_key = "NOTE" -- code key, not music key...
     for i = 1, self.max_note_count do
       self["note_" .. i .. "_key"] = "NOTE #" .. i
     end
@@ -31,19 +31,15 @@ notes_mixin.init = function(self)
     self:register_menu_setter(self.note_count_key, self.note_count_menu_setter)
   end
 
-  self.note_menu_setter   = function(self, i) self:note_launch_popup(1, i) end
-  self.note_1_menu_setter = function(self, i) self:note_launch_popup(1, i) end
-  self.note_2_menu_setter = function(self, i) self:note_launch_popup(2, i) end
-  self.note_3_menu_setter = function(self, i) self:note_launch_popup(3, i) end
-  self.note_4_menu_setter = function(self, i) self:note_launch_popup(4, i) end
-  self.note_5_menu_setter = function(self, i) self:note_launch_popup(5, i) end
-  self.note_6_menu_setter = function(self, i) self:note_launch_popup(6, i) end
-  self.note_7_menu_setter = function(self, i) self:note_launch_popup(7, i) end
-  self.note_8_menu_setter = function(self, i) self:note_launch_popup(8, i) end
-
-  self.note_launch_popup = function(self, note_number, i)
-    popup:launch("note" .. note_number, i, "enc", 3)
-  end
+  self.note_menu_setter   = function(self, i) popup:launch("note", i, "enc", 3, 1) end
+  self.note_1_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 1) end
+  self.note_2_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 2) end
+  self.note_3_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 3) end
+  self.note_4_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 4) end
+  self.note_5_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 5) end
+  self.note_6_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 6) end
+  self.note_7_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 7) end
+  self.note_8_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 8) end
 
   self.note_menu_getter   = function(self) return self:note_to_menu_string(1) end
   self.note_1_menu_getter = function(self) return self:note_to_menu_string(1) end
@@ -79,16 +75,6 @@ notes_mixin.init = function(self)
     self:set_note(note, index)
   end
 
-  self.get_notes_submenu_items = function(self)
-    local items = {}
-    for i = 1, self.note_count do
-      items[i] = {}
-      items[i]["menu_item"] = "NOTE #" .. i
-      items[i]["menu_value"] = self:get_note_name(i)
-    end
-    return items
-  end
-
   self.get_note_count = function(self)
     return self.note_count
   end
@@ -120,6 +106,16 @@ notes_mixin.init = function(self)
           end
         end
       end
+    end
+    return items
+  end
+
+  self.get_notes_submenu_items = function(self)
+    local items = {}
+    for i = 1, self.note_count do
+      items[i] = {}
+      items[i]["menu_item"] = "NOTE #" .. i
+      items[i]["menu_value"] = self:get_note_name(i)
     end
     return items
   end
