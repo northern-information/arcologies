@@ -46,6 +46,8 @@ end
 function saveload:load_cells(data)
   for k, load_cell in pairs(data.keeper_cells) do
     local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
+    -- if the structure doesn't exist anymore, load it as a hive.
+    tmp.structure_value  = (type(fn.table_find(structures:all(), load_cell.structure_value)) == "number") and load_cell.structure_value or "HIVE"
     -- cells from older arcologies don't have newer attributes, so...
     tmp.capacity         = load_cell.capacity        or tmp.capacity
     tmp.channel          = load_cell.channel         or tmp.channel
@@ -70,7 +72,6 @@ function saveload:load_cells(data)
     tmp.range_min        = load_cell.range_min       or tmp.range_min
     tmp.resilience       = load_cell.resilience      or tmp.resilience
     tmp.state_index      = load_cell.state_index     or tmp.state_index
-    tmp.structure_value  = load_cell.structure_value or tmp.structure_value
     tmp.sub_menu_items   = load_cell.sub_menu_items  or tmp.sub_menu_items
     tmp.territory        = load_cell.territory       or tmp.territory
     tmp.velocity         = load_cell.velocity        or tmp.velocity

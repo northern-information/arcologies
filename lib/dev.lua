@@ -52,9 +52,7 @@ function dev:scene(i)
 end
 
 
-function rerun()
-  norns.script.load(norns.state.script)
-end
+
 
 function kc()
     return keeper.selected_cell

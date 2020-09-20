@@ -68,13 +68,13 @@ function keeper:collision(signal, cell)
 
   -- topiaries cylce through notes
   elseif cell:is("CASINO") then
-    m:play(cell.notes[cell.state_index], cell.velocity, cell.channel, cell.duration, cell.device)
     cell:cycle_state_index(1)
+    m:play(cell.notes[cell.state_index], cell.velocity, cell.channel, cell.duration, cell.device)
 
   -- forests cylce through notes
   elseif cell:is("FOREST") then
-    c:play(cell.notes[cell.state_index], cell.crow_out)
     cell:cycle_state_index(1)
+    c:play(cell.notes[cell.state_index], cell.crow_out)
 
   -- send signals to other tunnels
   elseif cell:is("TUNNEL") then
@@ -90,8 +90,8 @@ function keeper:collision(signal, cell)
 
   -- autons cycle through notes on jf
   elseif cell:is("AUTON") then
-    c:jf(cell.notes[cell.state_index])
     cell:cycle_state_index(1)
+    c:jf(cell.notes[cell.state_index])
 
   -- hydroponics operate at a distance
   elseif cell:is("HYDROPONICS") then
