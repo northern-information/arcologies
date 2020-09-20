@@ -1,3 +1,4 @@
+-- requires offset
 metabolism_mixin = {}
 
 metabolism_mixin.init = function(self)
@@ -73,6 +74,14 @@ metabolism_mixin.init = function(self)
     i[15] = 2
     i[16] = 1
     return i[self:get_metabolism()]
+  end
+
+  self.inverted_metabolism_check = function(self)
+    if self.metabolism == 0 then
+      return false
+    else
+      return (((counters:this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
+    end
   end
 
 end

@@ -106,4 +106,22 @@ notes_mixin.init = function(self)
     self:set_note_count(self.note_count + i)
   end
 
+  self.inject_notes_into_menu = function(self, items)
+    if self:has("NOTES") then
+      local note_position = fn.table_find(items, "NOTES")
+      if type(note_position) == "number" then
+        table.remove(items, note_position)
+        if self.note_count == 1 then
+          table.insert(items, note_position, "NOTE")
+        elseif  self.note_count > 1 then
+          local notes_submenu_items = self:get_notes_submenu_items()
+          for i = 1, self.note_count do
+            table.insert(items, note_position + (i - 1), notes_submenu_items[i]["menu_item"])
+          end
+        end
+      end
+    end
+    return items
+  end
+
 end

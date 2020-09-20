@@ -126,6 +126,12 @@ function Cell:prepare_for_paste(x, y, g)
   self:set_available_ports()
 end
 
+function Cell:menu_items()
+  local items = fn.deep_copy(self:get_attributes())
+  items = self:inject_notes_into_menu(items)
+  return items
+end
+
 --[[
 from here out we get into what is essentially "descendent class behaviors"
 since all cells can change structures at any time, it makes no sense to
@@ -134,6 +140,18 @@ creating and destroying objects for no real benefit other than having these
 behaviors encapsulated in their own classes. and as of writing this
 theres  only ~40 lines of code below...
 ]]
+
+-- to keep traits reasonably indempotent, even though the have to interact with one another
+function Cell:callback(method)
+  if method == "set_state_index" then
+    if self:is("CRYPT") then s:crypt_load(self.state_index) end
+  elseif method == "set_metabolism" then
+    if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
+    if self:is("DOME") then self:set_er() end
+  elseif method == "set_pulses" then
+    if self:is("DOME") then self:set_er() end
+  end
+end
 
 -- sometimes when a cell changes, attributes need to be cleaned up
 function Cell:change_checks()
@@ -181,14 +199,6 @@ function Cell:is_spawning()
   end
 end
 
-function Cell:inverted_metabolism_check()
-  if self.metabolism == 0 then
-    return false
-  else
-    return (((counters:this_beat() - self.offset) % self:get_inverted_metabolism()) == 1) or (self:get_inverted_metabolism() == 1)
-  end
-end
-
 -- does this cell need to do anything to boot up this beat?
 function Cell:setup()
       if self:is("RAVE") and self:is_spawning() then self:drugs()
@@ -201,6 +211,7 @@ function Cell:setup()
   end
 end
 
+-- does this cell need to do any cleanup activities?
 function Cell:teardown()
   if self:is("SOLARIUM") and self.flag == true then
     self.flag = false
@@ -278,37 +289,5 @@ function Cell:drugs()
       self:open_port(self.cardinals[i])
     end
   end
-end
-
--- to keep traits reasonably indempotent, even though the have to interact with one another
-function Cell:callback(method)
-  if method == "set_state_index" then
-    if self:is("CRYPT") then s:crypt_load(self.state_index) end
-  elseif method == "set_metabolism" then
-    if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
-    if self:is("DOME") then self:set_er() end
-  elseif method == "set_pulses" then
-    if self:is("DOME") then self:set_er() end
-  end
-end
-
--- menu and submenu junk. gross.
-function Cell:menu_items()
-  local items = fn.deep_copy(self:get_attributes())
-  if self:has("NOTES") then
-    local note_position = fn.table_find(items, "NOTES")
-    if type(note_position) == "number" then
-      table.remove(items, note_position)
-      if self:is("SHRINE") or self:is("UXB") or self:is("AVIARY") or self:is("VALE") or self:is("SPOMENIK") then
-        table.insert(items, note_position, "NOTE")
-      elseif  self:is("TOPIARY") or self:is("CASINO") or self:is("FOREST") or self:is("AUTON") then
-        local notes_submenu_items = self:get_notes_submenu_items()
-        for i = 1, self.note_count do
-          table.insert(items, note_position + (i - 1), notes_submenu_items[i]["menu_item"])
-        end
-      end
-    end
-  end
-  return items
 end
  
