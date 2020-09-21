@@ -51,9 +51,11 @@ function saveload:load_cells(data)
     -- if the structure doesn't exist anymore, load it as a hive.
     tmp.structure_value  = fn.table_find(structures:all_names(), load_cell[structure_key]) and load_cell[structure_key] or "HIVE"
     -- cells from older arcologies don't have newer attributes, so...
+    tmp.bearing          = load_cell.bearing         or tmp.bearing
     tmp.capacity         = load_cell.capacity        or tmp.capacity
     tmp.channel          = load_cell.channel         or tmp.channel
     tmp.charge           = load_cell.charge          or tmp.charge
+    tmp.clockwise        = load_cell.clockwise       or tmp.clockwise
     tmp.crow_out         = load_cell.crow_out        or tmp.crow_out
     tmp.crumble          = load_cell.crumble         or tmp.crumble
     tmp.deflect          = load_cell.deflect         or tmp.deflect

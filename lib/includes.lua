@@ -30,9 +30,11 @@ attributes of cells. adding more minimally requires:
  - probably some logic in keeper:collision()
  - saveload.lua
 ]]
+include("arcologies/lib/mixins/bearing_mixin")
 include("arcologies/lib/mixins/capacity_mixin")
 include("arcologies/lib/mixins/channel_mixin")
 include("arcologies/lib/mixins/charge_mixin")
+include("arcologies/lib/mixins/clockwise_mixin")
 include("arcologies/lib/mixins/crow_out_mixin")
 include("arcologies/lib/mixins/crumble_mixin")
 include("arcologies/lib/mixins/deflect_mixin")

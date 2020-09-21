@@ -56,8 +56,8 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-  self:kudzu(x, y, l)
-  self:small_kudzu(x+60, y, l)
+  self:windfarm(x, y, l)
+  self:small_windfarm(x+60, y, l)
   -- self:small_casino(x+69, y, l)
 end
 
@@ -290,6 +290,18 @@ function glyphs:kudzu(x, y, l)
   graphics:rect(x, y+18, 12, 2, l)
   graphics:rect(x, y+18, 2, 8, l)  
   graphics:rect(x+10, y+18, 2, 8, l)  
+end
+
+function glyphs:windfarm(x, y, l)
+  graphics:rect(x, y+6, 12, 2, l)
+  graphics:rect(x+10, y, 2, 8, l) 
+  graphics:rect(x+7, y, 5, 2, l) 
+  graphics:rect(x+5, y+12, 17, 2, l)
+  graphics:rect(x+20, y+6, 2, 8, l) 
+  graphics:rect(x+17, y+6, 5, 2, l) 
+  graphics:rect(x, y+18, 17, 2, l) 
+  graphics:rect(x+15, y+18, 2, 8, l) 
+  graphics:rect(x+12, y+24, 5, 2, l)
 end
 
 function glyphs:left_wall(x, y, l)
@@ -637,6 +649,19 @@ function glyphs:small_kudzu(x, y, l)
   graphics:mlrs(x+2, y+5, 1, 3, l)  
   graphics:mlrs(x+6, y+3, 1, 5, l)
 end
+
+function glyphs:small_windfarm(x, y, l)
+  graphics:mlrs(x+1, y, 2, 0, l)
+  graphics:mlrs(x+3, y-1, 0, 3, l)   
+  graphics:mlrs(x-1, y+2, 4, 0, l) 
+  graphics:mlrs(x+1, y+4, 5, 0, l)
+  graphics:mlrs(x+6, y+1, 0, 3, l) 
+  graphics:mlrs(x+4, y+2, 2, 0, l) 
+  graphics:mlrs(x+4, y+5, 0, 3, l)
+  graphics:mlrs(x-1, y+6, 5, 0, l) 
+  graphics:mlrs(x+2, y+8, 2, 0, l) 
+end
+
 
 function glyphs:small_left_wall(x, y, l)
   graphics:mls(x, y-1, x, y+8, l)

@@ -187,4 +187,10 @@ docs.sheets["KUDZU"] = {
   "Blocks signals."
 }
 
+docs.sheets["WINDFARM"] = {
+  "Emits signals like",
+  "a hive, but",
+  "spins."
+}
+
 return docs

@@ -11,13 +11,12 @@ function dev:scene(i)
 
   elseif i == 2 then
     keeper:select_cell(4, 4)
-    kc():change("HIVE") 
+    kc():change("WINDFARM") 
 
     -- next up disable structures 
     params:set("structure_GATE", 2)   
 
     page:select(2)
-    menu:select_item(4)
     counters:toggle_playback()
 
   elseif i == 3 then

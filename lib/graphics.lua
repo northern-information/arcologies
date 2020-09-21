@@ -22,7 +22,7 @@ function graphics:structure(s)
 end
 
 function graphics:structure_palette(i)
-  local start_x = 18
+  local start_x = 7
   local start_y = 18
   local margin_x = 15
   local margin_y = 15
@@ -39,12 +39,11 @@ function graphics:structure_palette(i)
   for k,v in pairs(p) do
     local row, col = 1,1
     -- call me hardcode kassidy
-    if k >= 8 and k <= 14 then row = 2 end
-    if k >= 15 and k <= 21 then row = 3 end
-    if k >= 22 and k <= 28 then row = 4 end
+    if k >= 9 and k <= 16 then row = 2 end
+    if k >= 17 and k <= 24 then row = 3 end
     p[k].y = start_y + (margin_y * (row - 1))
-    col = k % 7
-    col = col == 0 and 7 or col
+    col = k % 8
+    col = col == 0 and 8 or col
     p[k].x = start_x + (margin_x * (col - 1))
     if p[k].selected then
       self:rect(p[k].x - 4, p[k].y - 3, 13, 13, 15)
@@ -124,12 +123,13 @@ function graphics:time(x, y)
   if not keeper.is_cell_selected or meta == 0 then return end
 
   local steps = {}
-      if keeper.selected_cell:is("HIVE")   then steps = keeper.selected_cell:get_metabolism_steps()
-  elseif keeper.selected_cell:is("RAVE")   then steps = keeper.selected_cell:get_metabolism_steps()
-  elseif keeper.selected_cell:is("MIRAGE") then steps = keeper.selected_cell:get_metabolism_steps()
-  elseif keeper.selected_cell:is("KUDZU")  then steps = keeper.selected_cell:get_metabolism_steps()
-  elseif keeper.selected_cell:is("DOME")   then steps = fn.deep_copy(keeper.selected_cell.er)
-  elseif keeper.selected_cell:is("MAZE")   then steps = fn.deep_copy(keeper.selected_cell.turing)
+      if keeper.selected_cell:is("HIVE")      then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("RAVE")      then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("MIRAGE")    then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("KUDZU")     then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("WINDFARM")  then steps = keeper.selected_cell:get_metabolism_steps()
+  elseif keeper.selected_cell:is("DOME")      then steps = fn.deep_copy(keeper.selected_cell.er)
+  elseif keeper.selected_cell:is("MAZE")      then steps = fn.deep_copy(keeper.selected_cell.turing)
   end
 
   -- no steps, no soup

@@ -37,6 +37,7 @@ function structures.init()
   structures:register("SPOMENIK",     { "INDEX", "NOTES" })
   structures:register("AUTON",        { "INDEX", "NOTE COUNT", "NOTES" })
   structures:register("KUDZU",        { "METABOLISM", "RESILIENCE", "CRUMBLE" })
+  structures:register("WINDFARM",     { "METABOLISM", "BEARING", "CLOCKWISE" })
 end
 
 function structures:register(name, attributes)

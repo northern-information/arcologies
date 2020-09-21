@@ -11,9 +11,11 @@ function Cell:new(x, y, g)
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
   c.menu_getters = {}
   c.menu_setters = {}
+  bearing_mixin.init(self)
   capacity_mixin.init(self)
   channel_mixin.init(self)
   charge_mixin.init(self)
+  clockwise_mixin.init(self)
   crow_out_mixin.init(self)
   crumble_mixin.init(self)
   deflect_mixin.init(self)
@@ -41,9 +43,11 @@ function Cell:new(x, y, g)
   --[[ walk softly and carry a big stick
        aka measure twice cut once
        aka shit got spooky when i had params floating the init()s ]]
+  c.setup_bearing(c)
   c.setup_capacity(c)
   c.setup_channel(c)
   c.setup_charge(c)
+  c.setup_clockwise(c)
   c.setup_crow_out(c)
   c.setup_crumble(c)
   c.setup_deflect(c)
@@ -157,6 +161,8 @@ function Cell:callback(method)
     if self:is("DOME") then self:set_er() end
   elseif method == "set_pulses" then
     if self:is("DOME") then self:set_er() end
+  elseif method == "set_bearing" then
+    if self:is("WINDFARM") then self:close_all_ports() self:open_port(self:get_bearing_cardinal()) end
   end
 end
 
@@ -190,6 +196,10 @@ function Cell:change_checks()
     self:set_resilience(params:get("kudzu_resilience"))
     self:set_crumble(params:get("kudzu_crumble"))
 
+  elseif self:is("WINDFARM") then
+    self:close_all_ports()
+    self:open_port(self:get_bearing_cardinal())
+
   end
 end
 
@@ -201,7 +211,7 @@ function Cell:is_spawning()
     return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
     return true
-  elseif self:is("HIVE") or self:is("RAVE") then
+  elseif self:is("HIVE") or self:is("RAVE") or self:is("WINDFARM") then
     return self:inverted_metabolism_check()
   end
 end
@@ -223,6 +233,9 @@ function Cell:teardown()
   if self:is("SOLARIUM") and self.flag == true then
     self.flag = false
     self:invert_ports()
+  elseif self:is("WINDFARM") and self:inverted_metabolism_check() then
+    local direction = self:get_clockwise() and 1 or -1
+    self:cycle_bearing(direction)
   end
 end
 
