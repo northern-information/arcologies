@@ -1,7 +1,7 @@
 glyphs = {}
 
 function glyphs.init()
-  glyphs.available = structures:all()
+  glyphs.available = structures:all_names()
   glyphs.shimmer_index = 1
   glyphs.shimmer_1 = { 0, 1, 2, 3, 4, 3, 2, 1 }
   glyphs.shimmer_2 = { 1, 2, 3, 4, 3, 2, 1, 0 }
@@ -33,21 +33,21 @@ function glyphs:draw_small_glyph(s, x, y, l)
 end
 
 function glyphs:random(x, y, l, jitter)
-  local r = math.random(1, #structures:all())
+  local r = math.random(1, #structures:all_names())
   if jitter then
     x = x + math.random(-1, 1)
     y = y + math.random(-1, 1)
   end
-  self:draw_glyph(structures:all()[r], x, y, l)
+  self:draw_glyph(structures:all_names()[r], x, y, l)
 end
 
 function glyphs:small_random(x, y, l, jitter)
-  local r = math.random(1, #structures:all())
+  local r = math.random(1, #structures:all_names())
   if jitter then
     x = x + math.random(-1, 1)
     y = y + math.random(-1, 1)
   end
-  self:draw_small_glyph(structures:all()[r], x, y, l)
+  self:draw_small_glyph(structures:all_names()[r], x, y, l)
 end
 
 function glyphs:test()

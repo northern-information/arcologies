@@ -45,17 +45,54 @@ function structures:register(name, attributes)
   self.database[self.order] = {
     order = self.order,
     name = name,
-    attributes = attributes
+    attributes = attributes,
+    enabled = true
   }
   self.order = self.order + 1
 end
 
-function structures:all()
+function structures:scan()
+  for k, v in pairs(self.database) do
+    v.enabled = (params:get("structure_" .. v.name) == 1)
+  end
+end
+
+function structures:delete_disabled()
+  for k, v in pairs(self.database) do
+    if not v.enabled then
+       keeper:delete_all_structures(v.name)
+    end
+  end
+end
+
+function structures:first()
+  return structures:all_enabled()[1].name
+end
+
+function structures:all_names()
   local out = {}
   for i, v in ipairs(self.database) do
     out[i] = v.name
   end
   return out
+end
+
+function structures:all_enabled()
+  local out = {}
+  for k, v in pairs(self.database) do
+    if v.enabled then
+      table.insert(out, v)
+    end
+  end
+  return out
+end
+
+function structures:get_index(name)
+  for i, v in ipairs(self:all_enabled()) do
+    if v.name == name then
+      return i
+    end
+  end
 end
 
 function structures:get_structure_attributes(name)

@@ -20,9 +20,9 @@ end
 function fn.random_cell()
   keeper:select_cell(fn.rx(), fn.ry())
   local yes = {}
-  for k, v in pairs(parameters.seed_structures) do
+  for k, v in pairs(parameters.structures) do
     if v then
-      local structure = string.gsub(k, "seed_structure_", "")
+      local structure = string.gsub(k, "structure_", "")
       table.insert(yes, structure)
     end
   end
@@ -320,7 +320,7 @@ function fn.arcdebug()
   print("cell census:")
   for k,cell in pairs(keeper.cells) do
     local coords = "x" .. cell.x .. "y" .. cell.y
-    print(coords, cell.id, cell.structure_value)
+    print(coords, cell.id, cell.structure_name)
   end
   print(" ")
   print("signal census:")

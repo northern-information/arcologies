@@ -371,7 +371,7 @@ function keeper:delete_cell(id, s, d)
     if cell.id == id then
       table.remove(self.cells, k)
       if not silent then
-        graphics:set_message("DELETED " .. cell.structure_value)
+        graphics:set_message("DELETED " .. cell.structure_name)
       end
       if page.active_page == 2 then
         menu:reset()
@@ -379,6 +379,17 @@ function keeper:delete_cell(id, s, d)
       if deselect then 
         self:deselect_cell()
       end
+    end
+  end
+end
+
+function keeper:delete_all_structures(name)
+  if self.selected_cell.structure_name == name then
+    self:deselect_cell()
+  end
+  for k, cell in pairs(self.cells) do
+    if cell.structure_name == name then
+      table.remove(self.cells, k)
     end
   end
 end
@@ -414,7 +425,7 @@ end
 function keeper:count_cells(name)
   local count = 0
   for k,cell in pairs(self.cells) do
-    if cell.structure_value == name then
+    if cell.structure_name == name then
       count = count + 1
     end
   end
@@ -428,9 +439,9 @@ end
 function keeper:get_analysis_items()
   local analysis_items = {}
   table.insert(analysis_items, "SIGNALS")
-  for k,v in pairs(structures:all()) do
-    if self:count_cells(v) > 0 then
-      table.insert(analysis_items, v)
+  for k,v in pairs(structures:all_enabled()) do
+    if self:count_cells(v.name) > 0 then
+      table.insert(analysis_items, v.name)
     end
   end
   return analysis_items

@@ -82,14 +82,21 @@ function parameters.init()
   params:add{ type = "number", id = "note_range_max", name = "NOTE RANGE MAX",
     min = 0, max = 100, default = 60
   }
- params:set_action("note_range_max", function(x) params:set("note_range_min", util.clamp(params:get("note_range_min"), 0, x)) end)
+  params:set_action("note_range_max", function(x) params:set("note_range_min", util.clamp(params:get("note_range_min"), 0, x)) end)
 
-  parameters.seed_structures = {}
-  for k,v in pairs(structures:all()) do
-    parameters.seed_structures[v] = false
-    local id = "seed_structure_" .. v
+  params:add_separator("")
+  params:add_separator("STRUCTURES")
+
+  parameters.structures = {}
+  for k,v in pairs(structures:all_names()) do
+    parameters.structures[v] = false
+    local id = "structure_" .. v
     params:add_option(id, v, {"ENABLED", "DISABLED"})
-    params:set_action(id, function(index) parameters.seed_structures[id] = index == 1 and true or false end)
+    params:set_action(id, function(index)
+      parameters.structures[id] = index == 1 and true or false
+      structures:scan()
+      structures:delete_disabled()
+    end)
   end
 
   params:default()

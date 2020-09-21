@@ -5,8 +5,7 @@ function Cell:new(x, y, g)
   c.x = x ~= nil and x or 0
   c.y = y ~= nil and y or 0
   c.generation = g ~= nil and g or 0
-  c.structure_key = 1 -- new cells default to hives
-  c.structure_value = structures:all()[c.structure_key]
+  c.structure_name = structures:first() -- typically HIVE
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
@@ -95,7 +94,7 @@ function Cell:get_menu_value_by_attribute(a)
 end
 
 function Cell:is(name)
-  return self.structure_value == name
+  return self.structure_name == name
 end
 
 function Cell:has(name)
@@ -103,16 +102,24 @@ function Cell:has(name)
 end
 
 function Cell:get_attributes()
-  return structures:get_structure_attributes(self.structure_value)
+  return structures:get_structure_attributes(self.structure_name)
 end
 
 function Cell:change(name)
-  self:set_structure_by_key(fn.table_find(structures:all(), name))
+  local match = false
+  for k, v in pairs(structures:all_enabled()) do
+    if v.name == name then
+      self:set_structure_by_name(name)
+      match = true
+    end
+  end
+  if not match then
+    self:set_structure_by_name(structures:first())
+  end
 end
 
-function Cell:set_structure_by_key(key)
-  self.structure_key = util.clamp(key, 1, #structures:all())
-  self.structure_value = structures:all()[self.structure_key]
+function Cell:set_structure_by_name(name)
+  self.structure_name = name
   self:change_checks()
 end
 

@@ -76,7 +76,7 @@ function page:cell_designer()
       end
       menu:render()
       graphics:draw_ports()
-      graphics:structure(keeper.selected_cell.structure_value)
+      graphics:structure(keeper.selected_cell.structure_name)
     end
   end
   graphics:title_bar_and_tabs()
@@ -88,7 +88,7 @@ function page:analysis()
   else
     menu:set_items(keeper:get_analysis_items())
     if keeper.is_cell_selected then
-      menu:select_item_by_name(keeper.selected_cell.structure_value)
+      menu:select_item_by_name(keeper.selected_cell.structure_name)
     else
       menu:select_item()
     end

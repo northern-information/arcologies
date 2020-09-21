@@ -90,8 +90,9 @@ end
 
 function popup:change()
   if self.current_attribute == "structure" then
-    keeper.selected_cell:set_structure_by_key(keeper.selected_cell.structure_key + self.current_value)
-    self:title_message(keeper.selected_cell.structure_value)
+    local position = util.clamp(self.current_value + structures:get_index(keeper.selected_cell.structure_name), 1, #structures:all_enabled())
+    keeper.selected_cell:set_structure_by_name(structures:all_enabled()[position].name)
+    self:title_message(keeper.selected_cell.structure_name)
   end
 
   if self.current_attribute == "note" then
@@ -103,7 +104,7 @@ end
 
 function popup:render()
   if self.current_attribute == "structure" then
-    graphics:structure_palette(keeper.selected_cell.structure_key)
+    graphics:structure_palette(structures:get_index(keeper.selected_cell.structure_name))
   elseif self.current_attribute == "delete_all"
     then graphics:deleting_all(self.key_timer)
   elseif self.current_attribute == "note" then
@@ -115,7 +116,7 @@ function popup:done()
   self.active = false
 
   if self.current_attribute == "structure" then
-    self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.structure_value)
+    self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.structure_name)
     menu:reset()
     menu:set_items(keeper.selected_cell:menu_items())
     menu:select_item_by_name("STRUCTURE")

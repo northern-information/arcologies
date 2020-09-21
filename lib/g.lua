@@ -104,7 +104,7 @@ function g:short_press(x, y)
     local tmp = fn.deep_copy(keeper.copied_cell)
     tmp:prepare_for_paste(x, y, counters.music_generation)
     table.insert(keeper.cells, tmp)
-    graphics:set_message("PASTED " .. tmp.structure_value)
+    graphics:set_message("PASTED " .. tmp.structure_name)
     self.is_pasting = true
     self.paste_x = x
     self.paste_y = y
@@ -150,7 +150,7 @@ function g:grid_long_press(x, y)
     self.first_in_y = y
     keeper.copied_cell = fn.deep_copy(keeper.selected_cell)
     self.is_copying = true
-    graphics:set_message("COPIED " .. keeper.selected_cell.structure_value)
+    graphics:set_message("COPIED " .. keeper.selected_cell.structure_name)
   end
   self.counter[x][y] = nil
   fn.dirty_grid(true)
@@ -235,7 +235,7 @@ end
 function g:led_cell_analysis()
   if page.active_page == 3 then
     for k,v in pairs(keeper.cells) do
-        if v.structure_value == menu.selected_item_string then
+        if v.structure_name == menu.selected_item_string then
           self:highlight_cell(v)
         end
       end

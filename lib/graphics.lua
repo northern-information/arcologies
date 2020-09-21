@@ -27,7 +27,7 @@ function graphics:structure_palette(i)
   local margin_x = 15
   local margin_y = 15
   local p = {}
-  for setup = 1, #structures:all() do
+  for setup = 1, #structures:all_enabled() do
       p[setup] = {
         selected = false,
         x = 0,
@@ -51,8 +51,8 @@ function graphics:structure_palette(i)
     end
   end
 
-  for i = 1, #structures:all() do
-    glyphs:draw_small_glyph(structures:all()[i], p[i].x, p[i].y, p[i].selected and 0 or 15)
+  for i = 1, #structures:all_enabled() do
+    glyphs:draw_small_glyph(structures:all_enabled()[i].name, p[i].x, p[i].y, p[i].selected and 0 or 15)
   end
   
 end
@@ -66,7 +66,7 @@ function graphics:structure_palette_analysis(s)
   local items = {}
 
   local signal_count = #keeper.signals
-  local cell_count = keeper:count_cells(structures:all()[i])
+  local cell_count = keeper:count_cells(structures:all_names()[i])
 
   for i = 1, #keeper:get_analysis_items() do
     local adjust = 0
@@ -97,7 +97,7 @@ function graphics:structure_palette_analysis(s)
 end
 
 function graphics:render_docs()
-  local sheet = page.active_page == 1 and "HOME" or keeper.selected_cell.structure_value
+  local sheet = page.active_page == 1 and "HOME" or keeper.selected_cell.structure_name
   if docs.sheets[sheet] == nil then
     glyphs:random(81, self.structure_y, 13)
     self:text_center(91, 33, "NO DOCS", 0)
@@ -201,7 +201,7 @@ end
 
 function graphics:top_message_cell_structure()
   if page.active_page ~= 2 then
-    self:set_message(keeper.selected_cell.structure_value, counters.default_message_length)
+    self:set_message(keeper.selected_cell.structure_name, counters.default_message_length)
   end
 end
 
@@ -222,7 +222,7 @@ function graphics:page_name()
   elseif page.active_page == 1 and arcology_loaded then
     self:text_right(127, 6, arcology_name, 0)
   elseif page.active_page == 2 and keeper.is_cell_selected then
-    self:text_right(127, 6, keeper.selected_cell.structure_value, 0)
+    self:text_right(127, 6, keeper.selected_cell.structure_name, 0)
   else
     self:text_right(127, 6, page.titles[page.active_page], 0)
   end
@@ -442,7 +442,7 @@ function graphics:analysis(items, selected_item_key)
       end
     else
       for k,v in pairs(keeper.cells) do
-        if v.structure_value == analysis_items[selected_item_key] and v.index == i then
+        if v.structure_name == analysis_items[selected_item_key] and v.index == i then
           self.analysis_pixels[i] = 15
         end
       end

@@ -181,4 +181,10 @@ docs.sheets["AUTON"] = {
   "crow i2c."
 }
 
+docs.sheets["KUDZU"] = {
+  "Grows.",
+  "Crumbles.",
+  "Blocks signals."
+}
+
 return docs

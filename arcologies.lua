@@ -47,6 +47,7 @@ function init()
   counters.grid:start()
   page:select(parameters.is_splash_screen_on and 0 or 1)
   init_done = true
+  structures:scan()
   if config.settings.dev_mode then dev:scene(config.settings.dev_scene) end
   redraw()
 end
