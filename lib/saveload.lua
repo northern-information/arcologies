@@ -40,6 +40,7 @@ function saveload:load(data)
   saveload:load_cells(data)
   saveload:load_signals(data)
   keeper:update_all_crypts()
+  fn.dirty_grid(true)
   arcology_loaded = true
 end
 
@@ -47,38 +48,43 @@ function saveload:load_cells(data)
   for k, load_cell in pairs(data.keeper_cells) do
     local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
     -- pre 1.8 used a different key for structures
-    local structure_key = (data.version_major == 1 and data.version_minor <= 7) and 'structure_value' or 'structure_name'
+    local structure_key = (data.version_major == 1 and data.version_patch <= 7) and "structure_value" or "structure_name"
     -- if the structure doesn't exist anymore, load it as a hive.
-    tmp.structure_value  = fn.table_find(structures:all_names(), load_cell[structure_key]) and load_cell[structure_key] or "HIVE"
+    tmp.structure_name  = fn.table_find(structures:all_names(), load_cell[structure_key]) and load_cell[structure_key] or "HIVE"
     -- cells from older arcologies don't have newer attributes, so...
-    tmp.bearing          = load_cell.bearing         or tmp.bearing
-    tmp.capacity         = load_cell.capacity        or tmp.capacity
-    tmp.channel          = load_cell.channel         or tmp.channel
-    tmp.charge           = load_cell.charge          or tmp.charge
-    tmp.clockwise        = load_cell.clockwise       or tmp.clockwise
-    tmp.crow_out         = load_cell.crow_out        or tmp.crow_out
-    tmp.crumble          = load_cell.crumble         or tmp.crumble
-    tmp.deflect          = load_cell.deflect         or tmp.deflect
-    tmp.device           = load_cell.device          or tmp.device
-    tmp.drift            = load_cell.drift           or tmp.drift
-    tmp.duration         = load_cell.duration        or tmp.duration
-    tmp.level            = load_cell.level           or tmp.level
-    tmp.metabolism       = load_cell.metabolism      or tmp.metabolism
-    tmp.network_value    = load_cell.network_value   or tmp.network_value
-    tmp.note_count       = load_cell.note_count      or tmp.note_count
-    tmp.notes            = load_cell.notes           or tmp.notes
-    tmp.offset           = load_cell.offset          or tmp.offset
-    tmp.operator         = load_cell.operator        or tmp.operator
-    tmp.ports            = load_cell.ports           or tmp.ports
-    tmp.probability      = load_cell.probability     or tmp.probability
-    tmp.pulses           = load_cell.pulses          or tmp.pulses
-    tmp.range_max        = load_cell.range_max       or tmp.range_max
-    tmp.range_min        = load_cell.range_min       or tmp.range_min
-    tmp.resilience       = load_cell.resilience      or tmp.resilience
-    tmp.state_index      = load_cell.state_index     or tmp.state_index
-    tmp.sub_menu_items   = load_cell.sub_menu_items  or tmp.sub_menu_items
-    tmp.territory        = load_cell.territory       or tmp.territory
-    tmp.velocity         = load_cell.velocity        or tmp.velocity
+    local attributes = {
+      "bearing",
+      "capacity",
+      "channel",
+      "charge",
+      "clockwise",
+      "crow_out",
+      "crumble",
+      "deflect",
+      "device",
+      "drift",
+      "duration",
+      "level",
+      "metabolism",
+      "network_value",
+      "note_count",
+      "notes",
+      "offset",
+      "operator",
+      "ports",
+      "probability",
+      "pulses",
+      "range_max",
+      "range_min",
+      "resilience",
+      "state_index",
+      "sub_menu_items",
+      "territory",
+      "velocity"
+    }
+    for k, v in pairs(attributes) do
+      tmp[v] = load_cell[v] or tmp[v]
+    end
     tmp:set_available_ports()
     tmp:set_er()
     table.insert(keeper.cells, tmp)

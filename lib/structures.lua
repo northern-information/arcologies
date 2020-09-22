@@ -2,13 +2,14 @@ structures = {}
 
 --[[
 
-to add new structures, minimally:
+to add new structures and attributes, minimally:
 
- - structures:register() - this file
- - keeper:collision() - for business logic
- - new glyphs - automatically picked up via the string name
+ - structures:register()   this file
+ - keeper:collision()      for business logic
+ - saveload:load_cells()   to map attributes
+ - new glyphs              automatically picked up via the structure string
 
-structure names must be a single word due to string matching for glyphs
+structure names _must_ be a single word due to string matching for glyphs
 
 ]]
 
