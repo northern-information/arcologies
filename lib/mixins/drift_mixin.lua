@@ -5,6 +5,7 @@ drift_mixin.init = function(self)
   self.setup_drift = function(self)
     self.drift_key = "DRIFT"
     self.drift = 1
+    self:register_save_key("drift")
     self.drift_menu_values = {"N/S", "E/W", "???"}
     self:register_menu_getter(self.drift_key, self.drift_menu_getter)
     self:register_menu_setter(self.drift_key, self.drift_menu_setter)

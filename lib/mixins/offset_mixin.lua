@@ -5,6 +5,7 @@ offset_mixin.init = function(self)
   self.setup_offset = function(self)
     self.offset_key = "OFFSET"
     self.offset = 0
+    self:register_save_key("offset")
     self:register_menu_getter(self.offset_key, self.offset_menu_getter)
     self:register_menu_setter(self.offset_key, self.offset_menu_setter)
   end

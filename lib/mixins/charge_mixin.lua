@@ -5,6 +5,7 @@ charge_mixin.init = function(self)
   self.setup_charge = function(self)
     self.charge_key = "CHARGE"
     self.charge = 0
+    self:register_save_key("charge")
     self:register_menu_getter(self.charge_key, self.charge_menu_getter)
     self:register_menu_setter(self.charge_key, self.charge_menu_setter)
   end

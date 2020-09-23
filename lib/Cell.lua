@@ -9,6 +9,7 @@ function Cell:new(x, y, g)
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
+  c.save_keys = {}
   c.menu_getters = {}
   c.menu_setters = {}
   bearing_mixin.init(self)
@@ -73,6 +74,14 @@ function Cell:new(x, y, g)
   c.setup_turing(c)
   c.setup_velocity(c)
   return c
+end
+
+function Cell:register_save_key(key)
+  table.insert(self.save_keys, key)
+end
+
+function Cell:get_save_keys()
+  return self.save_keys
 end
 
 function Cell:register_menu_setter(key, setter)

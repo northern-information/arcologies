@@ -5,6 +5,7 @@ level_mixin.init = function(self)
   self.setup_level = function(self)
     self.level_key = "LEVEL"
     self.level = 50
+    self:register_save_key("level")
     self:register_menu_getter(self.level_key, self.level_menu_getter)
     self:register_menu_setter(self.level_key, self.level_menu_setter)
   end

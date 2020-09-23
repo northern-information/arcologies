@@ -5,6 +5,7 @@ capacity_mixin.init = function(self)
   self.setup_capacity = function(self)
     self.capacity_key = "CAPACITY"
     self.capacity = 4
+    self:register_save_key("capacity")
     self:register_menu_getter(self.capacity_key, self.capacity_menu_getter)
     self:register_menu_setter(self.capacity_key, self.capacity_menu_setter)
   end

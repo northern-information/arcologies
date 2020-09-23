@@ -5,6 +5,7 @@ probability_mixin.init = function(self)
   self.setup_probability = function(self)
     self.probability_key = "PROBABILITY"
     self.probability = 50
+    self:register_save_key("probability")
     self:register_menu_getter(self.probability_key, self.probability_menu_getter)
     self:register_menu_setter(self.probability_key, self.probability_menu_setter)
   end

@@ -5,6 +5,7 @@ crumble_mixin.init = function(self)
   self.setup_crumble = function(self)
     self.crumble_key = "CRUMBLE"
     self.crumble = 4
+    self:register_save_key("crumble")
     self:register_menu_getter(self.crumble_key, self.crumble_menu_getter)
     self:register_menu_setter(self.crumble_key, self.crumble_menu_setter)
   end

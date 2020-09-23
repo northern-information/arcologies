@@ -5,6 +5,7 @@ clockwise_mixin.init = function(self)
   self.setup_clockwise = function(self)
     self.clockwise_key = "CLOCKWISE"
     self.clockwise = true
+    self:register_save_key("clockwise")
     self.clockwise_menu_values = { "YES", "COUNTER" }
     self:register_menu_getter(self.clockwise_key, self.clockwise_menu_getter)
     self:register_menu_setter(self.clockwise_key, self.clockwise_menu_setter)

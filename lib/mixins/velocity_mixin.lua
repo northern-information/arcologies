@@ -5,6 +5,7 @@ velocity_mixin.init = function(self)
   self.setup_velocity = function(self)
     self.velocity_key = "VELOCITY"
     self.velocity = 127
+    self:register_save_key("velocity")
     self:register_menu_getter(self.velocity_key, self.velocity_menu_getter)
     self:register_menu_setter(self.velocity_key, self.velocity_menu_setter)
   end

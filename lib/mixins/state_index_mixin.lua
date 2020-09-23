@@ -7,6 +7,7 @@ state_index_mixin.init = function(self)
     self.state_index_key = "INDEX"
     self.max_state_index = 8
     self.state_index = 1
+    self:register_save_key("state_index")
     self:register_menu_getter(self.state_index_key, self.state_index_menu_getter)
     self:register_menu_setter(self.state_index_key, self.state_index_menu_setter)
   end

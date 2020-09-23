@@ -1,9 +1,12 @@
+-- ports are unique and don't follow the menu_getter / menu_setter pattern
+-- because that is done directly on the grid
 ports_mixin = {}
 
 ports_mixin.init = function(self, x, y)
 
   self.setup_ports = function(self)
     self.ports = {}
+    self:register_save_key("ports")
     self.cardinals = { "n", "e", "s", "w" }
     self:set_available_ports()
   end

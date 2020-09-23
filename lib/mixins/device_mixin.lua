@@ -5,6 +5,7 @@ device_mixin.init = function(self)
   self.setup_device = function(self)
     self.device_key = "DEVICE"
     self.device = 1
+    self:register_save_key("device")
     self:register_menu_getter(self.device_key, self.device_menu_getter)
     self:register_menu_setter(self.device_key, self.device_menu_setter)
   end

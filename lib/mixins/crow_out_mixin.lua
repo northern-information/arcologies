@@ -5,6 +5,7 @@ crow_out_mixin.init = function(self)
   self.setup_crow_out = function(self)
     self.crow_out_key = "CROW OUT"
     self.crow_out = 1
+    self:register_save_key("crow_out")
     self.crow_out_menu_values = {"1/2", "3/4"}
     self:register_menu_getter(self.crow_out_key, self.crow_out_menu_getter)
     self:register_menu_setter(self.crow_out_key, self.crow_out_menu_setter)

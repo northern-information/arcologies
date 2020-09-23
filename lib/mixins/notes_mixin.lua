@@ -5,6 +5,7 @@ notes_mixin.init = function(self)
 
   self.setup_notes = function(self, count)
     self.note_count = (count == nil) and 1 or count
+    self:register_save_key("note_count")
     self.note_count_key = "NOTE COUNT" -- code key, not music key...
     self.max_note_count = 8
     self.note_key = "NOTE" -- code key, not music key...
@@ -12,7 +13,9 @@ notes_mixin.init = function(self)
       self["note_" .. i .. "_key"] = "NOTE #" .. i
     end
     self.notes = {}
+    self:register_save_key("notes")
     self.sub_menu_items = {}
+    self:register_save_key("sub_menu_items")
     if self.note_count == 1 then
       self.notes[1] = sound:get_reasonable_note()
     else

@@ -5,6 +5,7 @@ duration_mixin.init = function(self)
   self.setup_duration = function(self)
     self.duration_key = "DURATION"
     self.duration = 1
+    self:register_save_key("duration")
     self:register_menu_getter(self.duration_key, self.duration_menu_getter)
     self:register_menu_setter(self.duration_key, self.duration_menu_setter)
   end

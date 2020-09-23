@@ -6,6 +6,7 @@ metabolism_mixin.init = function(self)
   self.setup_metabolism = function(self)
     self.metabolism_key = "METABOLISM"
     self.metabolism = 13
+    self:register_save_key("metabolism")
     self:register_menu_getter(self.metabolism_key, self.metabolism_menu_getter)
     self:register_menu_setter(self.metabolism_key, self.metabolism_menu_setter)
   end

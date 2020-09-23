@@ -5,6 +5,7 @@ network_mixin.init = function(self)
   self.setup_network = function(self)
     self.network_key = "NETWORK"
     self.network = 1
+    self:register_save_key("network")
     self.network_menu_values = {
       "A", "B", "C", "D", "E", "F", "G", "H", 
       "I", "J", "K", "L", "M", "N", "O", "P", 

@@ -6,6 +6,7 @@ pulses_mixin.init = function(self)
   self.setup_pulses = function(self)
     self.pulses_key = "PULSES"
     self.pulses = 0
+    self:register_save_key("pulses")
     self:register_menu_getter(self.pulses_key, self.pulses_menu_getter)
     self:register_menu_setter(self.pulses_key, self.pulses_menu_setter)
   end

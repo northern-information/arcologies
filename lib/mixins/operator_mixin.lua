@@ -5,6 +5,7 @@ operator_mixin.init = function(self)
   self.setup_operator = function(self)
     self.operator_key = "OPERATOR"
     self.operator = 1
+    self:register_save_key("operator")
     self.operator_menu_values = { "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "MODULO", "SET" }
     self:register_menu_getter(self.operator_key, self.operator_menu_getter)
     self:register_menu_setter(self.operator_key, self.operator_menu_setter)

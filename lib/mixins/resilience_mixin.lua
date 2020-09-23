@@ -5,6 +5,7 @@ resilience_mixin.init = function(self)
   self.setup_resilience = function(self)
     self.resilience_key = "RESILIENCE"
     self.resilience = 50
+    self:register_save_key("resilience")
     self:register_menu_getter(self.resilience_key, self.resilience_menu_getter)
     self:register_menu_setter(self.resilience_key, self.resilience_menu_setter)
   end

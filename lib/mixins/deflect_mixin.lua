@@ -5,6 +5,7 @@ deflect_mixin.init = function(self)
   self.setup_deflect = function(self)
     self.deflect_key = "DEFLECT"
     self.deflect = 1
+    self:register_save_key("deflect")
     self.deflect_menu_values = {"NORTH", "EAST", "SOUTH", "WEST"}
     self:register_menu_getter(self.deflect_key, self.deflect_menu_getter)
     self:register_menu_setter(self.deflect_key, self.deflect_menu_setter)

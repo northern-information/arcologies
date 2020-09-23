@@ -5,6 +5,7 @@ channel_mixin.init = function(self)
   self.setup_channel = function(self)
     self.channel_key = "CHANNEL"
     self.channel = 1
+    self:register_save_key("channel")
     self:register_menu_getter(self.channel_key, self.channel_menu_getter)
     self:register_menu_setter(self.channel_key, self.channel_menu_setter)
   end

@@ -5,10 +5,12 @@ range_mixin.init = function(self)
   self.setup_range = function(self)
     self.range_min_key = "RANGE MIN"
     self.range_min = 0
+    self:register_save_key("range_min")
     self:register_menu_getter(self.range_min_key, self.range_min_menu_getter)
     self:register_menu_setter(self.range_min_key, self.range_min_menu_setter)
     self.range_max_key = "RANGE MAX"
     self.range_max = 100
+    self:register_save_key("range_max")
     self:register_menu_getter(self.range_max_key, self.range_max_menu_getter)
     self:register_menu_setter(self.range_max_key, self.range_max_menu_setter)
   end

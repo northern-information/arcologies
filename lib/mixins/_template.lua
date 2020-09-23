@@ -2,12 +2,14 @@ foobar_mixin = {}
 
 foobar_mixin.init = function(self)
 
-  -- configure the key once and only once
-  -- the value is the lower case string
-  -- register the menu getter and setter
   self.setup_foobar = function(self)
+    -- configure the key once and only once
     self.foobar_key = "FOOBAR"
+    -- the value is the lower case string
     self.foobar = 100
+    -- the "save_key" is the attribute name to be used in saveload.lua: it much match above exactly
+    self:register_save_key("foobar")
+    -- register the menu getter and setter
     self:register_menu_getter(self.foobar_key, self.foobar_menu_getter)
     self:register_menu_setter(self.foobar_key, self.foobar_menu_setter)
   end

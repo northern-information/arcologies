@@ -5,6 +5,7 @@ territory_mixin.init = function(self)
   self.setup_territory = function(self)
     self.territory_key = "TERRITORY"
     self.territory = 1
+    self:register_save_key("territory")
     self.territory_menu_values = {"N", "E", "S", "W", "N/E", "S/E", "S/W", "N/W", "ALL"}
     self:register_menu_getter(self.territory_key, self.territory_menu_getter)
     self:register_menu_setter(self.territory_key, self.territory_menu_setter)
