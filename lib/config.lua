@@ -3,7 +3,7 @@ config = {}
 config["settings"] = {
   ["version_major"] = 1,
   ["version_minor"] = 1,
-  ["version_patch"] = 10,
+  ["version_patch"] = 11,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -13,7 +13,8 @@ config["settings"] = {
   ["save_path"] = _path.audio .. "arcologies/",
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
   ["crypt_default_name"] = "DEFAULT",
-  ["crypts_path"] =  _path.audio .. "crypts/"
+  ["crypts_path"] =  _path.audio .. "crypts/",
+  ["maps_path"] =  _path.data .. "arcologies/maps/"
 }
 
 config["page_titles"] = {

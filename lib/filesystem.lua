@@ -5,6 +5,7 @@ function filesystem.init()
   filesystem.paths["save_path"] = config.settings.save_path
   filesystem.paths["crypt_path"] = config.settings.crypt_path
   filesystem.paths["crypts_path"] = config.settings.crypts_path
+  filesystem.paths["maps_path"] = config.settings.maps_path
   for k,path in pairs(filesystem.paths) do
     if util.file_exists(path) == false then
       util.make_dir(path)
@@ -77,6 +78,26 @@ end
 
 function filesystem:get_crypt()
   return self.current
+end
+
+function filesystem.save_map(text)
+  if text then
+    print("saving map...")
+    local save_path = filesystem.paths.maps_path .. text ..".txt"
+    local data = saveload:collect_data_for_map_save(text)
+    local file = io.open(save_path, "w")
+    io.output(file)
+    io.write(data.width .. " " .. data.height .. " " .. data.arcology_name .. " " .. "@author_name")
+    io.write("\n")
+    for k, cell in pairs(data.cells) do
+    io.write(cell[1] .. " " .. cell[2].. " " .. cell[3])
+    io.write("\n")
+    end
+    io.close(file)
+    print("map saved!")
+  else
+    print("save cancel")
+  end
 end
 
 return filesystem

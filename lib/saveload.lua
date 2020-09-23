@@ -74,4 +74,17 @@ function saveload:load_signals(data)
   end
 end
 
+function saveload:collect_data_for_map_save(name)
+  data = {
+    width = fn.grid_width(),
+    height = fn.grid_height(),
+    arcology_name = name or arcology_name,
+    cells = {}
+  }
+  for k, cell in pairs(keeper.cells) do
+    table.insert(data.cells, {cell.x, cell.y, string.lower(cell.structure_name)})
+  end
+  return data
+end
+
 return saveload

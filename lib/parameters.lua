@@ -11,6 +11,10 @@ function parameters.init()
   params:add_trigger("load", "> LOAD" )
   params:set_action("load", function(x) fs.enter(norns.state.data, filesystem.load) end)
 
+
+  params:add_trigger("save_map", "< SAVE MAP" )
+  params:set_action("save_map", function(x) te.enter(filesystem.save_map) end)
+
   params:add_trigger("midi_panic", "> MIDI PANIC!" )
   params:set_action("midi_panic", function() m:panic() end)
 
