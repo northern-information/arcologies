@@ -61,6 +61,7 @@ end
 
 function counters:stop()
   self:set_playback(0)
+  m:all_off()
   graphics:set_message("PAUSED", self.default_message_length)
 end
 
