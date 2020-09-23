@@ -59,10 +59,8 @@ docs.sheets["RAVE"] = {
 }
 
 docs.sheets["TOPIARY"] = {
-  "Plays 8 note",
-  "melodies. Each",
-  "note increments",
-  "the index.",
+  "Plays melodies.",
+  "",
   "Routes signals",
   "to open ports."
 }
@@ -176,9 +174,9 @@ docs.sheets["SPOMENIK"] = {
 }
 
 docs.sheets["AUTON"] = {
-  "Plays Just",
-  "Friends via",
-  "crow i2c."
+  "Is to spomeniks",
+  "what topiaries",
+  "are to shrines."
 }
 
 docs.sheets["KUDZU"] = {

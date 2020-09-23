@@ -240,6 +240,16 @@ function fn.cycle(value, min, max)
   end
 end
 
+function fn.over_cycle(value, min, max)
+  if value > max then
+    return fn.over_cycle(value - max, min, max)
+  elseif value < 1 then
+    return fn.over_cycle(max - value, min, max)
+  else
+    return value
+  end
+end
+
 -- tables
 
 function fn.wrap(t, l)

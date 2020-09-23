@@ -57,6 +57,7 @@ include("arcologies/lib/mixins/resilience_mixin")
 include("arcologies/lib/mixins/state_index_mixin")
 include("arcologies/lib/mixins/structure_stub_mixin")
 include("arcologies/lib/mixins/territory_mixin")
+include("arcologies/lib/mixins/topography_mixin")
 include("arcologies/lib/mixins/turing_mixin")
 include("arcologies/lib/mixins/velocity_mixin")
 
