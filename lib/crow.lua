@@ -11,7 +11,7 @@ function c.init()
 end
 
 function c:jf(note)
-  crow.ii.jf.play_note((note - 60) / 12, 5)
+  crow.ii.jf.play_note((sound:snap_note(sound:transpose_note(note)) - 60) / 12, 5)
 end
 
 function c:play(note, pair)
