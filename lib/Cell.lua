@@ -233,7 +233,6 @@ function Cell:setup()
   elseif self:is("MAZE") then self:set_turing()
   elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
   elseif self:is("MIRAGE") then self:shall_we_drift_today()
-  elseif self:is("BANK") then self:annual_report()
   elseif self:is("INSTITUTION") then self:has_crumbled()
   elseif self:is("KUDZU") then self:close_all_ports() self:lifecycle()
   end
@@ -253,15 +252,15 @@ end
 -- for kudzu
 function Cell:lifecycle()
   if not self:inverted_metabolism_check() then return end
-  if (math.random(0, 99) > self.resilience) then
-    self.crumble = self.crumble - 1
+  if (math.random(0, 99) > self:get_resilience()) then
+    self:raw_set_crumble(self:get_crumble() - 1)
     self:has_crumbled()
   end
 end
 
 -- for institutions & kudzu
 function Cell:has_crumbled()
-  if self.crumble <= 0 then
+  if self:get_crumble() <= 0 then
     keeper:delete_cell(self.id, true, false)
     if keeper.selected_cell_id == self.id then
       keeper:deselect_cell()
