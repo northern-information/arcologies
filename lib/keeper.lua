@@ -373,7 +373,7 @@ function keeper:delete_cell(id, s, d)
       if not silent then
         graphics:set_message("DELETED " .. cell.structure_name)
       end
-      if page.active_page == 2 then
+      if deselect and page.active_page == 2 then
         menu:reset()
       end
       if deselect then 
