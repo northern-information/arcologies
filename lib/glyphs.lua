@@ -49,8 +49,8 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-  self:windfarm(x, y, l)
-  self:small_windfarm(x+60, y, l)
+  self:prairie(x, y, l)
+  self:small_prairie(x+60, y, l)
   -- self:small_casino(x+69, y, l)
 end
 
@@ -304,6 +304,17 @@ function glyphs:windfarm(x, y, l)
   graphics:rect(x+12, y+24, 5, 2, l)
 end
 
+function glyphs:prairie(x, y, l)
+  self:extended_floor(x, y, l)
+  self:basement(x, y, l)
+  graphics:rect(x, y+14, 2, 2, l)
+  graphics:rect(x+10, y+14, 2, 2, l)
+  graphics:rect(x+20, y+14, 2, 2, l)
+  graphics:rect(x+5, y+20, 2, 2, l)
+  graphics:rect(x+15, y+20, 2, 2, l)
+  graphics:rect(x+10, y+26, 2, 2, l)
+end
+
 function glyphs:left_wall(x, y, l)
   graphics:rect(x, y, 2, 26, l)
 end
@@ -377,6 +388,10 @@ function glyphs:partial_second_floor(x, y, l)
   graphics:rect(x+5, y+12, 12, 2, l)
 end
 
+function glyphs:extended_floor(x, y, l)
+  graphics:rect(x-5, y+18, 32, 2, l)
+end
+
 function glyphs:floor(x, y, l)
   graphics:rect(x, y+18, 22, 2, l)
 end
@@ -419,8 +434,9 @@ function glyphs:east_port(x, y, l)
 end
 
 function glyphs:south_port(x, y, l)
-  graphics:rect(x+10, y+28, 2, 4, l)
-  graphics:rect(x+9, y+28, 4, 2, l)
+  local y_adjust = keeper.selected_cell:is("PRAIRIE") and 30 or 28
+  graphics:rect(x+10, y+y_adjust, 2, 4, l)
+  graphics:rect(x+9, y+y_adjust, 4, 2, l)
 end
 
 function glyphs:west_port(x, y, l)
@@ -669,6 +685,17 @@ function glyphs:small_windfarm(x, y, l)
   graphics:mlrs(x+2, y+8, 2, 0, l) 
 end
 
+function glyphs:small_prairie(x, y, l)
+  y = y - 1
+  self:small_extended_floor(x, y-1, l)
+  self:small_basement(x, y, l)
+  graphics:rect(x-2, y+2, 1, 1, l)
+  graphics:rect(x+2, y+2, 1, 1, l)
+  graphics:rect(x+6, y+2, 1, 1, l)
+  graphics:rect(x, y+5, 1, 1, l)
+  graphics:rect(x+4, y+5, 1, 1, l)
+  graphics:rect(x+2, y+8, 1, 1, l)
+end
 
 function glyphs:small_left_wall(x, y, l)
   graphics:mls(x, y-1, x, y+8, l)
@@ -737,6 +764,10 @@ end
 
 function glyphs:small_second_floor(x, y, l)
   graphics:mls(x-1, y+4, x+6, y+4, l)
+end
+
+function glyphs:small_extended_floor(x, y, l)
+  graphics:mls(x-3, y+6, x+8, y+6, l)
 end
 
 function glyphs:small_floor(x, y, l)
