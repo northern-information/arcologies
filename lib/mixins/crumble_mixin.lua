@@ -19,6 +19,11 @@ crumble_mixin.init = function(self)
     self.callback(self, "set_crumble")
   end
 
+  self.raw_set_crumble = function(self, i)
+    self.crumble = i
+    self.callback(self, "raw_set_crumble")
+  end
+
   self.crumble_menu_getter = function(self)
     return self:get_crumble()
   end

@@ -243,12 +243,14 @@ function keeper:kudzu()
 end
 
 function keeper:cropdust()
+  local kudzu = {}
   for k, cell in pairs(self.cells) do
-    if cell:is("KUDZU") then
-      cell.crumble = cell.crumble - params:get("kudzu_cropdust_potency")
-      cell:has_crumbled()
+    if cell:is("KUDZU") then table.insert(kudzu, cell) end
+  end
+  for k, cell in pairs(kudzu) do
       g:register_flicker_at(cell.x, cell.y)
-    end
+      cell:raw_set_crumble(cell:get_crumble() - params:get("kudzu_cropdust_potency"))
+      cell:has_crumbled()
   end
 end
 
