@@ -31,6 +31,7 @@ function Cell:new(x, y, g)
   notes_mixin.init(self)
   offset_mixin.init(self)
   operator_mixin.init(self)
+  output_mixin.init(self)
   ports_mixin.init(self)
   probability_mixin.init(self)
   pulses_mixin.init(self)
@@ -64,6 +65,7 @@ function Cell:new(x, y, g)
   c.setup_notes(c)
   c.setup_offset(c)
   c.setup_operator(c)
+  c.setup_output(c)
   c.setup_ports(c)
   c.setup_probability(c)
   c.setup_pulses(c)
@@ -151,6 +153,7 @@ end
 function Cell:menu_items()
   local items = fn.deep_copy(self:get_attributes())
   items = self:inject_notes_into_menu(items)
+  items = self:check_output_items(items)
   return items
 end
 
@@ -187,7 +190,8 @@ function Cell:change_checks()
 
   elseif self:is("SHRINE") 
     or self:is("AVIARY")
-    or self:is("SPOMENIK") then 
+    or self:is("SPOMENIK")
+    or self:is("FRACTURE") then 
       self:set_note_count(1)
       self:setup_notes(1)
 

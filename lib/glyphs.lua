@@ -9,13 +9,6 @@ function glyphs.init()
   glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
 end
 
-function glyphs:stubby(x, y, l)
-  glyphs:cell(x, y, l)
-  graphics:rect(x+3, y+4, 2, 4, l)
-  graphics:rect(x+9, y+4, 2, 4, l)
-  graphics:rect(x+6, y+12, 2, 4, l)
-end
-
 function glyphs:draw_glyph(s, x, y, l)
   if self[string.lower(s)] ~= nil then
     assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)
@@ -73,6 +66,13 @@ function glyphs:cell(x, y, l)
   self:right_wall(x, y, l)
   self:roof(x, y, l)
   self:floor(x, y, l)
+end
+
+function glyphs:stubby(x, y, l)
+  glyphs:cell(x, y, l)
+  graphics:rect(x+3, y+4, 2, 4, l)
+  graphics:rect(x+9, y+4, 2, 4, l)
+  graphics:rect(x+6, y+12, 2, 4, l)
 end
 
 function glyphs:hive(x, y, l)
@@ -439,6 +439,13 @@ function glyphs:small_cell(x, y, l)
   self:small_right_wall(x, y, l)
   self:small_roof(x, y, l)
   self:small_floor(x, y, l)
+end
+
+function glyphs:small_stubby(x, y, l)
+  glyphs:small_cell(x, y, l)
+  graphics:mlrs(x+2, y+1, 0, 2, l)
+  graphics:mlrs(x+4, y+1, 0, 2, l)
+  graphics:mlrs(x+3, y+4, 0, 1, l)
 end
 
 function glyphs:small_hive(x, y, l)

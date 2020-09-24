@@ -94,9 +94,9 @@ docs.sheets["CRYPT"] = {
 
 docs.sheets["VALE"] = {
   "Randomly plays",
-  "a synth within",
-  "a range.",
-  "",
+  "a synth or MIDI",
+  "note within a",
+  "range.",
   "Routes signals",
   "to open ports."
 }
@@ -189,6 +189,15 @@ docs.sheets["WINDFARM"] = {
   "Emits signals like",
   "a hive, but",
   "spins."
+}
+
+docs.sheets["FRACTURE"] = {
+  "Plays a synth or",
+  "MIDI note at a",
+  "random velocity",
+  "within a range.",
+  "Routes signals",
+  "to open ports."
 }
 
 return docs

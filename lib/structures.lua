@@ -16,7 +16,7 @@ structure names _must_ be a single word due to string matching for glyphs
 function structures.init()
   structures.order = 1
   structures.database = {}
-  -- structures:register("STUBBY",       { "" })
+  -- structures:register("STUBBY",       {})
   structures:register("HIVE",         { "METABOLISM", "OFFSET" })
   structures:register("SHRINE",       { "NOTES", "VELOCITY" })
   structures:register("GATE",         {})
@@ -25,7 +25,7 @@ function structures.init()
   structures:register("DOME",         { "METABOLISM", "OFFSET", "PULSES" })
   structures:register("MAZE",         { "METABOLISM", "OFFSET", "PROBABILITY" })
   structures:register("CRYPT",        { "INDEX", "LEVEL" })
-  structures:register("VALE",         { "RANGE MIN", "RANGE MAX", "VELOCITY" })
+  structures:register("VALE",         { "RANGE MIN", "RANGE MAX", "VELOCITY", "OUTPUT", "DURATION", "CHANNEL", "DEVICE" })
   structures:register("SOLARIUM",     { "CHARGE", "CAPACITY" })
   structures:register("UXB",          { "NOTES", "VELOCITY", "DURATION", "CHANNEL", "DEVICE" })
   structures:register("CASINO",       { "INDEX", "NOTE COUNT", "NOTES", "TOPOGRAPHY", "DURATION", "CHANNEL", "VELOCITY", "DEVICE" })
@@ -39,6 +39,8 @@ function structures.init()
   structures:register("AUTON",        { "INDEX", "NOTE COUNT", "NOTES", "TOPOGRAPHY" })
   structures:register("KUDZU",        { "METABOLISM", "RESILIENCE", "CRUMBLE" })
   structures:register("WINDFARM",     { "METABOLISM", "BEARING", "CLOCKWISE" })
+  structures:register("FRACTURE",     { "NOTES", "RANGE MIN", "RANGE MAX", "OUTPUT", "DURATION", "CHANNEL", "DEVICE" })
+
 end
 
 function structures:register(name, attributes)
