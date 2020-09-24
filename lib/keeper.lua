@@ -83,18 +83,18 @@ function keeper:collision(signal, cell)
   -- vales play random notes
   elseif cell:is("VALE") then
     local random_note = sound:get_random_note(cell.range_min / 100, cell.range_max / 100)
-    if self:get_output_string() == "SYNTH" then
+    if cell:get_output_string() == "SYNTH" then
       sound:play(random_note, cell.velocity)
-    elseif self:get_output_string() == "MIDI" then
+    elseif cell:get_output_string() == "MIDI" then
       m:play(random_note, cell.velocity, cell.channel, cell.duration, cell.device)
     end
 
   -- fractures play random velocities
   elseif cell:is("FRACTURE") then
     local random_velocity = util.linlin(0, 100, 0, 127, math.random(cell.range_min, cell.range_max))
-    if self:get_output_string() == "SYNTH" then
+    if cell:get_output_string() == "SYNTH" then
       sound:play(cell.notes[1], random_velocity)
-    elseif self:get_output_string() == "MIDI" then
+    elseif cell:get_output_string() == "MIDI" then
       m:play(cell.notes[1], random_velocity, cell.channel, cell.duration, cell.device)
     end
 
