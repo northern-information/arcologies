@@ -1,6 +1,5 @@
 counters = {}
 
-
 function counters.init()
   counters.playback = config.settings.playback
   counters.message = 0

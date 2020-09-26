@@ -16,7 +16,7 @@ function parameters.init()
   params:set_action("save_map", function(x) te.enter(filesystem.save_map) end)
 
   params:add_trigger("midi_panic", "> MIDI PANIC!" )
-  params:set_action("midi_panic", function() m:panic() end)
+  params:set_action("midi_panic", function() m:all_off() end)
 
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)

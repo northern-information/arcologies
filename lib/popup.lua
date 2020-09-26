@@ -117,6 +117,7 @@ function popup:done()
 
   if self.current_attribute == "structure" then
     self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.structure_name)
+    keeper.selected_cell:change_checks()
     menu:reset()
     menu:set_items(keeper.selected_cell:menu_items())
     menu:select_item_by_name("STRUCTURE")

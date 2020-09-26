@@ -40,7 +40,7 @@ function structures.init()
   structures:register("KUDZU",        { "METABOLISM", "RESILIENCE", "CRUMBLE" })
   structures:register("WINDFARM",     { "METABOLISM", "BEARING", "CLOCKWISE" })
   structures:register("FRACTURE",     { "NOTES", "RANGE MIN", "RANGE MAX", "OUTPUT", "DURATION", "CHANNEL", "DEVICE" })
-  structures:register("PRAIRIE",      { "DELAY", "INDEX", "NOTE COUNT", "NOTES", "TOPOGRAPHY", "DURATION", "CHANNEL", "VELOCITY", "DEVICE" })
+  -- structures:register("PRAIRIE",      {} )
 end
 
 function structures:register(name, attributes)

@@ -20,7 +20,6 @@ function Cell:new(x, y, g)
   crow_out_mixin.init(self)
   crumble_mixin.init(self)
   deflect_mixin.init(self)
-  delay_mixin.init(self)
   device_mixin.init(self)
   docs_stub_mixin.init(self)
   drift_mixin.init(self)
@@ -55,7 +54,6 @@ function Cell:new(x, y, g)
   c.setup_crow_out(c)
   c.setup_crumble(c)
   c.setup_deflect(c)
-  c.setup_delay(c)
   c.setup_device(c)
   c.setup_docs_stub(c)
   c.setup_drift(c)
@@ -184,6 +182,7 @@ end
 
 -- sometimes when a cell changes, attributes need to be cleaned up
 function Cell:change_checks()
+  if popup.active then return end
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
 

@@ -45,10 +45,6 @@ function m:register_note(tranposed_note, velocity, channel, duration, device)
   table.insert(self.notes, new)
 end
 
-function m:panic()
-  m:all_off()
-end
-
 function m:all_off()
   for note = 1, 127 do
     for channel = 1, 16 do
@@ -56,13 +52,6 @@ function m:all_off()
         m.devices[device]:note_off(note, 0, channel)
       end
     end
-  end
-end
-
-function m:cleanup()
-  m:all_off()
-  for i = 1, 4 do
-    m.devices[i]:disconnect()
   end
 end
 
