@@ -182,7 +182,6 @@ end
 
 -- sometimes when a cell changes, attributes need to be cleaned up
 function Cell:change_checks()
-  if popup.active then return end
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
 

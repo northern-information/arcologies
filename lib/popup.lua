@@ -6,6 +6,7 @@ function popup.init()
   popup.number = 0
   popup.current_attribute = ""
   popup.current_value = ""
+  popup.cached_index = 0
   popup.key_timer = 0
   popup.messages = config.popup_messages
   popup.note_number = nil
@@ -22,6 +23,9 @@ function popup:launch(attribute, value, input, number, note_number)
   self.input = input
   self.number = number
   self.note_number = note_number or nil
+  if not popup.active and self.current_attribute == "structure" then
+      self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
+  end
   self.active = true
   self:start()
 end
@@ -89,10 +93,9 @@ function popup:enc_wait()
 end
 
 function popup:change()
-  if self.current_attribute == "structure" then
-    local position = util.clamp(self.current_value + structures:get_index(keeper.selected_cell.structure_name), 1, #structures:all_enabled())
-    keeper.selected_cell:set_structure_by_name(structures:all_enabled()[position].name)
-    self:title_message(keeper.selected_cell.structure_name)
+  if self.current_attribute == "structure" then    
+    self.cached_index = util.clamp(self.current_value + self.cached_index, 1, #structures:all_enabled())
+    self:title_message(structures:all_enabled()[self.cached_index].name)
   end
 
   if self.current_attribute == "note" then
@@ -104,7 +107,7 @@ end
 
 function popup:render()
   if self.current_attribute == "structure" then
-    graphics:structure_palette(structures:get_index(keeper.selected_cell.structure_name))
+    graphics:structure_palette(self.cached_index)
   elseif self.current_attribute == "delete_all"
     then graphics:deleting_all(self.key_timer)
   elseif self.current_attribute == "note" then
@@ -116,8 +119,9 @@ function popup:done()
   self.active = false
 
   if self.current_attribute == "structure" then
-    self:title_message(self.messages.structure.done .. " " .. keeper.selected_cell.structure_name)
-    keeper.selected_cell:change_checks()
+    local new_structure = structures:all_enabled()[self.cached_index].name
+    self:title_message(self.messages.structure.done .. " " .. new_structure)
+    keeper.selected_cell:change(new_structure)
     menu:reset()
     menu:set_items(keeper.selected_cell:menu_items())
     menu:select_item_by_name("STRUCTURE")
