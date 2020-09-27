@@ -51,7 +51,7 @@ function keeper:collision(signal, cell)
 
   -- aviaries play single notes via crow
   elseif cell:is("AVIARY") then
-    _crowplay(cell.notes[1], cell.crow_out)
+    _crow:play(cell.notes[1], cell.crow_out)
 
   -- stores signals as charge
   elseif cell:is("SOLARIUM") then
@@ -74,7 +74,7 @@ function keeper:collision(signal, cell)
   -- forests cylce through notes
   elseif cell:is("FOREST") then
     cell:over_cycle_state_index(cell:topography_operation())
-    _crowplay(cell.notes[cell.state_index], cell.crow_out)
+    _crow:play(cell.notes[cell.state_index], cell.crow_out)
 
   -- send signals to other tunnels
   elseif cell:is("TUNNEL") then
@@ -100,12 +100,12 @@ function keeper:collision(signal, cell)
 
   -- spomeniks play single notes on jf
   elseif cell:is("SPOMENIK") then
-    _crowjf(cell.notes[1])
+    _crow:jf(cell.notes[1])
 
   -- autons cycle through notes on jf
   elseif cell:is("AUTON") then
     cell:over_cycle_state_index(cell:topography_operation())
-    _crowjf(cell.notes[cell.state_index])
+    _crow:jf(cell.notes[cell.state_index])
 
   -- hydroponics operate at a distance
   elseif cell:is("HYDROPONICS") then
