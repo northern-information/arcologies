@@ -82,7 +82,7 @@ end
 
 function fn.cleanup()
   crow.ii.jf.mode(0)
-  m:all_off()
+  _midi:all_off()
   clock.cancel(music_clock_id)
   clock.cancel(redraw_clock_id)
   clock.cancel(grid_clock_id)
@@ -121,7 +121,7 @@ end
 
 function fn.dismiss_messages()
   fn.break_splash(true)
-  g:dismiss_disconnect()
+  _grid:dismiss_disconnect()
 end
 
 function fn.long_press(k)
@@ -145,11 +145,11 @@ end
 -- grid
 
 function fn.grid_width()
-  return g.last_known_width
+  return _grid.last_known_width
 end
 
 function fn.grid_height()
-  return g.last_known_height
+  return _grid.last_known_height
 end
 
 function fn.index(x, y)
@@ -306,7 +306,7 @@ end
 
 function fn.wtfscale()
   for i = 1, #sound.scale_notes do
-    print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
+    print(sound.scale_notes[i], musicutil.note_num_to_name(sound.scale_notes[i]))
   end
 end
 

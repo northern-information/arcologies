@@ -1,15 +1,15 @@
-m = {}
+_midi = {}
 
-function m.init()
-  m.devices = {}
-  m.devices[1] = midi.connect(1)
-  m.devices[2] = midi.connect(2)
-  m.devices[3] = midi.connect(3)
-  m.devices[4] = midi.connect(4)
-  m.notes = {}
+function _midi.init()
+  _midi.devices = {}
+  _midi.devices[1] = midi.connect(1)
+  _midi.devices[2] = midi.connect(2)
+  _midi.devices[3] = midi.connect(3)
+  _midi.devices[4] = midi.connect(4)
+  _midi.notes = {}
 end
 
-function m:setup()
+function _midi:setup()
   for k, note in pairs(self.notes) do
     note.duration = note.duration - 1
     if note.duration <= 0 then
@@ -19,14 +19,14 @@ function m:setup()
   end
 end
 
-function m:play(note, velocity, channel, duration, device)
+function _midi:play(note, velocity, channel, duration, device)
     local transposed_note = sound:transpose_note(note)
     self:register_note(transposed_note, velocity, channel, duration, device)
     self.devices[device]:note_off(transposed_note, velocity, channel)
     self.devices[device]:note_on(transposed_note, velocity, channel)
 end
 
-function m:register_note(tranposed_note, velocity, channel, duration, device)
+function _midi:register_note(tranposed_note, velocity, channel, duration, device)
   local new = {
     note = tranposed_note,
     velocity = velocity,
@@ -45,14 +45,14 @@ function m:register_note(tranposed_note, velocity, channel, duration, device)
   table.insert(self.notes, new)
 end
 
-function m:all_off()
+function _midi:all_off()
   for note = 1, 127 do
     for channel = 1, 16 do
       for device = 1, 4 do
-        m.devices[device]:note_off(note, 0, channel)
+        _midi.devices[device]:note_off(note, 0, channel)
       end
     end
   end
 end
 
-return m
+return _midi

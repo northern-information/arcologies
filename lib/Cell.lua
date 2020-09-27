@@ -169,7 +169,7 @@ theres  only ~40 lines of code below...
 -- to keep traits reasonably indempotent, even though the have to interact with one another
 function Cell:callback(method)
   if method == "set_state_index" then
-    if self:is("CRYPT") then s:crypt_load(self.state_index) end
+    if self:is("CRYPT") then _softcut:crypt_load(self.state_index) end
   elseif method == "set_metabolism" then
     if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
     if self:is("DOME") then self:set_er() end

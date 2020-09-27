@@ -41,7 +41,7 @@ ports_mixin.init = function(self, x, y)
   end
 
   self.is_port_open = function(self, p)
-    return tu.contains(self.ports, p)
+    return tabutil.contains(self.ports, p)
   end
 
   self.open_port = function(self, p)

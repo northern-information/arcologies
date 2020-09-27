@@ -1,8 +1,8 @@
-s = {}
+_softcut = {}
 
 -- thanks @dndrks & @its_your_bedtime
 
-function s.init()
+function _softcut.init()
   softcut.reset()
   softcut.buffer_clear()
   audio.level_cut(1)
@@ -33,51 +33,51 @@ function s.init()
     softcut.filter_bp(i, 0)
     softcut.filter_rq(i, 0)
   end
-  s.clip = {}
+  _softcut.clip = {}
   for i = 1, 6 do
-    s.clip[i] = {}
-    s.clip[i]["sample_length"] = 16
-    s.clip[i]["max"] = nil
-    s.clip[i]["min"] = s:get_crypt_start(i)
+    _softcut.clip[i] = {}
+    _softcut.clip[i]["sample_length"] = 16
+    _softcut.clip[i]["max"] = nil
+    _softcut.clip[i]["min"] = _softcut:get_crypt_start(i)
   end
 end
 
-function s:get_crypt_start(index)
+function _softcut:get_crypt_start(index)
   return 1 + ((index - 1) * 16)
 end
 
-function s:crypt_table()
+function _softcut:crypt_table()
   for i = 1, 6 do
-    s.clip[i].min = s:get_crypt_start(i)
-    s.clip[i].max = s.clip[i].min + s.clip[i].sample_length
+    self.clip[i].min = self:get_crypt_start(i)
+    self.clip[i].max = self.clip[i].min + self.clip[i].sample_length
   end
 end
 
-function s:crypt_load(index)
+function _softcut:crypt_load(index)
   local file = filesystem:get_crypt() .. index .. ".wav"
   local ch, len = audio.file_info(file)
   if (len / 48000) < 16 then
-    s.clip[index].sample_length = len / 48000
+    self.clip[index].sample_length = len / 48000
   else
-    s.clip[index].sample_length = 16
+    self.clip[index].sample_length = 16
   end
-  softcut.buffer_clear_region_channel(2, s:get_crypt_start(index), 16)
-  softcut.buffer_read_mono(file, 0, s:get_crypt_start(index), s.clip[index].sample_length + 0.05, 1, 2)
-  s:crypt_table()
+  softcut.buffer_clear_region_channel(2, self:get_crypt_start(index), 16)
+  softcut.buffer_read_mono(file, 0, self:get_crypt_start(index), self.clip[index].sample_length + 0.05, 1, 2)
+  self:crypt_table()
 end
 
-function s:one_shot(index, level)
+function _softcut:one_shot(index, level)
   local voice = index -- voices are hard-coupled for now
   if tonumber(index) then -- some edge cases were happening where nil indexes were coming in
     softcut.buffer(voice, 2)
     softcut.play(voice, 0)
     softcut.level(voice, level)
-    softcut.position(voice, s.clip[index].min)
-    softcut.loop_start(voice, s.clip[index].min)
-    softcut.loop_end(voice, s.clip[index].max)
+    softcut.position(voice, self.clip[index].min)
+    softcut.loop_start(voice, self.clip[index].min)
+    softcut.loop_end(voice, self.clip[index].max)
     softcut.loop(voice, 0)
     softcut.play(voice, 1)
   end
 end
 
-return s
+return _softcut

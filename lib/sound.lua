@@ -8,7 +8,7 @@ function sound.init()
   sound.transpose = 0
   sound.scale_name = ""
   sound.scale_names = {}
-  for k,v in pairs(mu.SCALES) do sound.scale_names[k] = mu.SCALES[k].name end
+  for k,v in pairs(musicutil.SCALES) do sound.scale_names[k] = musicutil.SCALES[k].name end
   sound.scale_notes = {}
   sound:set_scale(sound.scale)
 end
@@ -31,11 +31,11 @@ function sound:set_scale(i)
 end
 
 function sound:build_scale()
-  self.scale_notes =  mu.generate_scale(self.root, self.scale_name, self.octaves)
+  self.scale_notes =  musicutil.generate_scale(self.root, self.scale_name, self.octaves)
 end
 
 function sound:snap_note(note)
-  return mu.snap_note_to_array(note, self.scale_notes)
+  return musicutil.snap_note_to_array(note, self.scale_notes)
 end
 
 function sound:cycle_length(i)
@@ -77,7 +77,7 @@ end
 
 function sound:play(note, velocity)
   engine.amp(velocity / 127)
-  engine.hz(mu.note_num_to_freq(self:snap_note(self:transpose_note(note))))
+  engine.hz(musicutil.note_num_to_freq(self:snap_note(self:transpose_note(note))))
 end
 
 return sound

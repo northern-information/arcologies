@@ -61,7 +61,7 @@ notes_mixin.init = function(self)
 
   self.get_note_name = function(self, index)
     if self.notes[index] ~= nil then
-      return mu.note_num_to_name(self.notes[index], true)
+      return musicutil.note_num_to_name(self.notes[index], true)
     end
   end
 
