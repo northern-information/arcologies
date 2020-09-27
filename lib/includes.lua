@@ -78,6 +78,9 @@ fn = include(lib .. "functions")
 -- all the save and load routines
 saveload = include(lib .. "saveload")
 
+-- arc interactions and leds
+_arc = include(lib .. "_arc")
+
 -- the whole murder of them
 _crow = include(lib .. "_crow")
 

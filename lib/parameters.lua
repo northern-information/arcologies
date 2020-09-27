@@ -5,12 +5,11 @@ function parameters.init()
   params:add_separator("")
   params:add_separator("- A R C O L O G I E S -")
 
-  params:add_trigger("save", "< SAVE" )
+  params:add_trigger("save", "< SAVE ARCOLOGY" )
   params:set_action("save", function(x) textentry.enter(filesystem.save) end)
 
-  params:add_trigger("load", "> LOAD" )
+  params:add_trigger("load", "> LOAD ARCOLOGY" )
   params:set_action("load", function(x) fileselect.enter(norns.state.data, filesystem.load) end)
-
 
   params:add_trigger("save_map", "< SAVE MAP" )
   params:set_action("save_map", function(x) textentry.enter(filesystem.save_map) end)
