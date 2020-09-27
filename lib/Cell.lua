@@ -185,36 +185,59 @@ function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
 
-  if self:is("DOME") then
-    self:set_er()
+      if self:is("DOME") then
+         self:set_er()
 
-  elseif self:is("SHRINE") 
-    or self:is("AVIARY")
-    or self:is("SPOMENIK")
-    or self:is("FRACTURE") then 
-      self:set_note_count(1)
-      self:setup_notes(1)
+  elseif self:is("SHRINE") then
+         self:set_note_count(1)
+         self:setup_notes(1)
+         self:set_output_by_string("SYNTH")
 
-  elseif self:is("TOPIARY") 
-    or self:is("CASINO") 
-    or self:is("FOREST") 
-    or self:is("AUTON") 
-    or self:is("PRAIRIE") then
-        self:set_note_count(8)
-        self:setup_notes(8)
+  elseif self:is("TOPIARY") then
+         self:set_note_count(8)
+         self:setup_notes(8)
+         self:set_output_by_string("SYNTH")
+
+  elseif self:is("UXB") then
+         self:set_note_count(1)
+         self:setup_notes(1)
+         self:set_output_by_string("MIDI")
+
+  elseif self:is("CASINO") then
+         self:set_note_count(8)
+         self:setup_notes(8)
+         self:set_output_by_string("MIDI")
+
+  elseif self:is("AVIARY") then
+         self:set_note_count(1)
+         self:setup_notes(1)
+
+  elseif self:is("FOREST") then
+         self:set_note_count(8)
+         self:setup_notes(8)
+
+  elseif self:is("SPOMENIK")
+      or self:is("FRACTURE") then 
+         self:set_note_count(1)
+         self:setup_notes(1)
+
+  elseif self:is("AUTON") 
+      or self:is("PRAIRIE") then
+         self:set_note_count(8)
+         self:setup_notes(8)
 
   elseif self:is("CRYPT") then
-    self:set_state_index(1) 
-    self:cycle_state_index(0)
+         self:set_state_index(1) 
+         self:cycle_state_index(0)
 
   elseif self:is("KUDZU") then
-    self:set_metabolism(params:get("kudzu_metabolism"))
-    self:set_resilience(params:get("kudzu_resilience"))
-    self:set_crumble(params:get("kudzu_crumble"))
+         self:set_metabolism(params:get("kudzu_metabolism"))
+         self:set_resilience(params:get("kudzu_resilience"))
+         self:set_crumble(params:get("kudzu_crumble"))
 
   elseif self:is("WINDFARM") then
-    self:close_all_ports()
-    self:open_port(self:get_bearing_cardinal())
+         self:close_all_ports()
+         self:open_port(self:get_bearing_cardinal())
 
   end
 end

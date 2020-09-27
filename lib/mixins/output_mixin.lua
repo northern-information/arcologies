@@ -32,6 +32,13 @@ output_mixin.init = function(self)
     self:set_output(self.output + i)
   end
 
+  self.set_output_by_string = function(self, string)
+    local output = fn.table_find(self.output_menu_values, string)
+    if output then 
+      self:set_output(output)
+    end
+  end
+
   self.check_output_items = function(self, items)
     if self.output_menu_values[self:get_output()] ~= "MIDI" then
       local remove = {"DURATION", "CHANNEL", "DEVICE"}
