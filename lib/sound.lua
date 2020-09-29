@@ -43,7 +43,7 @@ function sound:cycle_length(i)
 end
 
 function sound:cycle_root(i)
-  self.root = fn.cycle(self.root + i, 0, 12)
+  self.root = fn.cycle(self.root + i, 1, 12)
   self:build_scale()
   if init_done then
     keeper:update_all_notes()

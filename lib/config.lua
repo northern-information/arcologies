@@ -53,4 +53,10 @@ config["popup_messages"] = {
   }
 }
 
+config["arc_bindings"] = {}
+config["arc_bindings"][1] = { id = "norns_e1", label = "NORNS E1" }
+config["arc_bindings"][2] = { id = "norns_e2", label = "NORNS E2" }
+config["arc_bindings"][3] = { id = "norns_e3", label = "NORNS E3" }
+config["arc_bindings"][4] = { id = "browse_cells", label = "BROWSE CELLS" }
+
 return config

@@ -81,6 +81,9 @@ function counters.redraw_clock()
     if fn.dirty_grid() then
       _grid:grid_redraw()
     end
+    if fn.dirty_arc() then
+      _arc:arc_redraw()
+    end
     clock.sleep(1 / 30)
   end
 end

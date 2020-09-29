@@ -107,6 +107,18 @@ function fn.dirty_grid(bool)
   return grid_dirty
 end
 
+function fn.dirty_arc(bool)
+  if bool == nil then return arc_dirty end
+  arc_dirty = bool
+  return arc_dirty
+end
+
+function fn.dirty_arc_values(bool)
+  if bool == nil then return arc_values_dirty end
+  arc_values_dirty = bool
+  return arc_values_dirty
+end
+
 function fn.dirty_screen(bool)
   if bool == nil then return screen_dirty end
   screen_dirty = bool
@@ -233,7 +245,7 @@ end
 function fn.cycle(value, min, max)
   if value > max then
     return min
-  elseif value < 1 then
+  elseif value < min then
     return max
   else
     return value
@@ -243,7 +255,7 @@ end
 function fn.over_cycle(value, min, max)
   if value > max then
     return fn.over_cycle(value - max, min, max)
-  elseif value < 1 then
+  elseif value < min then
     return fn.over_cycle(max - value, min, max)
   else
     return value

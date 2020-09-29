@@ -88,6 +88,23 @@ function parameters.init()
   params:set_action("note_range_max", function(x) params:set("note_range_min", util.clamp(params:get("note_range_min"), 0, x)) end)
 
   params:add_separator("")
+  params:add_separator("ARC BINDINGS")
+
+  parameters.arc_binding_labels = {}
+  for i = 1, #config.arc_bindings do
+    parameters.arc_binding_labels[i] = config.arc_bindings[i].label
+  end
+  for i = 1, 4 do
+    local id = "arc_encoder_" .. i
+    params:add_option(id , "ENCODER " .. i, parameters.arc_binding_labels)
+    params:set_action(id, function(index) _arc:bind(i, config.arc_bindings[index].id) end)
+    params:set(id, i)
+  end
+  parameters.arc_orientations = { 0, 90, 180, 270}
+  params:add_option("arc_orientation", "ROTATION", parameters.arc_orientations)
+  params:set_action("arc_orientation", function(index) _arc:set_orientation(parameters.arc_orientations[index]) end)
+
+  params:add_separator("")
   params:add_separator("STRUCTURES")
 
   parameters.structures = {}

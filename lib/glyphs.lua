@@ -13,7 +13,7 @@ function glyphs:draw_glyph(s, x, y, l)
   if self[string.lower(s)] ~= nil then
     assert(load("glyphs:" .. string.lower(s) .. "(...)"))(x, y, l)
   else
-   glyphs:cell(x, y, l)
+    glyphs:cell(x, y, l)
   end
 end
 
@@ -21,7 +21,7 @@ function glyphs:draw_small_glyph(s, x, y, l)
   if self["small_" .. string.lower(s)] ~= nil then
     assert(load("glyphs:" .. "small_" .. string.lower(s) .. "(...)"))(x, y, l)
   else
-   glyphs:small_cell(x, y, l)
+    glyphs:small_cell(x, y, l)
   end
 end
 

@@ -17,6 +17,8 @@ function page:select(i, then_select_item)
   self.then_select_item = then_select_item or nil
   menu:reset()
   fn.dirty_screen(true)
+  _arc:update_value("norns_e1", i)
+  fn.dirty_arc(true)
 end
 
 function page:render()
@@ -29,6 +31,7 @@ function page:render()
   elseif self.active_page == 0 then graphics:splash()
   end
   fn.dirty_screen(true)
+  fn.dirty_arc(true)
   graphics:teardown()
 end
 
@@ -111,6 +114,14 @@ end
 function page:clear_error()
   self.error = false
   self.error_code = 0
+end
+
+function page:get_page_count()
+  return #self.titles
+end
+
+function page:get_active_page()
+  return self.active_page
 end
 
 return page

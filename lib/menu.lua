@@ -8,10 +8,13 @@ end
 function menu:reset()
   self.show_all = true
   self.items = {}
+  self.item_count = 0
   self.selected_item = 1
   self.selected_item_string = ""
   self.offset = 0
   docs:set_active(false)
+  _arc:update_value("norns_e2", i)
+  fn.dirty_arc(true)
 end
 
 function menu:render(bool)
@@ -74,15 +77,17 @@ function menu:scroll_value(d)
 end
 
 function menu:scroll(d)
-  if page.active_page == 3 then keeper:deselect_cell() end
   self:select_item(util.clamp(self.selected_item + d, 1, #self.items))
 end
 
 function menu:select_item(i)
+  if page.active_page == 3 then keeper:deselect_cell() end
   self.selected_item = i == nil and self.selected_item or i
   self.selected_item_string  = self.items[self.selected_item]
   self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
   docs:set_active(self.selected_item_string == "DOCS")
+  _arc:update_value("norns_e2", i)
+  fn.dirty_arc(true)
 end
 
 function menu:select_item_by_name(name)
@@ -91,6 +96,15 @@ end
 
 function menu:set_items(items)
   self.items = items
+  self.item_count = #items
+end
+
+function menu:get_item_count()
+  return self.item_count
+end
+
+function menu:get_selected_item()
+  return self.selected_item
 end
 
 function menu:handle_scroll_bpm(d)
