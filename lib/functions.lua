@@ -301,8 +301,7 @@ end
 
 function fn.screenshot()
   local which_screen = string.match(string.match(string.match(norns.state.script,"/home/we/dust/code/(.*)"),"/(.*)"),"(.+).lua")
-  _norns.screen_export_png("/home/we/dust/".. order .. "-" .. which_screen .. "-" .. os.time() .. ".png")
-  order = order + 1
+  _norns.screen_export_png("/home/we/dust/" .. which_screen .. "-" .. os.time() .. ".png")
 end
 
 function fn.wtfscale()

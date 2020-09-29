@@ -103,6 +103,15 @@ function parameters.init()
     end)
   end
 
+  params:add_separator("")
+  params:add_separator("<<< !!! DANGER ZONE !!! >>>")
+
+  parameters.danger_zone_clock_sync_options = {0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2}
+  parameters.danger_zone_clock_sync_value = 1
+  params:add_option("danger_zone_clock_sync", "clock.sync(x)", parameters.danger_zone_clock_sync_options, 8)
+  params:set_action("danger_zone_clock_sync", function(index) parameters.danger_zone_clock_sync_value = parameters.danger_zone_clock_sync_options[index] end)
+
+
   params:default()
   params:bang()
 end

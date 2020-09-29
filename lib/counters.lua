@@ -24,7 +24,7 @@ end
 
 function counters.conductor()
   while true do
-    clock.sync(1)
+    clock.sync(parameters.danger_zone_clock_sync_value or 1)
     if counters.playback == 1 then
       counters.music_generation = counters.music_generation + 1
       m:setup()
