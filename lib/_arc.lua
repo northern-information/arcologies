@@ -50,11 +50,39 @@ function _arc:register_all_available_bindings()
     max_getter = function() return print("norns e3 todo") end
   })
   _arc:register_binding({
-    binding_id = "browse_cells",
+    binding_id = "todo_browse_cells",
     value_getter = function() return print("browse cells todo") end,
     value_setter = function(x) print("BROWSE CELLS TODO", x) end,
     min_getter = function() return print("browse cells todo") end,
     max_getter = function() return print("browse cells todo") end
+  })
+  _arc:register_binding({
+    binding_id = "todo_crypt_directory",
+    value_getter = function() return print("crypt directory todo") end,
+    value_setter = function(x) print("CRYPT DIRECTORY TODO", x) end,
+    min_getter = function() return print("crypt directory todo") end,
+    max_getter = function() return print("crypt directory todo") end
+  })
+  _arc:register_binding({
+    binding_id = "todo_danger_zone_clock_sync",
+    value_getter = function() return print("danger zone clock sync todo") end,
+    value_setter = function(x) print("DANGER ZONE CLOCK SYNC TODO", x) end,
+    min_getter = function() return print("danger zone clock sync todo") end,
+    max_getter = function() return print("danger zone clock sync todo") end
+  })
+  _arc:register_binding({
+    binding_id = "todo_bpm",
+    value_getter = function() return print("bpm todo") end,
+    value_setter = function(x) print("BPM TODO", x) end,
+    min_getter = function() return print("bpm todo") end,
+    max_getter = function() return print("bpm todo") end
+  })
+  _arc:register_binding({
+    binding_id = "todo_transpose",
+    value_getter = function() return print("transpose todo") end,
+    value_setter = function(x) print("TRANSPOSE TODO", x) end,
+    min_getter = function() return print("transpose todo") end,
+    max_getter = function() return print("transpose todo") end
   })
 end
 
@@ -107,6 +135,7 @@ function _arc:bind(n, binding_id)
       }
     })
   end
+  fn.dirty_arc(true)
 end
 
 

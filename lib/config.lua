@@ -53,10 +53,15 @@ config["popup_messages"] = {
   }
 }
 
-config["arc_bindings"] = {}
-config["arc_bindings"][1] = { id = "norns_e1", label = "NORNS E1" }
-config["arc_bindings"][2] = { id = "norns_e2", label = "NORNS E2" }
-config["arc_bindings"][3] = { id = "norns_e3", label = "NORNS E3" }
-config["arc_bindings"][4] = { id = "browse_cells", label = "BROWSE CELLS" }
+config["arc_bindings"] = {
+  { id = "norns_e1", label = "NORNS E1" },
+  { id = "norns_e2", label = "NORNS E2" },
+  { id = "norns_e3", label = "NORNS E3" },
+  { id = "todo_browse_cells", label = "BROWSE CELLS" },
+  { id = "todo_crypt_directory", label = "CRYPT DIRECTORY" },
+  { id = "todo_danger_zone_clock_sync", label = "clock.sync(x)" },
+  { id = "todo_bpm", label = "BPM" },
+  { id = "todo_tranpose", label = "TRANSPOSE" },
+}
 
 return config
