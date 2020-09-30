@@ -17,8 +17,6 @@ function page:select(i, then_select_item)
   self.then_select_item = then_select_item or nil
   menu:reset()
   fn.dirty_screen(true)
-  _arc:update_value("norns_e1", i)
-  fn.dirty_arc(true)
 end
 
 function page:render()

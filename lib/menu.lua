@@ -13,8 +13,6 @@ function menu:reset()
   self.selected_item_string = ""
   self.offset = 0
   docs:set_active(false)
-  _arc:update_value("norns_e2", i)
-  fn.dirty_arc(true)
 end
 
 function menu:render(bool)
@@ -86,8 +84,6 @@ function menu:select_item(i)
   self.selected_item_string  = self.items[self.selected_item]
   self.offset = self.selected_item > self.threshold and self.selected_item - self.threshold or 0
   docs:set_active(self.selected_item_string == "DOCS")
-  _arc:update_value("norns_e2", i)
-  fn.dirty_arc(true)
 end
 
 function menu:select_item_by_name(name)
