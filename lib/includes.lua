@@ -47,6 +47,7 @@ local mixins = {
   "duration_mixin",
   "er_mixin",
   "level_mixin",
+  "mapping_mixin",
   "metabolism_mixin",
   "network_mixin",
   "notes_mixin",
@@ -138,6 +139,9 @@ _softcut = include(lib .. "_softcut")
 
 -- all things musical
 sound = include(lib .. "sound")
+
+-- experimental
+api = include(lib .. "api")
 
 -- dev only stuff
 dev = io.open(_path["code"] .. lib .. "dev.lua", "r")

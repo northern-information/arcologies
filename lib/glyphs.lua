@@ -49,9 +49,8 @@ function glyphs:test()
   local y = 20
   local l = 15
   self:bounding_box(x, y, l)
-  self:prairie(x, y, l)
-  self:small_prairie(x+60, y, l)
-  -- self:small_casino(x+69, y, l)
+  self:cloakroom(x, y, l)
+  self:small_cloakroom(x+60, y, l)
 end
 
 function glyphs:bounding_box(x, y, l)
@@ -313,6 +312,19 @@ function glyphs:prairie(x, y, l)
   graphics:rect(x+5, y+20, 2, 2, l)
   graphics:rect(x+15, y+20, 2, 2, l)
   graphics:rect(x+10, y+26, 2, 2, l)
+end
+
+function glyphs:cloakroom(x, y, l)
+  self:roof(x, y, l)
+  graphics:rect(x, y, 2, 20, l)
+  self:three_quarter_right_wall(x, y, l)
+  self:basement(x, y, l)
+  graphics:rect(x, y+6, 9, 2, l)
+  graphics:rect(x+13, y+6, 9, 2, l)
+  graphics:rect(x, y+12, 9, 2, l)
+  graphics:rect(x+13, y+12, 9, 2, l)
+  graphics:rect(x, y+18, 9, 2, l)
+  graphics:rect(x+13, y+18, 9, 2, l)
 end
 
 function glyphs:left_wall(x, y, l)
@@ -695,6 +707,20 @@ function glyphs:small_prairie(x, y, l)
   graphics:rect(x, y+5, 1, 1, l)
   graphics:rect(x+4, y+5, 1, 1, l)
   graphics:rect(x+2, y+8, 1, 1, l)
+end
+
+
+function glyphs:small_cloakroom(x, y, l)
+  self:small_roof(x, y, l)
+  graphics:mlrs(x, y, 0, 5, l)
+  self:small_three_quarter_right_wall(x, y, l)
+  self:small_basement(x, y, l)
+  graphics:mlrs(x-1, y+2, 3, 0, l)
+  graphics:mlrs(x+3, y+2, 3, 0, l)
+  graphics:mlrs(x-1, y+4, 3, 0, l)
+  graphics:mlrs(x+3, y+4, 3, 0, l)
+  graphics:mlrs(x-1, y+6, 3, 0, l)
+  graphics:mlrs(x+3, y+6, 3, 0, l)
 end
 
 function glyphs:small_left_wall(x, y, l)

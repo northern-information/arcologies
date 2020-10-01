@@ -33,6 +33,7 @@ function init()
   menu.init()
   popup.init()
   keeper.init()
+  api.init()
   arcology_name = "arcology" .. os.time(os.date("!*t"))
   grid_dirty, screen_dirty, splash_break, arcology_loaded = false, false, false, false
   keys, key_counter, enc_counter = {}, {{},{},{}}, {{},{},{}}
