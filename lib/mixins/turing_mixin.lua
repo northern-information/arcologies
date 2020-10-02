@@ -46,7 +46,8 @@ turing_mixin.init = function(self)
     -- check against the probability
     if (math.random(0, 99) < p) then
       -- flip a coin to get our new value
-      table.insert(t, #t, fn.coin() == 1)
+      local position = (#t == 0) and 1 or #t
+      table.insert(t, position, fn.coin() == 1)
       -- remove the old value
       table.remove(t, 1)
     end

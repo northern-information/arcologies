@@ -7,7 +7,7 @@
 --
 --
 -- ........................................
--- v1.1.14 "eternal september"
+-- v1.1.15 "eternal september"
 -- <3 @tyleretters
 -- nor.the-rn.info
 -- GNU GPL v3.0

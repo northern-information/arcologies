@@ -62,6 +62,7 @@ end
 function g:grid_redraw()
   self:all(0)
   self:led_leylines()
+  self:led_territories()
   self:led_cells()
   self:led_signals()
   self:led_signal_deaths()
@@ -378,6 +379,18 @@ function g:draw_leyline(start_x, start_y, end_x, end_y)
     end
   else
     print("Error: leylines must be perpendicular.")
+  end
+  fn.dirty_grid(true)
+end
+
+function g:led_territories()
+  if not keeper.is_cell_selected or not keeper.selected_cell:has("TERRITORY") then return end
+  local c = keeper.selected_cell:get_territory_coordinates()
+  for x = c.x1, c.x2 do
+    for y = c.y1, c.y2 do
+      local l = math.ceil(util.linlin(0, 15, 0, 3, counters.grid_frame() % 15))
+      if fn.in_bounds(x, y) then self:led(x, y, l) end
+    end
   end
   fn.dirty_grid(true)
 end
