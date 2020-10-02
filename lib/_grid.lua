@@ -1,66 +1,84 @@
-g = grid.connect()
+_grid = {}
+_grid.device = grid.connect()
 
-function g.init()
-  g.counter = {}
-  g.toggled = {}
-  g.signal_deaths = {}
-  g.signal_and_cell_collisions = {}
-  g.flickers = {}
-  g.first_in_x = nil
-  g.first_in_y = nil
-  g.paste_x = nil
-  g.paste_y = nil
-  g.is_copying = false
-  g.is_pasting = false
-  g.paste_counter = 15
-  g.disconnect_dismissed = true
-  g.last_known_width = g.cols
-  g.last_known_height = g.rows
-  for x = 1, fn.grid_width() do
-    g.counter[x] = {}
-    for y = 1, fn.grid_height() do
-      g.counter[x][y] = nil
+function _grid.init()
+  _grid.counter = {}
+  _grid.toggled = {}
+  _grid.signal_deaths = {}
+  _grid.signal_and_cell_collisions = {}
+  _grid.flickers = {}
+  _grid.first_in_x = nil
+  _grid.first_in_y = nil
+  _grid.paste_x = nil
+  _grid.paste_y = nil
+  _grid.is_copying = false
+  _grid.is_pasting = false
+  _grid.paste_counter = 15
+  _grid.disconnect_dismissed = true
+  _grid.last_known_width = _grid.device.cols
+  _grid.last_known_height = _grid.device.rows
+  for x = 1, _grid.last_known_width do
+    _grid.counter[x] = {}
+    for y = 1, _grid.last_known_height do
+      _grid.counter[x][y] = nil
     end
   end
 end
 
-function grid.add()
-  g.init()
-  g.last_known_width = g.cols
-  g.last_known_height = g.rows
-  fn.dirty_grid(true)
+-- grid redefined, _grid ~= grid
+
+function grid.key(x, y, z)
+  fn.break_splash(true)
+  if z == 1 then
+    _grid.counter[x][y] = clock.run(_grid.grid_long_press, g, x, y)
+  elseif z == 0 then -- otherwise, if a grid key is released...
+    if _grid.counter[x][y] then -- and the long press is still waiting...
+      clock.cancel(_grid.counter[x][y]) -- then cancel the long press clock,
+      _grid:short_press(x,y) -- and execute a short press instead.
+    end
+    -- release the copy
+    if _grid.first_in_x == x and _grid.first_in_y == y then
+      _grid.first_in_x = nil
+      _grid.first_in_y = nil
+      keeper.copied_cell = {}
+      _grid.is_copying = false
+      graphics:set_message("CLIPBOARD CLEARED")
+    end
+  end
 end
 
 function grid.remove()
-  g:alert_disconnect()
+  _grid:alert_disconnect()
 end
 
-function g:alert_disconnect()
-  g.disconnect_dismissed = false
+-- _grid proper
+
+function _grid:alert_disconnect()
+  self.disconnect_dismissed = false
 end
 
-function g:dismiss_disconnect()
-  g.disconnect_dismissed = true
+function _grid:dismiss_disconnect()
+  self.disconnect_dismissed = true
 end
 
-function g.grid_redraw_clock()
+function _grid.grid_redraw_clock()
   while true do
     clock.sleep(1 / 30)
     if fn.dirty_grid() == true then
-      g:grid_redraw()
+      _grid:grid_redraw()
       fn.dirty_grid(false)
     end
     if keeper.is_cell_selected
-    or #g.signal_deaths > 0
-    or #g.flickers > 0
-    or #g.signal_and_cell_collisions > 0 then 
+    or #_grid.signal_deaths > 0
+    or #_grid.flickers > 0
+    or #_grid.signal_and_cell_collisions > 0 then 
       fn.dirty_grid(true)
     end
   end
 end
 
-function g:grid_redraw()
-  self:all(0)
+function _grid:grid_redraw()
+  self.device:all(0)
   self:led_leylines()
   self:led_territories()
   self:led_cells()
@@ -72,31 +90,10 @@ function g:grid_redraw()
   self:led_cell_ports()
   self:led_cell_analysis()
   self:led_paste_animation()
-  self:refresh()
+  self.device:refresh()
 end
 
-function g.key(x, y, z)
-  fn.break_splash(true)
-  if z == 1 then
-    g.counter[x][y] = clock.run(g.grid_long_press, g, x, y)
-  elseif z == 0 then -- otherwise, if a grid key is released...
-    if g.counter[x][y] then -- and the long press is still waiting...
-      clock.cancel(g.counter[x][y]) -- then cancel the long press clock,
-      g:short_press(x,y) -- and execute a short press instead.
-    end
-    -- release the copy
-    if g.first_in_x == x and g.first_in_y == y then
-      g.first_in_x = nil
-      g.first_in_y = nil
-      keeper.copied_cell = {}
-      g.is_copying = false
-      graphics:set_message("CLIPBOARD CLEARED")
-    end
-  end
-end
-
-
-function g:short_press(x, y)
+function _grid:short_press(x, y)
   if self.is_copying then
     local paste_over_cell = keeper:get_cell(fn.index(x, y))
     if paste_over_cell then
@@ -142,31 +139,31 @@ function g:short_press(x, y)
   fn.dirty_screen(true)
 end
 
-function g:grid_long_press(x, y)
+function _grid:grid_long_press(x, y)
   clock.sleep(.5)
-  if not self.is_copying then
+  if not _grid.is_copying then
     keeper:select_cell(x, y)
     graphics:top_message_cell_structure()
-    self.first_in_x = x
-    self.first_in_y = y
+    _grid.first_in_x = x
+    _grid.first_in_y = y
     keeper.copied_cell = fn.deep_copy(keeper.selected_cell)
-    self.is_copying = true
+    _grid.is_copying = true
     graphics:set_message("COPIED " .. keeper.selected_cell.structure_name)
   end
-  self.counter[x][y] = nil
+  _grid.counter[x][y] = nil
   fn.dirty_grid(true)
 end
 
-function g:led_signals()
+function _grid:led_signals()
   local level = page.active_page == 3 and menu.selected_item == 1 and 10 or 2
   for k,v in pairs(keeper.signals) do
     if v.generation <= counters.music_generation then
-      self:led(v.x, v.y, level)
+      self.device:led(v.x, v.y, level)
     end
   end
 end
 
-function g:register_signal_death_at(x, y)
+function _grid:register_signal_death_at(x, y)
   local signal = {}
   signal.x = x
   signal.y = y
@@ -175,18 +172,18 @@ function g:register_signal_death_at(x, y)
   table.insert(self.signal_deaths, signal)
 end
 
-function g:led_signal_deaths()
+function _grid:led_signal_deaths()
   for k,v in pairs(self.signal_deaths) do
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_deaths, k)
     else
-      self:led(v.x, v.y, v.level)
+      self.device:led(v.x, v.y, v.level)
       v.level = v.level - 1
     end
   end
 end
 
-function g:register_flicker_at(x, y)
+function _grid:register_flicker_at(x, y)
   local flicker = {}
   flicker.x = x
   flicker.y = y
@@ -195,18 +192,18 @@ function g:register_flicker_at(x, y)
   table.insert(self.flickers, flicker)
 end
 
-function g:led_flickers()
+function _grid:led_flickers()
   for k, v in pairs(self.flickers) do
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.flickers, k)
     else
-      self:led(v.x, v.y, v.level)
+      self.device:led(v.x, v.y, v.level)
       v.level = v.level - 1
     end
   end
 end
 
-function g:register_collision_at(x, y)
+function _grid:register_collision_at(x, y)
   local collision = {}
   collision.x = x
   collision.y = y
@@ -215,25 +212,25 @@ function g:register_collision_at(x, y)
   table.insert(self.signal_and_cell_collisions, collision)
 end
 
-function g:led_signal_and_cell_collision()
+function _grid:led_signal_and_cell_collision()
   for k,v in pairs(self.signal_and_cell_collisions) do
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_and_cell_collisions, k)
     else
-      self:led(v.x, v.y, v.level)
+      self.device:led(v.x, v.y, v.level)
       v.level = v.level - 1
     end
   end
 end
 
-function g:led_cells()
+function _grid:led_cells()
   for k,v in pairs(keeper.cells) do
-    self:led(v.x, v.y, 5)
+    self.device:led(v.x, v.y, 5)
   end
 end
 
--- note the led analysis is up above in a g:led_signals
-function g:led_cell_analysis()
+-- note the led analysis is up above in a _grid:led_signals
+function _grid:led_cell_analysis()
   if page.active_page == 3 then
     for k,v in pairs(keeper.cells) do
         if v.structure_name == menu.selected_item_string then
@@ -243,17 +240,17 @@ function g:led_cell_analysis()
   end
 end
 
-function g:led_selected_cell()
+function _grid:led_selected_cell()
   if keeper.is_cell_selected then
     self:highlight_cell(keeper.selected_cell)
   end
 end
 
-function g:highlight_cell(cell)
-  self:led(cell.x, cell.y, util.clamp(counters.grid_frame() % 15, 5, 15))
+function _grid:highlight_cell(cell)
+  self.device:led(cell.x, cell.y, util.clamp(counters.grid_frame() % 15, 5, 15))
 end
 
-function g:led_paste_animation()
+function _grid:led_paste_animation()
   if self.paste_counter == 0 then
     self.paste_counter = 15
     self.is_pasting = false
@@ -261,37 +258,37 @@ function g:led_paste_animation()
     self.paste_y = nil
   end
   if self.is_pasting then
-    self:led(self.paste_x, self.paste_y, self.paste_counter)
+    self.device:led(self.paste_x, self.paste_y, self.paste_counter)
     self.paste_counter = self.paste_counter - 1
   end
 end
 
-function g:led_cell_ports()
+function _grid:led_cell_ports()
   if not keeper.is_cell_selected or self.is_copying then return end
   local x = keeper.selected_cell_x
   local y = keeper.selected_cell_y
   local high = util.clamp(counters.grid_frame() % 15, 10, 15)
   local low = 2
   if fn.in_bounds(x, y - 1) then
-    self:led(x, y - 1, keeper.selected_cell:is_port_open("n") and high or low)
+    self.device:led(x, y - 1, keeper.selected_cell:is_port_open("n") and high or low)
   end
   if fn.in_bounds(x + 1, y) then
-    self:led(x + 1, y, keeper.selected_cell:is_port_open("e") and high or low)
+    self.device:led(x + 1, y, keeper.selected_cell:is_port_open("e") and high or low)
   end
   if fn.in_bounds(x, y + 1) then
-    self:led(x, y + 1, keeper.selected_cell:is_port_open("s") and high or low)
+    self.device:led(x, y + 1, keeper.selected_cell:is_port_open("s") and high or low)
   end
   if fn.in_bounds(x - 1 , y) then
-    self:led(x - 1, y, keeper.selected_cell:is_port_open("w") and high or low)
+    self.device:led(x - 1, y, keeper.selected_cell:is_port_open("w") and high or low)
   end
 end
 
-function g:led_leylines()
+function _grid:led_leylines()
   if not keeper.is_cell_selected then return end
-  if keeper.selected_cell:is_port_open("n") then g:draw_northern_leyline() end
-  if keeper.selected_cell:is_port_open("e") then g:draw_eastern_leyline() end
-  if keeper.selected_cell:is_port_open("s") then g:draw_southern_leyline() end
-  if keeper.selected_cell:is_port_open("w") then g:draw_western_leyline() end
+  if keeper.selected_cell:is_port_open("n") then self:draw_northern_leyline() end
+  if keeper.selected_cell:is_port_open("e") then self:draw_eastern_leyline() end
+  if keeper.selected_cell:is_port_open("s") then self:draw_southern_leyline() end
+  if keeper.selected_cell:is_port_open("w") then self:draw_western_leyline() end
 end
 
 
@@ -300,7 +297,7 @@ end
   way this could be made a bit more maintable would be to introduce a
   get_column_neighbors and get_row_neighbors, and then compare < and >
   afterwards instead of all in one go. ]]
-function g:draw_northern_leyline()
+function _grid:draw_northern_leyline()
   local neighbors, destination = {}, {}
   for k, cell in pairs(keeper.cells) do
     if cell.x == keeper.selected_cell.x and cell.id ~= keeper.selected_cell.id and cell.y < keeper.selected_cell.y then
@@ -309,7 +306,7 @@ function g:draw_northern_leyline()
   end
   destination["x"] = keeper.selected_cell.x
   destination["y"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.y) + 1 or 1
-  g:draw_leyline(
+  self:draw_leyline(
     keeper.selected_cell.x,
     keeper.selected_cell.y - 2, -- -1 for this cell & -1 for its open port
     destination.x,
@@ -317,7 +314,7 @@ function g:draw_northern_leyline()
   )
 end
 
-function g:draw_eastern_leyline()
+function _grid:draw_eastern_leyline()
   local neighbors, destination = {}, {}
   for k, cell in pairs(keeper.cells) do
     if cell.y == keeper.selected_cell.y and cell.id ~= keeper.selected_cell.id and cell.x > keeper.selected_cell.x then
@@ -326,7 +323,7 @@ function g:draw_eastern_leyline()
   end
   destination["x"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.x) - 1 or fn.grid_width()
   destination["y"] = keeper.selected_cell.y
-  g:draw_leyline(
+  self:draw_leyline(
     keeper.selected_cell.x + 2, -- +1 for this cell & +1 for its open port
     keeper.selected_cell.y,
     destination.x,
@@ -334,7 +331,7 @@ function g:draw_eastern_leyline()
   )
 end
 
-function g:draw_southern_leyline()
+function _grid:draw_southern_leyline()
   local neighbors, destination = {}, {}
   for k, cell in pairs(keeper.cells) do
     if cell.x == keeper.selected_cell.x and cell.id ~= keeper.selected_cell.id and cell.y > keeper.selected_cell.y then
@@ -343,7 +340,7 @@ function g:draw_southern_leyline()
   end
   destination["x"] = keeper.selected_cell.x
   destination["y"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.y) - 1 or fn.grid_height()
-  g:draw_leyline(
+  self:draw_leyline(
     keeper.selected_cell.x,
     keeper.selected_cell.y + 2, -- +1 for this cell & +1 for its open port
     destination.x,
@@ -351,7 +348,7 @@ function g:draw_southern_leyline()
   )
 end
 
-function g:draw_western_leyline()
+function _grid:draw_western_leyline()
   local neighbors, destination = {}, {}
   for k, cell in pairs(keeper.cells) do
     if cell.y == keeper.selected_cell.y and cell.id ~= keeper.selected_cell.id and cell.x < keeper.selected_cell.x then
@@ -360,7 +357,7 @@ function g:draw_western_leyline()
   end
   destination["x"] = (#neighbors ~= 0) and fn.nearest_value(neighbors, keeper.selected_cell.x) + 1 or 1
   destination["y"] = keeper.selected_cell.y
-  g:draw_leyline(
+  self:draw_leyline(
     keeper.selected_cell.x - 2, -- -1 for this cell & -1 for its open port
     keeper.selected_cell.y,
     destination.x,
@@ -368,14 +365,14 @@ function g:draw_western_leyline()
   )
 end
 
-function g:draw_leyline(start_x, start_y, end_x, end_y)
+function _grid:draw_leyline(start_x, start_y, end_x, end_y)
   if start_x == end_x then -- vertical
     for i = math.min(start_y, end_y), math.max(start_y, end_y) do
-      if fn.in_bounds(start_x, i) then self:led(start_x, i, 1) end
+      if fn.in_bounds(start_x, i) then self.device:led(start_x, i, 1) end
     end
   elseif start_y == end_y then -- horizontal
     for i = math.min(start_x, end_x), math.max(start_x, end_x) do
-      if fn.in_bounds(i, start_y) then self:led(i, start_y, 1) end
+      if fn.in_bounds(i, start_y) then self.device:led(i, start_y, 1) end
     end
   else
     print("Error: leylines must be perpendicular.")
@@ -383,16 +380,16 @@ function g:draw_leyline(start_x, start_y, end_x, end_y)
   fn.dirty_grid(true)
 end
 
-function g:led_territories()
+function _grid:led_territories()
   if not keeper.is_cell_selected or not keeper.selected_cell:has("TERRITORY") then return end
   local c = keeper.selected_cell:get_territory_coordinates()
   for x = c.x1, c.x2 do
     for y = c.y1, c.y2 do
       local l = math.ceil(util.linlin(0, 15, 0, 3, counters.grid_frame() % 15))
-      if fn.in_bounds(x, y) then self:led(x, y, l) end
+      if fn.in_bounds(x, y) then self.device:led(x, y, l) end
     end
   end
   fn.dirty_grid(true)
 end
 
-return g
+return _grid

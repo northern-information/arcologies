@@ -7,7 +7,7 @@
 --
 --
 -- ........................................
--- v1.1.15 "eternal september"
+-- v1.2.0 "arctangents & archangels"
 -- <3 @tyleretters
 -- nor.the-rn.info
 -- GNU GPL v3.0
@@ -20,10 +20,10 @@ function init()
   filesystem.init()
   parameters.init()
   fn.init()
-  m.init()
-  g.init()
-  c.init()
-  s.init()
+  _midi.init()
+  _grid.init()
+  _crow.init()
+  _softcut.init()
   sound.init()
   counters.init()
   glyphs.init()
@@ -43,11 +43,13 @@ function init()
   end
   music_clock_id = clock.run(counters.conductor)
   redraw_clock_id = clock.run(counters.redraw_clock)
-  grid_clock_id = clock.run(g.grid_redraw_clock)
+  grid_clock_id = clock.run(_grid.grid_redraw_clock)
+  arc_clock_id = clock.run(_arc.arc_redraw_clock)
   counters.ui:start()
   counters.grid:start()
   page:select(parameters.is_splash_screen_on and 0 or 1)
   init_done = true
+  _arc.init()
   structures:scan()
   if config.settings.dev_mode then dev:scene(config.settings.dev_scene) end
   redraw()
