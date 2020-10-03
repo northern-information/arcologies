@@ -434,8 +434,12 @@ function keeper:deselect_cell()
   self.selected_cell_id = ""
   self.selected_cell_x = ""
   self.selected_cell_y = ""
+  if page.titles[page.active_page] == "DESIGNER" then
+    menu:reset()
+  end
   fn.dirty_grid(true)
   fn.dirty_screen(true)
+  fn.dirty_arc(true)
 end
 
 function keeper:count_cells(name)

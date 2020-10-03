@@ -9,10 +9,18 @@ function menu:reset()
   self.show_all = true
   self.items = {}
   self.item_count = 0
-  self.selected_item = 1
+  self.selected_item = self:get_item_count_minimum()
   self.selected_item_string = ""
   self.offset = 0
   docs:set_active(false)
+end
+
+function menu:get_item_count_minimum()
+  if page.titles[page.active_page] == "DESIGNER" and not keeper.is_cell_selected then
+    return 0
+  else
+    return 1
+  end
 end
 
 function menu:render(bool)

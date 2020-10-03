@@ -29,7 +29,6 @@ function page:render()
   elseif self.active_page == 0 then graphics:splash()
   end
   fn.dirty_screen(true)
-  fn.dirty_arc(true)
   graphics:teardown()
 end
 
