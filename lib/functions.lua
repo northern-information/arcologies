@@ -281,6 +281,15 @@ function fn.table_find(t, element)
   return false
 end
 
+function fn.key_find(t, element)
+  for k, v in pairs(t) do
+    if k == element then
+      return true
+    end
+  end
+  return false
+end
+
 function fn.table_has(tab, val)
   for index, value in ipairs(tab) do
     if value == val then

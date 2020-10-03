@@ -12,6 +12,7 @@ function Cell:new(x, y, g)
   c.save_keys = {}
   c.menu_getters = {}
   c.menu_setters = {}
+  c.arc_styles = {}
   bearing_mixin.init(self)
   capacity_mixin.init(self)
   channel_mixin.init(self)
@@ -96,6 +97,10 @@ end
 
 function Cell:register_menu_getter(key, getter)
   self.menu_getters[key] = getter
+end
+
+function Cell:register_arc_style(args)
+  self.arc_styles[args.key] = args
 end
 
 function Cell:set_attribute_value(key, value)

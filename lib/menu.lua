@@ -103,12 +103,35 @@ function menu:get_selected_item()
   return self.selected_item
 end
 
+function menu:get_selected_item_string()
+  return self.selected_item_string
+end
+
 function menu:handle_scroll_bpm(d)
   if fn.is_clock_internal() then
     params:set("clock_tempo", params:get("clock_tempo") + d)
   else
     graphics:set_message("EXTERNAL CONTROL ON", counters.default_message_length)
   end
+end
+
+function menu:adaptor(lookup, x)
+ if keeper.is_cell_selected then
+    local c = keeper.selected_cell
+    local s = self:get_selected_item_string()
+    local match = fn.key_find(c.arc_styles, s)
+    if match then
+          if lookup == "style"        then return c.arc_styles[s].style
+      elseif lookup == "sensitivity"  then return c.arc_styles[s].sensitivity
+      elseif lookup == "min"          then return c.arc_styles[s].min
+      elseif lookup == "max"          then return c.arc_styles[s].max
+      elseif lookup == "value_getter" then return c.arc_styles[s].value_getter(c)
+      elseif lookup == "value_setter" then return c.arc_styles[s].value_setter(c, x)
+      elseif lookup == "menu_getter"  then return c.arc_styles[s].menu_getter(c)
+      elseif lookup == "menu_setter"  then return c.arc_styles[s].menu_setter(c, x)
+      end
+    end
+  end 
 end
 
 return menu

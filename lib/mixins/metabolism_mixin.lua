@@ -6,9 +6,22 @@ metabolism_mixin.init = function(self)
   self.setup_metabolism = function(self)
     self.metabolism_key = "METABOLISM"
     self.metabolism = 13
+    self.metabolism_min = 0
+    self.metabolism_max = 16
     self:register_save_key("metabolism")
     self:register_menu_getter(self.metabolism_key, self.metabolism_menu_getter)
     self:register_menu_setter(self.metabolism_key, self.metabolism_menu_setter)
+    self:register_arc_style({
+      key = self.metabolism_key,
+      style = "sweet_sixteen_centipede",
+      sensitivity = .05,
+      min = self.metabolism_min,
+      max = self.metabolism_max,
+      value_getter = self.get_metabolism,
+      value_setter = self.set_metabolism,
+      menu_setter = self.metabolism_menu_setter,
+      menu_getter = self.metabolism_menu_getter
+    })
   end
 
   self.get_metabolism = function(self)
@@ -16,7 +29,7 @@ metabolism_mixin.init = function(self)
   end
 
   self.set_metabolism = function(self, i)
-    self.metabolism = util.clamp(i, 0, 16)
+    self.metabolism = util.clamp(i, self.metabolism_min, self.metabolism_max)
     self.callback(self, "set_metabolism")
   end
 
