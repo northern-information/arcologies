@@ -23,7 +23,7 @@ function _arc.arc_redraw_clock()
       _arc:refresh_values()
       _arc:arc_redraw()
       _arc.device:refresh()
-      fn.dirty_arc(false)
+      -- fn.dirty_arc(false)
     end
     clock.sleep(1/30)
   end
@@ -35,10 +35,10 @@ function _arc:arc_redraw()
      local style = (enc.style == "variable" and enc.binding_id == "norns_e3") and menu:adaptor("style") or enc.style
         if style == "divided"         then self:draw_divided_segment(enc)
     elseif style == "scaled"          then self:draw_scaled_segment(enc)
-    elseif style == "standby"         then print("todo standby")
     elseif style == "glowing_segment" then self:draw_glowing_segment(enc)
+    elseif style == "glowing_divided" then self:draw_glowing_divided(enc)
     elseif style == "sweet_sixteen"   then self:draw_sweet_sixteen(enc)
-    elseif style == "glowing_boolean" then print("todo glowing boolean")
+    elseif style == "glowing_boolean" then self:draw_glowing_boolean(enc)
     elseif style == "standby"         then print("todo standby")
     end
   end
@@ -146,7 +146,6 @@ end
 function _arc:draw_glowing_segment(enc)
   self:clear_ring(enc.enc_id)
   local segment_size = 64 / enc.max_getter()
-  local segments = {}
   for i = 1, enc.value_getter() do
     local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
     local from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
@@ -154,6 +153,52 @@ function _arc:draw_glowing_segment(enc)
     for x = from, to do
       _arc.device:led(enc.enc_id, x, math.random(10, 15))
     end
+  end
+end
+
+function _arc:draw_glowing_boolean(enc)
+  self:clear_ring(enc.enc_id)
+  local ring = {}
+  for i = 1, 64 do
+    if enc.value_getter() == 0 and i > 33 then
+      ring[i] = math.random(2, 5)
+    elseif enc.value_getter() == 1 and i <= 33 then
+      ring[i] = math.random(5, 15)
+    else
+      ring[i] = 0
+    end
+  end
+  local shift_amount = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
+  ring = fn.shift_table(ring, shift_amount)
+  for k, v in pairs(ring) do    
+    _arc.device:led(enc.enc_id, k, v)
+  end
+end
+
+function fn.shift_table(t, shift_amount)
+  for i = 1, shift_amount do
+    local last_value = t[#t]
+    table.insert(t, 1, last_value)
+    table.remove(t, #t)
+  end
+  return t
+end
+
+function _arc:draw_glowing_divided(enc)
+  self:clear_ring(enc.enc_id)
+  local segment_size = enc.style_max / enc.max()
+  local segments = {}
+  for i = 1, enc.max() do
+    local from_raw = enc.style_offset() + (segment_size * (i - 1))
+    local from = self:cycle_degrees(from_raw)
+    local to =  self:cycle_degrees(from_raw + segment_size)
+    segments[i] = {}
+    segments[i].from = self:degs_to_rads(from, enc.style_snap)
+    segments[i].to = self:degs_to_rads(to, enc.style_snap)
+  end
+  segment = self:validate_segment(segments[self:map_to_segment(enc)])
+  if segment.valid then
+    _arc.device:segment(enc.enc_id, segment.from, segment.to, math.random(10, 15))
   end
 end
 
@@ -311,7 +356,7 @@ function _arc:register_all_available_bindings()
     value_getter       = function()  return menu:get_selected_item() end,
     min_getter         = function()  return menu:get_item_count_minimum() end,
     max_getter         = function()  return menu:get_item_count() end,
-    sensitivity_getter = function()  return .01 end,
+    sensitivity_getter = function()  return .02 end,
     offset_getter      = function()  return 240 end
 
   })

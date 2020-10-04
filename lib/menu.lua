@@ -72,7 +72,7 @@ function menu:scroll_value(d)
     elseif s == "BPM"         then self:handle_scroll_bpm(d, "delta")
     elseif s == "LENGTH"      then sound:cycle_length(d)
     elseif s == "ROOT"        then sound:cycle_root(d)
-    elseif s == "SCALE"       then sound:set_scale(sound.scale + d)
+    elseif s == "SCALE"       then sound:cycle_scale(d)
     elseif s == "TRANSPOSE"   then sound:cycle_transpose(d)
     end
   -- cell designer
@@ -172,13 +172,13 @@ function menu:register_arc_styles()
   }
   self.arc_styles["PLAYING"] = {
     key = "PLAYING",
-    style = "glowing_boolean",
-    sensitivity = .5,
-    min = 0,
-    max = 1,
-    offset = 0,
-    value_getter = function() return counters:get_playback() end,
-    value_setter = function(args) return counters:set_playback(args) end
+    style = self.arc_styles["READY"].style,
+    sensitivity = self.arc_styles["READY"].sensitivity,
+    min = self.arc_styles["READY"].min,
+    max = self.arc_styles["READY"].max,
+    offset = self.arc_styles["READY"].offset,
+    value_getter = self.arc_styles["READY"].value_getter,
+    value_setter = self.arc_styles["READY"].value_setter
   }
   self.arc_styles["BPM"] = {
     key = "BPM",
@@ -202,23 +202,23 @@ function menu:register_arc_styles()
   }
   self.arc_styles["ROOT"] = {
     key = "ROOT",
-    style = "glowing_segment",                                      -- todo infinite scroll
+    style = "glowing_divided",                                      -- todo infinite scroll
     sensitivity = .05,
     min = 1,
     max = 12,
     offset = 0,
     value_getter = function() return sound:get_root() end,
-    value_setter = function(args) sound:set_root(args) end          -- todo cycle
+    value_setter = function(args) sound:cycle_root(args) end          -- todo cycle
   }
   self.arc_styles["SCALE"] = {
     key = "SCALE",
-    style = "glowing_segment",
+    style = "glowing_divided",
     sensitivity = .05,
     min = 1,
     max = #sound.scale_names,
     offset = 0,
     value_getter = function() return sound:get_scale() end,
-    value_setter = function(args) sound:set_scale(args) end        -- todo cycle?
+    value_setter = function(args) sound:cycle_scale(args) end
   }
   self.arc_styles["TRANSPOSE"] = {
     key = "TRANSPOSE",

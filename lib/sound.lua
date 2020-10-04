@@ -29,6 +29,10 @@ function sound:transpose_note(note)
   return note + (self.transpose * 12)
 end
 
+function sound:cycle_scale(i)
+  self:set_scale(fn.cycle(self.scale + i, 1, #self.scale_names))
+end
+
 function sound:set_scale(i)
   self.scale = util.clamp(i, 1, #self.scale_names)
   self.scale_name = sound.scale_names[sound.scale]
