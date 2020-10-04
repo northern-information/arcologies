@@ -31,22 +31,22 @@ end
 
 function _arc:arc_redraw()
   for n = 1, 4 do
-    local enc = self.encs[n]
-    if enc.style == "divided" then
-      self:draw_segment(enc)
-    elseif enc.style == "scaled" then
-      self:draw_segment(enc)
-    elseif enc.style == "variable_segment" then
-        self:draw_variable_segment(enc.enc_id, enc.value_getter(), enc.max_getter(), 33)
-    elseif enc.style == "variable" and enc.binding_id == "norns_e3" then
-      if menu:adaptor("style") == "variable_sweet_sixteen" then
-        self:draw_sweet_sixteen(enc.enc_id, menu:adaptor("value_getter"), 33)
-      elseif menu:adaptor("style") == "variable_segment" then
-        self:draw_variable_segment(enc.enc_id, menu:adaptor("value_getter"), menu:adaptor("max"), 33)
-      elseif menu:adaptor("style") == "variable_boolean" then
-        print("todo variable boolean")
-      end
+     local enc = self.encs[n]
+     local style = (enc.style == "variable" and enc.binding_id == "norns_e3") and menu:adaptor("style") or enc.style
+        if style == "divided"         then self:draw_divided_segment(enc)
+    elseif style == "scaled"          then self:draw_scaled_segment(enc)
+    elseif style == "standby"         then print("todo standby")
+    elseif style == "glowing_segment" then self:draw_glowing_segment(enc)
+    elseif style == "sweet_sixteen"   then self:draw_sweet_sixteen(enc)
+    elseif style == "glowing_boolean" then print("todo glowing boolean")
+    elseif style == "standby"         then print("todo standby")
     end
+  end
+end
+
+function _arc:draw_segment(n, segment)
+  if segment.valid then
+    _arc.device:segment(n, segment.from, segment.to, 15)
   end
 end
 
@@ -89,13 +89,12 @@ print(enc.enc_id, enc.value, enc.sensitivity(), delta)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min(), enc.max())
     enc.value_setter(_arc:map_to_segment(enc))
   else
-    if enc.wrap then
+    if enc.style_wrap then
       value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min(), enc.max())
     else
       value = enc.value + (enc.sensitivity() * delta)
     end
     self.encs[enc.enc_id].value = util.clamp(value, enc.min(), enc.max())
-    -- actually update the value
     enc.value_setter(_arc:map_to_segment(enc))
   end
 end
@@ -130,63 +129,57 @@ function _arc:clear_ring(n)
   end
 end
 
-function _arc:draw_segment(enc)
-  local segment = enc.style_method(enc)
-  if segment.valid then
-    _arc.device:segment(enc.enc_id, segment.from, segment.to, 15)
-  end
-end
-
-function _arc:draw_sweet_sixteen(n, value, offset)
-  self:clear_ring(n)
-  for i = 1, value do
-    local from =  fn.round(fn.over_cycle(offset + (4 * (i - 1)), 1, 64))
+function _arc:draw_sweet_sixteen(enc)
+  self:clear_ring(enc.enc_id)
+  for i = 1, enc.value do
+    local convert_to_led = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
+    local from =  fn.round(fn.over_cycle(convert_to_led + (4 * (i - 1)), 1, 64))
     local to = fn.round(from + 3)
     for x = from, to do
       local l = x == to and 3 or math.random(10, 15)
-      _arc.device:led(n, x, l)
+      _arc.device:led(enc.enc_id, x, l)
     end
   end
 end
 
-function _arc:draw_variable_segment(n, value, total_chunks, offset)
-  self:clear_ring(n)
-  local segment_size = 64 / total_chunks
+
+function _arc:draw_glowing_segment(enc)
+  self:clear_ring(enc.enc_id)
+  local segment_size = 64 / enc.max_getter()
   local segments = {}
-  for i = 1, value do    
-    local from = fn.round(fn.over_cycle(offset + (segment_size * (i - 1)), 1, 64))
+  for i = 1, enc.value_getter() do
+    local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
+    local from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
     local to = fn.round(from + segment_size)
     for x = from, to do
-      _arc.device:led(n, x, math.random(10, 15))
+      _arc.device:led(enc.enc_id, x, math.random(10, 15))
     end
   end
 end
 
-
--- for chunks
-function _arc:get_divided_ring_segment(enc)
-  local segment_size = enc.style_args.max / enc.style_args.divisor()
+function _arc:draw_divided_segment(enc)
+  self:clear_ring(enc.enc_id)
+  local segment_size = enc.style_max / enc.max()
   local segments = {}
-  for i = 1, enc.style_args.divisor() do
-    local from_raw = enc.style_args.offset + (segment_size * (i - 1))
+  for i = 1, enc.max() do
+    local from_raw = enc.style_offset() + (segment_size * (i - 1))
     local from = self:cycle_degrees(from_raw)
     local to =  self:cycle_degrees(from_raw + segment_size)
     segments[i] = {}
-    segments[i].from = self:degs_to_rads(from, enc.style_args.snap)
-    segments[i].to = self:degs_to_rads(to, enc.style_args.snap)
+    segments[i].from = self:degs_to_rads(from, enc.style_snap)
+    segments[i].to = self:degs_to_rads(to, enc.style_snap)
   end
-  return self:validate_segment(segments[self:map_to_segment(enc)])
+  self:draw_segment(enc.enc_id, self:validate_segment(segments[self:map_to_segment(enc)]))
 end
 
--- for creating a linear scale
-function _arc:get_scaled_ring_segment(enc)
-  local max = (enc.style_args.max == 360) and 359.9 or enc.style_args.max -- compensate for circles, 0 == 360, etc.
-  local from = enc.style_args.offset
-  local to = self:cycle_degrees(util.linlin(0, 360, 0, enc.style_args.max, self:scale_to_degrees(enc)) + enc.style_args.offset)
-  local segments = {}
-  segments.from = self:degs_to_rads(from, enc.style_args.snap)
-  segments.to = self:degs_to_rads(to, enc.style_args.snap)
-  return self:validate_segment(segments)
+function _arc:draw_scaled_segment(enc)
+  local max = (enc.style_max == 360) and 359.9 or enc.style_max -- compensate for circles, 0 == 360, etc.
+  local from = enc.style_offset()
+  local to = self:cycle_degrees(util.linlin(0, 360, 0, enc.style_max, self:scale_to_degrees(enc)) + enc.style_offset())
+  local segment = {}
+  segment.from = self:degs_to_rads(from, enc.style_snap)
+  segment.to = self:degs_to_rads(to, enc.style_snap)
+  self:draw_segment(enc.enc_id, self:validate_segment(segment))
 end
 
 -- guard against race conditions
@@ -200,15 +193,15 @@ function _arc:validate_segment(segment)
 end
 
 function _arc:map_to_segment(enc)
-  local segment_size = 360 / enc.style_args.divisor()
+  local segment_size = 360 / enc.max()
   local test = util.linlin(enc.min(), enc.max(), 0, 360, enc.value)
   if enc.value == 0 and enc.min() == 0 then
     return 0
   elseif test == 360 then -- compensate for circles, 0 == 360, etc.
-    return enc.style_args.divisor()
+    return enc.max()
   else
     local match = 1
-    for i = 1, enc.style_args.divisor() do
+    for i = 1, enc.max() do
         if (test >= segment_size * (i - 1)) and (test < segment_size * i) then
         match = i
       end
@@ -266,21 +259,23 @@ end
 -- initialize an encoder to a specific binding
 function _arc:init_enc(args)
   self.encs[args.enc_id] = {
-    enc_id =         args.enc_id,
-    binding_id =     args.binding_id,
-    value =          args.value,
-    min =            args.min,
-    max =            args.max,
-    value_getter =   args.value_getter,
-    value_setter =   args.value_setter,
-    min_getter =     args.min_getter,
-    max_getter =     args.max_getter,
-    sensitivity =    args.sensitivity,
-    wrap =           args.wrap,
-    style =          args.style,
-    style_method =   args.style_method,
-    style_args =     args.style_args,
-    takeover =       false,
+    enc_id         = args.enc_id,
+    binding_id     = args.binding_id,
+    value          = args.value,
+    min            = args.min,
+    max            = args.max,
+    value_getter   = args.value_getter,
+    value_setter   = args.value_setter,
+    min_getter     = args.min_getter,
+    max_getter     = args.max_getter,
+    sensitivity    = args.sensitivity,
+    style_wrap     = args.style_wrap,
+    style          = args.style,
+    style_wrap     = args.style_wrap,
+    style_max      = args.style_max,
+    style_offset   = args.style_offset,
+    style_snap     = args.style_snap,
+    takeover       = false,
     takeover_clock = nil
   }
 end
@@ -288,168 +283,99 @@ end
 -- make available a binding
 function _arc:register_binding(args)
   self.bindings[args.binding_id] = {
-    binding_id = args.binding_id,
-    value_getter = args.value_getter,
-    value_setter = args.value_setter,
-    min_getter = args.min_getter,
-    max_getter = args.max_getter,
-    sensitivity_getter = args.sensitivity_getter
+    binding_id         = args.binding_id,
+    value_getter       = args.value_getter,
+    value_setter       = args.value_setter,
+    min_getter         = args.min_getter,
+    max_getter         = args.max_getter,
+    sensitivity_getter = args.sensitivity_getter,
+    offset_getter      = args.offset_getter
   }
 end
 
 -- configure each available binding
 function _arc:register_all_available_bindings()
   _arc:register_binding({
-    binding_id =   "norns_e1",
-    value_setter = function(x) page:select(x) end,
-    value_getter = function()  return page.active_page end,
-    min_getter =   function()  return 1 end,
-    max_getter =   function()  return page:get_page_count() end
+    binding_id         = "norns_e1",
+    value_setter       = function(x) page:select(x) end,
+    value_getter       = function()  return page.active_page end,
+    min_getter         = function()  return 1 end,
+    max_getter         = function()  return page:get_page_count() end,
+    sensitivity_getter = function()  return .05 end,
+    offset_getter      = function()  return 240 end
+
   })
   _arc:register_binding({
-    binding_id =   "norns_e2",
-    value_setter = function(x) menu:select_item(x) end,
-    value_getter = function()  return menu:get_selected_item() end,
-    min_getter =   function()  return menu:get_item_count_minimum() end,
-    max_getter =   function()  return menu:get_item_count() end
+    binding_id         = "norns_e2",
+    value_setter       = function(x) menu:select_item(x) end,
+    value_getter       = function()  return menu:get_selected_item() end,
+    min_getter         = function()  return menu:get_item_count_minimum() end,
+    max_getter         = function()  return menu:get_item_count() end,
+    sensitivity_getter = function()  return .01 end,
+    offset_getter      = function()  return 240 end
+
   })
   _arc:register_binding({
-    binding_id =         "norns_e3",
-    value_setter =       function(x) menu:adaptor("value_setter", x) end,
-    value_getter =       function() return menu:adaptor("value_getter") end,
-    min_getter =         function() return menu:adaptor("min") end,
-    max_getter =         function() return menu:adaptor("max") end,
-    sensitivity_getter = function() return menu:adaptor("sensitivity") end
+    binding_id         = "norns_e3",
+    value_setter       = function(x) menu:adaptor("value_setter", x) end,
+    value_getter       = function()  return menu:adaptor("value_getter") end,
+    min_getter         = function()  return menu:adaptor("min") end,
+    max_getter         = function()  return menu:adaptor("max") end,
+    sensitivity_getter = function()  return menu:adaptor("sensitivity") end,
+    offset_getter      = function()  return menu:adaptor("offset") end
   })
-  -- _arc:register_binding({
-  --   binding_id = "todo_browse_cells",
-  --   value_getter = function() return print("browse cells todo") end,
-  --   value_setter = function(x) print("BROWSE CELLS TODO", x) end,
-  --   min_getter = function() return print("browse cells todo") end,
-  --   max_getter = function() return print("browse cells todo") end
-  -- })
-  -- _arc:register_binding({
-  --   binding_id = "todo_crypt_directory",
-  --   value_getter = function() return print("crypt directory todo") end,
-  --   value_setter = function(x) print("CRYPT DIRECTORY TODO", x) end,
-  --   min_getter = function() return print("crypt directory todo") end,
-  --   max_getter = function() return print("crypt directory todo") end
-  -- })
-  -- _arc:register_binding({
-  --   binding_id = "todo_danger_zone_clock_sync",
-  --   value_getter = function() return print("danger zone clock sync todo") end,
-  --   value_setter = function(x) print("DANGER ZONE CLOCK SYNC TODO", x) end,
-  --   min_getter = function() return print("danger zone clock sync todo") end,
-  --   max_getter = function() return print("danger zone clock sync todo") end
-  -- })
   _arc:register_binding({
-    binding_id = "bpm",
-    value_getter = function() return params:get("clock_tempo") end,
-    value_setter = function(args) menu:handle_scroll_bpm(args, "absolute") end,
-    min_getter = function() return 1 end,
-    max_getter = function() return 300 end
+    binding_id         = "bpm",
+    value_getter       = menu.arc_styles.BPM.value_getter,
+    value_setter       = menu.arc_styles.BPM.value_setter,
+    min_getter         = function() return menu.arc_styles.BPM.min end,
+    max_getter         = function() return menu.arc_styles.BPM.max end,
+    sensitivity_getter = function() return menu.arc_styles.BPM.sensitivity end,
+    offset_getter      = function() return menu.arc_styles.BPM.offset end
   })
-  -- _arc:register_binding({
-  --   binding_id = "todo_transpose",
-  --   value_getter = function() return print("transpose todo") end,
-  --   value_setter = function(x) print("TRANSPOSE TODO", x) end,
-  --   min_getter = function() return print("transpose todo") end,
-  --   max_getter = function() return print("transpose todo") end
-  -- })
 end
 
 function _arc:bind(n, binding_id)
   if init_done ~= true then return end -- the rest of arcologies needs to load before _arc.lua
-  if binding_id == "norns_e1" then
-    self:init_enc({
-      enc_id =       n,
-      binding_id =   binding_id,
-      value =        1,
-      min =          self.bindings[binding_id].min_getter, 
-      max =          self.bindings[binding_id].max_getter, 
-      value_getter = self.bindings[binding_id].value_getter, 
-      value_setter = self.bindings[binding_id].value_setter, 
-      min_getter =   self.bindings[binding_id].min_getter, 
-      max_getter =   self.bindings[binding_id].max_getter, 
-      sensitivity =  function() return .01 end, 
-      wrap =         false,
-      style =        "divided", 
-      style_method = function(x) return self:get_divided_ring_segment(x) end,
-      style_args = {
-        max =     240, 
-        offset =  240,
-        divisor = self.bindings[binding_id].max_getter,
-        snap =    true
-      }
-    })
-  elseif binding_id == "norns_e2" then
-    self:init_enc({
-      enc_id =       n,
-      binding_id =   binding_id,
-      value =        1,
-      min =          self.bindings[binding_id].min_getter, 
-      max =          self.bindings[binding_id].max_getter, 
-      value_getter = self.bindings[binding_id].value_getter, 
-      value_setter = self.bindings[binding_id].value_setter, 
-      min_getter =   self.bindings[binding_id].min_getter, 
-      max_getter =   self.bindings[binding_id].max_getter,
-      sensitivity =  function() return .05 end, 
-      wrap =         false,
-      style =        "divided",
-      style_method = function(x) return self:get_divided_ring_segment(x) end,
-      style_args = {
-        max =     240, 
-        offset =  240,
-        divisor = self.bindings[binding_id].max_getter,
-        snap =    true
-      }
-    })
+  local match = false
+  local b = {
+    enc_id        = n,
+    binding_id    = binding_id,
+    value         = 0,
+    min           = self.bindings[binding_id].min_getter,
+    max           = self.bindings[binding_id].max_getter,
+    value_getter  = self.bindings[binding_id].value_getter,
+    value_setter  = self.bindings[binding_id].value_setter,
+    min_getter    = self.bindings[binding_id].min_getter,
+    max_getter    = self.bindings[binding_id].max_getter,
+    sensitivity   = self.bindings[binding_id].sensitivity_getter,
+    style         = "divided",
+    style_offset  = self.bindings[binding_id].offset_getter,
+    style_wrap    = false,
+    style_max     = 360,
+    style_snap    = false
+  }
+
+  if binding_id == "norns_e1" or binding_id == "norns_e2" then
+    match = true
+    b["value"]        = 1
+    b["style_max"]    = 240
+    b["style_snap"]   = true
+
   elseif binding_id == "norns_e3" then
-    self:init_enc({
-      enc_id =       n,
-      binding_id =   binding_id,
-      value =        0,
-      min =          self.bindings[binding_id].min_getter, 
-      max =          self.bindings[binding_id].max_getter, 
-      value_getter = self.bindings[binding_id].value_getter, 
-      value_setter = self.bindings[binding_id].value_setter, 
-      min_getter =   self.bindings[binding_id].min_getter, 
-      max_getter =   self.bindings[binding_id].max_getter, 
-      sensitivity =  self.bindings[binding_id].sensitivity_getter, 
-      wrap =         false,
-      style =        "variable",
-      style_method = function(x) return end,
-      style_args = {
-        max =     360, 
-        offset =  0,
-        divisor = self.bindings[binding_id].max_getter,
-        snap =    false
-      }
-    })
+    match = true
+    b["style"] = "variable"
+
   elseif binding_id == "bpm" then
-    self:init_enc({
-      enc_id =       n,
-      binding_id =   binding_id,
-      value =        0,
-      min =          self.bindings[binding_id].min_getter, 
-      max =          self.bindings[binding_id].max_getter, 
-      value_getter = self.bindings[binding_id].value_getter, 
-      value_setter = self.bindings[binding_id].value_setter, 
-      min_getter =   self.bindings[binding_id].min_getter, 
-      max_getter =   self.bindings[binding_id].max_getter, 
-      sensitivity =  function() return .5 end, 
-      wrap =         false,
-      style =        "variable_segment",
-      style_method = function(x) return end,
-      style_args = {
-        max =     360, 
-        offset =  0,
-        divisor = self.bindings[binding_id].max_getter,
-        snap =    false
-      }
-    })
+    match = true
+    b["style"] = menu.arc_styles.BPM.style
+
   end
-  fn.dirty_arc(true)
+  
+  if match then
+    self:init_enc(b)
+    fn.dirty_arc(true)
+  end
 end
 
 --[[

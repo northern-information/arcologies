@@ -135,23 +135,25 @@ function menu:adaptor(lookup, args)
     local c = keeper.selected_cell
     local match = fn.key_find(c.arc_styles, s)
     if match then
-          if lookup == "style"        then return c.arc_styles[s].style
-      elseif lookup == "sensitivity"  then return c.arc_styles[s].sensitivity
-      elseif lookup == "min"          then return c.arc_styles[s].min
-      elseif lookup == "max"          then return c.arc_styles[s].max
-      elseif lookup == "value_getter" then return c.arc_styles[s].value_getter(c)
-      elseif lookup == "value_setter" then return c.arc_styles[s].value_setter(c, args)
+          if lookup == "style"         then return c.arc_styles[s].style
+      elseif lookup == "sensitivity"   then return c.arc_styles[s].sensitivity
+      elseif lookup == "min"           then return c.arc_styles[s].min
+      elseif lookup == "max"           then return c.arc_styles[s].max
+      elseif lookup == "offset"        then return c.arc_styles[s].offset
+      elseif lookup == "value_getter"  then return c.arc_styles[s].value_getter(c)
+      elseif lookup == "value_setter"  then return c.arc_styles[s].value_setter(c, args)
       end
     end
   else
     local match = fn.key_find(self.arc_styles, s)
     if match then
-          if lookup == "style"        then return self.arc_styles[s].style
-      elseif lookup == "sensitivity"  then return self.arc_styles[s].sensitivity
-      elseif lookup == "min"          then return self.arc_styles[s].min
-      elseif lookup == "max"          then return self.arc_styles[s].max
-      elseif lookup == "value_getter" then return self.arc_styles[s].value_getter()
-      elseif lookup == "value_setter" then return self.arc_styles[s].value_setter(args)
+          if lookup == "style"         then return self.arc_styles[s].style
+      elseif lookup == "sensitivity"   then return self.arc_styles[s].sensitivity
+      elseif lookup == "min"           then return self.arc_styles[s].min
+      elseif lookup == "max"           then return self.arc_styles[s].max
+      elseif lookup == "offset"        then return self.arc_styles[s].offset
+      elseif lookup == "value_getter"  then return self.arc_styles[s].value_getter()
+      elseif lookup == "value_setter"  then return self.arc_styles[s].value_setter(args)
       end
     end
   end
@@ -160,73 +162,81 @@ end
 function menu:register_arc_styles()
   self.arc_styles["READY"] = {
     key = "READY",
-    style = "variable_boolean",
+    style = "glowing_boolean",
     sensitivity = .5,
     min = 0,
     max = 1,
+    offset = 0,
     value_getter = function() return counters:get_playback() end,
     value_setter = function(args) return counters:set_playback(args) end
   }
   self.arc_styles["PLAYING"] = {
     key = "PLAYING",
-    style = "variable_boolean",
+    style = "glowing_boolean",
     sensitivity = .5,
     min = 0,
     max = 1,
+    offset = 0,
     value_getter = function() return counters:get_playback() end,
     value_setter = function(args) return counters:set_playback(args) end
   }
   self.arc_styles["BPM"] = {
     key = "BPM",
-    style = "variable_segment",
+    style = "glowing_segment",
     sensitivity = .5,
     min = 1,
     max = 300,
+    offset = 180,
     value_getter = function() return params:get("clock_tempo") end,
     value_setter = function(args) menu:handle_scroll_bpm(args, "absolute") end
   }
   self.arc_styles["LENGTH"] = {
     key = "LENGTH",
-    style = "variable_sweet_sixteen",
+    style = "sweet_sixteen",
     sensitivity = .05,
     min = 1,
     max = 16,
+    offset = 180,
     value_getter = function() return sound:get_length() end,
     value_setter = function(args) sound:set_length(args) end
   }
   self.arc_styles["ROOT"] = {
     key = "ROOT",
-    style = "variable_segment",                                      -- todo infinite scroll
+    style = "glowing_segment",                                      -- todo infinite scroll
     sensitivity = .05,
     min = 1,
     max = 12,
+    offset = 0,
     value_getter = function() return sound:get_root() end,
     value_setter = function(args) sound:set_root(args) end          -- todo cycle
   }
   self.arc_styles["SCALE"] = {
     key = "SCALE",
-    style = "variable_segment",
+    style = "glowing_segment",
     sensitivity = .05,
     min = 1,
     max = #sound.scale_names,
+    offset = 0,
     value_getter = function() return sound:get_scale() end,
     value_setter = function(args) sound:set_scale(args) end        -- todo cycle?
   }
   self.arc_styles["TRANSPOSE"] = {
     key = "TRANSPOSE",
-    style = "variable_segment",
+    style = "glowing_segment",
     sensitivity = .05,
     min = -6,                                                     -- todo support negative min
     max = 6,
+    offset = 0,
     value_getter = function() return sound:get_transpose() end,
     value_setter = function(args) sound:set_transpose(args) end
   }
   self.arc_styles["DOCS"] = {
     key = "DOCS",
-    style = "variable_standby",                                   -- todo standby
+    style = "standby",                                   -- todo standby
     sensitivity = 0,
     min = 0,
     max = 0,
+    offset = 0,
     value_getter = function() return end,
     value_setter = function(args) end
   }
