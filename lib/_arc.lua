@@ -13,7 +13,6 @@ function _arc.init()
   for n = 1, 4 do 
     _arc:bind(n, config.arc_bindings[params:get("arc_encoder_" .. n)].id)
   end
-  print("enc 4 not refreshed")
 
   fn.dirty_arc(true)
 end
@@ -37,11 +36,15 @@ function _arc:arc_redraw()
       self:draw_segment(enc)
     elseif enc.style == "scaled" then
       self:draw_segment(enc)
+    elseif enc.style == "variable_segment" then
+        self:draw_variable_segment(enc.enc_id, enc.value_getter(), enc.max_getter(), 33)
     elseif enc.style == "variable" and enc.binding_id == "norns_e3" then
-      if menu:adaptor("style") == "sweet_sixteen_centipede" then
-        self:draw_sweet_sixteen_centipede(enc.enc_id, menu:adaptor("value_getter"), 33)
+      if menu:adaptor("style") == "variable_sweet_sixteen" then
+        self:draw_sweet_sixteen(enc.enc_id, menu:adaptor("value_getter"), 33)
       elseif menu:adaptor("style") == "variable_segment" then
         self:draw_variable_segment(enc.enc_id, menu:adaptor("value_getter"), menu:adaptor("max"), 33)
+      elseif menu:adaptor("style") == "variable_boolean" then
+        print("todo variable boolean")
       end
     end
   end
@@ -81,6 +84,7 @@ end
 function _arc:run_delta(enc, delta)
   local value = 0
   if enc.style == "variable" then
+print(enc.enc_id, enc.value, enc.sensitivity(), delta)
     value = enc.value + (enc.sensitivity() * delta)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min(), enc.max())
     enc.value_setter(_arc:map_to_segment(enc))
@@ -102,7 +106,7 @@ function _arc.enc_wait(n)
 end
 
 function _arc:refresh_values()
-  for n = 1, 3 do
+  for n = 1, 4 do
     if not self.encs[n].takeover then
       self.encs[n].value = self.encs[n].value_getter()
     end
@@ -133,7 +137,7 @@ function _arc:draw_segment(enc)
   end
 end
 
-function _arc:draw_sweet_sixteen_centipede(n, value, offset)
+function _arc:draw_sweet_sixteen(n, value, offset)
   self:clear_ring(n)
   for i = 1, value do
     local from =  fn.round(fn.over_cycle(offset + (4 * (i - 1)), 1, 64))
@@ -338,13 +342,13 @@ function _arc:register_all_available_bindings()
   --   min_getter = function() return print("danger zone clock sync todo") end,
   --   max_getter = function() return print("danger zone clock sync todo") end
   -- })
-  -- _arc:register_binding({
-  --   binding_id = "todo_bpm",
-  --   value_getter = function() return print("bpm todo") end,
-  --   value_setter = function(x) print("BPM TODO", x) end,
-  --   min_getter = function() return print("bpm todo") end,
-  --   max_getter = function() return print("bpm todo") end
-  -- })
+  _arc:register_binding({
+    binding_id = "bpm",
+    value_getter = function() return params:get("clock_tempo") end,
+    value_setter = function(args) menu:handle_scroll_bpm(args, "absolute") end,
+    min_getter = function() return 1 end,
+    max_getter = function() return 300 end
+  })
   -- _arc:register_binding({
   --   binding_id = "todo_transpose",
   --   value_getter = function() return print("transpose todo") end,
@@ -422,6 +426,28 @@ function _arc:bind(n, binding_id)
         snap =    false
       }
     })
+  elseif binding_id == "bpm" then
+    self:init_enc({
+      enc_id =       n,
+      binding_id =   binding_id,
+      value =        0,
+      min =          self.bindings[binding_id].min_getter, 
+      max =          self.bindings[binding_id].max_getter, 
+      value_getter = self.bindings[binding_id].value_getter, 
+      value_setter = self.bindings[binding_id].value_setter, 
+      min_getter =   self.bindings[binding_id].min_getter, 
+      max_getter =   self.bindings[binding_id].max_getter, 
+      sensitivity =  function() return .5 end, 
+      wrap =         false,
+      style =        "variable_segment",
+      style_method = function(x) return end,
+      style_args = {
+        max =     360, 
+        offset =  0,
+        divisor = self.bindings[binding_id].max_getter,
+        snap =    false
+      }
+    })
   end
   fn.dirty_arc(true)
 end
@@ -429,7 +455,9 @@ end
 --[[
   if, for whatever reason, a user wants to bind the same value to multiple
   encoders we need to manually update these as the takeovers will
-  prevent their values from being updated
+  prevent their values from being updated.
+
+  todo - make sure this also works for norns_e3 situations (i.e. bpm is mapped to e4)
 ]]
 function _arc:refresh_duplicate_bindings(enc)
   local duplicates = {}

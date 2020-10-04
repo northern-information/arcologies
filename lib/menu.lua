@@ -2,6 +2,8 @@ menu = {}
 
 function menu.init()
   menu.threshold = 6
+  menu.arc_styles = {}
+  menu:register_arc_styles()
   menu:reset()
 end
 
@@ -16,7 +18,7 @@ function menu:reset()
 end
 
 function menu:get_item_count_minimum()
-  if page.titles[page.active_page] == "DESIGNER" and not keeper.is_cell_selected then
+  if page:get_page_title() == "DESIGNER" and not keeper.is_cell_selected then
     return 0
   else
     return 1
@@ -39,7 +41,7 @@ function menu:render(bool)
         graphics:mls(2, offset - 2, 40, offset - 2, 15)
       end
       -- all values come from the mixins
-      if page.active_page == 2 and render_values then
+      if page:get_page_title() == "DESIGNER" and render_values then
         graphics:text(56, offset, keeper.selected_cell:get_menu_value_by_attribute(item)(keeper.selected_cell), 0)
       end
     end
@@ -65,19 +67,19 @@ end
 function menu:scroll_value(d)
   local s = self.selected_item_string
   -- home
-  if page.active_page == 1 then
+  if page.active_page == 1 then -- note the name of page 1 can change
         if s == fn.playback() then counters:set_playback(d)
-    elseif s == "BPM"         then self:handle_scroll_bpm(d)
+    elseif s == "BPM"         then self:handle_scroll_bpm(d, "delta")
     elseif s == "LENGTH"      then sound:cycle_length(d)
     elseif s == "ROOT"        then sound:cycle_root(d)
     elseif s == "SCALE"       then sound:set_scale(sound.scale + d)
     elseif s == "TRANSPOSE"   then sound:cycle_transpose(d)
     end
   -- cell designer
-  elseif page.active_page == 2 then
+  elseif page:get_page_title() == "DESIGNER" then
     keeper.selected_cell:set_attribute_value(s, d)
   -- analysis
-  elseif page.active_page == 3 then
+  elseif page:get_page_title() == "ANALYSIS" then
     -- nothing to change here
   end
 end
@@ -115,18 +117,22 @@ function menu:get_selected_item_string()
   return self.selected_item_string
 end
 
-function menu:handle_scroll_bpm(d)
+function menu:handle_scroll_bpm(value, mode)
   if fn.is_clock_internal() then
-    params:set("clock_tempo", params:get("clock_tempo") + d)
+    if mode == "delta" then
+      params:set("clock_tempo", params:get("clock_tempo") + value)
+    elseif mode == "absolute" then
+      params:set("clock_tempo", value)
+    end
   else
     graphics:set_message("EXTERNAL CONTROL ON", counters.default_message_length)
   end
 end
 
-function menu:adaptor(lookup, x)
- if keeper.is_cell_selected then
+function menu:adaptor(lookup, args)
+  local s = self:get_selected_item_string()
+  if keeper.is_cell_selected and page:get_page_title() == "DESIGNER" then
     local c = keeper.selected_cell
-    local s = self:get_selected_item_string()
     local match = fn.key_find(c.arc_styles, s)
     if match then
           if lookup == "style"        then return c.arc_styles[s].style
@@ -134,12 +140,96 @@ function menu:adaptor(lookup, x)
       elseif lookup == "min"          then return c.arc_styles[s].min
       elseif lookup == "max"          then return c.arc_styles[s].max
       elseif lookup == "value_getter" then return c.arc_styles[s].value_getter(c)
-      elseif lookup == "value_setter" then return c.arc_styles[s].value_setter(c, x)
-      elseif lookup == "menu_getter"  then return c.arc_styles[s].menu_getter(c)
-      elseif lookup == "menu_setter"  then return c.arc_styles[s].menu_setter(c, x)
+      elseif lookup == "value_setter" then return c.arc_styles[s].value_setter(c, args)
       end
     end
-  end 
+  else
+    local match = fn.key_find(self.arc_styles, s)
+    if match then
+          if lookup == "style"        then return self.arc_styles[s].style
+      elseif lookup == "sensitivity"  then return self.arc_styles[s].sensitivity
+      elseif lookup == "min"          then return self.arc_styles[s].min
+      elseif lookup == "max"          then return self.arc_styles[s].max
+      elseif lookup == "value_getter" then return self.arc_styles[s].value_getter()
+      elseif lookup == "value_setter" then return self.arc_styles[s].value_setter(args)
+      end
+    end
+  end
+end
+
+function menu:register_arc_styles()
+  self.arc_styles["READY"] = {
+    key = "READY",
+    style = "variable_boolean",
+    sensitivity = .5,
+    min = 0,
+    max = 1,
+    value_getter = function() return counters:get_playback() end,
+    value_setter = function(args) return counters:set_playback(args) end
+  }
+  self.arc_styles["PLAYING"] = {
+    key = "PLAYING",
+    style = "variable_boolean",
+    sensitivity = .5,
+    min = 0,
+    max = 1,
+    value_getter = function() return counters:get_playback() end,
+    value_setter = function(args) return counters:set_playback(args) end
+  }
+  self.arc_styles["BPM"] = {
+    key = "BPM",
+    style = "variable_segment",
+    sensitivity = .5,
+    min = 1,
+    max = 300,
+    value_getter = function() return params:get("clock_tempo") end,
+    value_setter = function(args) menu:handle_scroll_bpm(args, "absolute") end
+  }
+  self.arc_styles["LENGTH"] = {
+    key = "LENGTH",
+    style = "variable_sweet_sixteen",
+    sensitivity = .05,
+    min = 1,
+    max = 16,
+    value_getter = function() return sound:get_length() end,
+    value_setter = function(args) sound:set_length(args) end
+  }
+  self.arc_styles["ROOT"] = {
+    key = "ROOT",
+    style = "variable_segment",                                      -- todo infinite scroll
+    sensitivity = .05,
+    min = 1,
+    max = 12,
+    value_getter = function() return sound:get_root() end,
+    value_setter = function(args) sound:set_root(args) end          -- todo cycle
+  }
+  self.arc_styles["SCALE"] = {
+    key = "SCALE",
+    style = "variable_segment",
+    sensitivity = .05,
+    min = 1,
+    max = #sound.scale_names,
+    value_getter = function() return sound:get_scale() end,
+    value_setter = function(args) sound:set_scale(args) end        -- todo cycle?
+  }
+  self.arc_styles["TRANSPOSE"] = {
+    key = "TRANSPOSE",
+    style = "variable_segment",
+    sensitivity = .05,
+    min = -6,                                                     -- todo support negative min
+    max = 6,
+    value_getter = function() return sound:get_transpose() end,
+    value_setter = function(args) sound:set_transpose(args) end
+  }
+  self.arc_styles["DOCS"] = {
+    key = "DOCS",
+    style = "variable_standby",                                   -- todo standby
+    sensitivity = 0,
+    min = 0,
+    max = 0,
+    value_getter = function() return end,
+    value_setter = function(args) end
+  }
 end
 
 return menu

@@ -8,6 +8,10 @@ function page.init()
   page.error_code = 0
 end
 
+function page:get_page_title()
+  return self.titles[self.active_page]
+end
+
 function page:scroll(d)
   self:select(util.clamp(page.active_page + d, 1, #page.titles))
 end

@@ -14,7 +14,15 @@ function sound.init()
 end
 
 function sound:cycle_transpose(i)
-  self.transpose = util.clamp(self.transpose + i, -6, 6)
+  self:set_transpose(self.transpose + i)
+end
+
+function sound:set_transpose(i)
+  self.transpose = util.clamp(i, -6, 6)
+end
+
+function sound:get_transpose()
+  return self.transpose
 end
 
 function sound:transpose_note(note)
@@ -30,6 +38,10 @@ function sound:set_scale(i)
   end
 end
 
+function sound:get_scale()
+  return self.scale
+end
+
 function sound:build_scale()
   self.scale_notes =  musicutil.generate_scale(self.root, self.scale_name, self.octaves)
 end
@@ -39,15 +51,31 @@ function sound:snap_note(note)
 end
 
 function sound:cycle_length(i)
-  self.length = util.clamp(self.length + i, 1, 16)
+  self:set_length(self.length + i)
+end
+
+function sound:set_length(i)
+  self.length = util.clamp(i, 1, 16)
+end
+
+function sound:get_length()
+  return self.length
 end
 
 function sound:cycle_root(i)
-  self.root = fn.cycle(self.root + i, 1, 12)
+  self:set_root(fn.cycle(self.root + i, 1, 12))
+end
+
+function sound:set_root(i)
+  self.root = util.clamp(i, 1, 12)
   self:build_scale()
   if init_done then
     keeper:update_all_notes()
   end
+end
+
+function sound:get_root()
+  return self.root
 end
 
 function sound:set_random_root()

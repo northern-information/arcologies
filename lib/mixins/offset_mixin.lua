@@ -17,9 +17,7 @@ offset_mixin.init = function(self)
       min = self.offset_min,
       max = self.offset_max,
       value_getter = self.get_offset,
-      value_setter = self.set_offset,
-      menu_setter = self.offset_menu_setter,
-      menu_getter = self.offset_menu_getter
+      value_setter = self.set_offset
     })
   end
 

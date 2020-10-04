@@ -45,6 +45,10 @@ function counters:set_playback(i)
   self.playback = util.clamp(i, 0, 1)
 end
 
+function counters:get_playback()
+  return self.playback
+end
+
 function clock.transport.start()
   counters:start()
 end
