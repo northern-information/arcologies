@@ -137,9 +137,7 @@ end
 
 
 function _arc:clear_ring(n)
-  for i = 1, 64 do
-    _arc.device:led(n, i, 0)
-  end
+  for i = 1, 64 do _arc.device:led(n, i, 0) end
 end
 
 function _arc:draw_sweet_sixteen(enc)
@@ -252,16 +250,11 @@ function _arc:draw_glowing_clock(enc)
   local l = self.slow_frame % 5
   if self.standby_up then l = util.linlin(1, 5, 5, 1, l) end
   l = l + 10
-    
   if enc.value == 0 then
-    for i = 1, 10 do
-      ring[i] = l - i
-    end
+    for i = 1, 10 do ring[i] = l - i end
     ring = fn.reverse_shift_table(ring, self.rotate_frame)
   else 
-    for i = 1, 10 do
-      ring[11 - i] = l - i
-    end
+    for i = 1, 10 do ring[11 - i] = l - i end
     ring = fn.shift_table(ring, self.rotate_frame)
   end
   for k, v in pairs(ring) do    
