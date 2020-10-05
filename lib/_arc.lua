@@ -5,8 +5,7 @@ function _arc.init()
   _arc.orientation = 0
   _arc.bindings = {}
   _arc.encs = {{},{},{},{}}
-  _arc.frame = 0
-  _arc.slow_frame = 0
+  _arc.frame, _arc.slow_frame, _arc.rotate_frame = 0, 0, 0
   _arc.standby_up = true
 
   -- each also needs to be setup in config.arc_bindings to make available to paramters.lua!
@@ -36,6 +35,7 @@ end
 function _arc:increment_frames()
   self.frame = self.frame + 1
   self.slow_frame = (self.frame % 2 == 1) and self.slow_frame + 1 or self.slow_frame
+  self.rotate_frame = (self.slow_frame % 64) == 0 and 64 or self.slow_frame % 64
   self.standby_up = (self.slow_frame % 5 == 1) and not self.standby_up or self.standby_up
 end
 
@@ -47,10 +47,12 @@ function _arc:arc_redraw()
     elseif style == "scaled"          then self:draw_scaled_segment(enc)
     elseif style == "glowing_segment" then self:draw_glowing_segment(enc)
     elseif style == "glowing_divided" then self:draw_glowing_divided(enc)
+    elseif style == "glowing_compass" then self:draw_glowing_compass(enc)
     elseif style == "sweet_sixteen"   then self:draw_sweet_sixteen(enc)
     elseif style == "glowing_boolean" then self:draw_glowing_boolean(enc)
+    elseif style == "glowing_clock"   then self:draw_glowing_clock(enc)
     elseif style == "standby"         then self:draw_standby(enc)
-                                                   else self:draw_standby(enc)
+                                      else self:draw_standby(enc)
     end
   end
 end
@@ -155,7 +157,8 @@ end
 
 function _arc:draw_glowing_segment(enc)
   self:clear_ring(enc.enc_id)
-  local segment_size = 64 / enc.max_getter()
+  local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+  local segment_size = style_max / enc.max_getter()
   for i = 1, enc.value_getter() do
     local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
     local from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
@@ -180,6 +183,21 @@ function _arc:draw_glowing_boolean(enc)
   end
   local shift_amount = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
   ring = fn.shift_table(ring, shift_amount)
+  for k, v in pairs(ring) do    
+    _arc.device:led(enc.enc_id, k, v)
+  end
+end
+
+function _arc:draw_glowing_compass(enc)
+  self:clear_ring(enc.enc_id)
+  local ring = {}
+  for i = 1, 64 do
+    ring[i] = (i < 16) and math.random(10, 15) or 0
+  end
+  -- 1 = north, 2 = east, 3 = south, 4 = west
+  ring = fn.shift_table(ring, ((enc.value_getter() - 1) * 16))
+  -- adjust for "compass"
+  ring = fn.shift_table(ring, 57)
   for k, v in pairs(ring) do    
     _arc.device:led(enc.enc_id, k, v)
   end
@@ -228,14 +246,36 @@ function _arc:draw_scaled_segment(enc)
   self:draw_segment(enc.enc_id, self:validate_segment(segment))
 end
 
+function _arc:draw_glowing_clock(enc)
+  local ring = {}
+  for i = 1, 64 do ring[i] = 0 end
+  local l = self.slow_frame % 5
+  if self.standby_up then l = util.linlin(1, 5, 5, 1, l) end
+  l = l + 10
+    
+  if enc.value == 0 then
+    for i = 1, 10 do
+      ring[i] = l - i
+    end
+    ring = fn.reverse_shift_table(ring, self.rotate_frame)
+  else 
+    for i = 1, 10 do
+      ring[11 - i] = l - i
+    end
+    ring = fn.shift_table(ring, self.rotate_frame)
+  end
+  for k, v in pairs(ring) do    
+    _arc.device:led(enc.enc_id, k, v)
+  end
+end
+
 function _arc:draw_standby(enc)
   local ring = {}
   for i = 1, 64 do ring[i] = 0 end
   local l = self.slow_frame % 5
   if self.standby_up then l = util.linlin(1, 5, 5, 1, l) end
   ring[1], ring[17], ring[33], ring[49] = l, l, l, l
-  local shift_amount = self.slow_frame % 64
-  ring = fn.reverse_shift_table(ring, shift_amount)
+  ring = fn.reverse_shift_table(ring, self.rotate_frame)
   for k, v in pairs(ring) do    
     _arc.device:led(enc.enc_id, k, v)
   end
@@ -375,12 +415,12 @@ function _arc:register_all_available_bindings()
     min_getter         = function()  return menu:adaptor("min") end,
     offset_getter      = function()  return menu:adaptor("offset") end,
     sensitivity_getter = function()  return menu:adaptor("sensitivity") end,
-    snap_getter        = function()  return menu:adaptor("snap") end,
+    snap_getter        = function()  return menu:adaptor("snap_getter") end,
     style_getter       = function()  return menu:adaptor("style_getter") end,
     style_max_getter   = function()  return menu:adaptor("style_max_getter") end,
     value_getter       = function()  return menu:adaptor("value_getter") end,
     value_setter       = function(x) menu:adaptor("value_setter", x) end,
-    wrap_getter        = function()  return menu:adaptor("wrap") end,
+    wrap_getter        = function()  return menu:adaptor("wrap_getter") end,
   })
   _arc:register_binding({
     binding_id         = "bpm",

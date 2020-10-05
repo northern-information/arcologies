@@ -315,6 +315,7 @@ function fn.deep_copy(orig)
 end
 
 function fn.shift_table(t, shift_amount)
+  if shift_amount == 0 then return t end
   for i = 1, shift_amount do
     local last_value = t[#t]
     table.insert(t, 1, last_value)
@@ -324,10 +325,11 @@ function fn.shift_table(t, shift_amount)
 end
 
 function fn.reverse_shift_table(t, shift_amount)
+  if shift_amount == 0 then return t end
   for i = 1, shift_amount do
     local first_value = t[1]
-    table.insert(t, #t, first_value)
     table.remove(t, 1)
+    table.insert(t, #t + 1, first_value)
   end
   return t
 end
