@@ -12,9 +12,12 @@ offset_mixin.init = function(self)
     self:register_menu_setter(self.offset_key, self.offset_menu_setter)
     self:register_arc_style({
       key = self.offset_key,
-      style = "glowing_segment",
+      style_getter = function() return "glowing_segment" end,
+      style_max_getter = function() return 360 end,
       sensitivity = .05,
       offset = 180, -- style offset, cell offset :)
+      wrap = false,
+      snap = true,
       min = self.offset_min,
       max = self.offset_max,
       value_getter = self.get_offset,

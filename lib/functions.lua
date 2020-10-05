@@ -314,6 +314,24 @@ function fn.deep_copy(orig)
   return copy
 end
 
+function fn.shift_table(t, shift_amount)
+  for i = 1, shift_amount do
+    local last_value = t[#t]
+    table.insert(t, 1, last_value)
+    table.remove(t, #t)
+  end
+  return t
+end
+
+function fn.reverse_shift_table(t, shift_amount)
+  for i = 1, shift_amount do
+    local first_value = t[1]
+    table.insert(t, #t, first_value)
+    table.remove(t, 1)
+  end
+  return t
+end
+
 -- dev
 
 function rerun()

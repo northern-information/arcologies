@@ -13,9 +13,12 @@ metabolism_mixin.init = function(self)
     self:register_menu_setter(self.metabolism_key, self.metabolism_menu_setter)
     self:register_arc_style({
       key = self.metabolism_key,
-      style = "sweet_sixteen",
+      style_getter = function() return "sweet_sixteen" end,
+      style_max_getter = function() return 360 end,
       sensitivity = .05,
       offset = 180,
+      wrap = false,
+      snap = true,
       min = self.metabolism_min,
       max = self.metabolism_max,
       value_getter = self.get_metabolism,

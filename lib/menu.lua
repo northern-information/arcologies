@@ -135,25 +135,33 @@ function menu:adaptor(lookup, args)
     local c = keeper.selected_cell
     local match = fn.key_find(c.arc_styles, s)
     if match then
-          if lookup == "style"         then return c.arc_styles[s].style
-      elseif lookup == "sensitivity"   then return c.arc_styles[s].sensitivity
-      elseif lookup == "min"           then return c.arc_styles[s].min
-      elseif lookup == "max"           then return c.arc_styles[s].max
-      elseif lookup == "offset"        then return c.arc_styles[s].offset
-      elseif lookup == "value_getter"  then return c.arc_styles[s].value_getter(c)
-      elseif lookup == "value_setter"  then return c.arc_styles[s].value_setter(c, args)
+          if lookup == "max"              then return c.arc_styles[s].max
+      elseif lookup == "min"              then return c.arc_styles[s].min
+      elseif lookup == "offset"           then return c.arc_styles[s].offset
+      elseif lookup == "sensitivity"      then return c.arc_styles[s].sensitivity
+      elseif lookup == "snap_getter"      then return c.arc_styles[s].snap
+      elseif lookup == "style_getter"     then return c.arc_styles[s].style_getter()
+      elseif lookup == "style_max_getter" then return c.arc_styles[s].style_max_getter()
+      elseif lookup == "value_getter"     then return c.arc_styles[s].value_getter(c)
+      elseif lookup == "value_setter"     then return c.arc_styles[s].value_setter(c, args)
+      elseif lookup == "wrap_getter"      then return c.arc_styles[s].wrap
+      else print("Error: no cell arc style found for \"" .. lookup .. "\".")
       end
     end
   else
     local match = fn.key_find(self.arc_styles, s)
     if match then
-          if lookup == "style"         then return self.arc_styles[s].style
-      elseif lookup == "sensitivity"   then return self.arc_styles[s].sensitivity
-      elseif lookup == "min"           then return self.arc_styles[s].min
-      elseif lookup == "max"           then return self.arc_styles[s].max
-      elseif lookup == "offset"        then return self.arc_styles[s].offset
-      elseif lookup == "value_getter"  then return self.arc_styles[s].value_getter()
-      elseif lookup == "value_setter"  then return self.arc_styles[s].value_setter(args)
+          if lookup == "max"              then return self.arc_styles[s].max
+      elseif lookup == "min"              then return self.arc_styles[s].min
+      elseif lookup == "offset"           then return self.arc_styles[s].offset
+      elseif lookup == "sensitivity"      then return self.arc_styles[s].sensitivity
+      elseif lookup == "snap_getter"      then return self.arc_styles[s].snap
+      elseif lookup == "style_getter"     then return self.arc_styles[s].style_getter()
+      elseif lookup == "style_max_getter" then return self.arc_styles[s].style_max_getter()
+      elseif lookup == "value_getter"     then return self.arc_styles[s].value_getter()
+      elseif lookup == "value_setter"     then return self.arc_styles[s].value_setter(args)
+      elseif lookup == "wrap_getter"      then return self.arc_styles[s].wrap
+      else print("Error: no menu arc style found for \"" .. lookup .. "\".")
       end
     end
   end
@@ -162,83 +170,107 @@ end
 function menu:register_arc_styles()
   self.arc_styles["READY"] = {
     key = "READY",
-    style = "glowing_boolean",
-    sensitivity = .5,
-    min = 0,
     max = 1,
+    min = 0,
     offset = 0,
+    sensitivity = .5,
+    snap = true,
+    style_getter = function() return "glowing_boolean" end,
+    style_max_getter = function() return 360 end,
     value_getter = function() return counters:get_playback() end,
-    value_setter = function(args) return counters:set_playback(args) end
+    value_setter = function(args) return counters:set_playback(args) end,
+    wrap = false,
   }
   self.arc_styles["PLAYING"] = {
     key = "PLAYING",
-    style = self.arc_styles["READY"].style,
-    sensitivity = self.arc_styles["READY"].sensitivity,
-    min = self.arc_styles["READY"].min,
     max = self.arc_styles["READY"].max,
+    min = self.arc_styles["READY"].min,
     offset = self.arc_styles["READY"].offset,
+    sensitivity = self.arc_styles["READY"].sensitivity,
+    snap =  self.arc_styles["READY"].snap,
+    style_getter = self.arc_styles["READY"].style_getter,
+    style_max_getter = self.arc_styles["READY"].style_max_getter,
     value_getter = self.arc_styles["READY"].value_getter,
-    value_setter = self.arc_styles["READY"].value_setter
+    value_setter = self.arc_styles["READY"].value_setter,
+    wrap =  self.arc_styles["READY"].wrap,
   }
   self.arc_styles["BPM"] = {
     key = "BPM",
-    style = "glowing_segment",
-    sensitivity = .5,
-    min = 1,
     max = 300,
+    min = 1,
     offset = 180,
+    sensitivity = .5,
+    snap = false,
+    style_getter = function() return "glowing_segment" end,
+    style_max_getter = function() return 360 end,
     value_getter = function() return params:get("clock_tempo") end,
-    value_setter = function(args) menu:handle_scroll_bpm(args, "absolute") end
+    value_setter = function(args) menu:handle_scroll_bpm(args, "absolute") end,
+    wrap = false,
   }
   self.arc_styles["LENGTH"] = {
     key = "LENGTH",
-    style = "sweet_sixteen",
-    sensitivity = .05,
-    min = 1,
     max = 16,
+    min = 1,
     offset = 180,
+    sensitivity = .05,
+    snap = false,
+    style_getter = function() return "sweet_sixteen" end,
+    style_max_getter = function() return 360 end,
     value_getter = function() return sound:get_length() end,
-    value_setter = function(args) sound:set_length(args) end
+    value_setter = function(args) sound:set_length(args) end,
+    wrap = false,
   }
   self.arc_styles["ROOT"] = {
     key = "ROOT",
-    style = "glowing_divided",                                      -- todo infinite scroll
-    sensitivity = .05,
-    min = 1,
     max = 12,
+    min = 1,
     offset = 0,
+    sensitivity = .05,
+    snap = false,
+    style_getter = function() return "glowing_divided" end, -- todo infinite scroll
+    style_max_getter = function() return 360 end,
     value_getter = function() return sound:get_root() end,
-    value_setter = function(args) sound:cycle_root(args) end          -- todo cycle
+    value_setter = function(args) sound:cycle_root(args) end,          -- todo cycle
+    wrap = true,
   }
   self.arc_styles["SCALE"] = {
     key = "SCALE",
-    style = "glowing_divided",
-    sensitivity = .05,
-    min = 1,
     max = #sound.scale_names,
+    min = 1,
     offset = 0,
+    sensitivity = .05,
+    snap = false,
+    style_getter = function() return "glowing_divided" end, 
+    style_max_getter = function() return 360 end,
     value_getter = function() return sound:get_scale() end,
-    value_setter = function(args) sound:cycle_scale(args) end
+    value_setter = function(args) sound:cycle_scale(args) end,
+    wrap = false,
   }
   self.arc_styles["TRANSPOSE"] = {
     key = "TRANSPOSE",
-    style = "glowing_segment",
-    sensitivity = .05,
-    min = -6,                                                     -- todo support negative min
     max = 6,
+    min = -6,                                                     -- todo support negative min
     offset = 0,
+    sensitivity = .05,
+    snap = false,
+    style_getter = function() return "glowing_segment" end,
+    style_max_getter = function() return 360 end,
     value_getter = function() return sound:get_transpose() end,
-    value_setter = function(args) sound:set_transpose(args) end
+    value_setter = function(args) sound:set_transpose(args) end,
+    wrap = false,
   }
   self.arc_styles["DOCS"] = {
     key = "DOCS",
-    style = "standby",                                   -- todo standby
-    sensitivity = 0,
-    min = 0,
     max = 0,
+    min = 0,
     offset = 0,
-    value_getter = function() return end,
-    value_setter = function(args) end
+    sensitivity = 0,
+    snap = false,
+    style_getter = function() return "standby" end,
+    style_max_getter = function() return 360 end,
+    value_getter = function() return 0 end,
+    value_setter = function(args) end,
+    wrap = false,
   }
 end
 
