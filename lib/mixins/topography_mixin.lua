@@ -7,11 +7,26 @@ topography_mixin.init = function(self)
   self.setup_topography = function(self)
     self.topography_key = "TOPOGRAPHY"
     self.topography = 1
+    self.topography_min = 1
+    self.topography_max = 4
     self:register_save_key("topography")
     self.topography_menu_values = {">>>>", "<<<<", ">><<", "DRUNK"}
     self.topography_pendulum = true
     self:register_menu_getter(self.topography_key, self.topography_menu_getter)
     self:register_menu_setter(self.topography_key, self.topography_menu_setter)
+    self:register_arc_style({
+      key = self.topography_key,
+      style_getter = function() return "glowing_topography" end,
+      style_max_getter = function() return 360 end,
+      sensitivity = .01,
+      offset = 0,
+      wrap = false,
+      snap = false,
+      min = self.topography_min,
+      max = self.topography_max,
+      value_getter = self.get_topography,
+      value_setter = self.set_topography
+    })
   end
 
   self.get_topography = function(self)
@@ -32,7 +47,7 @@ topography_mixin.init = function(self)
   end
 
   self.set_topography = function(self, i)
-    self.topography = util.clamp(i, 1, 4)
+    self.topography = util.clamp(i, self.topography_min, self.topography_max)
     self.callback(self, "set_topography")
   end
 

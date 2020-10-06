@@ -6,10 +6,24 @@ state_index_mixin.init = function(self)
   self.setup_state_index = function(self)
     self.state_index_key = "INDEX"
     self.max_state_index = 8
+    self.min_state_index = 1
     self.state_index = 1
     self:register_save_key("state_index")
     self:register_menu_getter(self.state_index_key, self.state_index_menu_getter)
     self:register_menu_setter(self.state_index_key, self.state_index_menu_setter)
+    self:register_arc_style({
+      key = self.state_index_key,
+      style_getter = function() return "glowing_divided" end,
+      style_max_getter = function() return 240 end,
+      sensitivity = .5,
+      offset = 240,
+      wrap = false,
+      snap = false,
+      min = self.min_state_index,
+      max = self.max_state_index,
+      value_getter = self.get_state_index,
+      value_setter = self.set_state_index
+    })
   end
 
   self.get_state_index = function(self)
@@ -20,7 +34,7 @@ state_index_mixin.init = function(self)
     if self:has("NOTE COUNT") then 
       self.state_index = util.clamp(i, 1, self.note_count)
     else
-      self.state_index = util.clamp(i, 1, self.max_state_index)
+      self.state_index = util.clamp(i, self.min_state_index, self.max_state_index)
     end
     self:callback("set_state_index")
   end
@@ -35,6 +49,10 @@ state_index_mixin.init = function(self)
 
   self.set_max_state_index = function(self, i)
     self.max_state_index = i
+    self.arc_styles.INDEX.max = i
+    if self.state_index > i then
+      self.state_index = i
+    end
   end
 
   -- only handles increments of 1 (encoders)

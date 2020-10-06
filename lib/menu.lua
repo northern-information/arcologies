@@ -135,7 +135,8 @@ function menu:adaptor(lookup, args)
     local c = keeper.selected_cell
     local match = fn.key_find(c.arc_styles, s)
     if match then
-          if lookup == "max"              then return c.arc_styles[s].max
+          if lookup == "key"              then return c.arc_styles[s].key
+      elseif lookup == "max"              then return c.arc_styles[s].max
       elseif lookup == "min"              then return c.arc_styles[s].min
       elseif lookup == "offset"           then return c.arc_styles[s].offset
       elseif lookup == "sensitivity"      then return c.arc_styles[s].sensitivity
@@ -151,7 +152,8 @@ function menu:adaptor(lookup, args)
   else
     local match = fn.key_find(self.arc_styles, s)
     if match then
-          if lookup == "max"              then return self.arc_styles[s].max
+          if lookup == "key"              then return self.arc_styles[s].key
+      elseif lookup == "max"              then return self.arc_styles[s].max
       elseif lookup == "min"              then return self.arc_styles[s].min
       elseif lookup == "offset"           then return self.arc_styles[s].offset
       elseif lookup == "sensitivity"      then return self.arc_styles[s].sensitivity
@@ -249,12 +251,12 @@ function menu:register_arc_styles()
   self.arc_styles["TRANSPOSE"] = {
     key = "TRANSPOSE",
     max = 6,
-    min = -6,                                                     -- todo support negative min
+    min = -6,
     offset = 0,
     sensitivity = .05,
     snap = false,
-    style_getter = function() return "glowing_segment" end,
-    style_max_getter = function() return 360 end,
+    style_getter = function() return "glowing_fulcrum" end,
+    style_max_getter = function() return 240 end,
     value_getter = function() return sound:get_transpose() end,
     value_setter = function(args) sound:set_transpose(args) end,
     wrap = false,

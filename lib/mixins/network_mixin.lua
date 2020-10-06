@@ -5,6 +5,8 @@ network_mixin.init = function(self)
   self.setup_network = function(self)
     self.network_key = "NETWORK"
     self.network = 1
+    self.network_min = 1
+    self.network_max = 26
     self:register_save_key("network")
     self.network_menu_values = {
       "A", "B", "C", "D", "E", "F", "G", "H", 
@@ -14,6 +16,19 @@ network_mixin.init = function(self)
     }
     self:register_menu_getter(self.network_key, self.network_menu_getter)
     self:register_menu_setter(self.network_key, self.network_menu_setter)
+    self:register_arc_style({
+      key = self.network_key,
+      style_getter = function() return "glowing_divided" end,
+      style_max_getter = function() return 240 end,
+      sensitivity = .05,
+      offset = 240,
+      wrap = false,
+      snap = false,
+      min = self.network_min,
+      max = self.network_max,
+      value_getter = self.get_network,
+      value_setter = self.set_network
+    })
   end
 
   self.get_network = function(self)
@@ -21,7 +36,7 @@ network_mixin.init = function(self)
   end
 
   self.set_network = function(self, i)
-    self.network = util.clamp(i, 1, 26)
+    self.network = util.clamp(i, self.network_min, self.network_max)
     self.callback(self, "set_network")
   end
 

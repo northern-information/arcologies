@@ -178,12 +178,15 @@ function Cell:callback(method)
   if method == "set_state_index" then
     if self:is("CRYPT") then _softcut:crypt_load(self.state_index) end
   elseif method == "set_metabolism" then
-    if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
+    if self:has("PULSES") then self:set_pulses_max(self:get_metabolism()) end
+    if self:has("PULSES") and self:get_pulses() > self:get_metabolism() then self:set_pulses(self:get_metabolism()) end
     if self:is("DOME") then self:set_er() end
   elseif method == "set_pulses" then
     if self:is("DOME") then self:set_er() end
   elseif method == "set_bearing" then
     if self:is("WINDFARM") then self:close_all_ports() self:open_port(self:get_bearing_cardinal()) end
+  elseif method == "set_note_count" then
+    if self:has("INDEX") then self:set_max_state_index(self:get_note_count()) end
   end
 end
 

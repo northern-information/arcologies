@@ -5,11 +5,13 @@ function _arc.init()
   _arc.orientation = 0
   _arc.bindings = {}
   _arc.encs = {{},{},{},{}}
-  _arc.frame, _arc.slow_frame, _arc.rotate_frame = 0, 0, 0
+  _arc.frame, _arc.slow_frame, _arc.rotate_frame, _arc.topography_frame = 0, 0, 0, 0
   _arc.standby_up = true
   _arc.glowing_endless_up = true
   _arc.glowing_endless_cache = 1
   _arc.glowing_endless_position = 1
+  _arc.glowing_endless_key = nil
+  _arc.drift_direction_up = true
 
   -- each also needs to be setup in config.arc_bindings to make available to paramters.lua!
   _arc:register_all_available_bindings()
@@ -39,7 +41,11 @@ function _arc:increment_frames()
   self.frame = self.frame + 1
   self.slow_frame = (self.frame % 2 == 1) and self.slow_frame + 1 or self.slow_frame
   self.rotate_frame = (self.slow_frame % 64) == 0 and 64 or self.slow_frame % 64
+  self.topography_frame = (self.slow_frame % 21) == 0 and 21 or self.slow_frame % 21
   self.standby_up = (self.slow_frame % 5 == 1) and not self.standby_up or self.standby_up
+  if self.frame % (math.random(1, 2) == 1 and 32 or 64) == 1 then
+    self.drift_direction_up = not self.drift_direction_up
+  end
 end
 
 function arc.delta(n, delta)
@@ -80,6 +86,10 @@ function _arc:run_delta(enc, delta)
     value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter() + 1)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter() + 1)
     enc.value_setter(math.floor(self.encs[enc.enc_id].value))
+  elseif enc.style_getter() == "glowing_fulcrum" then
+    value = enc.value + (enc.sensitivity() * delta)
+    self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
+    enc.value_setter(math.floor(fn.round(self.encs[enc.enc_id].value)))
   else
     if enc.style_getter() ~= "variable" and enc.wrap_getter() then
       value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter())
@@ -112,21 +122,31 @@ function _arc:set_glowing_endless_up(bool)
   self.glowing_endless_up = bool
 end
 
+function _arc:reset_glowing_endless()
+  self.glowing_endless_up = true
+  self.glowing_endless_cache = 1
+  self.glowing_endless_position = 1
+  self.glowing_endless_key = nil
+end
+
 function _arc:arc_redraw()
   for n = 1, 4 do
      local enc = self.encs[n]
-     local style = enc.style_getter()
-        if style == "divided"         then self:draw_divided_segment(enc)
-    elseif style == "scaled"          then self:draw_scaled_segment(enc)
-    elseif style == "glowing_divided" then self:draw_glowing_divided(enc)
-    elseif style == "glowing_segment" then self:draw_glowing_segment(enc)
-    elseif style == "glowing_endless" then self:draw_glowing_endless(enc)
-    elseif style == "sweet_sixteen"   then self:draw_sweet_sixteen(enc)    
-    elseif style == "glowing_compass" then self:draw_glowing_compass(enc)
-    elseif style == "glowing_boolean" then self:draw_glowing_boolean(enc)
-    elseif style == "glowing_clock"   then self:draw_glowing_clock(enc)
-    elseif style == "standby"         then self:draw_standby(enc)
-                                      else self:draw_standby(enc)
+     local s = enc.style_getter()
+        if s == "divided"            then self:draw_divided_segment(enc)
+    elseif s == "glowing_boolean"    then self:draw_glowing_boolean(enc)
+    elseif s == "glowing_clock"      then self:draw_glowing_clock(enc)
+    elseif s == "glowing_compass"    then self:draw_glowing_compass(enc)
+    elseif s == "glowing_divided"    then self:draw_glowing_divided(enc)
+    elseif s == "glowing_drift"      then self:draw_glowing_drift(enc)
+    elseif s == "glowing_endless"    then self:draw_glowing_endless(enc)
+    elseif s == "glowing_fulcrum"    then self:draw_glowing_fulcrum(enc)
+    elseif s == "glowing_segment"    then self:draw_glowing_segment(enc)
+    elseif s == "glowing_topography" then self:draw_glowing_topography(enc)
+    elseif s == "scaled"             then self:draw_scaled_segment(enc)
+    elseif s == "sweet_sixteen"      then self:draw_sweet_sixteen(enc)    
+    elseif s == "standby"            then self:draw_standby(enc)
+                                     else self:draw_standby(enc)
     end
   end
 end
@@ -188,42 +208,80 @@ end
 
 function _arc:draw_glowing_divided(enc)
   self:clear_ring(enc.enc_id)
-  local segment_size = enc.style_max_getter() / enc.max_getter()
+  local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+  local segment_size = style_max / enc.max_getter()
   local segments = {}
-  for i = 1, enc.max_getter() do
-    local from_raw = enc.style_offset() + (segment_size * (i - 1))
-    local from = self:cycle_degrees(from_raw)
-    local to =  self:cycle_degrees(from_raw + segment_size)
+  for i = 1, enc.value_getter() do
+    local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
     segments[i] = {}
-    segments[i].from = self:degs_to_rads(from, enc.snap_getter())
-    segments[i].to = self:degs_to_rads(to, enc.snap_getter())
+    segments[i].from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
+    segments[i].to = fn.round(segments[i].from + segment_size)
   end
-  self:draw_segment(enc.enc_id, self:validate_segment(segments[self:map_to_segment(enc)]), math.random(10, 15))
+  for x = segments[enc.value_getter()].from, segments[enc.value_getter()].to do
+    self:draw_led(enc.enc_id, x, math.random(10, 15))
+  end
 end
 
 function _arc:draw_glowing_segment(enc)
   self:clear_ring(enc.enc_id)
-  local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
-  local segment_size = style_max / enc.max_getter()
-  for i = 1, enc.value_getter() do
-    local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
-    local from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
-    local to = fn.round(from + segment_size)
-    for x = from, to do
-      self:draw_led(enc.enc_id, x, math.random(10, 15))
+  if enc.value_getter() == 0 then
+    self:draw_led(enc.enc_id, fn.round(util.linlin(0, 360, 1, 64, enc.style_offset())), math.random(10, 15))
+  else
+    local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+    local segment_size = style_max / enc.max_getter()
+    for i = 1, enc.value_getter() do
+      local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
+      local from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
+      local to = fn.round(from + segment_size)
+      for x = from, to do
+        self:draw_led(enc.enc_id, x, math.random(10, 15))
+      end
     end
   end
 end
 
+function _arc:draw_glowing_fulcrum(enc)
+  self:clear_ring(enc.enc_id)
+  if enc.value_getter() == 0 then
+    self:draw_led(enc.enc_id, 63, 3)
+    self:draw_led(enc.enc_id, 64, 5)
+    self:draw_led(enc.enc_id, 2, 5)
+    self:draw_led(enc.enc_id, 3, 3)
+  else
+    local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter()) / 2
+    local segment_size = style_max / enc.max_getter() * math.abs(enc.value_getter())
+    local ring = {}
+    for i = 1, 64 do
+      ring[i] = (i < segment_size) and math.random(10, 15) or 0
+    end
+    if enc.value_getter() < 0 then
+      ring[64] = 5
+      ring[63] = 3
+      ring = fn.shift_table(ring, 64 + math.ceil(segment_size * -1))
+    else
+      ring[math.floor(segment_size) + 1] = 5
+      ring[math.floor(segment_size) + 2] = 3
+    end
+    for k, v in pairs(ring) do    
+      self:draw_led(enc.enc_id, k, v)
+    end   
+  end
+  self:draw_led(enc.enc_id, 1, math.random(10, 15))
+end
+
 function _arc:draw_glowing_endless(enc)
   self:clear_ring(enc.enc_id)
+  if self.glowing_endless_key ~= enc.key_getter() then
+    self:reset_glowing_endless()      
+    self.glowing_endless_key = enc.key_getter()
+    self.glowing_endless_position = math.random(1, 8)
+  end
   local ring = {}
   for i = 1, 64 do
     ring[i] = (i > 2 and i < 9) and math.random(10, 15) or 0
   end
   ring[2], ring[9] = 5, 5
   ring[1], ring[10] = 3, 3
-  -- todo there is still a tiny bug here where it jumps when wrapping
   if self.glowing_endless_cache ~= math.floor(enc.value) then
     self.glowing_endless_cache = math.floor(enc.value)
     local direction = self.glowing_endless_up and 1 or -1
@@ -237,13 +295,17 @@ end
 
 function _arc:draw_sweet_sixteen(enc)
   self:clear_ring(enc.enc_id)
-  for i = 1, enc.value do
-    local convert_to_led = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
-    local from =  fn.round(fn.over_cycle(convert_to_led + (4 * (i - 1)), 1, 64))
-    local to = fn.round(from + 3)
-    for x = from, to do
-      local l = x == to and 3 or math.random(10, 15)
-      self:draw_led(enc.enc_id, x, l)
+  if enc.value_getter() == 0 then
+    self:draw_led(enc.enc_id, fn.round(util.linlin(0, 360, 1, 64, enc.style_offset())), math.random(10, 15))
+  else
+    for i = 1, enc.value_getter() do
+      local convert_to_led = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
+      local from =  fn.round(fn.over_cycle(convert_to_led + (4 * (i - 1)), 1, 64))
+      local to = fn.round(from + 3)
+      for x = from, to do
+        local l = x == to and 3 or math.random(10, 15)
+        self:draw_led(enc.enc_id, x, l)
+      end
     end
   end
 end
@@ -262,6 +324,33 @@ function _arc:draw_glowing_boolean(enc)
   end
   local shift_amount = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
   ring = fn.shift_table(ring, shift_amount)
+  for k, v in pairs(ring) do    
+    self:draw_led(enc.enc_id, k, v)
+  end
+end
+
+function _arc:draw_glowing_drift(enc)
+  self:clear_ring(enc.enc_id)
+  local ring = {}
+  -- 1 = north/south, 2 = east/west, 3 = ???
+  for i = 1, 64 do
+    if enc.value_getter() ~= 3 then
+      ring[i] = ((i < 16) or (i > 33 and i < 48)) and math.random(10, 15) or 0
+    else
+      ring[i] = (i < 16) and math.random(10, 15) or 0
+    end
+  end  
+  if enc.value_getter() ~= 3 then
+    ring = fn.shift_table(ring, ((enc.value_getter() - 1) * 16))
+  else
+    if self.drift_direction_up then
+      ring = fn.reverse_shift_table(ring, self.rotate_frame)
+    else 
+      ring = fn.shift_table(ring, self.rotate_frame)
+    end
+  end
+  -- adjust for "compass"
+  ring = fn.shift_table(ring, 57)
   for k, v in pairs(ring) do    
     self:draw_led(enc.enc_id, k, v)
   end
@@ -294,6 +383,35 @@ function _arc:draw_glowing_clock(enc)
   else 
     for i = 1, 10 do ring[11 - i] = l - i end
     ring = fn.shift_table(ring, self.rotate_frame)
+  end
+  for k, v in pairs(ring) do    
+    self:draw_led(enc.enc_id, k, v)
+  end
+end
+
+function _arc:draw_glowing_topography(enc)
+  -- 1 = clockwise, 2 = counterclockwise, 3 = pendulum, 4 = drunk
+  local value = enc.value_getter()
+  local ring = {}
+  for i = 1, 64 do ring[i] = 0 end
+  local l = self.slow_frame % 5
+  if self.standby_up then l = util.linlin(1, 5, 5, 1, l) end
+  l = l + 10
+  if value == 1 then
+    for i = 1, 10 do ring[11 - i] = l - i end
+    ring = fn.shift_table(ring, self.rotate_frame)
+  elseif value == 2 then
+    for i = 1, 10 do ring[i] = l - i end
+    ring = fn.reverse_shift_table(ring, self.rotate_frame)
+  elseif value == 3 then
+    ring[21 - self.topography_frame] = 15
+    for i = 1, 10 do ring[21 - self.topography_frame + i] = 15 - i end
+    ring[45 + self.topography_frame] = 15
+    for i = 1, 10 do ring[45 + self.topography_frame - i] = 15 - i end
+  elseif value == 4 then
+    for i = 1, 64 do
+      ring[i] = math.random(1, 8) == 1 and math.random(l) or 0
+    end
   end
   for k, v in pairs(ring) do    
     self:draw_led(enc.enc_id, k, v)
@@ -358,7 +476,15 @@ function _arc:degs_to_rads(d, snap)
     if snap then
       d = self:snap_degrees_to_leds(d)
     end
-    return d * (3.14 / 180)
+    return d * (math.pi / 180)
+end
+
+function _arc:rads_to_degs(r, snap)
+    local d = r * (180 / math.pi)
+    if snap then
+      d = self:snap_degrees_to_leds(d)
+    end
+    return d
 end
 
 -- to stop arc anti-aliasing
@@ -387,6 +513,7 @@ function _arc:init_enc(args)
   self.encs[args.enc_id] = {
     binding_id       = args.binding_id,
     enc_id           = args.enc_id,
+    key_getter       = args.key_getter,
     max_getter       = args.max_getter,
     min_getter       = args.min_getter,
     sensitivity      = args.sensitivity,
@@ -412,6 +539,7 @@ end
 function _arc:register_all_available_bindings()
   _arc:register_binding({
     binding_id         = "norns_e1",
+    key_getter         = function()  return "norns_e1" end,
     max_getter         = function()  return page:get_page_count() end,
     min_getter         = function()  return 1 end,
     offset_getter      = function()  return 240 end,
@@ -425,6 +553,7 @@ function _arc:register_all_available_bindings()
   })
   _arc:register_binding({
     binding_id         = "norns_e2",
+    key_getter         = function()  return "norns_e2" end,
     max_getter         = function()  return menu:get_item_count() end,
     min_getter         = function()  return menu:get_item_count_minimum() end,
     offset_getter      = function()  return 240 end,
@@ -438,6 +567,7 @@ function _arc:register_all_available_bindings()
   })
   _arc:register_binding({
     binding_id         = "norns_e3",
+    key_getter         = function()  return menu:adaptor("key") end,
     max_getter         = function()  return menu:adaptor("max") end,
     min_getter         = function()  return menu:adaptor("min") end,
     offset_getter      = function()  return menu:adaptor("offset") end,
@@ -451,6 +581,7 @@ function _arc:register_all_available_bindings()
   })
   _arc:register_binding({
     binding_id         = "bpm",
+    key_getter         = function() return menu.arc_styles.BPM.key end,
     max_getter         = function() return menu.arc_styles.BPM.max end,
     min_getter         = function() return menu.arc_styles.BPM.min end,
     offset_getter      = function() return menu.arc_styles.BPM.offset end,
@@ -470,6 +601,7 @@ function _arc:bind(n, binding_id)
     value            = 0,
     binding_id       = binding_id,
     enc_id           = n,
+    key_getter       = self.bindings[binding_id].key_getter,
     max_getter       = self.bindings[binding_id].max_getter,
     min_getter       = self.bindings[binding_id].min_getter,
     sensitivity      = self.bindings[binding_id].sensitivity_getter,
