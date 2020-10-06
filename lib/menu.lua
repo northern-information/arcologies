@@ -227,10 +227,10 @@ function menu:register_arc_styles()
     offset = 0,
     sensitivity = .05,
     snap = false,
-    style_getter = function() return "glowing_divided" end, -- todo infinite scroll
+    style_getter = function() return "glowing_endless" end,
     style_max_getter = function() return 360 end,
     value_getter = function() return sound:get_root() end,
-    value_setter = function(args) sound:cycle_root(args) end,          -- todo cycle
+    value_setter = function(args) sound:set_root(args) end,
     wrap = true,
   }
   self.arc_styles["SCALE"] = {
@@ -240,11 +240,11 @@ function menu:register_arc_styles()
     offset = 0,
     sensitivity = .05,
     snap = false,
-    style_getter = function() return "glowing_divided" end, 
+    style_getter = function() return "glowing_endless" end, 
     style_max_getter = function() return 360 end,
     value_getter = function() return sound:get_scale() end,
-    value_setter = function(args) sound:cycle_scale(args) end,
-    wrap = false,
+    value_setter = function(args) sound:set_scale(args) end,
+    wrap = true,
   }
   self.arc_styles["TRANSPOSE"] = {
     key = "TRANSPOSE",

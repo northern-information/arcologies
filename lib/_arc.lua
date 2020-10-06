@@ -7,6 +7,9 @@ function _arc.init()
   _arc.encs = {{},{},{},{}}
   _arc.frame, _arc.slow_frame, _arc.rotate_frame = 0, 0, 0
   _arc.standby_up = true
+  _arc.glowing_endless_up = true
+  _arc.glowing_endless_cache = 1
+  _arc.glowing_endless_position = 1
 
   -- each also needs to be setup in config.arc_bindings to make available to paramters.lua!
   _arc:register_all_available_bindings()
@@ -37,30 +40,6 @@ function _arc:increment_frames()
   self.slow_frame = (self.frame % 2 == 1) and self.slow_frame + 1 or self.slow_frame
   self.rotate_frame = (self.slow_frame % 64) == 0 and 64 or self.slow_frame % 64
   self.standby_up = (self.slow_frame % 5 == 1) and not self.standby_up or self.standby_up
-end
-
-function _arc:arc_redraw()
-  for n = 1, 4 do
-     local enc = self.encs[n]
-     local style = enc.style_getter()
-        if style == "divided"         then self:draw_divided_segment(enc)
-    elseif style == "scaled"          then self:draw_scaled_segment(enc)
-    elseif style == "glowing_segment" then self:draw_glowing_segment(enc)
-    elseif style == "glowing_divided" then self:draw_glowing_divided(enc)
-    elseif style == "glowing_compass" then self:draw_glowing_compass(enc)
-    elseif style == "sweet_sixteen"   then self:draw_sweet_sixteen(enc)
-    elseif style == "glowing_boolean" then self:draw_glowing_boolean(enc)
-    elseif style == "glowing_clock"   then self:draw_glowing_clock(enc)
-    elseif style == "standby"         then self:draw_standby(enc)
-                                      else self:draw_standby(enc)
-    end
-  end
-end
-
-function _arc:draw_segment(n, segment)
-  if segment.valid then
-    _arc.device:segment(n, segment.from, segment.to, 15)
-  end
 end
 
 function arc.delta(n, delta)
@@ -96,19 +75,19 @@ end
 
 function _arc:run_delta(enc, delta)
   local value = 0
-  if enc.style_getter() == "variable" then
-print(enc.enc_id, enc.value, enc.sensitivity(), delta)
-    value = enc.value + (enc.sensitivity() * delta)
-    self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
-    enc.value_setter(_arc:map_to_segment(enc))
+  if enc.style_getter() == "glowing_endless" then
+    self:set_glowing_endless_up(delta > 0)
+    value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter() + 1)
+    self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter() + 1)
+    enc.value_setter(math.floor(self.encs[enc.enc_id].value))
   else
-    if enc.wrap_getter() then
+    if enc.style_getter() ~= "variable" and enc.wrap_getter() then
       value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter())
     else
       value = enc.value + (enc.sensitivity() * delta)
     end
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
-    enc.value_setter(_arc:map_to_segment(enc))
+    enc.value_setter(self:map_to_segment(enc))
   end
 end
 
@@ -125,9 +104,51 @@ function _arc:refresh_values()
   end
 end
 
--- todo
 function _arc:set_orientation(i)
   self.orientation = i
+end
+
+function _arc:set_glowing_endless_up(bool)
+  self.glowing_endless_up = bool
+end
+
+function _arc:arc_redraw()
+  for n = 1, 4 do
+     local enc = self.encs[n]
+     local style = enc.style_getter()
+        if style == "divided"         then self:draw_divided_segment(enc)
+    elseif style == "scaled"          then self:draw_scaled_segment(enc)
+    elseif style == "glowing_divided" then self:draw_glowing_divided(enc)
+    elseif style == "glowing_segment" then self:draw_glowing_segment(enc)
+    elseif style == "glowing_endless" then self:draw_glowing_endless(enc)
+    elseif style == "sweet_sixteen"   then self:draw_sweet_sixteen(enc)    
+    elseif style == "glowing_compass" then self:draw_glowing_compass(enc)
+    elseif style == "glowing_boolean" then self:draw_glowing_boolean(enc)
+    elseif style == "glowing_clock"   then self:draw_glowing_clock(enc)
+    elseif style == "standby"         then self:draw_standby(enc)
+                                      else self:draw_standby(enc)
+    end
+  end
+end
+
+function _arc:draw_segment(n, segment, level)
+  if segment.valid then
+    local adjusted_from = self:get_orientation_adjusted_radian(segment.from)
+    local adjusted_to = self:get_orientation_adjusted_radian(segment.to)
+    self.device:segment(n, adjusted_from, adjusted_to, 15)
+  end
+end
+
+function _arc:get_orientation_adjusted_radian(value)
+  return fn.over_cycle(self:degs_to_rads(self.orientation) + value, 0, 2 * math.pi)
+end
+
+function _arc:draw_led(n, led, level)
+  self.device:led(n, self:get_orientation_adjusted_led(led), level)
+end
+
+function _arc:get_orientation_adjusted_led(value)
+  return fn.over_cycle(util.linlin(0, 360, 0, 64, self.orientation) + value, 0, 64)
 end
 
 
@@ -140,17 +161,44 @@ function _arc:clear_ring(n)
   for i = 1, 64 do _arc.device:led(n, i, 0) end
 end
 
-function _arc:draw_sweet_sixteen(enc)
+function _arc:draw_divided_segment(enc)
   self:clear_ring(enc.enc_id)
-  for i = 1, enc.value do
-    local convert_to_led = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
-    local from =  fn.round(fn.over_cycle(convert_to_led + (4 * (i - 1)), 1, 64))
-    local to = fn.round(from + 3)
-    for x = from, to do
-      local l = x == to and 3 or math.random(10, 15)
-      _arc.device:led(enc.enc_id, x, l)
-    end
+  local segment_size = enc.style_max_getter() / enc.max_getter()
+  local segments = {}
+  for i = 1, enc.max_getter() do
+    local from_raw = enc.style_offset() + (segment_size * (i - 1))
+    local from = self:cycle_degrees(from_raw)
+    local to =  self:cycle_degrees(from_raw + segment_size)
+    segments[i] = {}
+    segments[i].from = self:degs_to_rads(from, enc.snap_getter())
+    segments[i].to = self:degs_to_rads(to, enc.snap_getter())
   end
+  self:draw_segment(enc.enc_id, self:validate_segment(segments[self:map_to_segment(enc)]), 15)
+end
+
+function _arc:draw_scaled_segment(enc)
+  local max = (enc.style_max_getter() == 360) and 359.9 or enc.style_max_getter() -- compensate for circles, 0 == 360, etc.
+  local from = enc.style_offset()
+  local to = self:cycle_degrees(util.linlin(0, 360, 0, enc.style_max_getter(), self:scale_to_degrees(enc)) + enc.style_offset())
+  local segment = {}
+  segment.from = self:degs_to_rads(from, enc.snap_getter())
+  segment.to = self:degs_to_rads(to, enc.snap_getter())
+  self:draw_segment(enc.enc_id, self:validate_segment(segment), 15)
+end
+
+function _arc:draw_glowing_divided(enc)
+  self:clear_ring(enc.enc_id)
+  local segment_size = enc.style_max_getter() / enc.max_getter()
+  local segments = {}
+  for i = 1, enc.max_getter() do
+    local from_raw = enc.style_offset() + (segment_size * (i - 1))
+    local from = self:cycle_degrees(from_raw)
+    local to =  self:cycle_degrees(from_raw + segment_size)
+    segments[i] = {}
+    segments[i].from = self:degs_to_rads(from, enc.snap_getter())
+    segments[i].to = self:degs_to_rads(to, enc.snap_getter())
+  end
+  self:draw_segment(enc.enc_id, self:validate_segment(segments[self:map_to_segment(enc)]), math.random(10, 15))
 end
 
 function _arc:draw_glowing_segment(enc)
@@ -162,7 +210,40 @@ function _arc:draw_glowing_segment(enc)
     local from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
     local to = fn.round(from + segment_size)
     for x = from, to do
-      _arc.device:led(enc.enc_id, x, math.random(10, 15))
+      self:draw_led(enc.enc_id, x, math.random(10, 15))
+    end
+  end
+end
+
+function _arc:draw_glowing_endless(enc)
+  self:clear_ring(enc.enc_id)
+  local ring = {}
+  for i = 1, 64 do
+    ring[i] = (i > 2 and i < 9) and math.random(10, 15) or 0
+  end
+  ring[2], ring[9] = 5, 5
+  ring[1], ring[10] = 3, 3
+  -- todo there is still a tiny bug here where it jumps when wrapping
+  if self.glowing_endless_cache ~= math.floor(enc.value) then
+    self.glowing_endless_cache = math.floor(enc.value)
+    local direction = self.glowing_endless_up and 1 or -1
+    self.glowing_endless_position = fn.cycle(self.glowing_endless_position + direction, 1, 8)
+  end
+  ring = fn.shift_table(ring, self.glowing_endless_position * 8)
+  for k, v in pairs(ring) do    
+    self:draw_led(enc.enc_id, k, v)
+  end
+end
+
+function _arc:draw_sweet_sixteen(enc)
+  self:clear_ring(enc.enc_id)
+  for i = 1, enc.value do
+    local convert_to_led = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
+    local from =  fn.round(fn.over_cycle(convert_to_led + (4 * (i - 1)), 1, 64))
+    local to = fn.round(from + 3)
+    for x = from, to do
+      local l = x == to and 3 or math.random(10, 15)
+      self:draw_led(enc.enc_id, x, l)
     end
   end
 end
@@ -182,7 +263,7 @@ function _arc:draw_glowing_boolean(enc)
   local shift_amount = fn.round(util.linlin(0, 360, 1, 64, enc.style_offset()))
   ring = fn.shift_table(ring, shift_amount)
   for k, v in pairs(ring) do    
-    _arc.device:led(enc.enc_id, k, v)
+    self:draw_led(enc.enc_id, k, v)
   end
 end
 
@@ -197,51 +278,8 @@ function _arc:draw_glowing_compass(enc)
   -- adjust for "compass"
   ring = fn.shift_table(ring, 57)
   for k, v in pairs(ring) do    
-    _arc.device:led(enc.enc_id, k, v)
+    self:draw_led(enc.enc_id, k, v)
   end
-end
-
-function _arc:draw_glowing_divided(enc)
-  self:clear_ring(enc.enc_id)
-  local segment_size = enc.style_max_getter() / enc.max_getter()
-  local segments = {}
-  for i = 1, enc.max_getter() do
-    local from_raw = enc.style_offset() + (segment_size * (i - 1))
-    local from = self:cycle_degrees(from_raw)
-    local to =  self:cycle_degrees(from_raw + segment_size)
-    segments[i] = {}
-    segments[i].from = self:degs_to_rads(from, enc.snap_getter())
-    segments[i].to = self:degs_to_rads(to, enc.snap_getter())
-  end
-  segment = self:validate_segment(segments[self:map_to_segment(enc)])
-  if segment.valid then
-    _arc.device:segment(enc.enc_id, segment.from, segment.to, math.random(10, 15))
-  end
-end
-
-function _arc:draw_divided_segment(enc)
-  self:clear_ring(enc.enc_id)
-  local segment_size = enc.style_max_getter() / enc.max_getter()
-  local segments = {}
-  for i = 1, enc.max_getter() do
-    local from_raw = enc.style_offset() + (segment_size * (i - 1))
-    local from = self:cycle_degrees(from_raw)
-    local to =  self:cycle_degrees(from_raw + segment_size)
-    segments[i] = {}
-    segments[i].from = self:degs_to_rads(from, enc.snap_getter())
-    segments[i].to = self:degs_to_rads(to, enc.snap_getter())
-  end
-  self:draw_segment(enc.enc_id, self:validate_segment(segments[self:map_to_segment(enc)]))
-end
-
-function _arc:draw_scaled_segment(enc)
-  local max = (enc.style_max_getter() == 360) and 359.9 or enc.style_max_getter() -- compensate for circles, 0 == 360, etc.
-  local from = enc.style_offset()
-  local to = self:cycle_degrees(util.linlin(0, 360, 0, enc.style_max_getter(), self:scale_to_degrees(enc)) + enc.style_offset())
-  local segment = {}
-  segment.from = self:degs_to_rads(from, enc.snap_getter())
-  segment.to = self:degs_to_rads(to, enc.snap_getter())
-  self:draw_segment(enc.enc_id, self:validate_segment(segment))
 end
 
 function _arc:draw_glowing_clock(enc)
@@ -258,7 +296,7 @@ function _arc:draw_glowing_clock(enc)
     ring = fn.shift_table(ring, self.rotate_frame)
   end
   for k, v in pairs(ring) do    
-    _arc.device:led(enc.enc_id, k, v)
+    self:draw_led(enc.enc_id, k, v)
   end
 end
 
@@ -270,7 +308,7 @@ function _arc:draw_standby(enc)
   ring[1], ring[17], ring[33], ring[49] = l, l, l, l
   ring = fn.reverse_shift_table(ring, self.rotate_frame)
   for k, v in pairs(ring) do    
-    _arc.device:led(enc.enc_id, k, v)
+    self:draw_led(enc.enc_id, k, v)
   end
 end
 
@@ -301,10 +339,6 @@ function _arc:map_to_segment(enc)
     return match
   end
 end
-
-
-
-
 
 
 

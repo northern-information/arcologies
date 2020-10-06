@@ -69,6 +69,7 @@ function enc(e, d)
     menu:scroll(d)
   elseif e == 3 then
     menu:scroll_value(d) -- e3 only ever changes the menu value
+    _arc:set_glowing_endless_up(d > 0)
   end
   fn.dirty_screen(true)
 end

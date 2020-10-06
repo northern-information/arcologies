@@ -100,7 +100,7 @@ function parameters.init()
     params:set_action(id, function(index) _arc:bind(i, config.arc_bindings[index].id) end)
     params:set(id, i)
   end
-  parameters.arc_orientations = { 0, 90, 180, 270}
+  parameters.arc_orientations = { 0, 90, 180, 270 }
   params:add_option("arc_orientation", "ROTATION", parameters.arc_orientations)
   params:set_action("arc_orientation", function(index) _arc:set_orientation(parameters.arc_orientations[index]) end)
 
