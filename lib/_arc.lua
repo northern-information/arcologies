@@ -141,7 +141,9 @@ function _arc:arc_redraw()
     elseif s == "glowing_drift"      then self:draw_glowing_drift(enc)
     elseif s == "glowing_endless"    then self:draw_glowing_endless(enc)
     elseif s == "glowing_fulcrum"    then self:draw_glowing_fulcrum(enc)
+    elseif s == "glowing_range"      then self:draw_glowing_range(enc)    
     elseif s == "glowing_segment"    then self:draw_glowing_segment(enc)
+    elseif s == "glowing_territory"  then self:draw_glowing_territory(enc)
     elseif s == "glowing_topography" then self:draw_glowing_topography(enc)
     elseif s == "scaled"             then self:draw_scaled_segment(enc)
     elseif s == "sweet_sixteen"      then self:draw_sweet_sixteen(enc)    
@@ -239,6 +241,27 @@ function _arc:draw_glowing_segment(enc)
     end
   end
 end
+
+function _arc:draw_glowing_range(enc)
+  -- only works for selected cells for now
+  -- there are no global attributes that use range and are mappable
+  if not keeper.is_cell_selected then return end
+  self:clear_ring(enc.enc_id)
+  local from = keeper.selected_cell.arc_styles["RANGE MIN"].value_getter(keeper.selected_cell)
+  local to = keeper.selected_cell.arc_styles["RANGE MAX"].value_getter(keeper.selected_cell)
+  local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+  local from_led = fn.round(util.linlin(0, 100, 1, style_max, from))
+  local to_led = fn.round(util.linlin(0, 100, 1, style_max, to))
+  local ring = {}
+  for i = 1, 64 do
+     ring[i] = (i >= from_led) and (i <= to_led) and math.random(10, 15) or 0
+  end
+  ring = fn.shift_table(ring, util.linlin(0, 360, 1, 64, enc.style_offset()))
+  for k, v in pairs(ring) do    
+    self:draw_led(enc.enc_id, k, v)
+  end
+end
+
 
 function _arc:draw_glowing_fulcrum(enc)
   self:clear_ring(enc.enc_id)
@@ -371,6 +394,56 @@ function _arc:draw_glowing_compass(enc)
   end
 end
 
+function _arc:draw_glowing_territory(enc)
+  self:clear_ring(enc.enc_id)
+  local ring = {}
+  local shift = 0
+  -- 1 = north, 2 = east, 3 = south, 4 = west
+  -- 5 = n/e, 6 = s/e, 7 = s/w, 8 = n/w
+  -- 9 = all, 10 = fringes
+  -- matching on strings is safer here
+  local t = keeper.selected_cell:territory_menu_getter(enc.value_getter())
+  if t == "NORTH" or t == "EAST" or t == "SOUTH" or t =="WEST" then
+    for i = 1, 64 do
+      ring[i] = (i < 16) and math.random(10, 15) or 0
+    end
+        if t == "NORTH" then shift = 0
+    elseif t == "EAST"  then shift = 1
+    elseif t == "SOUTH" then shift = 2
+    elseif t == "WEST"  then shift = 3
+    end
+  elseif t == "N/E" or t == "S/E" or t == "S/W" or t =="N/W" then
+    for i = 1, 64 do
+      ring[i] = i <= 32 and math.random(10, 15) or 0
+    end
+        if t == "N/E" then shift = 0
+    elseif t == "S/E" then shift = 1
+    elseif t == "S/W" then shift = 2
+    elseif t == "N/W" then shift = 3
+    end
+  elseif t == "ALL" then
+    for i = 1, 64 do
+      ring[i] = math.random(10, 15)
+    end
+  elseif t == "FRINGES" then
+    for i = 1, 64 do
+      ring[i] = (i <= 8 or 
+                (i > 16 and i <= 24) or 
+                (i > 32 and i <= 40) or 
+                (i > 48 and i <= 56)) and math.random(10, 15) or 0
+    end
+    ring = fn.shift_table(ring, 11)
+  end
+  
+  
+  ring = fn.shift_table(ring, (shift * 16))
+  -- adjust for "compass"
+  ring = fn.shift_table(ring, 57)
+  for k, v in pairs(ring) do    
+    self:draw_led(enc.enc_id, k, v)
+  end
+end
+
 function _arc:draw_glowing_clock(enc)
   local ring = {}
   for i = 1, 64 do ring[i] = 0 end
@@ -423,7 +496,7 @@ function _arc:draw_standby(enc)
   for i = 1, 64 do ring[i] = 0 end
   local l = self.slow_frame % 5
   if self.standby_up then l = util.linlin(1, 5, 5, 1, l) end
-  ring[1], ring[17], ring[33], ring[49] = l, l, l, l
+  ring[1], ring[21], ring[42] = l, l, l
   ring = fn.reverse_shift_table(ring, self.rotate_frame)
   for k, v in pairs(ring) do    
     self:draw_led(enc.enc_id, k, v)
@@ -543,12 +616,12 @@ function _arc:register_all_available_bindings()
     max_getter         = function()  return page:get_page_count() end,
     min_getter         = function()  return 1 end,
     offset_getter      = function()  return 240 end,
-    sensitivity_getter = function()  return .05 end,
+    sensitivity_getter = function()  return .01 end,
     snap_getter        = function()  return true end,
     style_getter       = function()  return "divided" end,
     style_max_getter   = function()  return 240 end,
     value_getter       = function()  return page.active_page end,
-    value_setter       = function(x) page:select(x) end,
+    value_setter       = function(x) if x ~= page.active_page then page:select(x) end end,
     wrap_getter        = function()  return false end,
   })
   _arc:register_binding({

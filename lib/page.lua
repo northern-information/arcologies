@@ -17,6 +17,7 @@ function page:scroll(d)
 end
 
 function page:select(i, then_select_item)
+  if init_done and (i < 1 or i > #page.titles) then return end
   self.active_page = i
   self.then_select_item = then_select_item or nil
   menu:reset()

@@ -60,7 +60,7 @@ local mixins = {
   "range_mixin",
   "resilience_mixin",
   "state_index_mixin",
-  "structure_stub_mixin",
+  "structure_mixin",
   "territory_mixin",
   "topography_mixin",
   "turing_mixin",

@@ -15,7 +15,7 @@ structure names _must_ be a single word due to string matching for glyphs
 function structures.init()
   structures.order = 1
   structures.database = {}
-  structures:register("STUBBY",       { "TOPOGRAPHY" })
+  structures:register("STUBBY",       { "TERRITORY" })
   structures:register("HIVE",         { "METABOLISM", "OFFSET" })
   structures:register("SHRINE",       { "NOTES", "VELOCITY" })
   structures:register("GATE",         {})

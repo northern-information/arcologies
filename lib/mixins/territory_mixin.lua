@@ -5,10 +5,25 @@ territory_mixin.init = function(self)
   self.setup_territory = function(self)
     self.territory_key = "TERRITORY"
     self.territory = 1
-    self:register_save_key("territory")
     self.territory_menu_values = {"NORTH", "EAST", "SOUTH", "WEST", "N/E", "S/E", "S/W", "N/W", "ALL", "FRINGES"}
+    self.territory_min = 1
+    self.territory_max = #self.territory_menu_values
+    self:register_save_key("territory")
     self:register_menu_getter(self.territory_key, self.territory_menu_getter)
     self:register_menu_setter(self.territory_key, self.territory_menu_setter)
+    self:register_arc_style({
+      key = self.territory_key,
+      style_getter = function() return "glowing_territory" end,
+      style_max_getter = function() return 360 end,
+      sensitivity = .05,
+      offset = 0,
+      wrap = false,
+      snap = true,
+      min = self.territory_min,
+      max = self.territory_max,
+      value_getter = self.get_territory,
+      value_setter = self.set_territory
+    })
   end
 
   self.get_territory = function(self)
@@ -16,7 +31,7 @@ territory_mixin.init = function(self)
   end
 
   self.set_territory = function(self, i)
-    self.territory = util.clamp(i, 1, #self.territory_menu_values)
+    self.territory = util.clamp(i, self.territory_min, self.territory_max)
     self.callback(self, "set_territory")
   end
 
@@ -127,7 +142,7 @@ territory_mixin.init = function(self)
       local f = self:get_fringes()
       x1 = f.x1
       y1 = f.y1
-      x2 = f.y2
+      x2 = f.x2
       y2 = f.y2
     end
     

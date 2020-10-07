@@ -5,7 +5,6 @@ function Cell:new(x, y, g)
   c.x = x ~= nil and x or 0
   c.y = y ~= nil and y or 0
   c.generation = g ~= nil and g or 0
-  c.structure_name = structures:first() -- typically HIVE
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
@@ -40,7 +39,7 @@ function Cell:new(x, y, g)
   range_mixin.init(self)
   resilience_mixin.init(self)
   state_index_mixin.init(self)
-  structure_stub_mixin.init(self)
+  structure_mixin.init(self)
   territory_mixin.init(self)
   topography_mixin.init(self)
   turing_mixin.init(self)
@@ -75,7 +74,7 @@ function Cell:new(x, y, g)
   c.setup_range(c)
   c.setup_resilience(c)
   c.setup_state_index(c)
-  c.setup_structure_stub(c)
+  c.setup_stub(c)
   c.setup_territory(c)
   c.setup_topography(c)
   c.setup_turing(c)
@@ -117,34 +116,11 @@ function Cell:get_menu_value_by_attribute(a)
   end
 end
 
-function Cell:is(name)
-  return self.structure_name == name
-end
-
-function Cell:has(name)
-  return fn.table_has(self:get_attributes(), name)
-end
-
-function Cell:get_attributes()
-  return structures:get_structure_attributes(self.structure_name)
-end
-
-function Cell:change(name)
-  local match = false
-  for k, v in pairs(structures:all_enabled()) do
-    if v.name == name then
-      self:set_structure_by_name(name)
-      match = true
-    end
-  end
-  if not match then
-    self:set_structure_by_name(structures:first())
-  end
-end
-
-function Cell:set_structure_by_name(name)
-  self.structure_name = name
-  self:change_checks()
+function Cell:menu_items()
+  local items = fn.deep_copy(self:get_attributes())
+  items = self:inject_notes_into_menu(items)
+  items = self:check_output_items(items)
+  return items
 end
 
 function Cell:prepare_for_paste(x, y, g)
@@ -155,13 +131,6 @@ function Cell:prepare_for_paste(x, y, g)
   self.index = fn.index(self.x, self.y)
   self.flag = false
   self:set_available_ports()
-end
-
-function Cell:menu_items()
-  local items = fn.deep_copy(self:get_attributes())
-  items = self:inject_notes_into_menu(items)
-  items = self:check_output_items(items)
-  return items
 end
 
 --[[
@@ -268,11 +237,12 @@ end
 -- does this cell need to do anything to boot up this beat?
 function Cell:setup()
       if self:is("RAVE") and self:is_spawning() then self:drugs()
-  elseif self:is("MAZE") then self:set_turing()
-  elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
-  elseif self:is("MIRAGE") then self:shall_we_drift_today()
-  elseif self:is("INSTITUTION") then self:has_crumbled()
-  elseif self:is("KUDZU") then self:close_all_ports() self:lifecycle()
+  elseif self:is("MAZE")                        then self:set_turing()
+  elseif self:is("SOLARIUM")                    then self:compare_capacity_and_charge()
+  elseif self:is("MIRAGE")                      then self:shall_we_drift_today()
+  elseif self:is("INSTITUTION")                 then self:has_crumbled()
+  elseif self:is("KUDZU")                       then self:close_all_ports()
+                                                     self:lifecycle()
   end
 end
 
