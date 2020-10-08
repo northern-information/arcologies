@@ -4,40 +4,34 @@ structure_mixin = {}
 
 structure_mixin.init = function(self)
 
-  self.setup_stub = function(self)
-
-
-    -- so, the problem here is that structure "ids" can change
-    -- when you disable them... guhhhhhh.....
+  self.setup_structure = function(self)
     self.structure_name = structures:first() -- typically HIVE
-
-
     self.structure_key = "STRUCTURE"
     self.structure_min = 1
     self.structure_max = #structures:all_enabled()
     self:register_menu_getter(self.structure_key, self.structure_menu_getter)
     self:register_menu_setter(self.structure_key, self.structure_menu_setter)
-    -- self:register_arc_style({
-    --   key = self.structure_key,
-    --   style_getter = function() return "glowing_divided" end,
-    --   style_max_getter = function() return 240 end,
-    --   sensitivity = .05,
-    --   offset = 240,
-    --   wrap = false,
-    --   snap = true,
-    --   min = self.structure_min,
-    --   max = self.structure_max,
-    --   value_getter = self.get_structure,
-    --   value_setter = self.set_structure
-    -- })
+    self:register_arc_style({
+      key = self.structure_key,
+      style_getter = function() return "glowing_structure" end,
+      style_max_getter = function() return 240 end,
+      sensitivity = .05,
+      offset = 240,
+      wrap = false,
+      snap = true,
+      min = self.structure_min,
+      max = self.structure_max,
+      value_getter = self.get_structure,
+      value_setter = self.set_structure
+    })
   end
 
   self.get_structure = function(self)
-    -- empty
+    return structures:get_index(self.structure_name)
   end
 
   self.set_structure = function(self, i)
-    -- empty
+    self:change(structures:all_enabled()[i].name)
   end
 
   self.structure_menu_getter = function(self)

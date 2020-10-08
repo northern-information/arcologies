@@ -273,7 +273,7 @@ function fn.wrap(t, l)
 end
 
 function fn.table_find(t, element)
-  for i,v in pairs(t) do
+  for i, v in pairs(t) do
     if v == element then
       return i
     end

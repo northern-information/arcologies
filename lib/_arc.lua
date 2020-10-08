@@ -12,6 +12,8 @@ function _arc.init()
   _arc.glowing_endless_position = 1
   _arc.glowing_endless_key = nil
   _arc.drift_direction_up = true
+  _arc.structure_popup_active = false
+  _arc.structure_going_up = nil
 
   -- each also needs to be setup in config.arc_bindings to make available to paramters.lua!
   _arc:register_all_available_bindings()
@@ -90,6 +92,18 @@ function _arc:run_delta(enc, delta)
     value = enc.value + (enc.sensitivity() * delta)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
     enc.value_setter(math.floor(fn.round(self.encs[enc.enc_id].value)))
+  elseif enc.style_getter() == "glowing_structure" then
+    local going_up = delta > 0
+    if self.structure_going_up ~= going_up then
+      self.structure_going_up = going_up
+    end
+    value = enc.value + (enc.sensitivity() * delta)
+    self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
+    local popup_delta = 0
+    if math.floor(value) ~= popup:get_cached_index() then 
+      popup_delta = going_up and 1 or -1
+    end
+    popup:launch("structure", popup_delta, "arc", enc.enc_id)
   else
     if enc.style_getter() ~= "variable" and enc.wrap_getter() then
       value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter())
@@ -143,6 +157,7 @@ function _arc:arc_redraw()
     elseif s == "glowing_fulcrum"    then self:draw_glowing_fulcrum(enc)
     elseif s == "glowing_range"      then self:draw_glowing_range(enc)    
     elseif s == "glowing_segment"    then self:draw_glowing_segment(enc)
+    elseif s == "glowing_structure"  then self:draw_glowing_structure(enc)
     elseif s == "glowing_territory"  then self:draw_glowing_territory(enc)
     elseif s == "glowing_topography" then self:draw_glowing_topography(enc)
     elseif s == "scaled"             then self:draw_scaled_segment(enc)
@@ -181,6 +196,57 @@ end
 
 function _arc:clear_ring(n)
   for i = 1, 64 do _arc.device:led(n, i, 0) end
+end
+
+
+function _arc:draw_glowing_structure(enc)
+  self:clear_ring(enc.enc_id)
+  if not self.structure_popup_active then
+    local ring = {}
+    for i = 1, 3 do
+      local m = (i - 1) * 22
+        ring[m + 1] = 1
+        ring[m + 2] = 1
+        ring[m + 3] = 2
+        ring[m + 4] = 3
+        ring[m + 5] = 5
+        ring[m + 6] = 8
+        ring[m + 7] = 13
+        ring[m + 8] = 2
+        ring[m + 9] = math.random(10,15)
+        ring[m + 10] = 2
+        ring[m + 11] = 13
+        ring[m + 12] = 8
+        ring[m + 13] = 5
+        ring[m + 14] = 3
+        ring[m + 15] = 2
+        ring[m + 16] = 1
+        ring[m + 17] = 1
+        ring[m + 18] = 0
+        ring[m + 19] = 0
+        ring[m + 20] = 0
+        ring[m + 21] = 0
+        ring[m + 22] = 0
+    end
+    ring = fn.shift_table(ring, 2)
+    for k, v in pairs(ring) do    
+      self:draw_led(enc.enc_id, k, v)
+    end
+  else
+    local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+    local segment_size = style_max / enc.max_getter()
+    local segments = {}
+    local cached_index = popup:get_cached_index()
+    for i = 1, cached_index do
+      local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
+      segments[i] = {}
+      segments[i].from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
+      segments[i].to = fn.round(segments[i].from + segment_size)
+    end
+    for x = segments[cached_index].from, segments[cached_index].to do
+      self:draw_led(enc.enc_id, x, math.random(10, 15))
+    end
+  end
 end
 
 function _arc:draw_divided_segment(enc)
@@ -558,6 +624,10 @@ function _arc:rads_to_degs(r, snap)
       d = self:snap_degrees_to_leds(d)
     end
     return d
+end
+
+function _arc:set_structure_popup_active(bool)
+  self.structure_popup_active = bool
 end
 
 -- to stop arc anti-aliasing

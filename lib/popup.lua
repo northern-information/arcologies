@@ -2,11 +2,11 @@ popup = {}
 
 function popup.init()
   popup.active = false
-  popup.input = "" -- key or enc
+  popup.input = "" -- key, enc, or arc
   popup.number = 0
   popup.current_attribute = ""
   popup.current_value = ""
-  popup.cached_index = 0
+  popup.cached_index = 1
   popup.key_timer = 0
   popup.messages = config.popup_messages
   popup.note_number = nil
@@ -24,7 +24,7 @@ function popup:launch(attribute, value, input, number, note_number)
   self.number = number
   self.note_number = note_number or nil
   if not popup.active and self.current_attribute == "structure" then
-      self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
+    self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
   end
   self.active = true
   self:start()
@@ -44,8 +44,8 @@ end
 
 function popup:start()
 
-  -- encoders wait for a period after you stop spinning
-  if self.input == "enc" then
+  -- encoders on both norns and arc wait for a period after you stop spinning
+  if self.input == "enc" or self.input == "arc" then
     self:title_message(self.messages[self.current_attribute]["start"])
     if enc_counter[self.number]["this_clock"] ~= nil then
       clock.cancel(enc_counter[self.number]["this_clock"])
@@ -93,7 +93,8 @@ function popup:enc_wait()
 end
 
 function popup:change()
-  if self.current_attribute == "structure" then    
+  if self.current_attribute == "structure" then
+    _arc:set_structure_popup_active(true)
     self.cached_index = util.clamp(self.current_value + self.cached_index, 1, #structures:all_enabled())
     self:title_message(structures:all_enabled()[self.cached_index].name)
   end
@@ -125,12 +126,20 @@ function popup:done()
     menu:reset()
     menu:set_items(keeper.selected_cell:menu_items())
     menu:select_item_by_name("STRUCTURE")
+    _arc:set_structure_popup_active(false)
+    if self.input == "arc" then
+       _arc.encs[self.number].value_setter(self.cached_index)
+    end
   elseif self.current_attribute == "delete_all" then
     keeper:delete_all_cells()
   elseif self.current_attribute == "note" then
     self:title_message(self.messages.note.done .. " " .. keeper.selected_cell:get_note_name(self.note_number))
   end
 
+end
+
+function popup:get_cached_index()
+  return self.cached_index
 end
 
 return popup
