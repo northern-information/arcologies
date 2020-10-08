@@ -471,7 +471,8 @@ end
 function keeper:update_all_notes()
   for k,cell in pairs(self.cells) do
     if cell:has("NOTES") then
-      for i=1, #cell.notes do
+      cell:update_note_max(#sound:get_scale_notes())
+      for i = 1, #cell.notes do
         -- delta of zero just jiggles the handle
         cell:browse_notes(0, i)
       end

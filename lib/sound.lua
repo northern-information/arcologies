@@ -13,6 +13,10 @@ function sound.init()
   sound:set_scale(sound.scale)
 end
 
+function sound:get_scale_notes()
+  return self.scale_notes
+end
+
 function sound:cycle_transpose(i)
   self:set_transpose(self.transpose + i)
 end

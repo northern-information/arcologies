@@ -6,11 +6,7 @@
 --    k2: play      k3: delete
 --
 --
--- ........................................
--- v1.2.0 "arctangents & archangels"
--- <3 @tyleretters
--- nor.the-rn.info
--- GNU GPL v3.0
+-- v1.2.0
 
 include("arcologies/lib/includes")
 

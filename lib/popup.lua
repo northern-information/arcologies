@@ -23,8 +23,12 @@ function popup:launch(attribute, value, input, number, note_number)
   self.input = input
   self.number = number
   self.note_number = note_number or nil
-  if not popup.active and self.current_attribute == "structure" then
-    self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
+  if not popup.active then
+    if self.current_attribute == "structure" then
+      self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
+    elseif self.current_attribute == "note" then
+      self.cached_index = keeper.selected_cell.arc_styles["NOTE #" .. note_number].value_getter(keeper.selected_cell)
+    end
   end
   self.active = true
   self:start()
@@ -101,6 +105,7 @@ function popup:change()
 
   if self.current_attribute == "note" then
     keeper.selected_cell:browse_notes(self.current_value, self.note_number)
+    self.cached_index = util.clamp(self.current_value + self.cached_index, 1, #sound:get_scale_notes())
     self:title_message("MIDI " .. keeper.selected_cell.notes[self.note_number])
   end
 

@@ -136,6 +136,7 @@ function menu:adaptor(lookup, args)
     local match = fn.key_find(c.arc_styles, s)
     if match then
           if lookup == "key"              then return c.arc_styles[s].key
+      elseif lookup == "extras"           then return c.arc_styles[s].extras or {}
       elseif lookup == "max"              then return c.arc_styles[s].max
       elseif lookup == "min"              then return c.arc_styles[s].min
       elseif lookup == "offset"           then return c.arc_styles[s].offset
@@ -154,6 +155,7 @@ function menu:adaptor(lookup, args)
     if match then
           if lookup == "key"              then return self.arc_styles[s].key
       elseif lookup == "max"              then return self.arc_styles[s].max
+      elseif lookup == "extras"           then return {} -- stub for symmetry
       elseif lookup == "min"              then return self.arc_styles[s].min
       elseif lookup == "offset"           then return self.arc_styles[s].offset
       elseif lookup == "sensitivity"      then return self.arc_styles[s].sensitivity

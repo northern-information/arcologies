@@ -14,6 +14,8 @@ function _arc.init()
   _arc.drift_direction_up = true
   _arc.structure_popup_active = false
   _arc.structure_going_up = nil
+  _arc.note_popup_active = false
+  _arc.note_going_up = nil
 
   -- each also needs to be setup in config.arc_bindings to make available to paramters.lua!
   _arc:register_all_available_bindings()
@@ -105,6 +107,21 @@ function _arc:run_delta(enc, delta)
       popup_delta = going_up and 1 or -1
     end
     popup:launch("structure", popup_delta, "arc", enc.enc_id)
+  elseif enc.style_getter() == "glowing_note" then
+    local going_up = delta > 0
+    if self.note_going_up ~= going_up then
+      self.note_going_up = going_up
+    end
+    -- this uses the value_cache instead of the value
+    value_cache = enc.value_cache + (enc.sensitivity() * delta)
+    self.encs[enc.enc_id].value_cache = util.clamp(value_cache, enc.min_getter(), enc.max_getter())
+    local popup_delta = 0
+    if math.floor(value_cache) ~= popup:get_cached_index() then 
+      popup_delta = going_up and 1 or -1
+    end
+
+    popup:launch("note", popup_delta, "arc", enc.enc_id, enc.extras().note_number)
+
   else
     if enc.style_getter() ~= "variable" and enc.wrap_getter() then
       value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter())
@@ -156,6 +173,7 @@ function _arc:arc_redraw()
     elseif s == "glowing_drift"      then self:draw_glowing_drift(enc)
     elseif s == "glowing_endless"    then self:draw_glowing_endless(enc)
     elseif s == "glowing_fulcrum"    then self:draw_glowing_fulcrum(enc)
+    elseif s == "glowing_note"       then self:draw_glowing_note(enc)
     elseif s == "glowing_range"      then self:draw_glowing_range(enc)    
     elseif s == "glowing_segment"    then self:draw_glowing_segment(enc)
     elseif s == "glowing_structure"  then self:draw_glowing_structure(enc)
@@ -273,6 +291,11 @@ function _arc:draw_scaled_segment(enc)
   segment.from = self:degs_to_rads(from, enc.snap_getter())
   segment.to = self:degs_to_rads(to, enc.snap_getter())
   self:draw_segment(enc.enc_id, self:validate_segment(segment), 15)
+end
+
+function _arc:draw_glowing_note(enc)
+  -- notes can have a value of 0
+  self:draw_glowing_divided(enc)
 end
 
 function _arc:draw_glowing_divided(enc)
@@ -661,6 +684,7 @@ function _arc:init_enc(args)
   self.encs[args.enc_id] = {
     binding_id       = args.binding_id,
     enc_id           = args.enc_id,
+    extras           = args.extras or {},
     key_getter       = args.key_getter,
     max_getter       = args.max_getter,
     min_getter       = args.min_getter,
@@ -716,6 +740,7 @@ function _arc:register_all_available_bindings()
   })
   _arc:register_binding({
     binding_id         = "norns_e3",
+    extras             = function()  return menu:adaptor("extras") end,
     key_getter         = function()  return menu:adaptor("key") end,
     max_getter         = function()  return menu:adaptor("max") end,
     min_getter         = function()  return menu:adaptor("min") end,
@@ -806,6 +831,7 @@ function _arc:bind(n, binding_id)
     value            = 0,
     binding_id       = binding_id,
     enc_id           = n,
+    extras           = self.bindings[binding_id].extras,
     key_getter       = self.bindings[binding_id].key_getter,
     max_getter       = self.bindings[binding_id].max_getter,
     min_getter       = self.bindings[binding_id].min_getter,

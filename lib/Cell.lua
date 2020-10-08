@@ -163,6 +163,7 @@ end
 function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
+  self:update_note_max(#sound:get_scale_notes())
 
       if self:is("DOME") then
          self:set_er()
