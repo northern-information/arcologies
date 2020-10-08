@@ -261,6 +261,19 @@ function menu:register_arc_styles()
     value_setter = function(args) sound:set_transpose(args) end,
     wrap = false,
   }
+  self.arc_styles["DANGER_ZONE_CLOCK_SYNC"] = {
+    key = "DANGER_ZONE_CLOCK_SYNC",
+    max = 16,
+    min = 1,
+    offset = 245,
+    sensitivity = .05,
+    snap = false,
+    style_getter = function() return "glowing_divided" end,
+    style_max_getter = function() return 240 end,
+    value_getter = function() return params:get("danger_zone_clock_sync") end,
+    value_setter = function(args) params:set("danger_zone_clock_sync", args) end,
+    wrap = false,
+  }
   self.arc_styles["DOCS"] = {
     key = "DOCS",
     max = 0,

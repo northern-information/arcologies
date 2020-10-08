@@ -489,4 +489,26 @@ function keeper:update_all_crypts()
   end
 end
 
+function keeper:get_selected_cell_index()
+  local index = 0
+  for k, cell in pairs(self.cells) do
+    index = index + 1
+    if cell.id == self.selected_cell_id then
+      return index
+    end
+  end
+  return index
+end
+
+function keeper:set_selected_cell_index(index)
+  local cell = {}
+  local cell_index = 0
+  for k, cell in pairs(self.cells) do
+    cell_index = cell_index + 1
+    if cell_index == index then
+      self:select_cell(cell.x, cell.y)
+    end
+  end
+end
+
 return keeper

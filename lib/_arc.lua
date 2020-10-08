@@ -276,18 +276,22 @@ function _arc:draw_scaled_segment(enc)
 end
 
 function _arc:draw_glowing_divided(enc)
-  self:clear_ring(enc.enc_id)
-  local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
-  local segment_size = style_max / enc.max_getter()
-  local segments = {}
-  for i = 1, enc.value_getter() do
-    local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
-    segments[i] = {}
-    segments[i].from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
-    segments[i].to = fn.round(segments[i].from + segment_size)
-  end
-  for x = segments[enc.value_getter()].from, segments[enc.value_getter()].to do
-    self:draw_led(enc.enc_id, x, math.random(10, 15))
+  if enc.value_getter() > 0 then
+    self:clear_ring(enc.enc_id)
+    local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+    local segment_size = style_max / enc.max_getter()
+    local segments = {}
+    for i = 1, enc.value_getter() do
+      local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
+      segments[i] = {}
+      segments[i].from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
+      segments[i].to = fn.round(segments[i].from + segment_size)
+    end
+    for x = segments[enc.value_getter()].from, segments[enc.value_getter()].to do
+      self:draw_led(enc.enc_id, x, math.random(10, 15))
+    end
+  else
+    self:draw_standby(enc)
   end
 end
 
@@ -737,6 +741,62 @@ function _arc:register_all_available_bindings()
     value_getter       = menu.arc_styles.BPM.value_getter,
     value_setter       = menu.arc_styles.BPM.value_setter,
     wrap_getter        = function() return menu.arc_styles.BPM.wrap end,
+  })
+  _arc:register_binding({
+    binding_id         = "transpose",
+    key_getter         = function() return menu.arc_styles.TRANSPOSE.key end,
+    max_getter         = function() return menu.arc_styles.TRANSPOSE.max end,
+    min_getter         = function() return menu.arc_styles.TRANSPOSE.min end,
+    offset_getter      = function() return menu.arc_styles.TRANSPOSE.offset end,
+    sensitivity_getter = function() return menu.arc_styles.TRANSPOSE.sensitivity end,
+    snap_getter        = function() return menu.arc_styles.TRANSPOSE.snap end,
+    style_getter       = menu.arc_styles.TRANSPOSE.style_getter,
+    style_max_getter   = menu.arc_styles.TRANSPOSE.style_max_getter,
+    value_getter       = menu.arc_styles.TRANSPOSE.value_getter,
+    value_setter       = menu.arc_styles.TRANSPOSE.value_setter,
+    wrap_getter        = function() return menu.arc_styles.TRANSPOSE.wrap end,
+  })
+  _arc:register_binding({
+    binding_id         = "danger_zone_clock_sync",
+    key_getter         = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.key end,
+    max_getter         = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.max end,
+    min_getter         = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.min end,
+    offset_getter      = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.offset end,
+    sensitivity_getter = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.sensitivity end,
+    snap_getter        = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.snap end,
+    style_getter       = menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.style_getter,
+    style_max_getter   = menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.style_max_getter,
+    value_getter       = menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.value_getter,
+    value_setter       = menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.value_setter,
+    wrap_getter        = function() return menu.arc_styles.DANGER_ZONE_CLOCK_SYNC.wrap end,
+  })
+  _arc:register_binding({
+    binding_id         = "crypt_directory",
+    key_getter         = function() return "CRYPT DIRECTORY" end,
+    max_getter         = function() return filesystem.crypts_names ~= nil and #filesystem.crypts_names or 1 end,
+    min_getter         = function() return 1 end,
+    offset_getter      = function() return 240 end,
+    sensitivity_getter = function() return .05 end,
+    snap_getter        = function() return true end,
+    style_getter       = function() return "glowing_divided" end,
+    style_max_getter   = function() return 240 end,
+    value_getter       = function() return filesystem:get_crypt_index() end,
+    value_setter       = function(args) filesystem:set_crypt_from_arc(args) end,
+    wrap_getter        = function() return false end,
+  })
+  _arc:register_binding({
+    binding_id         = "browse_cells",
+    key_getter         = function() return "BROWSE CELLS" end,
+    max_getter         = function() return #keeper.cells > 0 and #keeper.cells or 0 end,
+    min_getter         = function() return #keeper.cells > 0 and 1 or 0 end,
+    offset_getter      = function() return 240 end,
+    sensitivity_getter = function() return .05 end,
+    snap_getter        = function() return true end,
+    style_getter       = function() return "glowing_divided" end,
+    style_max_getter   = function() return 240 end,
+    value_getter       = function() return keeper:get_selected_cell_index() end,
+    value_setter       = function(args) keeper:set_selected_cell_index(args) end,
+    wrap_getter        = function() return false end,
   })
 end
 

@@ -80,6 +80,21 @@ function filesystem:get_crypt()
   return self.current
 end
 
+function filesystem:get_crypt_index()
+  local index = false
+  for k, v in pairs(self.crypts_names) do
+    if v == self.crypt_name then
+      index = k
+    end
+  end
+  return index
+end
+
+function filesystem:set_crypt_from_arc(index)
+  params:set("crypts_directory", index)
+  filesystem:set_crypt(index)
+end
+
 function filesystem.save_map(text)
   if text then
     print("saving map...")
