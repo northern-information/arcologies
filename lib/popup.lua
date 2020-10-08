@@ -127,9 +127,6 @@ function popup:done()
     menu:set_items(keeper.selected_cell:menu_items())
     menu:select_item_by_name("STRUCTURE")
     _arc:set_structure_popup_active(false)
-    if self.input == "arc" then
-       _arc.encs[self.number].value_setter(self.cached_index)
-    end
   elseif self.current_attribute == "delete_all" then
     keeper:delete_all_cells()
   elseif self.current_attribute == "note" then

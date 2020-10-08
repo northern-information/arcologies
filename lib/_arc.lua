@@ -97,10 +97,11 @@ function _arc:run_delta(enc, delta)
     if self.structure_going_up ~= going_up then
       self.structure_going_up = going_up
     end
-    value = enc.value + (enc.sensitivity() * delta)
-    self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
+    -- this uses the value_cache instead of the value
+    value_cache = enc.value_cache + (enc.sensitivity() * delta)
+    self.encs[enc.enc_id].value_cache = util.clamp(value_cache, enc.min_getter(), enc.max_getter())
     local popup_delta = 0
-    if math.floor(value) ~= popup:get_cached_index() then 
+    if math.floor(value_cache) ~= popup:get_cached_index() then 
       popup_delta = going_up and 1 or -1
     end
     popup:launch("structure", popup_delta, "arc", enc.enc_id)
@@ -667,6 +668,7 @@ function _arc:init_enc(args)
     takeover         = false,
     takeover_clock   = nil,
     value            = args.value,
+    value_cache      = args.value,
     value_getter     = args.value_getter,
     value_setter     = args.value_setter,
     wrap_getter      = args.wrap_getter,
