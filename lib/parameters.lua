@@ -5,18 +5,17 @@ function parameters.init()
   params:add_separator("")
   params:add_separator("- A R C O L O G I E S -")
 
-  params:add_trigger("save", "< SAVE" )
-  params:set_action("save", function(x) te.enter(filesystem.save) end)
+  params:add_trigger("save", "< SAVE ARCOLOGY" )
+  params:set_action("save", function(x) textentry.enter(filesystem.save) end)
 
-  params:add_trigger("load", "> LOAD" )
-  params:set_action("load", function(x) fs.enter(norns.state.data, filesystem.load) end)
-
+  params:add_trigger("load", "> LOAD ARCOLOGY" )
+  params:set_action("load", function(x) fileselect.enter(norns.state.data, filesystem.load) end)
 
   params:add_trigger("save_map", "< SAVE MAP" )
-  params:set_action("save_map", function(x) te.enter(filesystem.save_map) end)
+  params:set_action("save_map", function(x) textentry.enter(filesystem.save_map) end)
 
   params:add_trigger("midi_panic", "> MIDI PANIC!" )
-  params:set_action("midi_panic", function() m:all_off() end)
+  params:set_action("midi_panic", function() _midi:all_off() end)
 
   params:add_option("crypts_directory", "CRYPT(S)", filesystem.crypts_names, 1)
   params:set_action("crypts_directory", function(index) filesystem:set_crypt(index) end)
@@ -87,6 +86,23 @@ function parameters.init()
     min = 0, max = 100, default = 60
   }
   params:set_action("note_range_max", function(x) params:set("note_range_min", util.clamp(params:get("note_range_min"), 0, x)) end)
+
+  params:add_separator("")
+  params:add_separator("ARC BINDINGS")
+
+  parameters.arc_binding_labels = {}
+  for i = 1, #config.arc_bindings do
+    parameters.arc_binding_labels[i] = config.arc_bindings[i].label
+  end
+  for i = 1, 4 do
+    local id = "arc_encoder_" .. i
+    params:add_option(id , "ENCODER " .. i, parameters.arc_binding_labels)
+    params:set_action(id, function(index) _arc:bind(i, config.arc_bindings[index].id) end)
+    params:set(id, i)
+  end
+  parameters.arc_orientations = { 0, 90, 180, 270 }
+  params:add_option("arc_orientation", "ROTATION", parameters.arc_orientations)
+  params:set_action("arc_orientation", function(index) _arc:set_orientation(parameters.arc_orientations[index]) end)
 
   params:add_separator("")
   params:add_separator("STRUCTURES")

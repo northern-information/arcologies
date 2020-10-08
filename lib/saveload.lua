@@ -27,7 +27,7 @@ end
 
 function saveload:load(data)
   counters:stop()
-  s.init()
+  _softcut.init()
   arcology_name = data.arcology_name
   params:set("clock_tempo", data.clock_tempo or data.bpm)
   sound.length = data.length
@@ -48,7 +48,7 @@ function saveload:load_cells(data)
   for k, load_cell in pairs(data.keeper_cells) do
     local tmp = Cell:new(load_cell.x, load_cell.y, load_cell.generation)
     -- pre 1.8 used a different key for structures
-    local structure_key = (data.version_major == 1 and data.version_minor <= 1 and data.version_patch <= 7) and "structure_value" or "structure_name"
+    local structure_key = (data.version_major == 1 and data.version_minor >= 2 or (data.version_minor <= 1 and data.version_patch <= 7)) and "structure_value" or "structure_name"
     -- if the structure doesn't exist anymore, load it as a hive.
     tmp.structure_name  = fn.table_find(structures:all_names(), load_cell[structure_key]) and load_cell[structure_key] or "HIVE"
     for k, v in pairs(tmp:get_save_keys()) do

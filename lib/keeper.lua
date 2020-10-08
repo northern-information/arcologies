@@ -23,7 +23,7 @@ function keeper:collision(signal, cell)
 
   -- all collisions result in signal deaths
   self:register_delete_signal(signal.id)
-  g:register_signal_death_at(cell.x, cell.y)
+  _grid:register_signal_death_at(cell.x, cell.y)
 
   -- bang a closed port and gates redirect invert ports
   if cell:is("GATE") and not self:are_signal_and_port_compatible(signal, cell) then
@@ -39,7 +39,7 @@ function keeper:collision(signal, cell)
 
   -- crypts play samples
   elseif cell:is("CRYPT") then
-    s:one_shot(cell.state_index, cell.level / 100)
+    _softcut:one_shot(cell.state_index, cell.level / 100)
 
   -- shrines play single notes via sc
   elseif cell:is("SHRINE") then
@@ -47,11 +47,11 @@ function keeper:collision(signal, cell)
 
   -- uxbs play single notes via midi
   elseif cell:is("UXB") then
-    m:play(cell.notes[1], cell.velocity, cell.channel, cell.duration, cell.device)
+    _midi:play(cell.notes[1], cell.velocity, cell.channel, cell.duration, cell.device)
 
   -- aviaries play single notes via crow
   elseif cell:is("AVIARY") then
-    c:play(cell.notes[1], cell.crow_out)
+    _crow:play(cell.notes[1], cell.crow_out)
 
   -- stores signals as charge
   elseif cell:is("SOLARIUM") then
@@ -69,12 +69,12 @@ function keeper:collision(signal, cell)
   -- topiaries cylce through notes
   elseif cell:is("CASINO") then
     cell:over_cycle_state_index(cell:topography_operation())
-    m:play(cell.notes[cell.state_index], cell.velocity, cell.channel, cell.duration, cell.device)
+    _midi:play(cell.notes[cell.state_index], cell.velocity, cell.channel, cell.duration, cell.device)
 
   -- forests cylce through notes
   elseif cell:is("FOREST") then
     cell:over_cycle_state_index(cell:topography_operation())
-    c:play(cell.notes[cell.state_index], cell.crow_out)
+    _crow:play(cell.notes[cell.state_index], cell.crow_out)
 
   -- send signals to other tunnels
   elseif cell:is("TUNNEL") then
@@ -86,7 +86,7 @@ function keeper:collision(signal, cell)
     if cell:get_output_string() == "SYNTH" then
       sound:play(random_note, cell.velocity)
     elseif cell:get_output_string() == "MIDI" then
-      m:play(random_note, cell.velocity, cell.channel, cell.duration, cell.device)
+      _midi:play(random_note, cell.velocity, cell.channel, cell.duration, cell.device)
     end
 
   -- fractures play random velocities
@@ -95,17 +95,17 @@ function keeper:collision(signal, cell)
     if cell:get_output_string() == "SYNTH" then
       sound:play(cell.notes[1], random_velocity)
     elseif cell:get_output_string() == "MIDI" then
-      m:play(cell.notes[1], random_velocity, cell.channel, cell.duration, cell.device)
+      _midi:play(cell.notes[1], random_velocity, cell.channel, cell.duration, cell.device)
     end
 
   -- spomeniks play single notes on jf
   elseif cell:is("SPOMENIK") then
-    c:jf(cell.notes[1])
+    _crow:jf(cell.notes[1])
 
   -- autons cycle through notes on jf
   elseif cell:is("AUTON") then
     cell:over_cycle_state_index(cell:topography_operation())
-    c:jf(cell.notes[cell.state_index])
+    _crow:jf(cell.notes[cell.state_index])
 
   -- hydroponics operate at a distance
   elseif cell:is("HYDROPONICS") then
@@ -262,7 +262,7 @@ function keeper:cropdust()
     if cell:is("KUDZU") then table.insert(kudzu, cell) end
   end
   for k, cell in pairs(kudzu) do
-      g:register_flicker_at(cell.x, cell.y)
+      _grid:register_flicker_at(cell.x, cell.y)
       cell:raw_set_crumble(cell:get_crumble() - params:get("kudzu_cropdust_potency"))
       cell:has_crumbled()
   end
@@ -304,7 +304,7 @@ function keeper:collide_signals()
       and fn.in_bounds(signal_from_set_b.x, signal_from_set_b.y) then
         self:register_delete_signal(signal_from_set_a.id)
         self:register_delete_signal(signal_from_set_b.id)
-        g:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)
+        _grid:register_signal_death_at(signal_from_set_a.x, signal_from_set_a.y)
       end
     end
   end
@@ -434,8 +434,12 @@ function keeper:deselect_cell()
   self.selected_cell_id = ""
   self.selected_cell_x = ""
   self.selected_cell_y = ""
+  if page.titles[page.active_page] == "DESIGNER" then
+    menu:reset()
+  end
   fn.dirty_grid(true)
   fn.dirty_screen(true)
+  fn.dirty_arc(true)
 end
 
 function keeper:count_cells(name)
@@ -467,7 +471,8 @@ end
 function keeper:update_all_notes()
   for k,cell in pairs(self.cells) do
     if cell:has("NOTES") then
-      for i=1, #cell.notes do
+      cell:update_note_max(#sound:get_scale_notes())
+      for i = 1, #cell.notes do
         -- delta of zero just jiggles the handle
         cell:browse_notes(0, i)
       end
@@ -477,10 +482,32 @@ end
 
 -- happens when a new crypt directory is selected
 function keeper:update_all_crypts()
-  s:crypt_table()
+  _softcut:crypt_table()
   for k,cell in pairs(self.cells) do
     if cell:is("CRYPT") then
       cell:cycle_state_index(0, i)
+    end
+  end
+end
+
+function keeper:get_selected_cell_index()
+  local index = 0
+  for k, cell in pairs(self.cells) do
+    index = index + 1
+    if cell.id == self.selected_cell_id then
+      return index
+    end
+  end
+  return index
+end
+
+function keeper:set_selected_cell_index(index)
+  local cell = {}
+  local cell_index = 0
+  for k, cell in pairs(self.cells) do
+    cell_index = cell_index + 1
+    if cell_index == index then
+      self:select_cell(cell.x, cell.y)
     end
   end
 end

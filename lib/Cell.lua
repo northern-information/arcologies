@@ -5,13 +5,13 @@ function Cell:new(x, y, g)
   c.x = x ~= nil and x or 0
   c.y = y ~= nil and y or 0
   c.generation = g ~= nil and g or 0
-  c.structure_name = structures:first() -- typically HIVE
   c.id = "cell-" .. fn.id() -- unique identifier for this cell
   c.index = fn.index(c.x, c.y) -- location on the grid
   c.flag = false -- multipurpse flag used through the keeper:collision() lifecycle
   c.save_keys = {}
   c.menu_getters = {}
   c.menu_setters = {}
+  c.arc_styles = {}
   bearing_mixin.init(self)
   capacity_mixin.init(self)
   channel_mixin.init(self)
@@ -26,6 +26,7 @@ function Cell:new(x, y, g)
   duration_mixin.init(self)
   er_mixin.init(self)
   level_mixin.init(self)
+  mapping_mixin.init(self)
   metabolism_mixin.init(self)
   network_mixin.init(self)
   notes_mixin.init(self)
@@ -38,7 +39,7 @@ function Cell:new(x, y, g)
   range_mixin.init(self)
   resilience_mixin.init(self)
   state_index_mixin.init(self)
-  structure_stub_mixin.init(self)
+  structure_mixin.init(self)
   territory_mixin.init(self)
   topography_mixin.init(self)
   turing_mixin.init(self)
@@ -60,6 +61,7 @@ function Cell:new(x, y, g)
   c.setup_duration(c)
   c.setup_er(c)
   c.setup_level(c)
+  c.setup_mapping(c)
   c.setup_metabolism(c)
   c.setup_network(c)
   c.setup_notes(c)
@@ -72,7 +74,7 @@ function Cell:new(x, y, g)
   c.setup_range(c)
   c.setup_resilience(c)
   c.setup_state_index(c)
-  c.setup_structure_stub(c)
+  c.setup_structure(c)
   c.setup_territory(c)
   c.setup_topography(c)
   c.setup_turing(c)
@@ -96,6 +98,10 @@ function Cell:register_menu_getter(key, getter)
   self.menu_getters[key] = getter
 end
 
+function Cell:register_arc_style(args)
+  self.arc_styles[args.key] = args
+end
+
 function Cell:set_attribute_value(key, value)
   if self.menu_setters[key] ~= nil then
     self.menu_setters[key](self, value)
@@ -110,34 +116,11 @@ function Cell:get_menu_value_by_attribute(a)
   end
 end
 
-function Cell:is(name)
-  return self.structure_name == name
-end
-
-function Cell:has(name)
-  return fn.table_has(self:get_attributes(), name)
-end
-
-function Cell:get_attributes()
-  return structures:get_structure_attributes(self.structure_name)
-end
-
-function Cell:change(name)
-  local match = false
-  for k, v in pairs(structures:all_enabled()) do
-    if v.name == name then
-      self:set_structure_by_name(name)
-      match = true
-    end
-  end
-  if not match then
-    self:set_structure_by_name(structures:first())
-  end
-end
-
-function Cell:set_structure_by_name(name)
-  self.structure_name = name
-  self:change_checks()
+function Cell:menu_items()
+  local items = fn.deep_copy(self:get_attributes())
+  items = self:inject_notes_into_menu(items)
+  items = self:check_output_items(items)
+  return items
 end
 
 function Cell:prepare_for_paste(x, y, g)
@@ -148,13 +131,6 @@ function Cell:prepare_for_paste(x, y, g)
   self.index = fn.index(self.x, self.y)
   self.flag = false
   self:set_available_ports()
-end
-
-function Cell:menu_items()
-  local items = fn.deep_copy(self:get_attributes())
-  items = self:inject_notes_into_menu(items)
-  items = self:check_output_items(items)
-  return items
 end
 
 --[[
@@ -169,14 +145,17 @@ theres  only ~40 lines of code below...
 -- to keep traits reasonably indempotent, even though the have to interact with one another
 function Cell:callback(method)
   if method == "set_state_index" then
-    if self:is("CRYPT") then s:crypt_load(self.state_index) end
+    if self:is("CRYPT") then _softcut:crypt_load(self.state_index) end
   elseif method == "set_metabolism" then
-    if self:has("PULSES") and self.pulses > self.metabolism then self.pulses = self.metabolism end
+    if self:has("PULSES") then self:set_pulses_max(self:get_metabolism()) end
+    if self:has("PULSES") and self:get_pulses() > self:get_metabolism() then self:set_pulses(self:get_metabolism()) end
     if self:is("DOME") then self:set_er() end
   elseif method == "set_pulses" then
     if self:is("DOME") then self:set_er() end
   elseif method == "set_bearing" then
     if self:is("WINDFARM") then self:close_all_ports() self:open_port(self:get_bearing_cardinal()) end
+  elseif method == "set_note_count" then
+    if self:has("INDEX") then self:set_max_state_index(self:get_note_count()) end
   end
 end
 
@@ -184,6 +163,7 @@ end
 function Cell:change_checks()
   local max_state_index = self:is("CRYPT") and 6 or 8
   self:set_max_state_index(max_state_index)
+  self:update_note_max(#sound:get_scale_notes())
 
       if self:is("DOME") then
          self:set_er()
@@ -258,11 +238,12 @@ end
 -- does this cell need to do anything to boot up this beat?
 function Cell:setup()
       if self:is("RAVE") and self:is_spawning() then self:drugs()
-  elseif self:is("MAZE") then self:set_turing()
-  elseif self:is("SOLARIUM") then self:compare_capacity_and_charge()
-  elseif self:is("MIRAGE") then self:shall_we_drift_today()
-  elseif self:is("INSTITUTION") then self:has_crumbled()
-  elseif self:is("KUDZU") then self:close_all_ports() self:lifecycle()
+  elseif self:is("MAZE")                        then self:set_turing()
+  elseif self:is("SOLARIUM")                    then self:compare_capacity_and_charge()
+  elseif self:is("MIRAGE")                      then self:shall_we_drift_today()
+  elseif self:is("INSTITUTION")                 then self:has_crumbled()
+  elseif self:is("KUDZU")                       then self:close_all_ports()
+                                                     self:lifecycle()
   end
 end
 

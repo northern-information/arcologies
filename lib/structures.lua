@@ -6,7 +6,6 @@ to add new structures and attributes, minimally:
 
  - structures:register()   this file
  - keeper:collision()      for business logic
- - saveload:load_cells()   to map attributes
  - new glyphs              automatically picked up via the structure string
 
 structure names _must_ be a single word due to string matching for glyphs
@@ -16,7 +15,7 @@ structure names _must_ be a single word due to string matching for glyphs
 function structures.init()
   structures.order = 1
   structures.database = {}
-  -- structures:register("STUBBY",       {})
+  -- structures:register("STUBBY",       { "TERRITORY" })
   structures:register("HIVE",         { "METABOLISM", "OFFSET" })
   structures:register("SHRINE",       { "NOTES", "VELOCITY" })
   structures:register("GATE",         {})
@@ -40,7 +39,7 @@ function structures.init()
   structures:register("KUDZU",        { "METABOLISM", "RESILIENCE", "CRUMBLE" })
   structures:register("WINDFARM",     { "METABOLISM", "BEARING", "CLOCKWISE" })
   structures:register("FRACTURE",     { "NOTES", "RANGE MIN", "RANGE MAX", "OUTPUT", "DURATION", "CHANNEL", "DEVICE" })
-  -- structures:register("PRAIRIE",      {} )
+  -- structures:register("CLOAKROOM",    { "MAPPING" } )
 end
 
 function structures:register(name, attributes)

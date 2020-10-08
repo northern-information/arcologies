@@ -9,6 +9,19 @@ clockwise_mixin.init = function(self)
     self.clockwise_menu_values = { "YES", "COUNTER" }
     self:register_menu_getter(self.clockwise_key, self.clockwise_menu_getter)
     self:register_menu_setter(self.clockwise_key, self.clockwise_menu_setter)
+    self:register_arc_style({
+      key = self.clockwise_key,
+      style_getter = function() return "glowing_clock" end,
+      style_max_getter = function() return 360 end,
+      sensitivity = .05,
+      offset = 0,
+      wrap = false,
+      snap = false,
+      min = 0,
+      max = 1,
+      value_getter = self.clockwise_boolean_to_int_getter,
+      value_setter = self.clockwise_menu_setter
+    })
   end
 
   self.get_clockwise = function(self)
@@ -28,4 +41,9 @@ clockwise_mixin.init = function(self)
   self.clockwise_menu_setter = function(self, i)
     self:set_clockwise(i > 0)
   end
+
+  self.clockwise_boolean_to_int_getter = function(self)
+    return self.clockwise and 1 or 0
+  end
+
 end

@@ -8,11 +8,16 @@ function page.init()
   page.error_code = 0
 end
 
+function page:get_page_title()
+  return self.titles[self.active_page]
+end
+
 function page:scroll(d)
   self:select(util.clamp(page.active_page + d, 1, #page.titles))
 end
 
 function page:select(i, then_select_item)
+  if init_done and (i < 1 or i > #page.titles) then return end
   self.active_page = i
   self.then_select_item = then_select_item or nil
   menu:reset()
@@ -49,7 +54,7 @@ function page:home()
     graphics:bpm(55, 32, math.floor(fn.round(params:get("clock_tempo"), 0)), 0)
     graphics:playback_icon(56, 35)
     graphics:icon(76, 35, sound.length, menu.selected_item_string == "LENGTH" and 1 or 0)
-    graphics:text(56, 61, graphics:format_transpose(sound.transpose) .. mu.note_num_to_name(sound.root) .. " " .. sound.scale_name, 0)
+    graphics:text(56, 61, graphics:format_transpose(sound.transpose) .. musicutil.note_num_to_name(sound.root) .. " " .. sound.scale_name, 0)
     graphics:rect(126, 55, 2, 7, 15)
   end
   graphics:title_bar_and_tabs()
@@ -111,6 +116,14 @@ end
 function page:clear_error()
   self.error = false
   self.error_code = 0
+end
+
+function page:get_page_count()
+  return #self.titles
+end
+
+function page:get_active_page()
+  return self.active_page
 end
 
 return page

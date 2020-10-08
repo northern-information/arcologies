@@ -4,12 +4,31 @@ notes_mixin = {}
 notes_mixin.init = function(self)
 
   self.setup_notes = function(self, count)
-    self.note_count = (count == nil) and 1 or count
-    self:register_save_key("note_count")
+
     self.note_count_key = "NOTE COUNT" -- code key, not music key...
-    self.max_note_count = 8
+    self.note_count = (count == nil) and 1 or count
+    self.note_count_min = 1
+    self.note_count_max = 8
+    self:register_save_key("note_count")
+    self:register_menu_getter(self.note_count_key, self.note_count_menu_getter)
+    self:register_menu_setter(self.note_count_key, self.note_count_menu_setter)
+    self:register_arc_style({
+      key = self.note_count_key,
+      style_getter = function() return "glowing_segment" end,
+      style_max_getter = function() return 240 end,
+      sensitivity = .05,
+      offset = 240,
+      wrap = false,
+      snap = true,
+      min = self.note_count_min,
+      max = self.note_count_max,
+      value_getter = self.get_note_count,
+      value_setter = self.set_note_count
+    })
+
+
     self.note_key = "NOTE" -- code key, not music key...
-    for i = 1, self.max_note_count do
+    for i = 1, self.note_count_max do
       self["note_" .. i .. "_key"] = "NOTE #" .. i
     end
     self.notes = {}
@@ -26,12 +45,43 @@ notes_mixin.init = function(self)
     end
     self:register_menu_getter(self.note_key, self.note_menu_getter)
     self:register_menu_setter(self.note_key, self.note_menu_setter)
-    for i = 1, self.max_note_count do
+    for i = 1, self.note_count_max do
       self:register_menu_getter(self["note_" .. i .. "_key"], self["note_" .. i .. "_menu_getter"])
       self:register_menu_setter(self["note_" .. i .. "_key"], self["note_" .. i .. "_menu_setter"])
     end
-    self:register_menu_getter(self.note_count_key, self.note_count_menu_getter)
-    self:register_menu_setter(self.note_count_key, self.note_count_menu_setter)
+
+    self:register_arc_style({
+      key = self.note_key,
+      style_getter = function() return "glowing_note" end,
+      style_max_getter = function() return 360 end,
+      sensitivity = .05,
+      offset = 180,
+      wrap = false,
+      snap = true,
+      min = 1,
+      max = #sound:get_scale_notes(),
+      value_getter = self.get_note_1,
+      value_setter = self.set_note_1,
+      extras = { note_number = 1 }
+    })
+
+    for i = 1, self.note_count_max do
+      self:register_arc_style({
+        key = "NOTE #" .. i,
+        style_getter = function() return "glowing_note" end,
+        style_max_getter = function() return 360 end,
+        sensitivity = .05,
+        offset = 180,
+        wrap = false,
+        snap = true,
+        min = 1,
+        max = #sound:get_scale_notes(),
+        value_getter = self["get_note_" .. i],
+        value_setter = self["set_note_" .. i],
+        extras = { note_number = i }
+      })
+    end
+
   end
 
   self.note_menu_setter   = function(self, i) popup:launch("note", i, "enc", 3, 1) end
@@ -54,6 +104,36 @@ notes_mixin.init = function(self)
   self.note_7_menu_getter = function(self) return self:note_to_menu_string(7) end
   self.note_8_menu_getter = function(self) return self:note_to_menu_string(8) end
 
+  -- arc getters
+  self.get_note_1 = function(self) return self:get_note(1) end
+  self.get_note_2 = function(self) return self:get_note(2) end
+  self.get_note_3 = function(self) return self:get_note(3) end
+  self.get_note_4 = function(self) return self:get_note(4) end
+  self.get_note_5 = function(self) return self:get_note(5) end
+  self.get_note_6 = function(self) return self:get_note(6) end
+  self.get_note_7 = function(self) return self:get_note(7) end
+  self.get_note_8 = function(self) return self:get_note(8) end
+  
+  self.get_note = function(self, i)
+    return self.notes[i]
+  end
+
+  -- arc setters
+  self.set_note_1 = function(self, note) return self:set_note(note, 1) end
+  self.set_note_2 = function(self, note) return self:set_note(note, 2) end
+  self.set_note_3 = function(self, note) return self:set_note(note, 3) end
+  self.set_note_4 = function(self, note) return self:set_note(note, 4) end
+  self.set_note_5 = function(self, note) return self:set_note(note, 5) end
+  self.set_note_6 = function(self, note) return self:set_note(note, 6) end
+  self.set_note_7 = function(self, note) return self:set_note(note, 7) end
+  self.set_note_8 = function(self, note) return self:set_note(note, 8) end
+
+  self.set_note = function(self, note, index)
+    local i = index ~= nil and index or 1
+    self.notes[i] = note
+    self.callback("set_note")
+  end
+
   self.note_to_menu_string = function(self, index)
     local prefix = (self.state_index == index and self.note_count > 1) and "> " or ""
     return prefix .. self:get_note_name(index)
@@ -61,14 +141,8 @@ notes_mixin.init = function(self)
 
   self.get_note_name = function(self, index)
     if self.notes[index] ~= nil then
-      return mu.note_num_to_name(self.notes[index], true)
+      return musicutil.note_num_to_name(self.notes[index], true)
     end
-  end
-
-  self.set_note = function(self, note, index)
-    local i = index ~= nil and index or 1
-    self.notes[i] = note
-    self.callback("set_note")
   end
 
   self.browse_notes = function(self, delta, index)
@@ -78,13 +152,25 @@ notes_mixin.init = function(self)
     self:set_note(note, index)
   end
 
+  -- how many notes does this cell have? 1-8
   self.get_note_count = function(self)
     return self.note_count
   end
 
+  -- how many notes does this cell have? 1-8
   self.set_note_count = function(self, i)
-    self.note_count = util.clamp(i, 1, self.max_note_count)
+    self.note_count = util.clamp(i, self.note_count_min, self.note_count_max)
     self.callback(self, "set_note_count")
+  end
+
+  -- how many notes *are in this scale*
+  self.update_note_max = function(max)
+    if self.arc_styles ~= nil then
+      self.arc_styles.NOTE.max = max
+      for i = 1, 8 do
+        self.arc_styles["NOTE #" .. i ].max = max
+      end
+    end
   end
 
   self.note_count_menu_getter = function(self)

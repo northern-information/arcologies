@@ -82,7 +82,7 @@ end
 
 function fn.cleanup()
   crow.ii.jf.mode(0)
-  m:all_off()
+  _midi:all_off()
   clock.cancel(music_clock_id)
   clock.cancel(redraw_clock_id)
   clock.cancel(grid_clock_id)
@@ -107,6 +107,18 @@ function fn.dirty_grid(bool)
   return grid_dirty
 end
 
+function fn.dirty_arc(bool)
+  if bool == nil then return arc_dirty end
+  arc_dirty = bool
+  return arc_dirty
+end
+
+function fn.dirty_arc_values(bool)
+  if bool == nil then return arc_values_dirty end
+  arc_values_dirty = bool
+  return arc_values_dirty
+end
+
 function fn.dirty_screen(bool)
   if bool == nil then return screen_dirty end
   screen_dirty = bool
@@ -121,7 +133,7 @@ end
 
 function fn.dismiss_messages()
   fn.break_splash(true)
-  g:dismiss_disconnect()
+  _grid:dismiss_disconnect()
 end
 
 function fn.long_press(k)
@@ -145,11 +157,11 @@ end
 -- grid
 
 function fn.grid_width()
-  return g.last_known_width
+  return _grid.last_known_width
 end
 
 function fn.grid_height()
-  return g.last_known_height
+  return _grid.last_known_height
 end
 
 function fn.index(x, y)
@@ -233,7 +245,7 @@ end
 function fn.cycle(value, min, max)
   if value > max then
     return min
-  elseif value < 1 then
+  elseif value < min then
     return max
   else
     return value
@@ -243,7 +255,7 @@ end
 function fn.over_cycle(value, min, max)
   if value > max then
     return fn.over_cycle(value - max, min, max)
-  elseif value < 1 then
+  elseif value < min then
     return fn.over_cycle(max - value, min, max)
   else
     return value
@@ -261,9 +273,18 @@ function fn.wrap(t, l)
 end
 
 function fn.table_find(t, element)
-  for i,v in pairs(t) do
+  for i, v in pairs(t) do
     if v == element then
       return i
+    end
+  end
+  return false
+end
+
+function fn.key_find(t, element)
+  for k, v in pairs(t) do
+    if k == element then
+      return true
     end
   end
   return false
@@ -293,6 +314,26 @@ function fn.deep_copy(orig)
   return copy
 end
 
+function fn.shift_table(t, shift_amount)
+  if shift_amount == 0 then return t end
+  for i = 1, shift_amount do
+    local last_value = t[#t]
+    table.insert(t, 1, last_value)
+    table.remove(t, #t)
+  end
+  return t
+end
+
+function fn.reverse_shift_table(t, shift_amount)
+  if shift_amount == 0 then return t end
+  for i = 1, shift_amount do
+    local first_value = t[1]
+    table.remove(t, 1)
+    table.insert(t, #t + 1, first_value)
+  end
+  return t
+end
+
 -- dev
 
 function rerun()
@@ -306,7 +347,7 @@ end
 
 function fn.wtfscale()
   for i = 1, #sound.scale_notes do
-    print(sound.scale_notes[i], mu.note_num_to_name(sound.scale_notes[i]))
+    print(sound.scale_notes[i], musicutil.note_num_to_name(sound.scale_notes[i]))
   end
 end
 

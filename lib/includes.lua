@@ -1,26 +1,28 @@
 -- ships with norns
 crow = require("crow")
 er = require("er")
-fs = require("fileselect")
-mu = require("musicutil")
-te = require("textentry")
-tu = require("tabutil")
+fileselect = require("fileselect")
+musicutil = require("musicutil")
+textentry = require("textentry")
+tabutil = require("tabutil")
 engine.name = "PolyPerc"
 
 
+local lib = "arcologies/lib/"
+
 -- stores application configuration and cell composition data
-config = include("arcologies/lib/config")
-config_ = io.open(_path["code"] .. "arcologies/lib/config_.lua", "r")
+config = include(lib .. "config")
+config_ = io.open(_path["code"] .. lib .. "config_.lua", "r")
 if config_ ~= nil then
   io.close(config_)
-  include("arcologies/lib/config_")
+  include(lib .. "config_")
 end
 
 -- defines cell structures
-include("arcologies/lib/structures")
+include(lib .. "structures")
 
 -- the core concept of arcologies, interact with Signals
-include("arcologies/lib/Cell")
+include(lib .. "Cell")
 
 --[[
 attributes of cells. adding more minimally requires:
@@ -30,67 +32,76 @@ attributes of cells. adding more minimally requires:
  - probably some logic in keeper:collision()
  - saveload.lua
 ]]
-include("arcologies/lib/mixins/bearing_mixin")
-include("arcologies/lib/mixins/capacity_mixin")
-include("arcologies/lib/mixins/channel_mixin")
-include("arcologies/lib/mixins/charge_mixin")
-include("arcologies/lib/mixins/clockwise_mixin")
-include("arcologies/lib/mixins/crow_out_mixin")
-include("arcologies/lib/mixins/crumble_mixin")
-include("arcologies/lib/mixins/deflect_mixin")
-include("arcologies/lib/mixins/device_mixin")
-include("arcologies/lib/mixins/docs_stub_mixin")
-include("arcologies/lib/mixins/drift_mixin")
-include("arcologies/lib/mixins/duration_mixin")
-include("arcologies/lib/mixins/er_mixin")
-include("arcologies/lib/mixins/level_mixin")
-include("arcologies/lib/mixins/metabolism_mixin")
-include("arcologies/lib/mixins/network_mixin")
-include("arcologies/lib/mixins/notes_mixin")
-include("arcologies/lib/mixins/offset_mixin")
-include("arcologies/lib/mixins/operator_mixin")
-include("arcologies/lib/mixins/output_mixin")
-include("arcologies/lib/mixins/ports_mixin")
-include("arcologies/lib/mixins/probability_mixin")
-include("arcologies/lib/mixins/pulses_mixin")
-include("arcologies/lib/mixins/range_mixin")
-include("arcologies/lib/mixins/resilience_mixin")
-include("arcologies/lib/mixins/state_index_mixin")
-include("arcologies/lib/mixins/structure_stub_mixin")
-include("arcologies/lib/mixins/territory_mixin")
-include("arcologies/lib/mixins/topography_mixin")
-include("arcologies/lib/mixins/turing_mixin")
-include("arcologies/lib/mixins/velocity_mixin")
+local mixins = {
+  "bearing_mixin",
+  "capacity_mixin",
+  "channel_mixin",
+  "charge_mixin",
+  "clockwise_mixin",
+  "crow_out_mixin",
+  "crumble_mixin",
+  "deflect_mixin",
+  "device_mixin",
+  "docs_stub_mixin",
+  "drift_mixin",
+  "duration_mixin",
+  "er_mixin",
+  "level_mixin",
+  "mapping_mixin",
+  "metabolism_mixin",
+  "network_mixin",
+  "notes_mixin",
+  "offset_mixin",
+  "operator_mixin",
+  "output_mixin",
+  "ports_mixin",
+  "probability_mixin",
+  "pulses_mixin",
+  "range_mixin",
+  "resilience_mixin",
+  "state_index_mixin",
+  "structure_mixin",
+  "territory_mixin",
+  "topography_mixin",
+  "turing_mixin",
+  "velocity_mixin"
+}
+for k, v in pairs(mixins) do
+  include(lib .. "mixins/" .. v)
+end
 
 -- emitted by Cells, "bangs" that move n, e, s, w
-include("arcologies/lib/Signal")
+include(lib .. "Signal")
 
 -- global functions
-fn = include("arcologies/lib/functions")
+fn = include(lib .. "functions")
 
 -- all the save and load routines
-saveload = include("arcologies/lib/saveload")
+saveload = include(lib .. "saveload")
+
+-- arc interactions and leds
+_arc = include(lib .. "_arc")
 
 -- the whole murder of them
-c = include("arcologies/lib/crow")
+_crow = include(lib .. "_crow")
 
 -- clocks, metros, timing
-counters = include("arcologies/lib/counters")
+counters = include(lib .. "counters")
 
 -- in app documentation
-docs = include("arcologies/lib/docs")
+docs = include(lib .. "docs")
 
 -- read & write on norns
-filesystem = include("arcologies/lib/filesystem")
+filesystem = include(lib .. "filesystem")
 
 -- grid interactions and leds
-g = include("arcologies/lib/g")
+_grid = include(lib .. "_grid")
 
 -- structure glyph drawings
-glyphs = include("arcologies/lib/glyphs")
+glyphs = include(lib .. "glyphs")
 
 -- all norns screen rendering
-graphics = include("arcologies/lib/graphics")
+graphics = include(lib .. "graphics")
 
 --[[
 "keeper" is state machine for Cells and Signals
@@ -106,32 +117,35 @@ furthermore, Signals know nothing about Cells. Cells
 know nothing about Signals. keeper:collide() is
 the great atom smasher.
 ]]
-keeper = include("arcologies/lib/keeper")
+keeper = include(lib .. "keeper")
 
 -- build the side menus for norns pages
-menu = include("arcologies/lib/menu")
+menu = include(lib .. "menu")
 
 -- midi interface
-m = include("arcologies/lib/midi")
+_midi = include(lib .. "_midi")
 
 -- controller for norns pages
-page = include("arcologies/lib/page")
+page = include(lib .. "page")
 
 -- exposed norns parameters
-parameters = include("arcologies/lib/parameters")
+parameters = include(lib .. "parameters")
 
 -- popup menu for selecting complex values
-popup = include("arcologies/lib/popup")
+popup = include(lib .. "popup")
 
 -- softcut
-s = include("arcologies/lib/softcut")
+_softcut = include(lib .. "_softcut")
 
 -- all things musical
-sound = include("arcologies/lib/sound")
+sound = include(lib .. "sound")
+
+-- experimental
+api = include(lib .. "api")
 
 -- dev only stuff
-dev = io.open(_path["code"] .. "arcologies/lib/dev.lua", "r")
+dev = io.open(_path["code"] .. lib .. "dev.lua", "r")
 if dev ~= nil then
   io.close(dev)
-  include("arcologies/lib/dev")
+  include(lib .. "dev")
 end

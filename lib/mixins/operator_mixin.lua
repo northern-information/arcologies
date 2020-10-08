@@ -5,10 +5,25 @@ operator_mixin.init = function(self)
   self.setup_operator = function(self)
     self.operator_key = "OPERATOR"
     self.operator = 1
+    self.operator_min = 1
+    self.operator_max = 6
     self:register_save_key("operator")
     self.operator_menu_values = { "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "MODULO", "SET" }
     self:register_menu_getter(self.operator_key, self.operator_menu_getter)
     self:register_menu_setter(self.operator_key, self.operator_menu_setter)
+    self:register_arc_style({
+      key = self.operator_key,
+      style_getter = function() return "glowing_divided" end,
+      style_max_getter = function() return 240 end,
+      sensitivity = .05,
+      offset = 240,
+      wrap = false,
+      snap = false,
+      min = self.operator_min,
+      max = self.operator_max,
+      value_getter = self.get_operator,
+      value_setter = self.set_operator
+    })
   end
 
   self.get_operator = function(self)
@@ -16,7 +31,7 @@ operator_mixin.init = function(self)
   end
 
   self.set_operator = function(self, i)
-    self.operator = util.clamp(i, 1, 6)
+    self.operator = util.clamp(i, self.operator_min, self.operator_max)
     self.callback(self, "set_operator")
   end
 
