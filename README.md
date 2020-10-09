@@ -2,6 +2,8 @@
 
 _an interactive environment for designing 2d sound arcologies with norns and grid_
 
+![arctangents & archangels](https://tyleretters.github.io/arcologies-docs/assets/images/arctangents-and-archangels.jpg)
+
 ![eternal september](https://tyleretters.github.io/arcologies-docs/assets/images/eternal-september.jpg)
 
 ![arcologies](https://tyleretters.github.io/arcologies-docs/assets/images/arcologies-landscape.jpg)
