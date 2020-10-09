@@ -23,12 +23,8 @@ function popup:launch(attribute, value, input, number, note_number)
   self.input = input
   self.number = number
   self.note_number = note_number or nil
-  if not popup.active then
-    if self.current_attribute == "structure" then
-      self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
-    elseif self.current_attribute == "note" then
-      self.cached_index = keeper.selected_cell.arc_styles["NOTE #" .. note_number].value_getter(keeper.selected_cell)
-    end
+  if not popup.active and self.current_attribute == "structure" then
+    self.cached_index = structures:get_index(keeper.selected_cell.structure_name)
   end
   self.active = true
   self:start()
@@ -104,8 +100,14 @@ function popup:change()
   end
 
   if self.current_attribute == "note" then
+    _arc:set_note_popup_active(true)
+    local cached_note = keeper.selected_cell:get_note(self.note_number)
     keeper.selected_cell:browse_notes(self.current_value, self.note_number)
-    self.cached_index = util.clamp(self.current_value + self.cached_index, 1, #sound:get_scale_notes())
+    local new_note = keeper.selected_cell:get_note(self.note_number)
+    -- send it back to _arc since the jumps are not linear. scales move in bigger steps
+    if cached_note ~= new_note then
+      _arc:set_note_value_and_cache(self.number, new_note)
+    end
     self:title_message("MIDI " .. keeper.selected_cell.notes[self.note_number])
   end
 
@@ -136,6 +138,7 @@ function popup:done()
     keeper:delete_all_cells()
   elseif self.current_attribute == "note" then
     self:title_message(self.messages.note.done .. " " .. keeper.selected_cell:get_note_name(self.note_number))
+    _arc:set_note_popup_active(false)
   end
 
 end

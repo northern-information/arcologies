@@ -400,12 +400,18 @@ function keeper:delete_cell(id, s, d)
 end
 
 function keeper:delete_all_structures(name)
-  if self.selected_cell.structure_name == name then
-    self:deselect_cell()
+  if self.selected_cell ~= nil then
+    if self.selected_cell.structure_name == name then
+      self:deselect_cell()
+    end
   end
-  for k, cell in pairs(self.cells) do
-    if cell.structure_name == name then
-      table.remove(self.cells, k)
+  if self.cells ~= nil then
+    if #self.cells > 0 then
+      for k, cell in pairs(self.cells) do
+        if cell.structure_name == name then
+          table.remove(self.cells, k)
+        end
+      end
     end
   end
 end

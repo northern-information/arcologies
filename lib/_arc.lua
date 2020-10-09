@@ -85,15 +85,22 @@ end
 
 function _arc:run_delta(enc, delta)
   local value = 0
+
   if enc.style_getter() == "glowing_endless" then
     self:set_glowing_endless_up(delta > 0)
     value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter() + 1)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter() + 1)
     enc.value_setter(math.floor(self.encs[enc.enc_id].value))
+
+
+
   elseif enc.style_getter() == "glowing_fulcrum" then
     value = enc.value + (enc.sensitivity() * delta)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
     enc.value_setter(math.floor(fn.round(self.encs[enc.enc_id].value)))
+
+
+
   elseif enc.style_getter() == "glowing_structure" then
     local going_up = delta > 0
     if self.structure_going_up ~= going_up then
@@ -107,20 +114,25 @@ function _arc:run_delta(enc, delta)
       popup_delta = going_up and 1 or -1
     end
     popup:launch("structure", popup_delta, "arc", enc.enc_id)
+
+
+
   elseif enc.style_getter() == "glowing_note" then
     local going_up = delta > 0
     if self.note_going_up ~= going_up then
       self.note_going_up = going_up
-    end
-    -- this uses the value_cache instead of the value
-    value_cache = enc.value_cache + (enc.sensitivity() * delta)
-    self.encs[enc.enc_id].value_cache = util.clamp(value_cache, enc.min_getter(), enc.max_getter())
+    end 
+    value = enc.value + (enc.sensitivity() * delta)
+    self.encs[enc.enc_id].value = value
     local popup_delta = 0
-    if math.floor(value_cache) ~= popup:get_cached_index() then 
-      popup_delta = going_up and 1 or -1
+    if going_up and math.floor(value) ~= enc.value_cache then 
+      popup_delta = 1
+    elseif not going_up and math.ceil(value) ~= enc.value_cache then
+      popup_delta = -1
     end
-
     popup:launch("note", popup_delta, "arc", enc.enc_id, enc.extras().note_number)
+
+
 
   else
     if enc.style_getter() ~= "variable" and enc.wrap_getter() then
@@ -131,6 +143,9 @@ function _arc:run_delta(enc, delta)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter())
     enc.value_setter(self:map_to_segment(enc))
   end
+
+
+
 end
 
 function _arc.enc_wait(n)
@@ -294,8 +309,70 @@ function _arc:draw_scaled_segment(enc)
 end
 
 function _arc:draw_glowing_note(enc)
-  -- notes can have a value of 0
-  self:draw_glowing_divided(enc)
+  self:clear_ring(enc.enc_id)
+  if self.note_popup_active then
+    local value = musicutil.note_num_to_name(enc.value_getter())
+    local segments = {}
+    segments[1]  = { key = "C",    position = 1,   color = "white" }
+    segments[2]  = { key = "C Y",  position = 6,   color = "black" }
+    segments[3]  = { key = "D",    position = 11,  color = "white" }
+    segments[4]  = { key = "D Y",  position = 16,  color = "black" }
+    segments[5]  = { key = "E",    position = 21,  color = "white" }
+    segments[6]  = { key = "F",    position = 26,  color = "white" }
+    segments[7]  = { key = "F Y",  position = 31,  color = "black" }
+    segments[8]  = { key = "G",    position = 36,  color = "white" }
+    segments[9]  = { key = "G Y",  position = 41,  color = "black" }
+    segments[10] = { key = "A",    position = 46,  color = "white" }
+    segments[11] = { key = "A Y",  position = 51,  color = "black" }
+    segments[12] = { key = "B",    position = 56,  color = "white" }
+    local draw = {}
+    local index = 1
+    local led = 0
+    for k, v in pairs(segments) do
+      -- each segment is 5 leds total
+      for i = 1, 5 do    
+        -- 5s are the margins
+        if i == 5 then
+          led = 0
+        -- this is the selected note
+        elseif v.key == value then
+          led = math.random(10, 15)
+        -- this is an unselected white or black key
+        else
+          led = v.color == "white" and 5 or 2
+        end
+        draw[index] = led
+        index = index + 1
+      end
+    end
+    draw[61] = 0
+    draw[62] = 0
+    draw[63] = 0
+    draw[64] = 0
+    draw = fn.shift_table(draw, 35)
+    for k, v in pairs(draw) do
+      self:draw_led(enc.enc_id, k, v)
+    end
+  else
+    local value = enc.value_getter() == 0 and 1 or enc.value_getter() -- 0 will become "mute" one day
+    value = fn.round(util.linlin(1, 127, 1, enc.max_getter(), value)) -- adjust for the scale
+    local style_max = util.linlin(1, 360, 1, 64, enc.style_max_getter())
+    local segment_size = style_max / enc.max_getter()
+    local segments = {}
+    for i = 1, value do
+      local convert_to_led = util.linlin(0, 360, 1, 64, enc.style_offset())
+      segments[i] = {}
+      segments[i].from = fn.round(fn.over_cycle(convert_to_led + (segment_size * (i - 1)), 1, 64))
+      segments[i].to = fn.round(segments[i].from + segment_size)
+    end
+    for x = segments[value].from, segments[value].to do
+      self:draw_led(enc.enc_id, x, math.random(10, 15))
+    end
+    self:draw_led(enc.enc_id, segments[value].from - 2, math.random(1, 3))
+    self:draw_led(enc.enc_id, segments[value].from - 1, math.random(2, 4))
+    self:draw_led(enc.enc_id, segments[value].to + 1, math.random(2, 4))
+    self:draw_led(enc.enc_id, segments[value].to + 2, math.random(1, 3))
+  end
 end
 
 function _arc:draw_glowing_divided(enc)
@@ -656,6 +733,15 @@ end
 
 function _arc:set_structure_popup_active(bool)
   self.structure_popup_active = bool
+end
+
+function _arc:set_note_popup_active(bool)
+  self.note_popup_active = bool
+end
+
+function _arc:set_note_value_and_cache(enc_id, new_note)
+  self.encs[enc_id].value_cache = new_note
+  self.encs[enc_id].value = new_note
 end
 
 -- to stop arc anti-aliasing
