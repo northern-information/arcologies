@@ -311,38 +311,34 @@ end
 function _arc:draw_glowing_note(enc)
   self:clear_ring(enc.enc_id)
   if self.note_popup_active then
+    
     local value = musicutil.note_num_to_name(enc.value_getter())
     local segments = {}
-    segments[1]  = { key = "C",    position = 1,   color = "white" }
-    segments[2]  = { key = "C Y",  position = 6,   color = "black" }
-    segments[3]  = { key = "D",    position = 11,  color = "white" }
-    segments[4]  = { key = "D Y",  position = 16,  color = "black" }
-    segments[5]  = { key = "E",    position = 21,  color = "white" }
-    segments[6]  = { key = "F",    position = 26,  color = "white" }
-    segments[7]  = { key = "F Y",  position = 31,  color = "black" }
-    segments[8]  = { key = "G",    position = 36,  color = "white" }
-    segments[9]  = { key = "G Y",  position = 41,  color = "black" }
-    segments[10] = { key = "A",    position = 46,  color = "white" }
-    segments[11] = { key = "A Y",  position = 51,  color = "black" }
-    segments[12] = { key = "B",    position = 56,  color = "white" }
+    segments[1]  = { key = "C",   color = "white" }
+    segments[2]  = { key = "C♯", color = "black" }
+    segments[3]  = { key = "D",   color = "white" }
+    segments[4]  = { key = "D♯", color = "black" }
+    segments[5]  = { key = "E",   color = "white" }
+    segments[6]  = { key = "F",   color = "white" }
+    segments[7]  = { key = "F♯", color = "black" }
+    segments[8]  = { key = "G",   color = "white" }
+    segments[9]  = { key = "G♯", color = "black" }
+    segments[10] = { key = "A",   color = "white" }
+    segments[11] = { key = "A♯", color = "black" }
+    segments[12] = { key = "B",   color = "white" }
+
+    -- background
     local draw = {}
-    local index = 1
-    local led = 0
-    for k, v in pairs(segments) do
-      -- each segment is 5 leds total
-      for i = 1, 5 do    
-        -- 5s are the margins
-        if i == 5 then
-          led = 0
-        -- this is the selected note
-        elseif v.key == value then
-          led = math.random(10, 15)
-        -- this is an unselected white or black key
-        else
-          led = v.color == "white" and 5 or 2
-        end
-        draw[index] = led
-        index = index + 1
+    for i = 1, 60 do
+      -- white and black keys
+      draw[i] = segments[math.ceil(i / 5)].color == "white" and 5 or 2
+      -- selected
+      if segments[math.ceil(i / 5)].key == value then
+        draw[i] = math.random(10, 15)
+      end
+      -- erase margins
+      if i % 5 == 0 then
+        draw[i] = 0
       end
     end
     draw[61] = 0
