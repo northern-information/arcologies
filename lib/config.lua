@@ -3,7 +3,7 @@ config = {}
 config["settings"] = {
   ["version_major"] = 1,
   ["version_minor"] = 2,
-  ["version_patch"] = 3,
+  ["version_patch"] = 4,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -62,6 +62,7 @@ config["arc_bindings"] = {
   { id = "danger_zone_clock_sync", label = "clock.sync(x)" },
   { id = "transpose", label = "TRANSPOSE" },
   { id = "bpm", label = "BPM" },
+  { id = "global_psyop", label = "GLOBAL PSYOP" },
 }
 
 return config

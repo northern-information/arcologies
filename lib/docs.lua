@@ -200,4 +200,13 @@ docs.sheets["FRACTURE"] = {
   "to open ports."
 }
 
+docs.sheets["CLOAKROOM"] = {
+  "Increment or",
+  "decrement all",
+  "targets of",
+  "adjacent cells.",
+  "S & W ports: +",
+  "N & E ports: -"
+}
+
 return docs

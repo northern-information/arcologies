@@ -23,6 +23,21 @@ offset_mixin.init = function(self)
       value_getter = self.get_offset,
       value_setter = self.set_offset
     })
+   self:register_modulation_target({
+      key = self.offset_key,
+      inc = self.offset_increment,
+      dec = self.offset_decrement
+    })
+  end
+
+  self.offset_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_offset(self:get_offset() + value)
+  end
+
+  self.offset_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_offset(self:get_offset() - value)
   end
 
   self.get_offset = function(self)

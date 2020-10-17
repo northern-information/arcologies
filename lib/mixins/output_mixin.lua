@@ -24,6 +24,21 @@ output_mixin.init = function(self)
       value_getter = self.get_output,
       value_setter = self.set_output
     })
+    self:register_modulation_target({
+      key = self.output_key,
+      inc = self.output_increment,
+      dec = self.output_decrement
+    })
+  end
+
+  self.output_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_output(self:get_output() + value)
+  end
+
+  self.output_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_output(self:get_output() - value)
   end
 
   self.get_output = function(self)

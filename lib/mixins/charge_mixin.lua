@@ -23,6 +23,21 @@ charge_mixin.init = function(self)
       value_getter = self.get_charge,
       value_setter = self.set_charge
     })
+    self:register_modulation_target({
+      key = self.charge_key,
+      inc = self.charge_increment,
+      dec = self.charge_decrement
+    })
+  end
+
+  self.charge_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_charge(self:get_charge() + value)
+  end
+
+  self.charge_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_charge(self:get_charge() - value)
   end
 
   self.get_charge = function(self)

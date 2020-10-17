@@ -27,6 +27,21 @@ topography_mixin.init = function(self)
       value_getter = self.get_topography,
       value_setter = self.set_topography
     })
+    self:register_modulation_target({
+      key = self.topography_key,
+      inc = self.topography_increment,
+      dec = self.topography_decrement
+    })
+  end
+
+  self.topography_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_topography(self:get_topography() + value)
+  end
+
+  self.topography_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_topography(self:get_topography() - value)
   end
 
   self.get_topography = function(self)

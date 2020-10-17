@@ -39,7 +39,7 @@ function structures.init()
   structures:register("KUDZU",        { "METABOLISM", "RESILIENCE", "CRUMBLE" })
   structures:register("WINDFARM",     { "METABOLISM", "BEARING", "CLOCKWISE" })
   structures:register("FRACTURE",     { "NOTES", "RANGE MIN", "RANGE MAX", "OUTPUT", "DURATION", "CHANNEL", "DEVICE" })
-  -- structures:register("CLOAKROOM",    { "MAPPING" } )
+  structures:register("CLOAKROOM",    { "TARGET", "PSYOP" } )
 end
 
 function structures:register(name, attributes)

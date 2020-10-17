@@ -446,9 +446,8 @@ function glyphs:east_port(x, y, l)
 end
 
 function glyphs:south_port(x, y, l)
-  local y_adjust = keeper.selected_cell:is("PRAIRIE") and 30 or 28
-  graphics:rect(x+10, y+y_adjust, 2, 4, l)
-  graphics:rect(x+9, y+y_adjust, 4, 2, l)
+  graphics:rect(x+10, y+28, 2, 4, l)
+  graphics:rect(x+9, y+28, 4, 2, l)
 end
 
 function glyphs:west_port(x, y, l)

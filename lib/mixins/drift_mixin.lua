@@ -24,6 +24,21 @@ drift_mixin.init = function(self)
       value_getter = self.get_drift,
       value_setter = self.set_drift
     })
+    self:register_modulation_target({
+      key = self.drift_key,
+      inc = self.drift_increment,
+      dec = self.drift_decrement
+    })
+  end
+
+  self.drift_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_drift(self:get_drift() + value)
+  end
+
+  self.drift_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_drift(self:get_drift() - value)
   end
 
   self.get_drift = function(self)

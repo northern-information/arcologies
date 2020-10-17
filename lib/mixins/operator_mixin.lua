@@ -24,6 +24,21 @@ operator_mixin.init = function(self)
       value_getter = self.get_operator,
       value_setter = self.set_operator
     })
+    self:register_modulation_target({
+      key = self.operator_key,
+      inc = self.operator_increment,
+      dec = self.operator_decrement
+    })
+  end
+
+  self.operator_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_operator(self:get_operator() + value)
+  end
+
+  self.operator_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_operator(self:get_operator() - value)
   end
 
   self.get_operator = function(self)

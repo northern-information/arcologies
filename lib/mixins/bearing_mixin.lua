@@ -25,6 +25,21 @@ bearing_mixin.init = function(self)
       value_getter = self.get_bearing,
       value_setter = self.set_bearing
     })
+    self:register_modulation_target({
+      key = self.bearing_key,
+      inc = self.bearing_increment,
+      dec = self.bearing_decrement
+    })
+  end
+
+  self.bearing_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:cycle_bearing(value)
+  end
+
+  self.bearing_decrement = function(self, i)
+    local value = i ~= nil and i or -1
+    self:cycle_bearing(value)
   end
 
   self.get_bearing = function(self)

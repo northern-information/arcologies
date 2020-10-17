@@ -24,6 +24,21 @@ territory_mixin.init = function(self)
       value_getter = self.get_territory,
       value_setter = self.set_territory
     })
+    self:register_modulation_target({
+      key = self.territory_key,
+      inc = self.territory_increment,
+      dec = self.territory_decrement
+    })
+  end
+
+  self.territory_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_territory(self:get_territory() + value)
+  end
+
+  self.territory_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_territory(self:get_territory() - value)
   end
 
   self.get_territory = function(self)
@@ -78,7 +93,7 @@ territory_mixin.init = function(self)
     and y >= f.y1
     and y <= f.y2
     then
-        return true
+      return true
     else
       return false
     end

@@ -12,6 +12,7 @@ function Cell:new(x, y, g)
   c.menu_getters = {}
   c.menu_setters = {}
   c.arc_styles = {}
+  c.modulation_targets = {}
   bearing_mixin.init(self)
   capacity_mixin.init(self)
   channel_mixin.init(self)
@@ -25,8 +26,8 @@ function Cell:new(x, y, g)
   drift_mixin.init(self)
   duration_mixin.init(self)
   er_mixin.init(self)
+  state_index_mixin.init(self) -- alphabetically this is "I"
   level_mixin.init(self)
-  mapping_mixin.init(self)
   metabolism_mixin.init(self)
   network_mixin.init(self)
   notes_mixin.init(self)
@@ -35,18 +36,16 @@ function Cell:new(x, y, g)
   output_mixin.init(self)
   ports_mixin.init(self)
   probability_mixin.init(self)
+  psyop_mixin.init(self)
   pulses_mixin.init(self)
   range_mixin.init(self)
   resilience_mixin.init(self)
-  state_index_mixin.init(self)
   structure_mixin.init(self)
+  target_mixin.init(self)
   territory_mixin.init(self)
   topography_mixin.init(self)
   turing_mixin.init(self)
   velocity_mixin.init(self)
-  --[[ walk softly and carry a big stick
-       aka measure twice cut once
-       aka shit got spooky when i had params floating the init()s ]]
   c.setup_bearing(c)
   c.setup_capacity(c)
   c.setup_channel(c)
@@ -60,25 +59,28 @@ function Cell:new(x, y, g)
   c.setup_drift(c)
   c.setup_duration(c)
   c.setup_er(c)
+  c.setup_state_index(c) -- alphabetically this is "I"
   c.setup_level(c)
-  c.setup_mapping(c)
   c.setup_metabolism(c)
   c.setup_network(c)
   c.setup_notes(c)
+    c.note_registrations(c)
   c.setup_offset(c)
   c.setup_operator(c)
   c.setup_output(c)
   c.setup_ports(c)
   c.setup_probability(c)
+  c.setup_psyop(c)
   c.setup_pulses(c)
   c.setup_range(c)
   c.setup_resilience(c)
-  c.setup_state_index(c)
   c.setup_structure(c)
+  c.setup_target(c)
   c.setup_territory(c)
   c.setup_topography(c)
   c.setup_turing(c)
   c.setup_velocity(c)
+  c.target_max = #c.modulation_targets
   return c
 end
 
@@ -100,6 +102,10 @@ end
 
 function Cell:register_arc_style(args)
   self.arc_styles[args.key] = args
+end
+
+function Cell:register_modulation_target(args)
+  self.modulation_targets[#self.modulation_targets + 1] = args
 end
 
 function Cell:set_attribute_value(key, value)

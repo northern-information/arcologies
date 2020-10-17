@@ -24,6 +24,21 @@ deflect_mixin.init = function(self)
       value_getter = self.get_deflect,
       value_setter = self.set_deflect
     })
+    self:register_modulation_target({
+      key = self.deflect_key,
+      inc = self.deflect_increment,
+      dec = self.deflect_decrement
+    })
+  end
+
+  self.deflect_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_deflect(self:get_deflect() + value)
+  end
+
+  self.deflect_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_deflect(self:get_deflect() - value)
   end
 
   self.get_deflect = function(self)

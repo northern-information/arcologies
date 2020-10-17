@@ -23,6 +23,11 @@ range_mixin.init = function(self)
       value_getter = self.get_range_min,
       value_setter = self.set_range_min
     })
+    self:register_modulation_target({
+      key = self.range_min_key,
+      inc = self.range_min_increment,
+      dec = self.range_min_decrement
+    })
     self.range_max_key = "RANGE MAX"
     self.range_max = 100
     self.range_max_min = 0
@@ -43,6 +48,31 @@ range_mixin.init = function(self)
       value_getter = self.get_range_max,
       value_setter = self.set_range_max
     })
+    self:register_modulation_target({
+      key = self.range_max_key,
+      inc = self.range_max_increment,
+      dec = self.range_max_decrement
+    })
+  end
+
+  self.range_max_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_range_max(self:get_range_max() + value)
+  end
+
+  self.range_max_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_range_max(self:get_range_max() - value)
+  end
+
+  self.range_min_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_range_min(self:get_range_min() + value)
+  end
+
+  self.range_min_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_range_min(self:get_range_min() - value)
   end
 
   self.set_range_min = function(self, i)

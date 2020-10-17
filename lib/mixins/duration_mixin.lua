@@ -23,6 +23,21 @@ duration_mixin.init = function(self)
       value_getter = self.get_duration,
       value_setter = self.set_duration
     })
+    self:register_modulation_target({
+      key = self.duration_key,
+      inc = self.duration_increment,
+      dec = self.duration_decrement
+    })
+  end
+
+  self.duration_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_duration(self:get_duration() + value)
+  end
+
+  self.duration_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_duration(self:get_duration() - value)
   end
 
   self.get_duration = function(self)

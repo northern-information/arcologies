@@ -24,6 +24,21 @@ state_index_mixin.init = function(self)
       value_getter = self.get_state_index,
       value_setter = self.set_state_index
     })
+    self:register_modulation_target({
+      key = self.state_index_key,
+      inc = self.state_index_increment,
+      dec = self.state_index_decrement
+    })
+  end
+
+  self.state_index_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:cycle_state_index(value)
+  end
+
+  self.state_index_decrement = function(self, i)
+    local value = i ~= nil and i or -1
+    self:cycle_state_index(value)
   end
 
   self.get_state_index = function(self)

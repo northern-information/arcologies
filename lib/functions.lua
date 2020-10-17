@@ -1,6 +1,19 @@
 fn = {}
 
+function fn.init()
+  fn.id_prefix = "arc-"
+  fn.id_counter = 1000
+end
+
 -- seed
+
+function fn.global_psyop(direction)
+  for k, cell in pairs(keeper.cells) do
+    if cell:is("CLOAKROOM") then
+      cell:psyop_engage(direction)
+    end
+  end
+end
 
 function fn.seed_cells()
   if params:get("seed_cell_count") ~= 0 and not fn.no_grid() then
@@ -75,17 +88,13 @@ end
 
 -- general
 
-function fn.init()
-  fn.id_prefix = "arc-"
-  fn.id_counter = 1000
-end
-
 function fn.cleanup()
   crow.ii.jf.mode(0)
   _midi:all_off()
   clock.cancel(music_clock_id)
   clock.cancel(redraw_clock_id)
   clock.cancel(grid_clock_id)
+  clock.cancel(arc_clock_id)
 end
 
 function fn.get_arcology_version()

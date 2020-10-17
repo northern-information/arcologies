@@ -23,6 +23,21 @@ velocity_mixin.init = function(self)
       value_getter = self.get_velocity,
       value_setter = self.set_velocity
     })
+    self:register_modulation_target({
+      key = self.velocity_key,
+      inc = self.velocity_increment,
+      dec = self.velocity_decrement
+    })
+  end
+
+  self.velocity_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_velocity(self:get_velocity() + value)
+  end
+
+  self.velocity_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_velocity(self:get_velocity() - value)
   end
 
   self.get_velocity = function(self)

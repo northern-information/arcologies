@@ -570,6 +570,18 @@ function graphics:ready_animation(i)
   return f[i]
 end
 
+function graphics:psyop_animation(i)
+  local f = {}
+  f[-3] = "||||..."
+  f[-2] = ".|||..."
+  f[-1] = "..||..."
+  f[0]  = "...|..."
+  f[1]  = "...||.."
+  f[2]  = "...|||."
+  f[3]  = "...||||"
+  return f[i]
+end
+
 function graphics:grid_connect_error()
   self:rect(1, 1, 128, 64, 15)
   self:text_center(64, 30, "PLEASE CONNECT A", 0)

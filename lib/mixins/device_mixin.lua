@@ -23,6 +23,21 @@ device_mixin.init = function(self)
       value_getter = self.get_device,
       value_setter = self.set_device
     })
+    self:register_modulation_target({
+      key = self.device_key,
+      inc = self.device_increment,
+      dec = self.device_decrement
+    })
+  end
+
+  self.device_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_device(self:get_device() + value)
+  end
+
+  self.device_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_device(self:get_device() - value)
   end
 
   self.get_device = function(self)

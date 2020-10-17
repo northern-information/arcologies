@@ -23,6 +23,21 @@ probability_mixin.init = function(self)
       value_getter = self.get_probability,
       value_setter = self.set_probability
     })
+    self:register_modulation_target({
+      key = self.probability_key,
+      inc = self.probability_increment,
+      dec = self.probability_decrement
+    })
+  end
+
+  self.probability_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_probability(self:get_probability() + value)
+  end
+
+  self.probability_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_probability(self:get_probability() - value)
   end
 
   self.get_probability = function(self)

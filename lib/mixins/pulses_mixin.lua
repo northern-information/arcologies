@@ -24,6 +24,21 @@ pulses_mixin.init = function(self)
       value_getter = self.get_pulses,
       value_setter = self.set_pulses
     })
+    self:register_modulation_target({
+      key = self.pulses_key,
+      inc = self.pulses_increment,
+      dec = self.pulses_decrement
+    })
+  end
+
+  self.pulses_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_pulses(self:get_pulses() + value)
+  end
+
+  self.pulses_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_pulses(self:get_pulses() - value)
   end
 
   self.get_pulses = function(self)

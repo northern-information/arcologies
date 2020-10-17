@@ -24,6 +24,21 @@ metabolism_mixin.init = function(self)
       value_getter = self.get_metabolism,
       value_setter = self.set_metabolism
     })
+    self:register_modulation_target({
+      key = self.metabolism_key,
+      inc = self.metabolism_increment,
+      dec = self.metabolism_decrement
+    })
+  end
+
+  self.metabolism_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_metabolism(self:get_metabolism() + value)
+  end
+
+  self.metabolism_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_metabolism(self:get_metabolism() - value)
   end
 
   self.get_metabolism = function(self)

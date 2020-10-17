@@ -23,6 +23,21 @@ resilience_mixin.init = function(self)
       value_getter = self.get_resilience,
       value_setter = self.set_resilience
     })
+   self:register_modulation_target({
+      key = self.resilience_key,
+      inc = self.resilience_increment,
+      dec = self.resilience_decrement
+    })
+  end
+
+  self.resilience_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_resilience(self:get_resilience() + value)
+  end
+
+  self.resilience_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_resilience(self:get_resilience() - value)
   end
 
   self.get_resilience = function(self)

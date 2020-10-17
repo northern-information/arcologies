@@ -111,6 +111,10 @@ function keeper:collision(signal, cell)
   elseif cell:is("HYDROPONICS") then
     keeper:hydroponics(cell)
 
+  -- cloakrooms also operate at a distance
+  elseif cell:is("CLOAKROOM") then
+    cell:psyop_signal_adaptor(signal.heading)
+
   end
 
   --[[ the below structures reroute & split

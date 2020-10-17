@@ -23,6 +23,21 @@ channel_mixin.init = function(self)
       value_getter = self.get_channel,
       value_setter = self.set_channel
     })
+    self:register_modulation_target({
+      key = self.channel_key,
+      inc = self.channel_increment,
+      dec = self.channel_decrement
+    })
+  end
+
+  self.channel_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_channel(self:get_channel() + value)
+  end
+
+  self.channel_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_channel(self:get_channel() - value)
   end
 
   self.get_channel = function(self)

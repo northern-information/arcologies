@@ -4,29 +4,10 @@ notes_mixin = {}
 notes_mixin.init = function(self)
 
   self.setup_notes = function(self, count)
-
     self.note_count_key = "NOTE COUNT" -- code key, not music key...
     self.note_count = (count == nil) and 1 or count
     self.note_count_min = 1
     self.note_count_max = 8
-    self:register_save_key("note_count")
-    self:register_menu_getter(self.note_count_key, self.note_count_menu_getter)
-    self:register_menu_setter(self.note_count_key, self.note_count_menu_setter)
-    self:register_arc_style({
-      key = self.note_count_key,
-      style_getter = function() return "glowing_segment" end,
-      style_max_getter = function() return 240 end,
-      sensitivity = .05,
-      offset = 240,
-      wrap = false,
-      snap = true,
-      min = self.note_count_min,
-      max = self.note_count_max,
-      value_getter = self.get_note_count,
-      value_setter = self.set_note_count
-    })
-
-
     self.note_key = "NOTE" -- code key, not music key...
     for i = 1, self.note_count_max do
       self["note_" .. i .. "_key"] = "NOTE #" .. i
@@ -43,9 +24,34 @@ notes_mixin.init = function(self)
         self:set_note(note, i)
       end
     end
+  end
+
+  self.note_registrations = function(self)
+    self:register_save_key("note_count")
+    self:register_menu_getter(self.note_count_key, self.note_count_menu_getter)
+    self:register_menu_setter(self.note_count_key, self.note_count_menu_setter)
+    self:register_arc_style({
+      key = self.note_count_key,
+      style_getter = function() return "glowing_segment" end,
+      style_max_getter = function() return 240 end,
+      sensitivity = .05,
+      offset = 240,
+      wrap = false,
+      snap = true,
+      min = self.note_count_min,
+      max = self.note_count_max,
+      value_getter = self.get_note_count,
+      value_setter = self.set_note_count
+    })
+    self:register_modulation_target({
+      key = self.note_count_key,
+      inc = self.note_count_increment,
+      dec = self.note_count_decrement
+    })
+
     self:register_menu_getter(self.note_key, self.note_menu_getter)
     self:register_menu_setter(self.note_key, self.note_menu_setter)
-    for i = 1, self.note_count_max do
+    for i = 1, 8 do
       self:register_menu_getter(self["note_" .. i .. "_key"], self["note_" .. i .. "_menu_getter"])
       self:register_menu_setter(self["note_" .. i .. "_key"], self["note_" .. i .. "_menu_setter"])
     end
@@ -65,9 +71,10 @@ notes_mixin.init = function(self)
       extras = { note_number = 1 }
     })
 
-    for i = 1, self.note_count_max do
+    for i = 1, 8 do
+      local key = "NOTE #" .. i
       self:register_arc_style({
-        key = "NOTE #" .. i,
+        key = key,
         style_getter = function() return "glowing_note" end,
         style_max_getter = function() return 360 end,
         sensitivity = .01,
@@ -80,9 +87,41 @@ notes_mixin.init = function(self)
         value_setter = self["set_note_" .. i],
         extras = { note_number = i }
       })
+      self:register_modulation_target({
+        key = key,
+        inc = self["note_" .. i .. "_increment"],
+        dec = self["note_" .. i .. "_decrement"]
+      })
     end
-
   end
+
+  self.note_count_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_note_count(self:get_note_count() + value)
+  end
+
+  self.note_count_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_note_count(self:get_note_count() - value)
+  end
+
+  self.note_1_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 1) end
+  self.note_2_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 2) end
+  self.note_3_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 3) end
+  self.note_4_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 4) end
+  self.note_5_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 5) end
+  self.note_6_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 6) end
+  self.note_7_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 7) end
+  self.note_8_increment = function(self, i) self:browse_notes(i ~= nil and i or 1, 8) end
+
+  self.note_1_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 1) end
+  self.note_2_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 2) end
+  self.note_3_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 3) end
+  self.note_4_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 4) end
+  self.note_5_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 5) end
+  self.note_6_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 6) end
+  self.note_7_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 7) end
+  self.note_8_decrement = function(self, i) self:browse_notes(i ~= nil and i or -1, 8) end
 
   self.note_menu_setter   = function(self, i) popup:launch("note", i, "enc", 3, 1) end
   self.note_1_menu_setter = function(self, i) popup:launch("note", i, "enc", 3, 1) end

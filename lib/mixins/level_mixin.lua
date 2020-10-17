@@ -23,6 +23,21 @@ level_mixin.init = function(self)
       value_getter = self.get_level,
       value_setter = self.set_level
     })
+    self:register_modulation_target({
+      key = self.level_key,
+      inc = self.level_increment,
+      dec = self.level_decrement
+    })
+  end
+
+  self.level_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_level(self:get_level() + value)
+  end
+
+  self.level_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_level(self:get_level() - value)
   end
 
   self.get_level = function(self)

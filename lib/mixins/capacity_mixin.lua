@@ -23,6 +23,21 @@ capacity_mixin.init = function(self)
       value_getter = self.get_capacity,
       value_setter = self.set_capacity
     })
+    self:register_modulation_target({
+      key = self.capacity_key,
+      inc = self.capacity_increment,
+      dec = self.capacity_decrement
+    })
+  end
+
+  self.capacity_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_capacity(self:get_capacity() + value)
+  end
+
+  self.capacity_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_capacity(self:get_capacity() - value)
   end
 
   self.get_capacity = function(self)

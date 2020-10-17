@@ -16,6 +16,7 @@ function _arc.init()
   _arc.structure_going_up = nil
   _arc.note_popup_active = false
   _arc.note_going_up = nil
+  _arc.psyop_cache = 0
 
   -- each also needs to be setup in config.arc_bindings to make available to paramters.lua!
   _arc:register_all_available_bindings()
@@ -91,6 +92,20 @@ function _arc:run_delta(enc, delta)
     value = fn.cycle(enc.value + (enc.sensitivity() * delta), enc.min_getter(), enc.max_getter() + 1)
     self.encs[enc.enc_id].value = util.clamp(value, enc.min_getter(), enc.max_getter() + 1)
     enc.value_setter(math.floor(self.encs[enc.enc_id].value))
+
+
+
+  elseif enc.style_getter() == "glowing_psyop" then
+    self:set_glowing_endless_up(delta > 0)
+    self.psyop_cache = util.clamp(self.psyop_cache + (.05 * delta), -1, 1)
+    self.encs[enc.enc_id].value = self.psyop_cache
+    if self.psyop_cache == 1 then
+      fn.global_psyop("increment")
+      self.psyop_cache = 0
+    elseif self.psyop_cache == -1 then
+      fn.global_psyop("decrement")
+      self.psyop_cache = 0
+    end
 
 
 
@@ -189,6 +204,7 @@ function _arc:arc_redraw()
     elseif s == "glowing_endless"    then self:draw_glowing_endless(enc)
     elseif s == "glowing_fulcrum"    then self:draw_glowing_fulcrum(enc)
     elseif s == "glowing_note"       then self:draw_glowing_note(enc)
+    elseif s == "glowing_psyop"      then self:draw_glowing_fulcrum(enc)
     elseif s == "glowing_range"      then self:draw_glowing_range(enc)    
     elseif s == "glowing_segment"    then self:draw_glowing_segment(enc)
     elseif s == "glowing_structure"  then self:draw_glowing_structure(enc)
@@ -428,7 +444,6 @@ function _arc:draw_glowing_range(enc)
     self:draw_led(enc.enc_id, k, v)
   end
 end
-
 
 function _arc:draw_glowing_fulcrum(enc)
   self:clear_ring(enc.enc_id)
@@ -899,11 +914,26 @@ function _arc:register_all_available_bindings()
     offset_getter      = function() return 240 end,
     sensitivity_getter = function() return .05 end,
     snap_getter        = function() return true end,
-    style_getter       = function() return "glowing_divided" end,
+    style_getter       = function() return "divided" end,
     style_max_getter   = function() return 240 end,
     value_getter       = function() return keeper:get_selected_cell_index() end,
     value_setter       = function(args) keeper:set_selected_cell_index(args) end,
     wrap_getter        = function() return false end,
+  })
+  _arc:register_binding({
+    -- note most of these values do nothing, this is hardcoded in the draw/delta functions
+    binding_id         = "global_psyop",
+    key_getter         = function() return "GLOBAL PSYOP" end,
+    max_getter         = function() return 1 end,
+    min_getter         = function() return -1 end,
+    offset_getter      = function() return 0 end,
+    sensitivity_getter = function() return .05 end,
+    snap_getter        = function() return true end,
+    style_getter       = function() return "glowing_psyop" end,
+    style_max_getter   = function() return 360 end,
+    value_getter       = function() return self.psyop_cache end,
+    value_setter       = function(args) end,
+    wrap_getter        = function() return true end,
   })
 end
 

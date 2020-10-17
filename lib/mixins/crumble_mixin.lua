@@ -23,6 +23,21 @@ crumble_mixin.init = function(self)
       value_getter = self.get_crumble,
       value_setter = self.set_crumble
     })
+    self:register_modulation_target({
+      key = self.crumble_key,
+      inc = self.crumble_increment,
+      dec = self.crumble_decrement
+    })
+  end
+
+  self.crumble_increment = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_crumble(self:get_crumble() + value)
+  end
+
+  self.crumble_decrement = function(self, i)
+    local value = i ~= nil and i or 1
+    self:set_crumble(self:get_crumble() - value)
   end
 
   self.get_crumble = function(self)

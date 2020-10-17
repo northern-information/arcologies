@@ -22,6 +22,19 @@ clockwise_mixin.init = function(self)
       value_getter = self.clockwise_boolean_to_int_getter,
       value_setter = self.clockwise_menu_setter
     })
+    self:register_modulation_target({
+      key = self.clockwise_key,
+      inc = self.clockwise_increment,
+      dec = self.clockwise_decrement
+    })
+  end
+
+  self.clockwise_increment = function(self, i)
+    self:set_clockwise(true)
+  end
+
+  self.clockwise_decrement = function(self, i)
+    self:set_clockwise(false)
   end
 
   self.get_clockwise = function(self)

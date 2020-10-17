@@ -22,6 +22,19 @@ crow_out_mixin.init = function(self)
       value_getter = self.get_crow_out,
       value_setter = self.set_crow_out
     })
+    self:register_modulation_target({
+      key = self.crow_out_key,
+      inc = self.crow_out_increment,
+      dec = self.crow_out_decrement
+    })
+  end
+
+  self.crow_out_increment = function(self, i)
+    self:set_crow_out(1)
+  end
+
+  self.crow_out_decrement = function(self, i)
+    self:set_crow_out(2)
   end
 
   self.get_crow_out = function(self)
