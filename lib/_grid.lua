@@ -1,5 +1,5 @@
 _grid = {}
-_grid.device = grid.connect()
+g = grid.connect()
 
 function _grid.init()
   _grid.counter = {}
@@ -15,8 +15,8 @@ function _grid.init()
   _grid.is_pasting = false
   _grid.paste_counter = 15
   _grid.disconnect_dismissed = true
-  _grid.last_known_width = _grid.device.cols
-  _grid.last_known_height = _grid.device.rows
+  _grid.last_known_width = g.cols
+  _grid.last_known_height = g.rows
   for x = 1, _grid.last_known_width do
     _grid.counter[x] = {}
     for y = 1, _grid.last_known_height do
@@ -25,9 +25,9 @@ function _grid.init()
   end
 end
 
--- grid redefined, _grid ~= grid
+-- little g
 
-function grid.key(x, y, z)
+function g.key(x, y, z)
   fn.break_splash(true)
   if z == 1 then
     _grid.counter[x][y] = clock.run(_grid.grid_long_press, g, x, y)
@@ -47,11 +47,11 @@ function grid.key(x, y, z)
   end
 end
 
-function grid.remove()
+function g.remove()
   _grid:alert_disconnect()
 end
 
--- _grid proper
+-- big _grid
 
 function _grid:alert_disconnect()
   self.disconnect_dismissed = false
@@ -78,7 +78,7 @@ function _grid.grid_redraw_clock()
 end
 
 function _grid:grid_redraw()
-  self.device:all(0)
+  g:all(0)
   self:led_leylines()
   self:led_territories()
   self:led_cells()
@@ -90,7 +90,7 @@ function _grid:grid_redraw()
   self:led_cell_ports()
   self:led_cell_analysis()
   self:led_paste_animation()
-  self.device:refresh()
+  g:refresh()
 end
 
 function _grid:short_press(x, y)
@@ -158,7 +158,7 @@ function _grid:led_signals()
   local level = page.active_page == 3 and menu.selected_item == 1 and 10 or 2
   for k,v in pairs(keeper.signals) do
     if v.generation <= counters.music_generation then
-      self.device:led(v.x, v.y, level)
+      g:led(v.x, v.y, level)
     end
   end
 end
@@ -177,7 +177,7 @@ function _grid:led_signal_deaths()
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_deaths, k)
     else
-      self.device:led(v.x, v.y, v.level)
+      g:led(v.x, v.y, v.level)
       v.level = v.level - 1
     end
   end
@@ -197,7 +197,7 @@ function _grid:led_flickers()
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.flickers, k)
     else
-      self.device:led(v.x, v.y, v.level)
+      g:led(v.x, v.y, v.level)
       v.level = v.level - 1
     end
   end
@@ -217,7 +217,7 @@ function _grid:led_signal_and_cell_collision()
     if v.level == 0 or v.generation + 2 < counters.music_generation then
       table.remove(self.signal_and_cell_collisions, k)
     else
-      self.device:led(v.x, v.y, v.level)
+      g:led(v.x, v.y, v.level)
       v.level = v.level - 1
     end
   end
@@ -225,7 +225,7 @@ end
 
 function _grid:led_cells()
   for k,v in pairs(keeper.cells) do
-    self.device:led(v.x, v.y, 5)
+    g:led(v.x, v.y, 5)
   end
 end
 
@@ -247,7 +247,7 @@ function _grid:led_selected_cell()
 end
 
 function _grid:highlight_cell(cell)
-  self.device:led(cell.x, cell.y, util.clamp(counters.grid_frame() % 15, 5, 15))
+  g:led(cell.x, cell.y, util.clamp(counters.grid_frame() % 15, 5, 15))
 end
 
 function _grid:led_paste_animation()
@@ -258,7 +258,7 @@ function _grid:led_paste_animation()
     self.paste_y = nil
   end
   if self.is_pasting then
-    self.device:led(self.paste_x, self.paste_y, self.paste_counter)
+    g:led(self.paste_x, self.paste_y, self.paste_counter)
     self.paste_counter = self.paste_counter - 1
   end
 end
@@ -270,16 +270,16 @@ function _grid:led_cell_ports()
   local high = util.clamp(counters.grid_frame() % 15, 10, 15)
   local low = 2
   if fn.in_bounds(x, y - 1) then
-    self.device:led(x, y - 1, keeper.selected_cell:is_port_open("n") and high or low)
+    g:led(x, y - 1, keeper.selected_cell:is_port_open("n") and high or low)
   end
   if fn.in_bounds(x + 1, y) then
-    self.device:led(x + 1, y, keeper.selected_cell:is_port_open("e") and high or low)
+    g:led(x + 1, y, keeper.selected_cell:is_port_open("e") and high or low)
   end
   if fn.in_bounds(x, y + 1) then
-    self.device:led(x, y + 1, keeper.selected_cell:is_port_open("s") and high or low)
+    g:led(x, y + 1, keeper.selected_cell:is_port_open("s") and high or low)
   end
   if fn.in_bounds(x - 1 , y) then
-    self.device:led(x - 1, y, keeper.selected_cell:is_port_open("w") and high or low)
+    g:led(x - 1, y, keeper.selected_cell:is_port_open("w") and high or low)
   end
 end
 
@@ -368,11 +368,11 @@ end
 function _grid:draw_leyline(start_x, start_y, end_x, end_y)
   if start_x == end_x then -- vertical
     for i = math.min(start_y, end_y), math.max(start_y, end_y) do
-      if fn.in_bounds(start_x, i) then self.device:led(start_x, i, 1) end
+      if fn.in_bounds(start_x, i) then g:led(start_x, i, 1) end
     end
   elseif start_y == end_y then -- horizontal
     for i = math.min(start_x, end_x), math.max(start_x, end_x) do
-      if fn.in_bounds(i, start_y) then self.device:led(i, start_y, 1) end
+      if fn.in_bounds(i, start_y) then g:led(i, start_y, 1) end
     end
   else
     print("Error: leylines must be perpendicular.")
@@ -386,7 +386,7 @@ function _grid:led_territories()
   for x = c.x1, c.x2 do
     for y = c.y1, c.y2 do
       local l = math.ceil(util.linlin(0, 15, 0, 3, counters.grid_frame() % 15))
-      if fn.in_bounds(x, y) then self.device:led(x, y, l) end
+      if fn.in_bounds(x, y) then g:led(x, y, l) end
     end
   end
   fn.dirty_grid(true)

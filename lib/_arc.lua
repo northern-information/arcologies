@@ -1,5 +1,5 @@
 _arc = {}
-_arc.device = arc.connect()
+a = arc.connect()
 
 function _arc.init()
   _arc.orientation = 0
@@ -34,7 +34,7 @@ function _arc.arc_redraw_clock()
     if fn.dirty_arc() then
       _arc:refresh_values()
       _arc:arc_redraw()
-      _arc.device:refresh()
+      a:refresh()
       -- fn.dirty_arc(false) -- disabled for the sparkly animations
       _arc:increment_frames()
     end
@@ -222,7 +222,7 @@ function _arc:draw_segment(n, segment, level)
   if segment.valid then
     local adjusted_from = self:get_orientation_adjusted_radian(segment.from)
     local adjusted_to = self:get_orientation_adjusted_radian(segment.to)
-    self.device:segment(n, adjusted_from, adjusted_to, 15)
+    a:segment(n, adjusted_from, adjusted_to, 15)
   end
 end
 
@@ -231,7 +231,7 @@ function _arc:get_orientation_adjusted_radian(value)
 end
 
 function _arc:draw_led(n, led, level)
-  self.device:led(n, self:get_orientation_adjusted_led(led), level)
+  a:led(n, self:get_orientation_adjusted_led(led), level)
 end
 
 function _arc:get_orientation_adjusted_led(value)
@@ -245,7 +245,7 @@ end
 
 
 function _arc:clear_ring(n)
-  for i = 1, 64 do _arc.device:led(n, i, 0) end
+  for i = 1, 64 do a:led(n, i, 0) end
 end
 
 

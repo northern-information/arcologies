@@ -59,6 +59,7 @@ function saveload:load_cells(data)
       -- cells from older arcologies don't have newer attributes, so:
       tmp[v] = load_cell[v] or tmp[v]
     end
+    tmp:change_checks()
     tmp:set_available_ports()
     tmp:set_er()
     table.insert(keeper.cells, tmp)

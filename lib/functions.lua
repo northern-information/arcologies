@@ -91,6 +91,7 @@ end
 function fn.cleanup()
   crow.ii.jf.mode(0)
   _midi:all_off()
+  g.cleanup()
   clock.cancel(music_clock_id)
   clock.cancel(redraw_clock_id)
   clock.cancel(grid_clock_id)
