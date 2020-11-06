@@ -18,7 +18,6 @@ This README is for developers looking to contribute in building **arcologies**.
 
 ## Technical
 
-
 - The [developer manual video](https://www.youtube.com/watch?v=NJlO2jajM6k) is the fastest way to learn **arcologies**. It includes a walkthrough of the architecture and deep dives into the most complex parts of the software.
 - To learn the codebase, read [arcologies.lua](https://github.com/tyleretters/arcologies/blob/main/arcologies.lua) and [lib/includes.lua](https://github.com/tyleretters/arcologies/blob/main/lib/includes.lua).
 - Next, skim through [keeper.lua](https://github.com/tyleretters/arcologies/blob/main/lib/keeper.lua), [Cell.lua](https://github.com/tyleretters/arcologies/blob/main/lib/Cell.lua), [Signal.lua](https://github.com/tyleretters/arcologies/blob/main/lib/Signal.lua), and [counters.lua](https://github.com/tyleretters/arcologies/blob/main/lib/counters.lua).
@@ -34,6 +33,5 @@ Contributions are welcome, however I have some pretty firm boundaries about what
 ## Credits
 
 Software design by [Tyler Etters](https://nor.the-rn.info).
-
 
 <a href="https://nor.the-rn.info"><img src="https://tyleretters.github.io/arcologies-docs/assets/images/northern-information.svg" alt="Northern Information" width="100"/></a>
