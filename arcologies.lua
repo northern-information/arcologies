@@ -6,7 +6,7 @@
 --    k2: play      k3: delete
 --
 --
--- v1.2.5
+-- v1.2.6
 
 include("arcologies/lib/includes")
 
