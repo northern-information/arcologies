@@ -6,12 +6,12 @@
 --    k2: play      k3: delete
 --
 --
--- v1.2.6
+-- v1.2.7
 
 include("arcologies/lib/includes")
 
 function init()
-  sharer.init() -- puts SHARE up top under CLOCK
+  sharer.init()
   audio:pitch_off()
   structures.init()
   filesystem.init()
