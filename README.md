@@ -2,6 +2,8 @@
 
 _an interactive environment for designing 2d sound arcologies with norns and grid_
 
+![Latest Release](https://img.shields.io/github/v/release/northern-information/arcologies?sort=semver&color=%23f)
+
 ![arctangents & archangels](https://northern-information.github.io/arcologies-docs/assets/images/arctangents-and-archangels.jpg)
 
 ![eternal september](https://northern-information.github.io/arcologies-docs/assets/images/eternal-september.jpg)
