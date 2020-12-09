@@ -11,6 +11,7 @@
 include("arcologies/lib/includes")
 
 function init()
+  sharer.init() -- puts SHARE up top under CLOCK
   audio:pitch_off()
   structures.init()
   filesystem.init()
