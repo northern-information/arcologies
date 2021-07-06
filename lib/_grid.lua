@@ -156,6 +156,7 @@ end
 
 function _grid:led_signals()
   local level = page.active_page == 3 and menu.selected_item == 1 and 10 or 2
+  if parameters.is_grayscale_on then level = 15 end
   for k,v in pairs(keeper.signals) do
     if v.generation <= counters.music_generation then
       g:led(v.x, v.y, level)
@@ -224,8 +225,10 @@ function _grid:led_signal_and_cell_collision()
 end
 
 function _grid:led_cells()
+  local level = 5
+  if parameters.is_grayscale_on then level = 15 end
   for k,v in pairs(keeper.cells) do
-    g:led(v.x, v.y, 5)
+    g:led(v.x, v.y, level)
   end
 end
 
