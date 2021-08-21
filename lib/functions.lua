@@ -350,6 +350,10 @@ function rerun()
   norns.script.load(norns.state.script)
 end
 
+function r()
+  rerun()
+end
+
 function fn.screenshot()
   local which_screen = string.match(string.match(string.match(norns.state.script,"/home/we/dust/code/(.*)"),"/(.*)"),"(.+).lua")
   _norns.screen_export_png("/home/we/dust/" .. which_screen .. "-" .. os.time() .. ".png")
