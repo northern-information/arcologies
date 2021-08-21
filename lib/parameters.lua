@@ -32,6 +32,10 @@ function parameters.init()
   params:add_option("splash_screen", "SPLASH SCREEN", {"ENABLED", "DISABLED"})
   params:set_action("splash_screen", function(index) parameters.is_splash_screen_on = index == 1 and true or false end)
 
+  parameters.is_grayscale_on = false
+  params:add_option("grayscale", "GRAYSCALE", {"ENABLED", "DISABLED"})
+  params:set_action("grayscale", function(index) parameters.is_grayscale_on = index == 1 and true or false end)
+
   params:add_separator("")
   params:add_separator("KUDZU MANAGEMENT")
 
