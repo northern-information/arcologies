@@ -203,17 +203,17 @@ function Cell:change_checks()
          self:setup_notes(8)
 
   elseif self:is("SPOMENIK")
-      or self:is("FRACTURE") then 
+      or self:is("FRACTURE") then
          self:set_note_count(1)
          self:setup_notes(1)
 
-  elseif self:is("AUTON") 
+  elseif self:is("AUTON")
       or self:is("PRAIRIE") then
          self:set_note_count(8)
          self:setup_notes(8)
 
   elseif self:is("CRYPT") then
-         self:set_state_index(1) 
+         self:set_state_index(1)
          self:cycle_state_index(0)
 
   elseif self:is("KUDZU") then
@@ -231,7 +231,22 @@ end
 -- all signals are "spawned" but only under certain conditions
 function Cell:is_spawning()
   if self:is("DOME") and self.metabolism ~= 0 then
-    return self.er[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+    return self.er[(counters:this_beat() + self.offset) % self.metabolism + 1]
+    --[[
+    Tyler:
+      your fn.cycle function returns zero when the modulo divides evenly.
+      since the array indexing starts at 1 and not 0, the function returns nil instead
+      of whatever value it should, since its out of bounds.
+      You don't really need the cycle function in the first place if instead of
+      substracting offset, you'd add it. that way modulo guarantees the value to be
+      in range of the array length [0, length].
+      Note that I add 1 to the result of the modulo to match up with array keys again
+
+      I do realize that this doesn't fix fn.cycle and you might have similar issues
+      creeping up elsewhere, i.e. the Turing machine - don't see this as fix but
+      as demonstration of what's wrong.
+    ]]
+    -- return self.er[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("MAZE") and self.metabolism ~= 0 then
     return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
@@ -335,4 +350,3 @@ function Cell:drugs()
     end
   end
 end
- 
