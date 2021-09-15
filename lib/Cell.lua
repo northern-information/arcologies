@@ -232,21 +232,6 @@ end
 function Cell:is_spawning()
   if self:is("DOME") and self.metabolism ~= 0 then
     return self.er[(counters:this_beat() + self.offset) % self.metabolism + 1]
-    --[[
-    Tyler:
-      your fn.cycle function returns zero when the modulo divides evenly.
-      since the array indexing starts at 1 and not 0, the function returns nil instead
-      of whatever value it should, since its out of bounds.
-      You don't really need the cycle function in the first place if instead of
-      substracting offset, you'd add it. that way modulo guarantees the value to be
-      in range of the array length [0, length].
-      Note that I add 1 to the result of the modulo to match up with array keys again
-
-      I do realize that this doesn't fix fn.cycle and you might have similar issues
-      creeping up elsewhere, i.e. the Turing machine - don't see this as fix but
-      as demonstration of what's wrong.
-    ]]
-    -- return self.er[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("MAZE") and self.metabolism ~= 0 then
     return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
   elseif self:is("SOLARIUM") and self.flag then
