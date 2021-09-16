@@ -233,7 +233,7 @@ function Cell:is_spawning()
   if self:is("DOME") and self.metabolism ~= 0 then
     return self.er[(counters:this_beat() + self.offset) % self.metabolism + 1]
   elseif self:is("MAZE") and self.metabolism ~= 0 then
-    return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+    return self.turing[(counters:this_beat() + self.offset) % self.metabolism + 1]
   elseif self:is("SOLARIUM") and self.flag then
     return true
   elseif self:is("HIVE") or self:is("RAVE") or self:is("WINDFARM") then
