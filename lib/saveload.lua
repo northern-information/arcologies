@@ -55,11 +55,11 @@ function saveload:load_cells(data)
     -- if the structure doesn't exist anymore, load it as a hive.
     tmp.structure_name  = fn.table_find(structures:all_names(), load_cell[structure_key]) and load_cell[structure_key] or "HIVE"
 
+    tmp:change_checks()
     for k, v in pairs(tmp:get_save_keys()) do
       -- cells from older arcologies don't have newer attributes, so:
       tmp[v] = load_cell[v] or tmp[v]
     end
-    tmp:change_checks()
     tmp:set_available_ports()
     tmp:set_er()
     table.insert(keeper.cells, tmp)

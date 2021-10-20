@@ -203,17 +203,17 @@ function Cell:change_checks()
          self:setup_notes(8)
 
   elseif self:is("SPOMENIK")
-      or self:is("FRACTURE") then 
+      or self:is("FRACTURE") then
          self:set_note_count(1)
          self:setup_notes(1)
 
-  elseif self:is("AUTON") 
+  elseif self:is("AUTON")
       or self:is("PRAIRIE") then
          self:set_note_count(8)
          self:setup_notes(8)
 
   elseif self:is("CRYPT") then
-         self:set_state_index(1) 
+         self:set_state_index(1)
          self:cycle_state_index(0)
 
   elseif self:is("KUDZU") then
@@ -231,9 +231,9 @@ end
 -- all signals are "spawned" but only under certain conditions
 function Cell:is_spawning()
   if self:is("DOME") and self.metabolism ~= 0 then
-    return self.er[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+    return self.er[(counters:this_beat() + self.offset) % self.metabolism + 1]
   elseif self:is("MAZE") and self.metabolism ~= 0 then
-    return self.turing[fn.cycle((counters:this_beat() - self.offset) % self.metabolism, 0, self.metabolism)]
+    return self.turing[(counters:this_beat() + self.offset) % self.metabolism + 1]
   elseif self:is("SOLARIUM") and self.flag then
     return true
   elseif self:is("HIVE") or self:is("RAVE") or self:is("WINDFARM") then
@@ -335,4 +335,3 @@ function Cell:drugs()
     end
   end
 end
- 
