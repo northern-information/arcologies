@@ -35,6 +35,3 @@ Contributions are welcome, however I have some pretty firm boundaries about what
 ## Credits
 
 Software design by [Tyler Etters](https://nor.the-rn.info).
-
-
-![Northern Information](https://northern-information.github.io/arcologies-docs/assets/images/northern-information.svg)
