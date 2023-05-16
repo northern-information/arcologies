@@ -36,4 +36,5 @@ Contributions are welcome, however I have some pretty firm boundaries about what
 
 Software design by [Tyler Etters](https://nor.the-rn.info).
 
-<a href="https://nor.the-rn.info"><img src="https://northern-information.github.io/arcologies-docs/assets/images/northern-information.svg" alt="Northern Information" width="100"/></a>
+
+![Northern Information](https://northern-information.github.io/arcologies-docs/assets/images/northern-information.svg)
