@@ -2,8 +2,8 @@ config = {}
 
 config["settings"] = {
   ["version_major"] = 1,
-  ["version_minor"] = 2,
-  ["version_patch"] = 8,
+  ["version_minor"] = 3,
+  ["version_patch"] = 0,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
@@ -14,7 +14,7 @@ config["settings"] = {
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
   ["crypt_default_name"] = "DEFAULT",
   ["crypts_path"] =  _path.audio .. "crypts/",
-  ["maps_path"] =  _path.data .. "arcologies/maps/"
+  ["maps_path"] =  _path.data .. "arcologies/maps/",
 }
 
 config["page_titles"] = {
