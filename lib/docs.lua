@@ -209,4 +209,10 @@ docs.sheets["CLOAKROOM"] = {
   "N & E ports: -"
 }
 
+docs.sheets["APIARY"] = {
+  "Write docs",
+  "here!",
+  "CAW!"
+}
+
 return docs

@@ -227,6 +227,13 @@ function Cell:change_checks()
          self:close_all_ports()
          self:open_port(self:get_bearing_cardinal())
 
+  elseif self:is("APIARY") then
+         print("who knows what shall happen here?")
+         -- just copied down CASINO for now
+         self:set_note_count(8)
+         self:setup_notes(8)
+         self:set_output_by_string("MIDI")
+
   end
 end
 

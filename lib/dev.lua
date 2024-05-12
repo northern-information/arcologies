@@ -14,7 +14,7 @@ end
 function dev:scene(i)
 
   if i == 1 then
-    page:select(3)
+    page:select(2)
     menu:select_item(4)
     keeper:select_cell(4, 4)
     keeper.selected_cell:change("APIARY")
@@ -22,8 +22,7 @@ function dev:scene(i)
     keeper.selected_cell:open_port("e")
     keeper.selected_cell:open_port("s")
     keeper.selected_cell:open_port("w")
-    keeper:deselect_cell()
-    -- params:set("bpm", 120)
+    -- keeper:deselect_cell()
 
   elseif i == 2 then
     sound:set_random_root()
@@ -40,7 +39,6 @@ function dev:scene(i)
     page:select(2)
     menu:select_item(1)
     -- keeper:deselect_cell()
-    -- params:set("bpm", 120)
     counters:toggle_playback()
 
   elseif i == 3 then
@@ -69,7 +67,6 @@ function dev:scene(i)
 
   elseif i == 10 then
     -- ode to joy
-    -- params:set("bpm", 240)
     sound:set_scale(47)
     page:select(2)
     keeper:select_cell(1, 4)
