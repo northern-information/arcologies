@@ -34,7 +34,7 @@ function keeper:collision(signal, cell)
     -- empty
 
   -- these don't allow signals in
-  elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") or cell:is("RAVE") then
+  elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") then
     -- empty
 
   -- crypts play samples
