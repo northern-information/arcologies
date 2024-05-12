@@ -48,6 +48,7 @@ local mixins = {
   "er_mixin",
   "level_mixin",
   "metabolism_mixin",
+  "nb_mixin",
   "network_mixin",
   "notes_mixin",
   "offset_mixin",
@@ -145,11 +146,13 @@ sound = include(lib .. "sound")
 api = include(lib .. "api")
 
 -- dev only stuff
-dev = io.open(_path["code"] .. lib .. "dev.lua", "r")
-if dev ~= nil then
-  io.close(dev)
-  include(lib .. "dev")
-end
+-- dev = io.open(_path["code"] .. lib .. "dev.lua", "r")
+-- if dev ~= nil then
+--   io.close(dev)
+--   include(lib .. "dev")
+-- end
+
+dev = include(lib .. "dev")
 
 -- upload/download
 sharer = include('lib/sharer')
