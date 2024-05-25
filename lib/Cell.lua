@@ -29,7 +29,8 @@ function Cell:new(x, y, g)
   state_index_mixin.init(self) -- alphabetically this is "I"
   level_mixin.init(self)
   metabolism_mixin.init(self)
-  nb_mixin.init(self)
+  nb_select_mixin.init(self)
+  nb_voice_mixin.init(self)
   network_mixin.init(self)
   notes_mixin.init(self)
   offset_mixin.init(self)
@@ -63,7 +64,8 @@ function Cell:new(x, y, g)
   c.setup_state_index(c) -- alphabetically this is "I"
   c.setup_level(c)
   c.setup_metabolism(c)
-  c.setup_nb(c)
+  c.setup_nb_select(c)
+  c.setup_nb_voice(c)
   c.setup_network(c)
   c.setup_notes(c)
     c.note_registrations(c)
@@ -99,6 +101,10 @@ function Cell:register_menu_setter(key, setter)
 end
 
 function Cell:register_menu_getter(key, getter)
+  print("key")
+  print(key)
+  print("getter")
+  print(getter)
   self.menu_getters[key] = getter
 end
 
