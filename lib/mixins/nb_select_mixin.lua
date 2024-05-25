@@ -11,9 +11,9 @@ nb_select_mixin.init = function(self)
     self.nb_select = 1
     self:register_save_key("nb_select")
     self.nb_select_menu_values = {"nb_1", "nb_2", "nb_3", "nb_4"}
-    self.nb_select_count = 4; -- arbitrarily chosen maximum number of selectors
-    self.register_menu_getter(self.nb_select_key, self.nb_select_menu_getter)
-    self.register_menu_setter(self.nb_select_key, self.nb_select_menu_setter)
+    self.nb_select_count = 4 -- arbitrarily chosen maximum number of selectors
+    self:register_menu_getter(self.nb_select_key, self.nb_select_menu_getter)
+    self:register_menu_setter(self.nb_select_key, self.nb_select_menu_setter)
     self:register_arc_style({
       key = self.nb_select_key,
       style_getter = function() return "glowing_segment" end,

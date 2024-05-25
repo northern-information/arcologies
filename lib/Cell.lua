@@ -101,10 +101,6 @@ function Cell:register_menu_setter(key, setter)
 end
 
 function Cell:register_menu_getter(key, getter)
-  print("key")
-  print(key)
-  print("getter")
-  print(getter)
   self.menu_getters[key] = getter
 end
 

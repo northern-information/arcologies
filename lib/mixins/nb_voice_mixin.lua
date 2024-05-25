@@ -11,8 +11,8 @@ nb_voice_mixin.init = function(self)
     self:register_save_key("nb_voice")
     self.nb_voice_menu_values = {"?", "??", "???", "????"} -- TODO how to get list of all voices???
     self.nb_voice_count = 4; -- TODO count the number of nb voices installed
-    self.register_menu_getter(self.nb_voice_key, self.nb_voice_menu_getter)
-    self.register_menu_setter(self.nb_voice_key, self.nb_voice_menu_setter)
+    self:register_menu_getter(self.nb_voice_key, self.nb_voice_menu_getter)
+    self:register_menu_setter(self.nb_voice_key, self.nb_voice_menu_setter)
     self:register_arc_style({
       key = self.nb_voice_key,
       style_getter = function() return "glowing_segment" end,
