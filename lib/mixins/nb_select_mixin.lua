@@ -1,6 +1,6 @@
 -- wip
 -- todo: add requirements notes
--- choosing 4 nb selectors
+-- select nb selector 1, 2, 3, or 4
 nb_select_mixin = {}
 
 nb_select_mixin.init = function(self)
@@ -37,10 +37,13 @@ nb_select_mixin.init = function(self)
 
   self.nb_select_increment = function(self, i)
     self.nb_select = util.wrap(self:get_nb_select() + 1, 1, self.nb_select_count)
+    -- TODO update the displayed nb_voice_mixin menu value if this changes
+    -- TODO HELP how do I combine these two files??
   end
 
   self.nb_select_decrement = function(self, i)
     self.nb_select = util.wrap(self:get_nb_select() - 1, 1, self.nb_select_count)
+    -- TODO update the displayed nb_voice_mixin menu value if this changes
   end
 
   self.get_nb_select = function(self)
@@ -53,8 +56,8 @@ nb_select_mixin.init = function(self)
   end
 
   self.nb_select_menu_getter = function(self)
-    return 1
-    -- return self.nb_select_menu_values[self:get_nb_select()]
+    --return 1
+    return self.nb_select_menu_values[self:get_nb_select()]
   end
 
   self.nb_select_menu_setter = function(self, i)
