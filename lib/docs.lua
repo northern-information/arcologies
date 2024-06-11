@@ -211,7 +211,10 @@ docs.sheets["CLOAKROOM"] = {
 
 docs.sheets["APIARY"] = {
   "Topiaries for",
-  "nb voices."
+  "nb voices.",
+  "",
+  "Plays melodies",
+  "with signals."
 }
 
 return docs

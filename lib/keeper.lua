@@ -117,7 +117,6 @@ function keeper:collision(signal, cell)
 
   -- apiaries cylce through notes for nb voices 
   elseif cell:is("APIARY") then
-    print("bzz bzz bzz bzz")
     cell:over_cycle_state_index(cell:topography_operation())
     local player = params:lookup_param(nb_selector_names[cell.nb_select]):get_player()
     player:play_note(cell.notes[cell.state_index], cell.velocity, cell.duration)

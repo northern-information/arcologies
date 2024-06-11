@@ -1,5 +1,4 @@
--- wip
--- todo: add requirements notes
+-- requires nb_voice_mixin
 -- select nb selector 1, 2, 3, or 4
 nb_select_mixin = {}
 
@@ -11,7 +10,7 @@ nb_select_mixin.init = function(self)
     self.nb_select = 1
     self:register_save_key("nb_select")
     self.nb_select_menu_values = {"nb_1", "nb_2", "nb_3", "nb_4"}
-    self.nb_select_count = 4 -- arbitrarily chosen maximum number of selectors
+    self.nb_select_count = 4 -- arbitrarily chosen maximum (8 sounds good tho)
     self:register_menu_getter(self.nb_select_key, self.nb_select_menu_getter)
     self:register_menu_setter(self.nb_select_key, self.nb_select_menu_setter)
     self:register_arc_style({
@@ -36,14 +35,11 @@ nb_select_mixin.init = function(self)
   end
 
   self.nb_select_increment = function(self, i)
-    self.nb_select = util.wrap(self:get_nb_select() + 1, 1, self.nb_select_count)
-    -- TODO update the displayed nb_voice_mixin menu value if this changes
-    -- TODO HELP how do I combine these two files??
+    self:set_nb_select(self.nb_select + 1)
   end
 
   self.nb_select_decrement = function(self, i)
-    self.nb_select = util.wrap(self:get_nb_select() - 1, 1, self.nb_select_count)
-    -- TODO update the displayed nb_voice_mixin menu value if this changes
+    self:set_nb_select(self.nb_select - 1)
   end
 
   self.get_nb_select = function(self)
@@ -56,8 +52,7 @@ nb_select_mixin.init = function(self)
   end
 
   self.nb_select_menu_getter = function(self)
-    --return 1
-    return self.nb_select_menu_values[self:get_nb_select()]
+    return self.nb_select_menu_values[self.nb_select]
   end
 
   self.nb_select_menu_setter = function(self, i)
