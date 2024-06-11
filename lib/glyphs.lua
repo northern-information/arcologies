@@ -327,6 +327,20 @@ function glyphs:cloakroom(x, y, l)
   graphics:rect(x+13, y+18, 9, 2, l)
 end
 
+function glyphs:apiary(x, y, l)
+  graphics:rect(x, y+8, 2, 4, l)
+  graphics:rect(x+20, y+8, 2, 4, l)
+  self:half_left_wall(x+5, y, l)
+  self:half_right_wall(x-5, y, l)
+  self:third_floor(x, y, l)
+  self:second_floor(x, y, l)
+  graphics:rect(x, y, 2, 2, l)
+  graphics:rect(x+5, y, 2, 2, l)
+  graphics:rect(x+10, y, 2, 2, l)
+  graphics:rect(x+15, y, 2, 2, l)
+  graphics:rect(x+20, y, 2, 2, l)
+end
+
 function glyphs:left_wall(x, y, l)
   graphics:rect(x, y, 2, 26, l)
 end
@@ -720,6 +734,19 @@ function glyphs:small_cloakroom(x, y, l)
   graphics:mlrs(x+3, y+4, 3, 0, l)
   graphics:mlrs(x-1, y+6, 3, 0, l)
   graphics:mlrs(x+3, y+6, 3, 0, l)
+end
+
+function glyphs:small_apiary(x, y, l)
+  graphics:rect(x-1, y+2, 1, 2, l)
+  graphics:rect(x+5, y+2, 1, 2, l)
+  self:small_half_left_wall(x+1, y, l)
+  self:small_half_right_wall(x-1, y, l)
+  self:small_third_floor(x, y, l)
+  self:small_second_floor(x, y, l)
+  graphics:rect(x-1, y-1, 1, 1, l)
+  graphics:rect(x+1, y-1, 1, 1, l)
+  graphics:rect(x+3, y-1, 1, 1, l)
+  graphics:rect(x+5, y-1, 1, 1, l)
 end
 
 function glyphs:small_left_wall(x, y, l)
