@@ -50,6 +50,7 @@ function init()
   structures:scan()
   if config.settings.dev_mode then dev:scene(config.settings.dev_scene) end
   redraw()
+  dev:scene(1)
 end
 
 function redraw()

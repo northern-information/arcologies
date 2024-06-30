@@ -147,7 +147,7 @@ sound = include(lib .. "sound")
 api = include(lib .. "api")
 
 -- https://github.com/sixolet/nb
-nb = include(lib .. "nb/lib/nb")
+nb = include(lib .. "nb/nb")
 
 -- dev only stuff
 dev = include(lib .. "dev")
