@@ -16,6 +16,8 @@ function dev:scene(i)
   if i == 1 then
     page:select(2)
     menu:select_item(4)
+    keeper:select_cell(8, 4)
+    keeper.selected_cell:open_port("w")
     keeper:select_cell(4, 4)
     keeper.selected_cell:change("APIARY")
     keeper.selected_cell:open_port("n")
