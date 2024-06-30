@@ -210,10 +210,10 @@ docs.sheets["CLOAKROOM"] = {
 }
 
 docs.sheets["APIARY"] = {
-  "Topiaries for",
-  "nb voices.",
+  "The nb library",
+  "plays notes well.",
   "",
-  "Plays melodies",
+  "Trigger sounds",
   "with signals."
 }
 
