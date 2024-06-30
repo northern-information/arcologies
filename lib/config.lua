@@ -14,7 +14,7 @@ config["settings"] = {
   ["crypt_path"] =  _path.audio .. "arcologies/crypt/",
   ["crypt_default_name"] = "DEFAULT",
   ["crypts_path"] =  _path.audio .. "crypts/",
-  ["maps_path"] =  _path.data .. "arcologies/maps/",
+  ["maps_path"] =  _path.data .. "arcologies/maps/"
 }
 
 config["page_titles"] = {
