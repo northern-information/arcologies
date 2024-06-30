@@ -147,12 +147,6 @@ sound = include(lib .. "sound")
 api = include(lib .. "api")
 
 -- dev only stuff
--- dev = io.open(_path["code"] .. lib .. "dev.lua", "r")
--- if dev ~= nil then
---   io.close(dev)
---   include(lib .. "dev")
--- end
-
 dev = include(lib .. "dev")
 
 -- upload/download
