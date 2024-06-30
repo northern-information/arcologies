@@ -9,24 +9,11 @@
 -- v1.3.0-dev
 
 include("arcologies/lib/includes")
-nb = include("lib/nb/lib/nb")
-nb_selector_names = {"nb_1", "nb_2", "nb_3", "nb_4"}
 
 function init()
-  sharer.init()
   audio:pitch_off()
   structures.init()
   filesystem.init()
-
-  -- nb init
-  nb.voice_count = 1
-  nb:init()
-  nb:add_param(nb_selector_names[1], nb_selector_names[1])
-  nb:add_param(nb_selector_names[2], nb_selector_names[2])
-  nb:add_param(nb_selector_names[3], nb_selector_names[3])
-  nb:add_param(nb_selector_names[4], nb_selector_names[4])
-  nb:add_player_params()
-
   parameters.init()
   fn.init()
   _midi.init()
@@ -43,6 +30,7 @@ function init()
   popup.init()
   keeper.init()
   api.init()
+  nb:init()
   arcology_name = "arcology" .. os.time(os.date("!*t"))
   grid_dirty, screen_dirty, splash_break, arcology_loaded = false, false, false, false
   keys, key_counter, enc_counter = {}, {{},{},{}}, {{},{},{}}

@@ -37,6 +37,15 @@ function parameters.init()
   params:set_action("grayscale", function(index) parameters.is_grayscale_on = index == 2 and true or false end)
 
   params:add_separator("")
+  params:add_separator("NB / APIARY")
+  nb_selector_names = {"nb_1", "nb_2", "nb_3", "nb_4"}
+  nb:add_param(nb_selector_names[1], nb_selector_names[1])
+  nb:add_param(nb_selector_names[2], nb_selector_names[2])
+  nb:add_param(nb_selector_names[3], nb_selector_names[3])
+  nb:add_param(nb_selector_names[4], nb_selector_names[4])
+  nb:add_player_params()
+
+  params:add_separator("")
   params:add_separator("KUDZU MANAGEMENT")
 
   params:add{ type = "number", id = "kudzu_metabolism", name = "KUDZU METABOLISM",
