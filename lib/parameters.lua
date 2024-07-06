@@ -44,6 +44,16 @@ function parameters.init()
   nb:add_param(nb_selector_names[3], nb_selector_names[3])
   nb:add_param(nb_selector_names[4], nb_selector_names[4])
   nb:add_player_params()
+  -- we need to count the number of nb players here instead of the mixin
+  -- this brute force method has a side effect of calling all the active/inactive functions of each player :(
+  nb_player_count = 0 -- we'll always have "none"
+  while nb_player_count ~= params:get(nb_selector_names[1]) do
+    print(params:string(nb_selector_names[1]))
+    nb_player_count = nb_player_count + 1
+    params:set(nb_selector_names[1], nb_player_count+1)
+  end
+  params:set(nb_selector_names[1], 1) -- reset to "none"
+  print("NB COUNT: "..nb_player_count)
 
   params:add_separator("")
   params:add_separator("KUDZU MANAGEMENT")

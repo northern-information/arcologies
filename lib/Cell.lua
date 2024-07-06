@@ -232,7 +232,6 @@ function Cell:change_checks()
   elseif self:is("APIARY") then
          self:set_note_count(8)
          self:setup_notes(8)
-         self:set_output_by_string("MIDI")
 
   end
 end

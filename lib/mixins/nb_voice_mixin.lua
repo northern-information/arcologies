@@ -10,14 +10,8 @@ nb_voice_mixin.init = function(self)
     self.nb_voice = params:get("nb_1")
     self:register_save_key("nb_voice")
     
-    -- the nb "note_players" variable ends up with connected midi devices too somehow
-    self.nb_voice_count = 1 -- always have "none"
-    for k, v in pairs(note_players) do
-      x = string.find(k, "midi: ") -- hardcoded to filter out connected midi devices?
-      if x == nil then
-        self.nb_voice_count = self.nb_voice_count + 1
-      end
-    end
+    -- the nb "note_players" variable ends up with connected midi devices, doesn't accurately list options in nb_1
+    self.nb_voice_count = nb_player_count -- global from parameters.lua
     self:register_menu_getter(self.nb_voice_key, self.nb_voice_menu_getter)
     self:register_menu_setter(self.nb_voice_key, self.nb_voice_menu_setter)
     self:register_arc_style({
@@ -68,7 +62,7 @@ nb_voice_mixin.init = function(self)
   end
 
   self.nb_voice_menu_setter = function(self, i)
-    self:set_nb_voice(self.nb_voice + i)
+    self:set_nb_voice(self:get_nb_voice() + i)
   end
 
 end
