@@ -7,15 +7,17 @@ nb_voice_mixin.init = function(self)
   self.setup_nb_voice = function(self)
     -- nb_voice
     self.nb_voice_key = "NB VOICE"
-    self.nb_voice = params:get("nb_1") -- voice index value of the nb_select_mixin voice-selector
+    self.nb_voice = params:get("nb_1")
     self:register_save_key("nb_voice")
     
-    -- get list of all the keys in note_players, plus none
-    self.nb_voice_menu_values = {}
-    for k, v in pairs(note_players) do table.insert(self.nb_voice_menu_values, k) end
-    table.sort(self.nb_voice_menu_values)
-    table.insert(self.nb_voice_menu_values, 1, "none")
-    self.nb_voice_count = #self.nb_voice_menu_values 
+    -- the nb "note_players" variable ends up with connected midi devices too somehow
+    self.nb_voice_count = 1 -- always have "none"
+    for k, v in pairs(note_players) do
+      x = string.find(k, "midi: ") -- hardcoded to filter out connected midi devices?
+      if x == nil then
+        self.nb_voice_count = self.nb_voice_count + 1
+      end
+    end
     self:register_menu_getter(self.nb_voice_key, self.nb_voice_menu_getter)
     self:register_menu_setter(self.nb_voice_key, self.nb_voice_menu_setter)
     self:register_arc_style({
@@ -62,7 +64,7 @@ nb_voice_mixin.init = function(self)
   end
 
   self.nb_voice_menu_getter = function(self)
-    return self.nb_voice_menu_values[self:get_nb_voice()]
+    return params:string(self.nb_select_menu_values[self.nb_select])
   end
 
   self.nb_voice_menu_setter = function(self, i)
