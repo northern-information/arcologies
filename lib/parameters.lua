@@ -39,6 +39,7 @@ function parameters.init()
   params:add_separator("")
   params:add_separator("NB / APIARY")
   nb_selector_names = {"nb_1", "nb_2", "nb_3", "nb_4"}
+  params:add_option("apiary_normalize_velocity", "NORMALIZE VELOCITY", {"ENABLED", "DISABLED"})
   nb:add_param(nb_selector_names[1], nb_selector_names[1])
   nb:add_param(nb_selector_names[2], nb_selector_names[2])
   nb:add_param(nb_selector_names[3], nb_selector_names[3])

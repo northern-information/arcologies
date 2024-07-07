@@ -119,7 +119,11 @@ function keeper:collision(signal, cell)
   elseif cell:is("APIARY") then
     cell:over_cycle_state_index(cell:topography_operation())
     local player = params:lookup_param(nb_selector_names[cell.nb_select]):get_player()
-    player:play_note(cell.notes[cell.state_index], cell.velocity, cell.duration)
+    if params:get("apiary_normalize_velocity") == 1 then -- we should ask to standardize the nb voices to use 0 - 127
+      player:play_note(cell.notes[cell.state_index], cell.velocity / 127, cell.duration)
+    else
+      player:play_note(cell.notes[cell.state_index], cell.velocity, cell.duration)
+    end
 
   end
 
