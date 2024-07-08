@@ -23,9 +23,9 @@ end
 
 function graphics:structure_palette(i)
   local start_x = 7
-  local start_y = 18
+  local start_y = 12
   local margin_x = 15
-  local margin_y = 15
+  local margin_y = 14
   local p = {}
   for setup = 1, #structures:all_enabled() do
       p[setup] = {
@@ -39,8 +39,9 @@ function graphics:structure_palette(i)
   for k,v in pairs(p) do
     local row, col = 1,1
     -- call me hardcode kassidy
-    if k >= 9 and k <= 16 then row = 2 end
+    if k >=  9 and k <= 16 then row = 2 end
     if k >= 17 and k <= 24 then row = 3 end
+    if k >= 25 and k <= 32 then row = 4 end
     p[k].y = start_y + (margin_y * (row - 1))
     col = k % 8
     col = col == 0 and 8 or col
