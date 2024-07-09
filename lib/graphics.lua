@@ -212,7 +212,7 @@ end
 
 function graphics:select_tab(i)
   self:rect(self:get_tab_x(i), self.tab_padding, self.tab_width, self.tab_height + 1, 0)
-  self:mlrs(self:get_tab_x(i) + 2, 3, 1, 6)
+  self:mlrs(self:get_tab_x(i) + 2, 3, 1, 4)
 end
 
 function graphics:page_name()
