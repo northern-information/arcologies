@@ -7,6 +7,13 @@ function glyphs.init()
   glyphs.shimmer_2 = { 1, 2, 3, 4, 3, 2, 1, 0 }
   glyphs.shimmer_3 = { 2, 3, 4, 3, 2, 1, 0, 1 }
   glyphs.shimmer_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
+  glyphs.buzz_index = 1
+  glyphs.buzz = {}
+  glyphs.buzz_1 = { 0, 1, 2, 3, 4, 3, 2, 1 }
+  glyphs.buzz_2 = { 1, 2, 3, 4, 3, 2, 1, 0 }
+  glyphs.buzz_3 = { 2, 3, 4, 3, 2, 1, 0, 1 }
+  glyphs.buzz_4 = { 3, 4, 3, 2, 1, 0, 1, 2 }
+  glyphs.buzz_5 = { 3, 2, 1, 0, 1, 2, 3, 4 }
 end
 
 function glyphs:draw_glyph(s, x, y, l)
@@ -325,6 +332,21 @@ function glyphs:cloakroom(x, y, l)
   graphics:rect(x+13, y+12, 9, 2, l)
   graphics:rect(x, y+18, 9, 2, l)
   graphics:rect(x+13, y+18, 9, 2, l)
+end
+
+function glyphs:apiary(x, y, l)
+  self.buzz_index = fn.cycle(counters.ui.quarter_frame % 8 + 1, 1, 8)
+  graphics:rect(x, y+8, 2, 4, l)
+  graphics:rect(x+20, y+8, 2, 4, l)
+  self:half_left_wall(x+5, y, l)
+  self:half_right_wall(x-5, y, l)
+  self:third_floor(x, y, l)
+  self:second_floor(x, y, l)
+  graphics:rect(x - self.buzz_1[(self.buzz_index+5) % 8 + 1] + 0, y + self.buzz_1[self.buzz_index], 2, 2, l)
+  graphics:rect(x - self.buzz_2[(self.buzz_index+5) % 8 + 1] + 5, y + self.buzz_2[self.buzz_index]-1, 2, 2, l)
+  graphics:rect(x + 10, y + self.buzz_3[self.buzz_index], 2, 2, l)
+  graphics:rect(x + self.buzz_4[(self.buzz_index+4) % 8 + 1] + 15, y + self.buzz_4[self.buzz_index]-1, 2, 2, l)
+  graphics:rect(x + self.buzz_5[(self.buzz_index+5) % 8 + 1] + 20, y + self.buzz_5[self.buzz_index], 2, 2, l)
 end
 
 function glyphs:left_wall(x, y, l)
@@ -720,6 +742,19 @@ function glyphs:small_cloakroom(x, y, l)
   graphics:mlrs(x+3, y+4, 3, 0, l)
   graphics:mlrs(x-1, y+6, 3, 0, l)
   graphics:mlrs(x+3, y+6, 3, 0, l)
+end
+
+function glyphs:small_apiary(x, y, l)
+  graphics:rect(x-1, y+2, 1, 2, l)
+  graphics:rect(x+5, y+2, 1, 2, l)
+  self:small_half_left_wall(x+1, y, l)
+  self:small_half_right_wall(x-1, y, l)
+  self:small_third_floor(x, y, l)
+  self:small_second_floor(x, y, l)
+  graphics:rect(x-1, y-1, 1, 1, l)
+  graphics:rect(x+1, y-1, 1, 1, l)
+  graphics:rect(x+3, y-1, 1, 1, l)
+  graphics:rect(x+5, y-1, 1, 1, l)
 end
 
 function glyphs:small_left_wall(x, y, l)

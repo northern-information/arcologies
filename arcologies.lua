@@ -6,12 +6,11 @@
 --    k2: play      k3: delete
 --
 --
--- v1.2.8
+-- v1.3.0-dev
 
 include("arcologies/lib/includes")
 
 function init()
-  sharer.init()
   audio:pitch_off()
   structures.init()
   filesystem.init()
@@ -31,6 +30,7 @@ function init()
   popup.init()
   keeper.init()
   api.init()
+  nb:init()
   arcology_name = "arcology" .. os.time(os.date("!*t"))
   grid_dirty, screen_dirty, splash_break, arcology_loaded = false, false, false, false
   keys, key_counter, enc_counter = {}, {{},{},{}}, {{},{},{}}

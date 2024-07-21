@@ -209,4 +209,12 @@ docs.sheets["CLOAKROOM"] = {
   "N & E ports: -"
 }
 
+docs.sheets["APIARY"] = {
+  "The nb library",
+  "plays notes well.",
+  "",
+  "Trigger sounds",
+  "with signals."
+}
+
 return docs

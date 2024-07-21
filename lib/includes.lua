@@ -48,6 +48,8 @@ local mixins = {
   "er_mixin",
   "level_mixin",
   "metabolism_mixin",
+  "nb_select_mixin",
+  "nb_voice_mixin",
   "network_mixin",
   "notes_mixin",
   "offset_mixin",
@@ -144,12 +146,8 @@ sound = include(lib .. "sound")
 -- experimental
 api = include(lib .. "api")
 
--- dev only stuff
-dev = io.open(_path["code"] .. lib .. "dev.lua", "r")
-if dev ~= nil then
-  io.close(dev)
-  include(lib .. "dev")
-end
+-- https://github.com/sixolet/nb
+nb = include(lib .. "nb/nb")
 
--- upload/download
-sharer = include('lib/sharer')
+-- dev only stuff
+dev = include(lib .. "dev")

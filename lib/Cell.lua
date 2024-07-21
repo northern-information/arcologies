@@ -29,6 +29,8 @@ function Cell:new(x, y, g)
   state_index_mixin.init(self) -- alphabetically this is "I"
   level_mixin.init(self)
   metabolism_mixin.init(self)
+  nb_select_mixin.init(self)
+  nb_voice_mixin.init(self)
   network_mixin.init(self)
   notes_mixin.init(self)
   offset_mixin.init(self)
@@ -62,6 +64,8 @@ function Cell:new(x, y, g)
   c.setup_state_index(c) -- alphabetically this is "I"
   c.setup_level(c)
   c.setup_metabolism(c)
+  c.setup_nb_select(c)
+  c.setup_nb_voice(c)
   c.setup_network(c)
   c.setup_notes(c)
     c.note_registrations(c)
@@ -224,6 +228,10 @@ function Cell:change_checks()
   elseif self:is("WINDFARM") then
          self:close_all_ports()
          self:open_port(self:get_bearing_cardinal())
+
+  elseif self:is("APIARY") then
+         self:set_note_count(8)
+         self:setup_notes(8)
 
   end
 end

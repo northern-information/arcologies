@@ -34,7 +34,7 @@ function keeper:collision(signal, cell)
     -- empty
 
   -- these don't allow signals in
-  elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") or cell:is("RAVE") then
+  elseif cell:is("HIVE") or cell:is("RAVE") or cell:is("DOME") then
     -- empty
 
   -- crypts play samples
@@ -115,6 +115,16 @@ function keeper:collision(signal, cell)
   elseif cell:is("CLOAKROOM") then
     cell:psyop_signal_adaptor(signal.heading)
 
+  -- apiaries cylce through notes for nb voices 
+  elseif cell:is("APIARY") then
+    cell:over_cycle_state_index(cell:topography_operation())
+    local player = params:lookup_param(nb_selector_names[cell.nb_select]):get_player()
+    if params:get("apiary_normalize_velocity") == 1 then -- we should ask to standardize the nb voices to use 0 - 127
+      player:play_note(cell.notes[cell.state_index], cell.velocity / 127, cell.duration)
+    else
+      player:play_note(cell.notes[cell.state_index], cell.velocity, cell.duration)
+    end
+
   end
 
   --[[ the below structures reroute & split
@@ -131,7 +141,8 @@ function keeper:collision(signal, cell)
   or cell:is("FOREST")
   or cell:is("HYDROPONICS")
   or cell:is("MIRAGE")
-  or cell:is("AUTON") then
+  or cell:is("AUTON")
+  or cell:is("APIARY") then
     for k, port in pairs(cell.ports) do
           if (port == "n" and signal.heading ~= "s") then self:create_signal(cell.x, cell.y - 1, "n", "tomorrow")
       elseif (port == "e" and signal.heading ~= "w") then self:create_signal(cell.x + 1, cell.y, "e", "tomorrow")

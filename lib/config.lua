@@ -2,8 +2,8 @@ config = {}
 
 config["settings"] = {
   ["version_major"] = 1,
-  ["version_minor"] = 2,
-  ["version_patch"] = 8,
+  ["version_minor"] = 3,
+  ["version_patch"] = 0,
   ["playback"] = 0,
   ["length"] = 16,
   ["root"] = 0,
