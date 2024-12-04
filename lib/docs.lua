@@ -132,7 +132,7 @@ docs.sheets["TUNNEL"] = {
 }
 
 docs.sheets["AVIARY"] = {
-  "Send voltates &",
+  "Send voltages &",
   "triggers to crow.",
   "",
   "Routes signals",
